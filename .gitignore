@@ -1,0 +1,5 @@
+.idea/
+venv/
+onless/video/migrations/
+onless/user/migrations/
+onless/quiz/migrations/

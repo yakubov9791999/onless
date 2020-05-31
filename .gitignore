@@ -3,3 +3,8 @@ venv/
 onless/video/migrations/
 onless/user/migrations/
 onless/quiz/migrations/
+onless/onless/__pycache__/
+onless/quiz/__pycache__/
+onless/user/__pycache__/
+onless/video/__pycache__/
+onless/db.sqlite3

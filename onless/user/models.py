@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMix
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
     ext = filename.split('.')[-1]
@@ -16,10 +17,9 @@ def path_and_rename(instance, filename):
     return os.path.join(upload_to, filename)
 
 
-
 class UserManager(BaseUserManager):
 
-    def _create_user(self, email,username, password, is_staff, is_superuser, **extra_fields):
+    def _create_user(self, email, username, password, is_staff, is_superuser, **extra_fields):
         if not email:
             raise ValueError('Emailni kiritish majburiy')
         if not username:
@@ -48,14 +48,35 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
+class Region(models.Model):
+    title = models.CharField(max_length=255)
+    sort = models.IntegerField(blank=True, default=1)
+
+class District(models.Model):
+    title = models.CharField(max_length=255)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    sort = models.IntegerField(blank=True, default=1)
+
+class DrivingSchool(models.Model):
+    title = models.CharField(max_length=255)
+    director_fio = models.CharField(max_length=255, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+
+
 ROLE_CHOICES = (
-    ("Admin", "Admin"),
-    ("Direktor", "Direktor"),
-    ("O'qituvchi", "O'qituvchi"),
-    ("O'quvchi", "O'quvchi"),
+    ("1", "Admin"),
+    ("2", "Direktor"),
+    ("3", "O'qituvchi"),
+    ("4", "O'quvchi"),
 )
+
+
+
 class User(AbstractBaseUser, PermissionsMixin):
-    role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="O'quvchi")
+    role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
+    driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True)
+    address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=True)
     birthday = models.DateTimeField(max_length=120, blank=True, null=True)
     username = models.CharField(max_length=30, unique=True)
@@ -77,5 +98,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.username}"
-
-

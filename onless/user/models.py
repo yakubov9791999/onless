@@ -48,8 +48,14 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
+ROLE_CHOICES = (
+    ("Admin", "Admin"),
+    ("Direktor", "Direktor"),
+    ("O'qituvchi", "O'qituvchi"),
+    ("O'quvchi", "O'quvchi"),
+)
 class User(AbstractBaseUser, PermissionsMixin):
+    role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="O'quvchi")
     email = models.EmailField(max_length=254, unique=True)
     birthday = models.DateTimeField(max_length=120, blank=True, null=True)
     username = models.CharField(max_length=30, unique=True)

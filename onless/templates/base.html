@@ -17,6 +17,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+
+    <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>
+
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -34,26 +40,53 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Main content -->
 
             <div class="content">
-                <div class="container-fluid">
-                    <div class="row ">
-                        <div class="col-lg-4 col-sm-6 mb-4 mt-3">
-                            <div class="card h-100">
-                                <iframe src="https://www.youtube.com/watch?v=eCeRC7E8Z7Y"  width="" height="300px"></iframe>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Yo'l belgilari </a>
-                                    </h4>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam
-                                        viverra euismod odio, gravida pellentesque urna varius vitae.</p>
-                                </div>
-                            </div>
+                {#                {% for video in videos %}#}
+                {##}
+                {##}
+                {##}
+                {#                <div class="container-fluid">#}
+                {#                    <div class="row ">#}
+                {#                        <div class="col-lg-4 col-sm-6 mb-4 mt-3">#}
+                {#                            <div class="card h-100">#}
+                {#                                <iframe src="https://www.youtube.com/watch?v=eCeRC7E8Z7Y"  width="" height="300px"></iframe>#}
+                {#                                <div class="card-body">#}
+                {#                                    <h4 class="card-title">#}
+                {#                                        <a href="#">{{ video.title }} </a>#}
+                {#                                    </h4>#}
+                {#                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam#}
+                {#                                        viverra euismod odio, gravida pellentesque urna varius vitae.</p>#}
+                {#                                </div>#}
+                {#                            </div>#}
+                {##}
+                {##}
+                {#                        </div>#}
+                {#                        <!-- /.col-md-6 -->#}
+                {#                    </div>#}
+                {#                    <!-- /.row -->#}
+                {#                </div><!-- /.container-fluid -->#}
+                {#                {% endfor %}#}
+                <video
+                        id="my-video"
+                        class="video-js"
+                        controls
+                        preload="auto"
+                        width="640"
+                        height="264"
+                        poster="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4"
+                        data-setup="{}"
+                >
+                    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4" type="video/mp4"/>
+                    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4" type="video/webm"/>
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank"
+                        >supports HTML5 video</a
+                        >
+                    </p>
+                </video>
 
-
-                        </div>
-                        <!-- /.col-md-6 -->
-                    </div>
-                    <!-- /.row -->
-                </div><!-- /.container-fluid -->
+                <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
             </div>
 
             <!-- /.content -->

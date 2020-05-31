@@ -1,6 +1,15 @@
 from django.db import models
+from quiz.models import User
 
-
-# Create your models here.
 class Video(models.Model):
-    pass
+    title = models.CharField(max_length=250)
+    description = models.CharField(max_length=600)
+    duration = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name='rating_likes', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='rating_dislikes', blank=True)
+    src = models.FileField(upload_to='quiz/video/%Y-%m-%d/')
+    views = models.ManyToManyField(User, related_name='video_views', blank=True)
+
+
+    def __str__(self):
+        return self.title

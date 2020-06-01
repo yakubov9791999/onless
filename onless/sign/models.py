@@ -15,8 +15,10 @@ class SignCategory(models.Model):
 
 class Sign(models.Model):
     code = models.CharField(max_length=5)
+    category = models.ForeignKey(SignCategory, on_delete=models.PROTECT, related_name='sign_cateogories')
     title = models.CharField(max_length=255)
-    text = models.CharField(max_length=5000)
+    text = models.CharField(max_length=5000, blank=True)
+    photo = models.ImageField(upload_to="sign/")
 
     def __str__(self):
         return self.title

@@ -9,5 +9,11 @@ onless/user/__pycache__/
 onless/video/__pycache__/
 onless/media/
 onless/db.sqlite3
+<<<<<<< HEAD
 onless/__pycache__/
 onless/video/templatetags/__pycache__/
+=======
+onless/sign/__pycache__/
+onless/sign/migrations/
+onless/db2.sqlite3
+>>>>>>> a44e58a79fe2eced9ff4f04397c09d67263972c9

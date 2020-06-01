@@ -7,4 +7,5 @@ onless/onless/__pycache__/
 onless/quiz/__pycache__/
 onless/user/__pycache__/
 onless/video/__pycache__/
+onless/media/
 onless/db.sqlite3

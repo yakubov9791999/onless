@@ -23,6 +23,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
     <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+<style type="text/css">
+  .vjs-default-skin .vjs-play-progress,
+  .vjs-default-skin .vjs-volume-level { background-color: #59aad7 }
+  .vjs-default-skin .vjs-control-bar { font-size: 78% }
+</style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -42,16 +47,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="content">
                 <video
                         id="my-video"
-                        class="video-js"
+                        class="video-js "
                         controls
                         preload="auto"
                         width="640"
                         height="264"
-                        poster="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4"
+                        poster="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Shaqi_jrvej.jpg/1200px-Shaqi_jrvej.jpg"
                         data-setup="{}"
                 >
-                    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4" type="video/mp4"/>
-                    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4" type="video/webm"/>
+                    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4"
+                            type="video/mp4"/>
+                    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4"
+                            type="video/webm"/>
                     <p class="vjs-no-js">
                         To view this video please enable JavaScript, and consider upgrading to a
                         web browser that
@@ -59,7 +66,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </p>
                 </video>
 
-                <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
             </div>
 
             <!-- /.content -->
@@ -90,5 +96,40 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'js/adminlte.min.js' %}"></script>
+<script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
+<script>
+    var vid = document.getElementById("my-video");
+
+    vid.onloadedmetadata = function () {
+
+
+        console.log('metadata loaded!');
+        console.log(vid.duration);
+
+
+        vid.ontimeupdate = function () {
+            console.log("Duration: " + vid.duration + ". Shundann " + vid.currentTime + " sekund o'qildi");
+            if (vid.duration == vid.currentTime) {
+                $(document).ready(function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'add_duration' %}",
+                        data: {
+                            'video': $('#test').val() // from form
+                        },
+                        success: function (message) {
+                            alert(message);
+                        }
+                    });
+
+
+                });
+            }
+
+        };
+    };
+
+
+</script>
 </body>
 </html>

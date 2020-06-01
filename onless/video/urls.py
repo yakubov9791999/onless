@@ -7,4 +7,5 @@ urlpatterns = [
     path('', home),
     path('video/add_duration/', add_duration, name='add_duration'),
     path('video/lessons/', video_lessons, name='video_lessons'),
+    path('video/lesson/detail/<int:pk>/', vide_detail_view, name='vide_detail_view'),
 ]

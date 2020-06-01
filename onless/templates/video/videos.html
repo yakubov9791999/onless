@@ -10,13 +10,13 @@
             {% if video.video_view_complete.exists %}
                 <div class="video_content_complete" style="text-align: center">
                 <img src="{{ video.photo.url }}" alt="" width="50%" height="130px">
-                <h4 class="video_content_title"><a href="#">{{ video.title }}</a></h4>
+                <h4 class="video_content_title"><a href="{% url 'vide_detail_view' video.id %}">{{ video.title }}</a></h4>
                 <p><i class="fa fa-eye"></i> {{ video.video_view_complete.count }} | <i
                         class="fa fa-list"></i> {{ video.category.title }}  </p>
             {% else %}
                 <div class="video_content_uncomplete" style="text-align: center">
                 <img src="{{ video.photo.url }}" alt="" width="50%" height="130px">
-                <h4 class="video_content_title"><a href="#">{{ video.title }}</a></h4>
+                <h4 class="video_content_title"><a href="{% url 'vide_detail_view' video.id %}">{{ video.title }}</a></h4>
                 <p><i class="fa fa-eye"></i> {{ video.video_view_complete.count }} | <i
                         class="fa fa-list"></i> {{ video.category.title }}  </p>
             {% endif %}

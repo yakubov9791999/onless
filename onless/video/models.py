@@ -17,7 +17,7 @@ class Category(models.Model):
 
 class Video(models.Model):
     title = models.CharField(max_length=250)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name='videos')
     description = models.TextField(max_length=600)
     is_free = models.BooleanField(
         default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi

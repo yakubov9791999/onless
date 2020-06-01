@@ -9,3 +9,5 @@ onless/user/__pycache__/
 onless/video/__pycache__/
 onless/media/
 onless/db.sqlite3
+onless/__pycache__/
+onless/video/templatetags/__pycache__/

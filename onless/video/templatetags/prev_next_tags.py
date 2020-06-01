@@ -25,3 +25,4 @@ def previous(some_list, current_index):
         return some_list[int(current_index) - 1]  # access the previous element
     except:
         return ''  # return empty string in case of exception
+

@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render
+
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 
 from video.models import *
 
 @login_required
 def home(request):
-    pass
+    return redirect(video_lessons)
 
 @login_required
 def add_duration(request):

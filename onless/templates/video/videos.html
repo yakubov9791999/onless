@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load prev_next_tags %}
+{% block content %}
+    <div class="col-12">
+        <h1>Video darslar</h1>
+    </div>
+    <div class="row">
+        {% for video in videos %}
+            <div class="col-3">
+            {% if video.video_view_complete.exists %}
+                <div class="video_content_complete" style="text-align: center">
+                <img src="{{ video.photo.url }}" alt="" width="50%" height="130px">
+                <h4 class="video_content_title"><a href="#">{{ video.title }}</a></h4>
+                <p><i class="fa fa-eye"></i> {{ video.video_view_complete.count }} | <i
+                        class="fa fa-list"></i> {{ video.category.title }}  </p>
+
+
+            {% else %}
+                <div class="video_content_uncomplete" style="text-align: center">
+                <img src="{{ video.photo.url }}" alt="" width="50%" height="130px">
+                <h4 class="video_content_title"><a href="#">{{ video.title }}</a></h4>
+                <p><i class="fa fa-eye"></i> {{ video.video_view_complete.count }} | <i
+                        class="fa fa-list"></i> {{ video.category.title }}  </p>
+
+            {% endif %}
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+{% endblock content %}

@@ -5,16 +5,17 @@ from video.models import *
 
 
 def home(request):
-    videos = Video.objects.all()
-    return render(request, 'base.html', {'videos': videos})
+    pass
 
 def add_duration(request):
     if request.is_ajax():
         ViewComplete.objects.create(video=2, user=3)
 
-        message = "Yes, AJAX!"
-    else:
+    return True
 
-        message = "Not Ajax0"
 
-    return HttpResponse(message)
+def video_lessons(request):
+    videos = Video.objects.all()
+    return render(request, 'video/videos.html', {
+        'videos': videos,
+    })

@@ -1,0 +1,19 @@
+.video_content_title {
+    font-size: 20px;
+}
+.video_content_uncomplete{
+    border: 3px solid #900000;
+    border-radius: 15px;
+    background: #fff3f2;
+
+}
+
+.video_content_complete{
+    border: 3px solid #00903a;
+    border-radius: 15px;
+    background: #f4fff2;
+
+}
+.fa{
+    font-size: 14px;
+}

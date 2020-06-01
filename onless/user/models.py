@@ -53,10 +53,12 @@ class Region(models.Model):
     title = models.CharField(max_length=255)
     sort = models.IntegerField(blank=True, default=1)
 
+
 class District(models.Model):
     title = models.CharField(max_length=255)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     sort = models.IntegerField(blank=True, default=1)
+
 
 class DrivingSchool(models.Model):
     title = models.CharField(max_length=255)
@@ -70,7 +72,6 @@ ROLE_CHOICES = (
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
 )
-
 
 
 class User(AbstractBaseUser, PermissionsMixin):

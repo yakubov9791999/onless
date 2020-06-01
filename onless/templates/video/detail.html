@@ -1,0 +1,65 @@
+<video
+        id="my-video"
+        class="video-js "
+        controls
+        preload="auto"
+        width="640"
+        height="264"
+        poster="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Shaqi_jrvej.jpg/1200px-Shaqi_jrvej.jpg"
+        data-setup="{}"
+>
+    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4"
+            type="video/mp4"/>
+    <source src="/media/quiz/video/2020-05-31/88077464_619654215545643_7164985033194913789_n.mp4"
+            type="video/webm"/>
+    <p class="vjs-no-js">
+        Kechirasiz, sizning brauzeringiz eski versiyada bo'lganligi sababli, ushbu videoni qo'llay olmaydi. Iltimos
+        brauzeringizni yangilang!
+        <a href="https://www.google.com/intl/ru/chrome/" target="_blank">Yangi versiya Google Chrome</a>
+    </p>
+</video>
+
+
+{% block top %}
+    <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>
+
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+{% endblock top %}
+
+{% block bottom %}
+    <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
+    <script>
+        var vid = document.getElementById("my-video");
+
+        vid.onloadedmetadata = function () {
+
+
+            console.log('metadata loaded!');
+            console.log(vid.duration);
+
+
+            vid.ontimeupdate = function () {
+                if (vid.duration == vid.currentTime) {
+                    $(document).ready(function () {
+                        $.ajax({
+                            type: "GET",
+                            url: "{% url 'add_duration' %}",
+                            data: {
+                                'video': $('#test').val() // from form
+                            },
+                            success: function (message) {
+                                alert(message);
+                            }
+                        });
+
+
+                    });
+                }
+
+            };
+        };
+
+
+    </script>
+{% endblock bottom %}

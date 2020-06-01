@@ -1,13 +1,14 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from video.models import *
 
-
+@login_required
 def home(request):
     pass
 
-
+@login_required
 def add_duration(request):
     if request.is_ajax():
         video_id = request.GET.get('video', None)
@@ -19,14 +20,14 @@ def add_duration(request):
     else:
         return False
 
-
+@login_required
 def video_lessons(request):
     videos = Video.objects.all()
     return render(request, 'video/videos.html', {
         'videos': videos,
     })
 
-
+@login_required
 def vide_detail_view(request, pk):
     video = Video.objects.get(pk=pk)
     print(video)

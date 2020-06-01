@@ -43,3 +43,11 @@ class ViewComplete(models.Model):
     class Meta:
         verbose_name = "Ko'rilgan video"
         verbose_name_plural = "Ko'rilgan videolar"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    video = models.ForeignKey(Video, on_delete=models.PROTECT)
+    text = models.TextField(max_length=800)
+
+

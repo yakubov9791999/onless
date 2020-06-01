@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% for category in signs_categories %}
+        <div class="row">
+            <div class="col-12">{{ category.title }}</div>
+
+            <div class="container">
+                <div class="row">
+                    {% for sign in category.sign_cateogories.all %}
+                        <div class="col-3">
+                            <img src="{{ sign.photo.url }}" alt="" width="100px">
+                        {{ sign.title }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock content %}

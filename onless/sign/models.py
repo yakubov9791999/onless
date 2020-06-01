@@ -2,7 +2,7 @@ from django.db import models
 
 
 # Create your models here.
-class Category(models.Model):
+class SignCategory(models.Model):
     title = models.CharField(max_length=255)
     start = models.CharField(max_length=5, blank=True)
     stop = models.CharField(max_length=5, blank=True)

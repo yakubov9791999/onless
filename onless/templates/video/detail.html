@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-center">{{ video.title }}</h1>
+    <video style="margin: 0 auto"
+            id="my-video"
+            class="video-js "
+            controls
+            preload="auto"
+            width="1080"
+            height="640"
+            poster="{{ video.photo.url }}"
+            data-setup="{}"
+    >
+        <source src="{{ video.video.url }}"
+                type="video/mp4"/>
+        <source src="{{ video.video }}"/>
+        <p class="vjs-no-js">
+            Kechirasiz, sizning brauzeringiz eski versiyada bo'lganligi sababli, ushbu videoni qo'llay olmaydi. Iltimos
+            brauzeringizni yangilang!
+            <a href="https://www.google.com/intl/ru/chrome/" target="_blank">Yangi versiya Google Chrome</a>
+        </p>
+    </video>
+    <p id="append"></p>
+
+{% endblock content %}
+{% block top %}
+    <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>
+
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+{% endblock top %}
+
+{% block bottom %}
+    <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
+    <script>
+        var vid = document.getElementById("my-video");
+        vid.onloadedmetadata = function () {
+
+            vid.ontimeupdate = function () {
+                if (vid.duration == vid.currentTime) {
+                    $(document).ready(function () {
+                        $.ajax({
+                            type: "GET",
+                            url: "{% url 'add_duration' %}",
+                            data: {
+                                'video': {{ video.id }} // from form
+                            },
+                            success: function (message) {
+                                var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');
+
+                                $('#append').append(e);
+                                e.attr('id', 'myid');
+                            }
+                        });
+
+
+                    });
+                }
+
+            };
+        };
+
+    </script>
+{% endblock bottom %}

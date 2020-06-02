@@ -28,6 +28,17 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+        {% if user.is_authenticated %}
+            <a class="" href="/accounts/logout">
+            Chiqish
+             <a class="" href="/admin/">
+            Admin
+        {% else %}
+            <a class="" href="/accounts/login">
+            Kirish
+             <a class="" href="/admin/">
+            Admin
+        {% endif %}
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">

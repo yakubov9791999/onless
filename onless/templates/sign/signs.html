@@ -2,17 +2,15 @@
 
 {% block content %}
 
-    {% for category in signs_categories %}
+    {% for sign in signs %}
         <div class="row">
-            <div class="col-12"><h2 class="text-center">{{ category.title }}</h2></div>
+            <div class="col-12"><h2 class="text-center">{{ sign.title }}</h2></div>
             <div class="col-12">
                 <div class="row" style="">
-                    {% for sign in category.sign_cateogories.all %}
-                        <div class="col-2 text-center" >
-                            <img src="{{ sign.photo.url }}" alt="" width="100px">
-                            <p>  {{ sign.title }}</p>
-                        </div>
-                    {% endfor %}
+                    <div class="col-2 text-center">
+                        <img src="{{ sign.photo.url }}" alt="" width="100px">
+                        <p></p>
+                    </div>
                 </div>
             </div>
         </div>

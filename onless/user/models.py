@@ -78,14 +78,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
     driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True)
     address = models.CharField(max_length=255, blank=True)
-    email = models.EmailField(max_length=254, unique=True)
+    email = models.EmailField(max_length=254, unique=True, blank=True)
     birthday = models.DateTimeField(max_length=120, blank=True, null=True)
     username = models.CharField(max_length=30, unique=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)
-    last_login = models.DateTimeField(null=True, blank=True)
+    last_login = models.DateTimeField(null=True, auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'username'

@@ -7,7 +7,7 @@ from sign.models import *
 
 @login_required
 def sign(request):
-    signs_categories = SignCategory.objects.all()
+    signs = Sign.objects.all()
     return render(request, 'sign/signs.html', {
-        'signs_categories': signs_categories,
+        'signs': signs,
     })

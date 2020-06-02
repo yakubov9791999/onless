@@ -25,6 +25,6 @@ class Question(models.Model):
 class ResultQuiz(models.Model):
     questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='result_questions', null=True)
     answers = models.ForeignKey(Answer,on_delete=models.CASCADE, related_name='result_questions', null=True)
-
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     def __str__(self):
         return f"{self.questions} ning javobi {self.answers}"

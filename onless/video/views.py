@@ -1,14 +1,14 @@
 from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-
 from quiz.models import *
 from video.models import *
+
 
 @login_required
 def home(request):
     return redirect(video_lessons)
+
 
 @login_required
 def add_duration(request):
@@ -22,6 +22,7 @@ def add_duration(request):
     else:
         return False
 
+
 @login_required
 def video_lessons(request):
     videos = Video.objects.all()
@@ -30,12 +31,15 @@ def video_lessons(request):
         'videos': videos,
     })
 
+
 @login_required
 def vide_detail_view(request, pk):
     video = Video.objects.get(pk=pk)
     questions = Question.objects.filter(video=video)
+    true_answer = ResultQuiz.objects.get(que=questions, user=request.user)
     return render(request, 'video/detail.html', {
         'video': video,
         'questions': questions,
+        'true_answer': true_answer,
 
     })

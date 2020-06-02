@@ -34,10 +34,11 @@
                         {% for answer in question.answers.all %}
 
                             <li>
-                                <label>
-                                    <input type="radio" name="answerGroup" value="0"
+                                <label>{{ true_answer }}
+                                    <input type="radio"    {% if answer in answer.result_questions %} checked {% endif %} name="answerGroup" value="0"
                                            id="answerGroup_0"> {{ answer.text }}</label>
                             </li>
+
                         {% endfor %}
                     </ul>
                     <div class="questionsRow">

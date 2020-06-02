@@ -16,7 +16,7 @@ class Answer(models.Model):
 
 class Question(models.Model):
     title = models.CharField(max_length=600)
-    videos = models.ForeignKey(Video, on_delete=models.PROTECT, null=True)
+    video = models.ForeignKey(Video, on_delete=models.PROTECT, null=True)
     img = models.ImageField(upload_to='quiz/img/%Y-%m-%d/')
 
     def __str__(self):

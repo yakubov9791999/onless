@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
     <h1 class="text-center">{{ video.title }}</h1>
     <video style="margin: 0 auto"
-            id="my-video"
-            class="video-js "
-            controls
-            preload="auto"
-            width="1080"
-            height="640"
-            poster="{{ video.photo.url }}"
-            data-setup="{}"
+           id="my-video"
+           class="video-js "
+           controls
+           preload="auto"
+           width="1080"
+           height="640"
+           poster="{{ video.photo.url }}"
+           data-setup="{}"
     >
         <source src="{{ video.video.url }}"
                 type="video/mp4"/>
@@ -21,11 +22,38 @@
         </p>
     </video>
     <p id="append"></p>
+    <div class="col-12">
+        {% for question in questions %}
+            <div class="privew">
+                <div class="questionsBox">
+                    <div class="questions">{{ question.title }}
+                    </div>
+                    <center><img src="{{ question.img.url }}" alt="" width="auto" height="300px;"
+                                 style="margin: 0 auto"></center>
+                    <ul class="answerList">
+                        {% for answer in question.answers.all %}
+
+                            <li>
+                                <label>
+                                    <input type="radio" name="answerGroup" value="0"
+                                           id="answerGroup_0"> {{ answer.text }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="questionsRow">
+                        <button href="#" class="button" id="nextquestions">Next</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    <p class="pb-5"></p>
 
 {% endblock content %}
 {% block top %}
     <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>
-
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
     <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
 {% endblock top %}

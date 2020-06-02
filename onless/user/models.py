@@ -66,6 +66,22 @@ class DrivingSchool(models.Model):
     phone = models.CharField(max_length=20, blank=True)
 
 
+CATEGORY_CHOICES = (
+    ("A", "A"),
+    ("B", "B"),
+    ("BC", "BC"),
+    ("C", "C"),
+    ("D", "D"),
+    ("E", "E"),
+)
+
+class Group(models.Model):
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=15, default="B")
+    number = models.IntegerField()
+    year = models.IntegerField()
+    teacher = models.ForeignKey('User', on_delete=models.PROTECT)
+
+
 ROLE_CHOICES = (
     ("1", "Admin"),
     ("2", "Direktor"),
@@ -75,6 +91,7 @@ ROLE_CHOICES = (
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
     driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True)
     address = models.CharField(max_length=255, blank=True)

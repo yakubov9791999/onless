@@ -1,5 +1,6 @@
 {% load static %}
 {% load sidebar_tags %}
+{% load sign_category %}
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -20,7 +21,6 @@
                 <a href="#" class="d-block">Salohiddin Yoqubov</a>
             </div>
         </div>
-
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -33,7 +33,7 @@
                         </p>
                     </a>
                 </li>
-                 <li>
+                <li>
                     <a href="" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
@@ -42,16 +42,28 @@
                         </p>
                     </a>
                 </li>
-                 <li>
-                    <a href="" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'sign' %}" class="nav-link">
+                        <i class="nav-icon fas fa-copy"></i>
                         <p>
-                            &nbsp;Yo'l belgilari
-
+                            Yo'l belgilari
+                            <i class="fas fa-angle-left right"></i>
+                            <span class="badge badge-info right">6</span>
                         </p>
                     </a>
+                    {% get_sign_category as categories %}
+                    {% for category in categories %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{ category.title }}</p>
+                                </a>
+                            </li>
+                        </ul>
+                    {% endfor %}
                 </li>
-                 <li>
+                <li>
                     <a href="" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>

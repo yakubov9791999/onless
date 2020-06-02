@@ -13,9 +13,8 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        # user = User.objects.get(username=username, password=password)
         user = authenticate(username=username, password=password)
-        if user:
+        if user is not None:
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect('/')

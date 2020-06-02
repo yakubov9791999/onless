@@ -73,6 +73,16 @@
                         </p>
                     </a>
                 </li>
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            &nbsp;Kiritishlar
+                        </p>
+                    </a>
+                </li>
+            {% endif %}
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

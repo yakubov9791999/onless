@@ -2,12 +2,6 @@
 {% load i18n %}
 {% load account socialaccount %}
 
-
-{{ form.as_p }}
-
-
-
-
 {% block content %}
 
     <div class="login-box" style="margin-left: 550px">
@@ -70,7 +64,7 @@
 
 
                 <p class="mb-1">
-                    <a class="button secondaryAction"
+                    <a
                        href="{% url 'account_reset_password' %}">{% trans "Parolni unutdingizmi ?" %}</a>
                 </p>
             </div>

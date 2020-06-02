@@ -30,3 +30,6 @@ class DistrictAdmin(admin.ModelAdmin):
     list_display = ['id', 'title']
     list_display_links = ['title']
     save_on_top = True
+
+
+admin.site.register(Group)

@@ -18,13 +18,22 @@
         <div class="card" style="margin-top: 100px">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Tizimga kirish</p>
+                {% for message in messages %}
+
+                    <div class="alert alert-danger">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+
+                        {{ message }}
+
+                    </div>
+                {% endfor %}
                 <form class="login" method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
 
-{#                            <div class="alert alert-error">#}
-{#                                <strong>{{ error|escape }}</strong>#}
-{#                            </div>#}
-{#                       #}
+                    {#                            <div class="alert alert-error">#}
+                    {#                                <strong>{{ error|escape }}</strong>#}
+                    {#                            </div>#}
+                    {#                       #}
 
                     <div class="input-group mb-3">
                         <input type="text" name="username" class="form-control" placeholder="Loginni kiriting ...">

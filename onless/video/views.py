@@ -36,10 +36,8 @@ def video_lessons(request):
 def vide_detail_view(request, pk):
     video = Video.objects.get(pk=pk)
     questions = Question.objects.filter(video=video)
-    true_answer = ResultQuiz.objects.get(que=questions, user=request.user)
     return render(request, 'video/detail.html', {
         'video': video,
         'questions': questions,
-        'true_answer': true_answer,
 
     })

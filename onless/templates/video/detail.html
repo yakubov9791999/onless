@@ -28,21 +28,24 @@
                 <div class="questionsBox">
                     <div class="questions">{{ question.title }}
                     </div>
-                    <center><img src="{{ question.img.url }}" alt="" width="auto" height="300px;"
+                    <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="auto" height="300px;"
                                  style="margin: 0 auto"></center>
                     <ul class="answerList">
                         {% for answer in question.answers.all %}
 
-                            <li>
-                                <label>{{ true_answer }}
-                                    <input type="radio"    {% if answer in answer.result_questions %} checked {% endif %} name="answerGroup" value="0"
-                                           id="answerGroup_0"> {{ answer.text }}</label>
-                            </li>
+                                <li>
+                                    <label>
+                                        <input type="radio" value="{{ answer.id }}"
+                                                {% if  answer.result_questions.exists %} checked disabled="disabled" {% endif %}
+                                               name="answerGroup" value="0"
+                                               id="id_answer{{ forloop.counter }}">&nbsp;&nbsp; {{ answer.text }}</label>
+                                </li>
+
 
                         {% endfor %}
                     </ul>
                     <div class="questionsRow">
-                        <button href="#" class="button" id="nextquestions">Next</button>
+                        <button class="btn btn-primary" id="nextquestions">Javobni kiritish</button>
                     </div>
                 </div>
             </div>

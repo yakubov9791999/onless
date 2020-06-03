@@ -32,9 +32,6 @@ def add_teacher(request):
             a = request.POST['birthday']
             b = a.replace('-', '')
             form.password = b
-            form.driving_school_id = request.user.driving_school.id
-            form.role = '3'
-            form.phone = request.POST['phone']
             if not User.objects.filter(username=form.cleaned_data['phone']).exists():
                 User.objects.create_user(
                     username=form.cleaned_data['phone'],
@@ -50,7 +47,6 @@ def add_teacher(request):
             else:
                 messages.error(request, "Bunday loginli foydalanuvchi mavjud")
         else:
-            print('ne valid')
             messages.error(request, "Formani to'ldiring")
     else:
         messages.error(request, 'Hatolik')

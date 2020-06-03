@@ -28,7 +28,7 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        {% if user.is_authenticated %}
+        {% if request.user.is_authenticated %}
             <a class="" href="/accounts/logout">
             Chiqish
              <a class="" href="/admin/">

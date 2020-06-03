@@ -28,7 +28,6 @@ def add_teacher(request):
     if request.method == 'POST':
         form = AddTeacher(data=request.POST)
         if form.is_valid():
-            print(request.POST)
             a = request.POST['birthday']
             b = a.replace('-', '')
             form.password = b
@@ -42,7 +41,8 @@ def add_teacher(request):
                     driving_school=request.user.driving_school,
                     role='3',
                     gender=request.POST['gender'],
-                    is_superuser=False
+                    is_superuser=False,
+
                 )
             else:
                 messages.error(request, "Bunday loginli foydalanuvchi mavjud")

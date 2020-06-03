@@ -9,14 +9,14 @@
                 <div class="card-header">
                     <h3 class="card-title">Quick Example</h3>
                 </div>
-            {% if messages %}
-                  {% for message in messages %}
-                    <div class="alert alert-danger">
-                        <a class="close" href="#" data-dismiss="alert">×</a>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" method="POST" action="{% url 'add_teacher_url' %}">
@@ -39,9 +39,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">Tel:</label>
-                            <input type="text" placeholder="+998" readonly style="width: 40px; border: none">
-                            <input type="text" name="phone" id="exampleInputAddress">
+                            <label for="phone">Telefon raqami:</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">+998</div>
+                                </div>
+                                <input type="text" class="form-control" id="phone"
+                                       placeholder="Telefon raqamini kiriting. Masalan: 972800809">
+                            </div>
                         </div>
 
                         <div class="form-group">

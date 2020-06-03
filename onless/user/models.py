@@ -65,6 +65,8 @@ class DrivingSchool(models.Model):
     director_fio = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
 
+    def __str__(self):
+        return self.title
 
 CATEGORY_CHOICES = (
     ("A", "A"),
@@ -89,11 +91,15 @@ ROLE_CHOICES = (
     ("4", "O'quvchi"),
 )
 
+GENDER_CHOICES = (
+    ('M', 'Man'),
+    ('W', 'Woman'),
+)
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
-    driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True)
+    driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True, related_name='users')
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=True, blank=True)
     birthday = models.DateTimeField(max_length=120, blank=True, null=True)
@@ -104,6 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, blank=True)
     last_login = models.DateTimeField(null=True, auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=5)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

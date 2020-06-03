@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row mt-5 ml-5">
+        <!-- left column -->
+        <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Quick Example</h3>
+                </div>
+            {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-danger">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="POST" action="{% url 'add_teacher_url' %}">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="exampleInputname">F.I.O:</label>
+                            <input type="text" name="name" class="form-control" id="exampleInputname"
+                                   placeholder="F.I.O ni kiriting ...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Tug'ilgan yil:</label>
+                            <input type="date" name="birthday" class="form-control" id="exampleInputPassword1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputAddress">Manzil:</label>
+                            <input type="text" name="address" class="form-control" id="exampleInputAddress">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputAddress">Tel:</label>
+                            <input type="text" placeholder="+998" readonly style="width: 40px; border: none">
+                            <input type="text" name="phone" id="exampleInputAddress">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputGender">Jinsi:</label>
+                            <select class="form-control" name='gender' id="exampleInputGender">
+                                <option class="form-control" value="M">Erkak</option>
+                                <option class="form-control" value="W">Ayol</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

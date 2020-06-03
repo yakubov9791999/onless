@@ -21,7 +21,6 @@ def user_login(request):
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
 
-
     return redirect(video_lessons)
 
 
@@ -31,19 +30,32 @@ def add_teacher(request):
         if form.is_valid():
             print(request.POST)
             a = request.POST['birthday']
-            b = a.replace('-','')
+            b = a.replace('-', '')
             form.password = b
             form.driving_school_id = request.user.driving_school.id
             form.role = '3'
             form.phone = request.POST['phone']
-            form.gender = 'M'
-            form.save()
+            if not User.objects.filter(username=form.cleaned_data['phone']).exists():
+                User.objects.create_user(
+                    username=form.cleaned_data['phone'],
+                    name=form.cleaned_data['name'],
+                    password=form.password,
+                    phone=form.cleaned_data['phone'],
+                    address=form.cleaned_data['address'],
+                    driving_school=request.user.driving_school,
+                    role='3',
+                    gender=request.POST['gender'],
+                    is_superuser=False
+                )
+            else:
+                messages.error(request, "Bunday loginli foydalanuvchi mavjud")
         else:
             print('ne valid')
             messages.error(request, "Formani to'ldiring")
     else:
         messages.error(request, 'Hatolik')
     return render(request, 'user/add_teacher.html', )
+
 
 def add_pupil(request):
     return render(request, 'user/add_pupil.html', )

@@ -40,8 +40,8 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, username, region, password, **extra_fields):
-        return self._create_user(email, username, password, False, False, **extra_fields)
+    def create_user(self,  username, password, **extra_fields):
+        return self._create_user(username, password, False, False, **extra_fields)
 
     def create_superuser(self, email, username, password, **extra_fields):
         user = self._create_user(email, username, password, True, True, **extra_fields)
@@ -101,9 +101,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
     driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True, related_name='users')
     address = models.CharField(max_length=255, blank=True)
-    email = models.EmailField(max_length=254, unique=True, blank=True)
+    email = models.EmailField(max_length=254, unique=False, blank=True)
     birthday = models.DateTimeField(max_length=120, blank=True, null=True)
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=30, unique=False)
     phone = models.CharField(max_length=20, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)

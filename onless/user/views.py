@@ -29,7 +29,10 @@ def add_teacher(request):
     if request.method == 'POST':
         form = AddTeacher(data=request.POST)
         if form.is_valid():
-            form.username = 'asasasdasd'
+            print(request.POST)
+            a = request.POST['birthday']
+            b = a.replace('-','')
+            form.password = b
             form.driving_school_id = request.user.driving_school.id
             form.role = '3'
             form.phone = request.POST['phone']

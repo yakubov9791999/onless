@@ -7,7 +7,7 @@ from .models import *
 class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'role', 'username', 'email', 'is_active', 'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
-    list_display_links = ['username', 'email']
+    list_display_links = ['username','role', 'email']
     save_on_top = True
 
 

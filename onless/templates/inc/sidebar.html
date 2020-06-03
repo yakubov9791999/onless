@@ -73,16 +73,32 @@
                         </p>
                     </a>
                 </li>
-            {% if user.is_authenticated %}
-                <li>
-                    <a href="" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            &nbsp;Kiritishlar
-                        </p>
-                    </a>
-                </li>
-            {% endif %}
+                {% if request.user.is_authenticated and request.user.role == '2' %}
+                    <li class="nav-item has-treeview">
+                        <a href="" class="nav-link">
+                            <i class="nav-icon fas fa-copy"></i>
+                            <p>
+                                Kiritishlar
+                                <i class="fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">2</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'add_teacher_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>O'qituvchilarni qo'shish</p>
+                                </a>
+                            </li>
+                             <li class="nav-item">
+                                <a href="{% url 'add_pupil_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>O'quvchilarni qo'shish</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

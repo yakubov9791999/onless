@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
     {% for sign in signs %}
         <div class="row">
             <div class="col-12"><h2 class="text-center">{{ sign.title }}</h2></div>
@@ -15,5 +13,4 @@
             </div>
         </div>
     {% endfor %}
-
 {% endblock content %}

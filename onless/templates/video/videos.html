@@ -7,7 +7,11 @@
             {% for video in videos %}
                 <div class="col-lg-3 col-md-3 col-sm-4">
                     <div class="thumbnail img-thumb-bg" style="background: url('{% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: 100%">
-                        <div class="overlay"></div>
+                        {% if video.video_view_complete.exists %}
+                        <div class="overlay-exists"></div>
+                        {% else %}
+                        <div class="overlay-noexists"></div>
+                        {% endif %}
                         <div class="caption">
                             <div class="tag"><a href="#">{{ video.category.title }} </a></div>
                             <div class="title"><a href="{% url 'vide_detail_view' video.id %}">{{ video.title }}</a></div>

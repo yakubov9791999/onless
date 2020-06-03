@@ -1,8 +1,10 @@
+import datetime
 import os
 from uuid import uuid4
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
+from django.http import Http404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -21,9 +23,9 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, email, username, password, is_staff, is_superuser, **extra_fields):
         if not email:
-            raise ValueError('Emailni kiritish majburiy')
+            raise Http404
         if not username:
-            raise ValueError('Usernameni kiritish majburiy')
+            raise Http404
         now = timezone.now()
         email = self.normalize_email(email)
         user = self.model(
@@ -102,9 +104,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True, related_name='users')
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True)
-    birthday = models.DateTimeField(max_length=120, blank=True, null=True)
-    username = models.CharField(max_length=30, unique=False)
-    phone = models.CharField(max_length=20, null=True, blank=True)
+    birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
+    username = models.CharField(max_length=30, unique=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True, unique=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)
@@ -122,4 +124,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "/users/%i/" % (self.pk)
 
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.name}"

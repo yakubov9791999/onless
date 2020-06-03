@@ -6,7 +6,7 @@ from .forms import *
 from user.forms import AuthenticationForm
 from user.models import User
 from video.views import video_lessons
-
+from django.db import IntegrityError
 
 #
 def user_login(request):
@@ -24,28 +24,36 @@ def user_login(request):
     return redirect(video_lessons)
 
 
+
+
+
 def add_teacher(request):
     if request.method == 'POST':
-        form = AddTeacher(data=request.POST)
+        form = AddTeacherForm(data=request.POST)
+        print(form.errors)
         if form.is_valid():
-            a = request.POST['birthday']
-            b = a.replace('-', '')
-            form.password = b
-            if not User.objects.filter(username=form.cleaned_data['phone']).exists():
-                User.objects.create_user(
-                    username=form.cleaned_data['phone'],
-                    name=form.cleaned_data['name'],
-                    password=form.password,
-                    phone=form.cleaned_data['phone'],
-                    address=form.cleaned_data['address'],
-                    driving_school=request.user.driving_school,
-                    role='3',
-                    gender=request.POST['gender'],
-                    is_superuser=False,
+            if request.POST['phone']:
+                try:
+                    user= User.objects.create_user(
+                        username=request.POST['phone'],
+                        password=request.POST['phone'],
+                        name=form.cleaned_data['name'],
+                        phone=form.cleaned_data['phone'],
+                        address=form.cleaned_data['address'],
+                        driving_school=request.user.driving_school,
+                        role='3',
+                        gender=request.POST['gender'],
+                        birthday=form.cleaned_data['birthday'],
+                        is_superuser=False,
+                    )
+                    user.set_password(request.POST['phone'])
+                    user.save()
+                    messages.success(request, "O'qituvchi muvaffaqaiyatli qo'shildi")
 
-                )
+                except IntegrityError:
+                    messages.error(request, "Bunday loginli foydalanuvchi mavjud")
             else:
-                messages.error(request, "Bunday loginli foydalanuvchi mavjud")
+                messages.error(request, "Bu raqam allaqachon kiritilgan")
         else:
             messages.error(request, "Formani to'ldiring")
     else:

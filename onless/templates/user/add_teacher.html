@@ -11,7 +11,7 @@
                 </div>
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert alert-danger">
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
                             <a class="close" href="#" data-dismiss="alert">×</a>
                             {{ message }}
                         </div>
@@ -44,7 +44,7 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">+998</div>
                                 </div>
-                                <input type="text" class="form-control" id="phone"  name="phone"
+                                <input type="text" class="form-control" id="phone" maxlength="9" name="phone"
                                        placeholder="Telefon raqamini kiriting. Masalan: 972800809">
                             </div>
                         </div>

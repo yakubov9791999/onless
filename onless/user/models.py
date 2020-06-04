@@ -83,8 +83,10 @@ class Group(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=15, default="B")
     number = models.IntegerField()
     year = models.IntegerField()
-    teacher = models.ForeignKey('User', on_delete=models.PROTECT)
+    teacher = models.ForeignKey('User', on_delete=models.PROTECT, related_name='group_teacher')
 
+    def __str__(self):
+        return f"{self.category}-{self.number}"
 
 ROLE_CHOICES = (
     ("1", "Admin"),
@@ -107,6 +109,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True, unique=True)
+    group = models.OneToOneField(Group, on_delete=models.PROTECT, related_name='group', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)

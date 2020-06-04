@@ -10,12 +10,13 @@ class AuthenticationForm(ModelForm):
         exclude = ('role', 'driving_school', 'is_staff')
 
 
-class AddTeacherForm(ModelForm):
+class AddUserForm(ModelForm):
     birthday = forms.DateField(widget=forms.SelectDateWidget())
     class Meta:
         model = User
         fields = ('name', 'address', 'phone', 'birthday',)
         exclude = ('gender', 'username', 'password', 'driving_school')
+
 
 
 

@@ -183,6 +183,10 @@ a:active {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#115f00', endColorstr='#115f00', GradientType=0);
 }
 
+.img-thumb-bg .overlay-exists > a {
+    display: block;
+}
+
 .img-thumb-bg .overlay-noexists {
   top: 0;
   left: 0;
@@ -199,6 +203,11 @@ a:active {
   background: -webkit-gradient(left top, left bottom, color-stop(50%, rgba(0, 0, 0, 0)), color-stop(100%, #8d0000));
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8d0000', endColorstr='#8d0000', GradientType=0);
 }
+
+.img-thumb-bg .overlay-noexists > a {
+    display: block;
+}
+
 .img-thumb-bg .caption {
   bottom: -5px;
   height: 100px;

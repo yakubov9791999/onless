@@ -7,7 +7,7 @@ from video.models import *
 
 @login_required
 def home(request):
-    return redirect(video_lessons)
+    return redirect(mainsections_list)
 
 
 @login_required
@@ -24,11 +24,44 @@ def add_duration(request):
 
 
 @login_required
-def video_lessons(request):
-    videos = Video.objects.all()
+def mainsections_list(request):
+    mainsections = MainSection.objects.all()
 
-    return render(request, 'video/videos.html', {
-        'videos': videos,
+    return render(request, 'video/mainsections_list.html', {
+        'mainsections': mainsections,
+    })
+
+
+@login_required
+def mainsection_detail(request, id):
+    mainsection = MainSection.objects.get(id=id)
+
+    return render(request, 'video/mainsection_detail.html', {
+        'mainsection': mainsection,
+    })
+
+@login_required
+def categories_list(request):
+    categories = VideoCategory.objects.all()
+
+    return render(request, 'video/categories_list.html', {
+        'categories': categories,
+    })
+
+@login_required
+def category_detail(request, id):
+    category = VideoCategory.objects.get(id=id)
+
+    return render(request, 'video/category_detail.html', {
+        'category': category,
+    })
+
+@login_required
+def video_detail(request, id):
+    video = Video.objects.get(id=id)
+
+    return render(request, 'video/video_detail.html', {
+        'video': video,
     })
 
 

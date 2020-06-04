@@ -1,26 +1,67 @@
 from django.db import models
+from django.urls import reverse
+
 from quiz.models import User
 
+SECTION_CHOICES = (
+    ('1', "Yo'l harakati qoidalari"),
+    ('2', "Avtomobil tuzilishi"),
+    ('3', "Avtomobilni xavfsiz boshqarish"),
+    ('4', "Birinchi tibbiy yordam"),
+)
 
-class VideoCategory(models.Model):
-    title = models.CharField(max_length=255)
-    is_free = models.BooleanField(
-        default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
+class MainSection(models.Model):
+    title = models.CharField(choices=SECTION_CHOICES, max_length=30)
+    photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('video_mainsection_detail_url', kwargs={'id': self.id})
+
+    class Meta:
+        verbose_name = "Asosiy bo'lim"
+        verbose_name_plural = "Asosiy bo'limlar"
+
+class VideoSection(models.Model):
+    title = models.CharField(max_length=100)
+    mainsection = models.ForeignKey(MainSection, on_delete=models.PROTECT, related_name='video_section')
+    photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
+
+    def __str__(self):
+            return self.title
+
+    def get_absolute_url(self):
+        return reverse('video_section_detail_url', kwargs={'id': self.id})
 
     class Meta:
         verbose_name = "Bo'lim"
         verbose_name_plural = "Bo'limlar"
 
 
+#asosiy bo'lim ichiga biriktirilgan bo'lim
+class VideoCategory(models.Model):
+    title = models.CharField(max_length=100)
+    section = models.ForeignKey(VideoSection, on_delete=models.PROTECT, related_name='video_category')
+    photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('video_category_detail_url', kwargs={'id': self.id})
+
+    class Meta:
+        verbose_name = "Video Bo'lim"
+        verbose_name_plural = "Video Bo'limlar"
+
+
 class Video(models.Model):
     title = models.CharField(max_length=250)
-    category = models.ForeignKey(VideoCategory, on_delete=models.CASCADE, null=True, related_name='videos')
+    category = models.ForeignKey(VideoCategory, on_delete=models.PROTECT, null=True, related_name='videos')
     description = models.TextField(max_length=600)
-    is_free = models.BooleanField(
-        default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
+    is_free = models.BooleanField(default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
     likes = models.ManyToManyField(User, related_name='rating_likes', blank=True)
     dislikes = models.ManyToManyField(User, related_name='rating_dislikes', blank=True)
     video = models.FileField(upload_to='video/%Y-%m-%d/')
@@ -29,6 +70,9 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('video_detail_url', kwargs={'id': self.id})
 
     class Meta:
         verbose_name = "Video"

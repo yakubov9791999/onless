@@ -25,7 +25,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li>
-                    <a href="{% url 'video_lessons' %}" class="nav-link">
+                    <a href="{% url 'video_mainsections_list_url' %}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                         </p>
@@ -96,6 +96,13 @@
                                     <a href="{% url 'add_pupil_url' %}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>O'quvchilarni qo'shish</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{% url 'add_group_url' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Guruhlarni qo'shish</p>
                                     </a>
                                 </li>
                             </ul>

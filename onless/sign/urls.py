@@ -6,4 +6,5 @@ from .views import *
 urlpatterns = [
     path('', sign, name='sign'),
 
+
 ]

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row mt-5 ml-5">
+        <!-- left column -->
+        <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Quick Example</h3>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="POST" action="{% url 'add_pupil_url' %}">
+                    {% csrf_token %}
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Toifasi:</label>
+                             <select name="group" class="form-control" id="">
+                                 {% for choice in choices %}
+                                     <option value="{{ choice.id }}">{{ choice.key }}</option>
+                                 {% endfor %}
+                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Raqami:</label>
+                             <input type="number" name="number" placeholder="Masalan: 1" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputname">O'quv yili:</label>
+                             <input type="number" name="year" placeholder="Masalan: 2020"   class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputname">O'qituvchisi:</label>
+                             <select name="group" class="form-control" id="">
+                                 {% for teacher in teachers %}
+                                     <option value="{{ teacher.id }}">{{ teacher.name }}</option>
+                                 {% endfor %}
+                             </select>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

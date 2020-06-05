@@ -20,7 +20,7 @@ class AddUserForm(ModelForm):
 class AddGroupForm(ModelForm):
     class Meta:
         model = Group
-        fields = ('number', 'year', 'teacher')
+        fields = ('number', 'year', 'teacher', 'start', 'stop')
         exclude = ('category',)
 
 

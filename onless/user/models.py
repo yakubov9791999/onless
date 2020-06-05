@@ -56,18 +56,24 @@ class Region(models.Model):
     title = models.CharField(max_length=255)
     sort = models.IntegerField(blank=True, default=1)
 
+    def __str__(self):
+        return self.title
 
 class District(models.Model):
     title = models.CharField(max_length=255)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     sort = models.IntegerField(blank=True, default=1)
 
+    def __str__(self):
+        return self.title
 
 class DrivingSchool(models.Model):
     title = models.CharField(max_length=255)
     director_fio = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     logo = models.ImageField(upload_to='school/')
+    district = models.ForeignKey(District, on_delete=models.PROTECT, related_name='driving_school_distrinct', null=True)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='driving_school_region', null=True)
 
     def __str__(self):
         return self.title
@@ -86,8 +92,8 @@ class Group(models.Model):
     number = models.IntegerField()
     year = models.IntegerField()
     teacher = models.ForeignKey('User', on_delete=models.PROTECT, related_name='group_teacher')
-    start = models.DateField(auto_now_add=True)
-    stop = models.DateField(auto_now_add=True)
+    start = models.DateField(auto_now=False)
+    stop = models.DateField(auto_now=False)
 
     def __str__(self):
         return f"{self.category}-{self.number}"
@@ -100,6 +106,7 @@ ROLE_CHOICES = (
     ("2", "Direktor"),
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
+    ("5", "Inspeksiya"),
 )
 
 GENDER_CHOICES = (
@@ -113,6 +120,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True, related_name='users')
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True)
+    avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True, unique=True)

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row mt-5">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Quick Example</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                {#                <ul class="list-group list-group-horizontal">#}
+                {#                    <li class="list-group-item">First item</li>#}
+                {#                    <li class="list-group-item">Second item</li>#}
+                {#                    <li class="list-group-item">Third item</li>#}
+                {#                    <li class="list-group-item">Fourth item</li>#}
+                {#                </ul>#}
+                {#                <ul class="list-group">#}
+                {#                    {% for group in groups %}#}
+                {#                    <li class="list-group-item list-group-item-{% cycle 'light' 'secondary' %}">{{ group.category }}-{{ group.number }} {{ group.year }}</li>#}
+                {#                    {% endfor %}#}
+                {#                </ul>#}
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Gruh nomi</th>
+                            <th>Guruh rahbari</th>
+                            <th>O'qish boshlanishi</th>
+                            <th>O'qish yakunlanishi</th>
+                            <th>Test natijalari</th>
+                            <th>Tahrirlash</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for group in groups %}
+                            <tr>
+                                <td>1</td>
+                                <td><b>{{ group.category }}-{{ group.number }} {{ group.year }}</b></td>
+                                <td>{{ group.teacher }}</td>
+                                <td>{{ group.address }}</td>
+                                <td>{{ pupil.phone }}</td>
+                                <td>{{ pupil.username }}</td>
+                                <td>{{ pupil.password }}</td>
+                                <td></td>
+                                <td><a href=""><i class="fa fa-edit" style="font-size: 150%;"></i> </a>&nbsp;&nbsp;&nbsp;<a
+                                        href=""><i class="fa fa-trash"
+                                                   style="font-size: 150%;"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

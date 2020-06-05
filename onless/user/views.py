@@ -16,11 +16,11 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/video/')
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
+            return HttpResponseRedirect('/accounts/login/')
 
-    return redirect(video_lessons)
 
 
 
@@ -124,6 +124,14 @@ def add_group(request):
     else:
         form = AddGroupForm()
     return render(request, 'user/add_group.html', context)
+
+
+def groups_list(request):
+    groups = Group.objects.all()
+    context = {
+        'groups': groups,
+    }
+    return render(request, 'user/groups_list.html', context)
 
 
 def group_detail(request, id):

@@ -35,6 +35,7 @@ def add_teacher(request):
                     user= User.objects.create_user(
                         username=form.cleaned_data['phone'],
                         password=form.cleaned_data['phone'],
+                        turbo=form.cleaned_data['phone'],
                         name=form.cleaned_data['name'],
                         phone=form.cleaned_data['phone'],
                         address=form.cleaned_data['address'],

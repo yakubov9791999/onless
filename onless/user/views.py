@@ -22,7 +22,12 @@ def user_login(request):
             return HttpResponseRedirect('/accounts/login/')
 
 
+def add_list(request):
 
+    context = {
+
+    }
+    return render(request, 'user/add_list.html', context)
 
 
 
@@ -119,6 +124,8 @@ def add_group(request):
             form.number = number
             form.category = category
             form.teacher = teacher
+            form.start = request.POST['start']
+            form.stop = request.POST['stop']
             form.save()
             messages.success(request, "Guruh qo'shildi")
     else:

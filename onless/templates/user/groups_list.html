@@ -40,13 +40,11 @@
 
                         {% for group in groups %}
                             <tr>
-                                <td>1</td>
+                                <td>{{ forloop.counter }}</td>
                                 <td><b>{{ group.category }}-{{ group.number }} {{ group.year }}</b></td>
                                 <td>{{ group.teacher }}</td>
-                                <td>{{ group.address }}</td>
-                                <td>{{ pupil.phone }}</td>
-                                <td>{{ pupil.username }}</td>
-                                <td>{{ pupil.password }}</td>
+                                <td>{{ group.start }}</td>
+                                <td>{{ group.stop }}</td>
                                 <td></td>
                                 <td><a href=""><i class="fa fa-edit" style="font-size: 150%;"></i> </a>&nbsp;&nbsp;&nbsp;<a
                                         href=""><i class="fa fa-trash"

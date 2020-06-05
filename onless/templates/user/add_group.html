@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row mt-5 ml-5">
         <!-- left column -->
-        <div class="col-md-6">
+        <div class="col-md-6" style="margin-left: 365px; margin-bottom: 50px">
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -52,6 +52,14 @@
                                      <option value="{{ teacher.id }}">{{ teacher.name }}</option>
                                  {% endfor %}
                              </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputdatestart">Boshlanishi:</label>
+                             <input type="date" name="start"   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputdatestop">Tugashi:</label>
+                             <input type="date" name="stop"  class="form-control">
                         </div>
 
                     </div>

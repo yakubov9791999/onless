@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load navbar_tags %}
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -20,8 +21,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
 
-
-{% block top %}{% endblock top %}
+    {% block top %}{% endblock top %}
 
 </head>
 <body class="hold-transition sidebar-mini">
@@ -36,15 +36,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Wrapper. Contains page content -->
 
     <div class="content-wrapper">
-     <div class="content-header">
+        <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-1"><img src="/media/school/1.jpeg" height="50px" width="50px"></div>
-                             <div class="col-11 mt-2"><h1 class="text-dark">BUKHARA DRIVER AVTOMAKTAB</h1></div>
-                        </div>
-
+                        {% get_driving_schools as schools %}
+                        {% for school in schools %}
+                            <div class="row">
+                            {% if school.logo %}
+                                <div class="col-1"><img src="{{ school.logo.url }}" height="50px" width="50px"></div>
+                                {% else %}
+                                <div class="col-1"><img src="/media/online/car.jpg" height="50px" width="50px"></div>
+                                {% endif %}
+                                <div class="col-11 mt-2"><h1 class="text-dark">{% if school.title %}{{ school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1></div>
+                            </div>
+                        {% endfor %}
 
                     </div><!-- /.col -->
                     <div class="col-sm-6">

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row mt-5">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <a href="{% url 'add_pupil_url' %}"><button class="btn btn-outline-primary">O'quvchi qo'shish</button></a>
+            <a href="{% url 'add_teacher_url' %}"><button class="btn btn-outline-primary">O'qituvchi qo'shish</button></a>
+            <a href="{% url 'add_group_url' %}"><button class="btn btn-outline-primary">Guruh qo'shish</button></a>
+        </div>
+    </div>
+{% endblock content %}

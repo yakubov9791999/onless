@@ -1,7 +1,7 @@
 from allauth.account.forms import SetPasswordField, PasswordField
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from user.models import User
+from user.models import User, Group
 from django import forms
 class AuthenticationForm(ModelForm):
     class Meta:
@@ -17,8 +17,11 @@ class AddUserForm(ModelForm):
         fields = ('name', 'address', 'phone', 'birthday',)
         exclude = ('gender', 'username', 'password', 'driving_school')
 
-
-
+class AddGroupForm(ModelForm):
+    class Meta:
+        model = Group
+        fields = ('number', 'year', 'teacher')
+        exclude = ('category',)
 
 
 

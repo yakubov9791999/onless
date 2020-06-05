@@ -52,28 +52,30 @@
                             <span class="badge badge-info right">6</span>
                         </p>
                     </a>
-                    {% get_sign_category as categories %}
-                    {% for category in categories %}
+                </li>
+
+                {% if request.user.is_authenticated and request.user.role == '2' %}
+                    {% get_group as groups %}
+                    <li class="nav-item has-treeview">
+                        <a href="" class="nav-link">
+                            <i class="nav-icon fas fa-copy"></i>
+                            <p>
+                                Guruhlar
+                                <i class="fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ groups.count }}</span>
+                            </p>
+                        </a>
                         <ul class="nav nav-treeview">
+                        {% for group in groups %}
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{ group.get_absolute_url }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ category.title }}</p>
+                                    <p>{{ group.category }}-{{ group.number }}</p>
                                 </a>
                             </li>
+                        {% endfor %}
                         </ul>
-                    {% endfor %}
-                </li>
-                <li>
-                    <a href="" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            &nbsp;Yangiliklar
-
-                        </p>
-                    </a>
-                </li>
-                {% if request.user.is_authenticated and request.user.role == '2' %}
+                    </li>
                     <li class="nav-item has-treeview">
                         <a href="" class="nav-link">
                             <i class="nav-icon fas fa-copy"></i>
@@ -84,29 +86,63 @@
                             </p>
                         </a>
 
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'add_teacher_url' %}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>O'qituvchilarni qo'shish</p>
-                                    </a>
-                                </li>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'add_teacher_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>O'qituvchilarni qo'shish</p>
+                                </a>
+                            </li>
 
-                                <li class="nav-item">
-                                    <a href="{% url 'add_pupil_url' %}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>O'quvchilarni qo'shish</p>
-                                    </a>
-                                </li>
+                            <li class="nav-item">
+                                <a href="{% url 'add_pupil_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>O'quvchilarni qo'shish</p>
+                                </a>
+                            </li>
 
-                                <li class="nav-item">
-                                    <a href="{% url 'add_group_url' %}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Guruhlarni qo'shish</p>
-                                    </a>
-                                </li>
-                            </ul>
+                            <li class="nav-item">
+                                <a href="{% url 'add_group_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Guruhlarni qo'shish</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% elif request.user.is_authenticated and request.user.role == '3' %}
+                    <li>
+                        <a href="" class="nav-link">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                                &nbsp;Guruhlar
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="" class="nav-link">
+                            <i class="nav-icon fas fa-copy"></i>
+                            <p>
+                                Kiritishlar
+                                <i class="fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">2</span>
+                            </p>
+                        </a>
 
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'add_pupil_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>O'quvchilarni qo'shish</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{% url 'add_group_url' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Guruhlarni qo'shish</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% endif %}
             </ul>

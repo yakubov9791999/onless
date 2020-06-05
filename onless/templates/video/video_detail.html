@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+
+
     <h1 class="text-center">{{ video.title }}</h1>
     <video style="margin: 0 auto"
            id="my-video"
@@ -25,29 +28,45 @@
     <div class="col-12">
         {% for question in questions %}
             <div class="privew">
-                <div class="questionsBox">
-                    <div class="questions">{{ question.title }}
-                    </div>
-                    <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="auto" height="300px;"
-                                 style="margin: 0 auto"></center>
-                    <ul class="answerList">
-                        {% for answer in question.answers.all %}
+                <form action="{% url 'add_result_url' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="questionsBox">
+                        <div class="questions">{{ question.title }}
+                        </div>
 
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                        <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="auto"
+                                     height="300px;"
+                                     style="margin: 0 auto"></center>
+                        <ul class="answerList">
+                            {% for answer in question.answers.all %}
                                 <li>
                                     <label>
-                                        <input type="radio" value="{{ answer.id }}"
-                                                {% if  answer.result_questions.exists %} checked disabled="disabled" {% endif %}
+                                        <input type="radio" name="answer" value="{{ answer.id }}"
+                                                {% if  answer.result_questions.exists %} checked
+                                               disabled="disabled" {% endif %}
                                                name="answerGroup" value="0"
-                                               id="id_answer{{ forloop.counter }}">&nbsp;&nbsp; {{ answer.text }}</label>
+                                               id="id_answer{{ forloop.counter }}">&nbsp;&nbsp; {{ answer.text }}
+
+                                    </label>
                                 </li>
-
-
-                        {% endfor %}
-                    </ul>
-                    <div class="questionsRow">
-                        <button class="btn btn-primary" id="nextquestions">Javobni kiritish</button>
+                            {% endfor %}
+                         <input type="hidden" name="next" value="{{ request.path }}">
+                         <input type="hidden" name="question" value="{{ question.id }}">
+                        </ul>
+                        <div class="questionsRow">
+                            <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         {% endfor %}
 

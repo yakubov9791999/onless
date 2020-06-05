@@ -59,18 +59,11 @@ def category_detail(request, id):
 @login_required
 def video_detail(request, id):
     video = Video.objects.get(id=id)
-
+    questions = Question.objects.filter(video=video)
     return render(request, 'video/video_detail.html', {
         'video': video,
-    })
-
-
-@login_required
-def vide_detail_view(request, pk):
-    video = Video.objects.get(pk=pk)
-    questions = Question.objects.filter(video=video)
-    return render(request, 'video/detail.html', {
-        'video': video,
         'questions': questions,
-
     })
+
+
+

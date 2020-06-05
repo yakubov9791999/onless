@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('video.urls')),
     path('sign/', include('sign.urls')),
     path('user/', include('user.urls')),
+    path('quiz/', include('quiz.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 

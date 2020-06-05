@@ -16,7 +16,7 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/video/')
+                return HttpResponseRedirect('/')
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
             return HttpResponseRedirect('/accounts/login/')

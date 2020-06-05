@@ -30,14 +30,10 @@
     <ul class="navbar-nav ml-auto">
         {% if request.user.is_authenticated %}
             <a class="" href="/accounts/logout">
-            <i class="fa fa-sign-out" aria-hidden="true"></i>
-             <a class="" href="/admin/">
-            Admin
+                <i class="fas fa-sign-out-alt"></i>
         {% else %}
             <a class="" href="/accounts/login">
-            Kirish
-             <a class="" href="/admin/">
-            Admin
+            <i class="far fa-sign-in-alt"></i>
         {% endif %}
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">

@@ -18,13 +18,19 @@ class Question(models.Model):
     title = models.CharField(max_length=600)
     video = models.ForeignKey(Video, on_delete=models.PROTECT, null=True)
     img = models.ImageField(upload_to='quiz/img/%Y-%m-%d/')
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
 
 class ResultQuiz(models.Model):
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='result_questions', null=True)
-    answers = models.ForeignKey(Answer,on_delete=models.CASCADE, related_name='result_questions', null=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='result_questions', null=True)
+    answer = models.ForeignKey(Answer,on_delete=models.CASCADE, related_name='result_questions', null=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='result_user')
+
     def __str__(self):
-        return f"{self.questions} ning javobi {self.answers}"
+        return f"{self.question} ning javobi {self.answer}"
+
+    class Meta:
+        verbose_name = 'Test javobi'
+        verbose_name_plural = 'Test javoblari'

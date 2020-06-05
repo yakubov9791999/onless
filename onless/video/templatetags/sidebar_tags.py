@@ -1,6 +1,7 @@
 from django import template
 
-from video.models import Video, VideoCategory
+from user.models import *
+from video.models import *
 
 register = template.Library()
 
@@ -10,5 +11,5 @@ def get_videos():
 
 
 @register.simple_tag
-def get_category():
-    return VideoCategory.objects.all()
+def get_group():
+    return Group.objects.all()

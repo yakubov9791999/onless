@@ -5,6 +5,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
 from django.http import Http404
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -88,6 +89,9 @@ class Group(models.Model):
     def __str__(self):
         return f"{self.category}-{self.number}"
 
+    def get_absolute_url(self):
+        return reverse('group_detail_url', kwargs={'id': self.id })
+
 ROLE_CHOICES = (
     ("1", "Admin"),
     ("2", "Direktor"),
@@ -116,6 +120,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(null=True, auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=5)
+    turbo = models.CharField(max_length=200, blank=True, null=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

@@ -107,5 +107,28 @@ def add_group(request):
         'teachers': teachers,
     }
     if request.POST:
-        print(request.POST)
+        form = AddGroupForm(request.POST)
+        if form.is_valid():
+            year = form.cleaned_data['year']
+            number = form.cleaned_data['number']
+            category = request.POST['category']
+            teacher = form.cleaned_data['teacher']
+            form.year = year
+            form.number = number
+            form.category = category
+            form.teacher = teacher
+            form.save()
+            messages.success(request, "Guruh qo'shildi")
+    else:
+        form = AddGroupForm()
     return render(request, 'user/add_group.html', context)
+
+
+def group_detail(request, id):
+    group = Group.objects.get(id=id)
+    pupils = User.objects.filter(role=4, group=group)
+    context = {
+        'group': group,
+        'pupils': pupils,
+    }
+    return render(request, 'user/group_detail.html', context)

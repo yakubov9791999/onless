@@ -19,16 +19,19 @@
                 {% endif %}
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form role="form" method="POST" action="{% url 'add_pupil_url' %}">
+                <form role="form" method="POST" action="{% url 'add_group_url' %}">
                     {% csrf_token %}
                     <div class="card-body">
 
                         <div class="form-group">
                             <label for="exampleInputname">Toifasi:</label>
-                             <select name="group" class="form-control" id="">
-                                 {% for choice in choices %}
-                                     <option value="{{ choice.id }}">{{ choice.key }}</option>
-                                 {% endfor %}
+                             <select name="category" class="form-control">
+                                     <option value="A">A</option>
+                                     <option value="B">B</option>
+                                     <option value="C">C</option>
+                                     <option value="BC">BC</option>
+                                     <option value="D">D</option>
+                                     <option value="E">E</option>
                              </select>
                         </div>
 
@@ -44,7 +47,7 @@
 
                         <div class="form-group">
                             <label for="exampleInputname">O'qituvchisi:</label>
-                             <select name="group" class="form-control" id="">
+                             <select name="teacher" class="form-control">
                                  {% for teacher in teachers %}
                                      <option value="{{ teacher.id }}">{{ teacher.name }}</option>
                                  {% endfor %}

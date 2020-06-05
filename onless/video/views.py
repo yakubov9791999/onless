@@ -6,11 +6,6 @@ from video.models import *
 
 
 @login_required
-def home(request):
-    return redirect(mainsections_list)
-
-
-@login_required
 def add_duration(request):
     if request.is_ajax():
         video_id = request.GET.get('video', None)

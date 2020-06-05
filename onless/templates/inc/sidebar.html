@@ -65,16 +65,6 @@
                                 <span class="badge badge-info right">{{ groups.count }}</span>
                             </p>
                         </a>
-                        <ul class="nav nav-treeview">
-                        {% for group in groups %}
-                            <li class="nav-item">
-                                <a href="{{ group.get_absolute_url }}" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ group.category }}-{{ group.number }}</p>
-                                </a>
-                            </li>
-                        {% endfor %}
-                        </ul>
                     </li>
                     <li class="nav-item has-treeview">
                         <a href="" class="nav-link">

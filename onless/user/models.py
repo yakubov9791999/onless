@@ -85,6 +85,8 @@ class Group(models.Model):
     number = models.IntegerField()
     year = models.IntegerField()
     teacher = models.ForeignKey('User', on_delete=models.PROTECT, related_name='group_teacher')
+    start = models.DateField(auto_now_add=True)
+    stop = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.category}-{self.number}"

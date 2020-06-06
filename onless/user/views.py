@@ -23,13 +23,10 @@ def user_login(request):
 
 
 def add_list(request):
+    return render(request, 'user/add_list.html')
 
-    context = {
-
-    }
-    return render(request, 'user/add_list.html', context)
-
-
+def settings_list(request):
+    return render(request, 'user/settings_list.html')
 
 def add_teacher(request):
     if request.method == 'POST':

@@ -1,0 +1,19 @@
+<div class="col-lg-4 col-6">
+    <!-- small box -->
+    <div class="small-box bg-white">
+        <div class="inner">
+            <h6>{% if request.user.name %}
+                {{ request.user.name }}
+                {% else %}
+                {{ request.user.username }}
+            {% endif %}</h6>
+            <h3>Profilni sozlash</h3>
+        </div>
+        <div class="icon">
+            <i class="fas fa-user-cog"></i>
+        </div>
+        <a href="" class="small-box-footer"><i class="fas fa-edit"></i></a>
+    </div>
+</div>
+
+

@@ -36,14 +36,28 @@
             </div>
         </div>
         <!-- Sidebar Menu -->
-
-        {% if user.is_authenticated and request.user.role == '2' or request.user.role == '1' or request.user.role == '5' %}
-            {% include 'inc/role_sidebar/director.html' %}
-        {% elif user.is_authenticated and request.user.role == '3' %}
-            {% include 'inc/role_sidebar/teacher.html' %}
-        {% elif user.is_authenticated and request.user.role == '4' %}
-            {% include 'inc/role_sidebar/pupil.html' %}
-        {% endif %}
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                {% if user.is_authenticated and request.user.role == '2' %}
+                    {% include 'inc/role_sidebar/videos_page.html' %}
+                    {% include 'inc/role_sidebar/sign_page.html' %}
+                    {% include 'inc/role_sidebar/groups_page.html' %}
+                    {% include 'inc/role_sidebar/add_page.html' %}
+                    {% include 'inc/role_sidebar/settings_page.html' %}
+                {% elif user.is_authenticated and request.user.role == '3' %}
+                    {% include 'inc/role_sidebar/videos_page.html' %}
+                    {% include 'inc/role_sidebar/sign_page.html' %}
+                    {% include 'inc/role_sidebar/groups_page.html' %}
+                    {% include 'inc/role_sidebar/add_page.html' %}
+                    {% include 'inc/role_sidebar/settings_page.html' %}
+                {% elif user.is_authenticated and request.user.role == '4' %}
+                    {% include 'inc/role_sidebar/videos_page.html' %}
+                    {% include 'inc/role_sidebar/sign_page.html' %}
+                    {% include 'inc/role_sidebar/groups_page.html' %}
+                    {% include 'inc/role_sidebar/settings_page.html' %}
+                {% endif %}
+            </ul>
+        </nav>
         <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->

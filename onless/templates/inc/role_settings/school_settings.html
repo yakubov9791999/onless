@@ -1,0 +1,17 @@
+<div class="col-lg-4 col-6">
+    <!-- small box -->
+    <div class="small-box bg-white">
+        <div class="inner">
+            <h6>{% if request.user.driving_school %}
+                {{ request.user.driving_school.title }}
+                {% else %}
+                AVTOMAKTAB
+            {% endif %}</h6>
+            <h3>Avtomaktab sozlamalari</h3>
+        </div>
+        <div class="icon">
+            <i class="fas fa-pen-square"></i>
+        </div>
+        <a href="" class="small-box-footer"><i class="fas fa-edit"></i></a>
+    </div>
+</div>

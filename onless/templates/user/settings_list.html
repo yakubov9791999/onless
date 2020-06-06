@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row mt-5">
+        {% if request.user.role == '2' %}
+            {% include 'inc/role_settings/profil_settings.html' %}
+            {% include 'inc/role_settings/school_settings.html' %}
+        {% elif request.user.role == '3' %}
+            {% include 'inc/role_settings/profil_settings.html' %}
+        {% elif request.user.role == '4' %}
+            {% include 'inc/role_settings/profil_settings.html' %}
+        {% elif request.user.role == '5' %}
+            {% include 'inc/role_settings/profil_settings.html' %}
+        {% endif %}
+    </div>
+{% endblock content %}
+
+

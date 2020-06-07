@@ -1,5 +1,4 @@
-from .base import *
-
+from onless.settings.base import *
 
 
 # DATABASES = {

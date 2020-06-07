@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row mt-5">
+    <div class="row">
         {% if request.user.role == '2' %}
             {% include 'inc/role_settings/profil_settings.html' %}
             {% include 'inc/role_settings/school_settings.html' %}

@@ -52,3 +52,7 @@ onless/user/migrations/0002_auto_20200605_1917.py
 onless/media/school/1.jpeg
 onless/quiz/migrations/0002_auto_20200607_0746.py
 onless/media/school/logo.png
+onless/media/school/1.1.gif
+onless/media/school/2.1.gif
+onless/user/migrations/0002_auto_20200607_1855.py
+onless/user/migrations/0003_auto_20200607_1912.py

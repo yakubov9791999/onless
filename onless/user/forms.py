@@ -1,7 +1,7 @@
 from allauth.account.forms import SetPasswordField, PasswordField
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from user.models import User, Group, GENDER_CHOICES
+from user.models import *
 from django import forms
 class AuthenticationForm(ModelForm):
     class Meta:
@@ -37,7 +37,14 @@ class EditUserForm(ModelForm):
         fields = ('name', 'address', 'avatar', 'birthday', 'phone', 'gender')
 
 
-# class EditSchoolForm(ModelForm):
-
-
+class EditSchoolForm(ModelForm):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    director_fio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    logo = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    district = forms.ModelChoiceField(queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    class Meta:
+        model = School
+        fields = ('title', 'director_fio', 'phone', 'logo', 'region', 'district')
 

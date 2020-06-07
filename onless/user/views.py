@@ -48,6 +48,8 @@ def add_teacher(request):
                             gender=request.POST['gender'],
                             birthday=form.cleaned_data['birthday'],
                             is_superuser=False,
+                            is_staff=False,
+                            is_admin=False,
                         )
                         user.set_password(phone)
                         user.save()
@@ -93,6 +95,8 @@ def add_pupil(request):
                             group=group,
                             birthday=form.cleaned_data['birthday'],
                             is_superuser=False,
+                            is_staff=False,
+                            is_admin=False,
                         )
                         user.set_password(phone)
                         user.save()

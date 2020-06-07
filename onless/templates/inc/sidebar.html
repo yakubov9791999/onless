@@ -20,12 +20,12 @@
                 {% else %}
                     {% if request.user.gender %}
                         {% if request.user.gender == 'M' %}
-                            <img src="/media/online/man.jpg" class="img-circle elevation-2" alt="User Image">
+                            <img src="{% static 'online/man.jpg' %}" class="img-circle elevation-2" alt="User Image">
                         {% elif request.user.gender == 'W' %}
-                            <img src="/media/online/woman.jpg" class="img-circle elevation-2" alt="User Image">
+                            <img src="{% static 'online/woman.jpg' %}" class="img-circle elevation-2" alt="User Image">
                         {% endif %}
                     {% else %}
-                        <img src="/media/online/man.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="{% static 'online/man.jpg' %}" class="img-circle elevation-2" alt="User Image">
                     {% endif %}
                 {% endif %}
 

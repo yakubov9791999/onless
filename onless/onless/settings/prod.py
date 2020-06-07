@@ -3,7 +3,7 @@ from .base import *
 DEBUG = False
 
 DATABASES = {
-    'default': {
+    'mysql': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': 'bcloudintelekt_onless',

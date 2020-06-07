@@ -74,6 +74,9 @@ class School(models.Model):
     logo = models.ImageField(upload_to='school/')
     district = models.ForeignKey(District, on_delete=models.PROTECT, related_name='school_distrinct', null=True)
     region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='school_region', null=True)
+    reg_date = models.DateTimeField(auto_now_add=True)
+    is_amet = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.title

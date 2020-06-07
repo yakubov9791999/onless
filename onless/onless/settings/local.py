@@ -24,13 +24,12 @@ SECRET_KEY = '(kbqdmc#xti0zu85h=u8!^qcoqf)u_yg67oj1bdi2_1f6=qlxe'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'onless.uz']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
     #MyApp
-
     'user.apps.UserConfig',
     'quiz.apps.QuizConfig',
     'video.apps.VideoConfig',

@@ -42,13 +42,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="col-sm-6">
                         <div class="row">
                             {% if school.logo %}
-                                <div class="col-1"><img src="{{ request.user.driving_school.logo.url }}" height="50px"
+                                <div class="col-1"><img src="{{ request.user.school.logo.url }}" height="50px"
                                                         width="50px"></div>
                             {% else %}
                                 <div class="col-1"><img src="/media/online/car.jpg" height="50px" width="50px"></div>
                             {% endif %}
-                            <div class="col-11 mt-2"><h1 class="text-dark">{% if request.user.driving_school.title %}
-                                {{ request.user.driving_school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
+                            <div class="col-11 mt-2"><h1 class="text-dark">{% if request.user.school.title %}
+                                {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
                             </div>
                         </div>
                     </div><!-- /.col -->

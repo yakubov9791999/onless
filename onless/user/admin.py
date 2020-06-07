@@ -11,7 +11,7 @@ class UserAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-@admin.register(DrivingSchool)
+@admin.register(School)
 class DrivingSchoolAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'director_fio', 'phone']
     list_display_links = ['title']

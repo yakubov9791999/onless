@@ -53,27 +53,35 @@ class UserManager(BaseUserManager):
 
 
 class Region(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField('Nomi',max_length=255)
     sort = models.IntegerField(blank=True, default=1)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'Viloyat'
+        verbose_name_plural = 'Viloyatlar'
 
 class District(models.Model):
-    title = models.CharField(max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    title = models.CharField('Nomi',max_length=255)
+    region = models.ForeignKey(Region, verbose_name='Tuman', on_delete=models.CASCADE)
     sort = models.IntegerField(blank=True, default=1)
 
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Tuman'
+        verbose_name_plural = 'Tumanlar'
+
 class School(models.Model):
-    title = models.CharField(max_length=255)
-    director_fio = models.CharField(max_length=255, blank=True)
-    phone = models.CharField(max_length=20, blank=True)
-    logo = models.ImageField(upload_to='school/')
-    district = models.ForeignKey(District, on_delete=models.PROTECT, related_name='school_distrinct', null=True)
-    region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='school_region', null=True)
+    title = models.CharField(verbose_name='Nomi',max_length=255)
+    director_fio = models.CharField(verbose_name='Rahbar nomi',max_length=255, blank=True)
+    phone = models.CharField('Tel',max_length=20, blank=True)
+    logo = models.ImageField('Rasm',upload_to='school/')
+    district = models.ForeignKey(District,verbose_name='Viloyat',on_delete=models.PROTECT, related_name='school_distrinct', null=True)
+    region = models.ForeignKey(Region,verbose_name='Tuman', on_delete=models.PROTECT, related_name='school_region', null=True)
     reg_date = models.DateTimeField(auto_now_add=True)
     is_amet = models.BooleanField(default=False)
 
@@ -91,13 +99,13 @@ CATEGORY_CHOICES = (
 )
 
 class Group(models.Model):
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=15, default="B")
+    category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=15, default="B")
     number = models.IntegerField()
-    year = models.IntegerField()
-    teacher = models.ForeignKey('User', on_delete=models.PROTECT, related_name='group_teacher')
-    school = models.ForeignKey(School, on_delete=models.PROTECT, related_name='groups', null=True)
-    start = models.DateField(auto_now=False)
-    stop = models.DateField(auto_now=False)
+    year = models.IntegerField(verbose_name="O'quv yili")
+    teacher = models.ForeignKey('User',verbose_name="O'qituvchi", on_delete=models.PROTECT, related_name='group_teacher')
+    school = models.ForeignKey(School, on_delete=models.PROTECT, verbose_name="Avtomaktab", related_name='groups', null=True)
+    start = models.DateField(verbose_name="O'qish boshlanishi",auto_now=False)
+    stop = models.DateField(verbose_name="O'qish tugashi",auto_now=False)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

@@ -184,9 +184,18 @@ def profil_edit(request):
 
 
 def school_edit(request):
-    school = School.objects.get(id=request.user.driving_school.id)
-
+    school = School.objects.get(id=request.user.school.id)
+    form = EditSchoolForm(instance=request.user.school)
+    if request.POST:
+        form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+        else:
+            messages.success(request, "Formani to'ldirishda xatolik !")
+    else:
+        form = EditSchoolForm(instance=request.user.school)
     context = {
-
+        'form': form
     }
     return render(request, 'user/school_edit.html', context)

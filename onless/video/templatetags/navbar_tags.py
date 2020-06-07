@@ -6,4 +6,4 @@ register = template.Library()
 
 @register.simple_tag()
 def get_driving_schools():
-    return DrivingSchool.objects.all()
+    return School.objects.all()

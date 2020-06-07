@@ -12,4 +12,6 @@ urlpatterns = [
     path('add_group/', add_group, name='add_group_url'),
     path('groups/', groups_list, name='groups_list_url'),
     path('group/<int:id>/', group_detail, name='group_detail_url'),
+    path('profil_edit/', profil_edit, name='edit_profil_url'),
+    path('school_edit/', school_edit, name='edit_school_url'),
 ]

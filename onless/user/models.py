@@ -8,7 +8,7 @@ from django.http import Http404
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
+from django.core.validators import MaxValueValidator
 
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
@@ -67,13 +67,13 @@ class District(models.Model):
     def __str__(self):
         return self.title
 
-class DrivingSchool(models.Model):
+class School(models.Model):
     title = models.CharField(max_length=255)
     director_fio = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     logo = models.ImageField(upload_to='school/')
-    district = models.ForeignKey(District, on_delete=models.PROTECT, related_name='driving_school_distrinct', null=True)
-    region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='driving_school_region', null=True)
+    district = models.ForeignKey(District, on_delete=models.PROTECT, related_name='school_distrinct', null=True)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='school_region', null=True)
 
     def __str__(self):
         return self.title
@@ -92,8 +92,10 @@ class Group(models.Model):
     number = models.IntegerField()
     year = models.IntegerField()
     teacher = models.ForeignKey('User', on_delete=models.PROTECT, related_name='group_teacher')
+    school = models.ForeignKey(School, on_delete=models.PROTECT, related_name='groups', null=True)
     start = models.DateField(auto_now=False)
     stop = models.DateField(auto_now=False)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.category}-{self.number}"
@@ -110,20 +112,20 @@ ROLE_CHOICES = (
 )
 
 GENDER_CHOICES = (
-    ('M', 'Man'),
-    ('W', 'Woman'),
+    ('M', 'Erkak'),
+    ('W', 'Ayol'),
 )
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
-    driving_school = models.ForeignKey(DrivingSchool, on_delete=models.CASCADE, null=True, related_name='users')
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='users')
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True)
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True, unique=True)
+    phone = models.IntegerField(null=True, blank=True, unique=True, validators=[MaxValueValidator(999999999)])
     group = models.OneToOneField(Group, on_delete=models.PROTECT, related_name='group', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)

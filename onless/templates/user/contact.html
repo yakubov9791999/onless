@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row ml-5">
+        <!-- left column -->
+        <div class="col-md-6" style="margin-left: 365px; margin-bottom: 50px">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Fikringizni qoldiring</h3>
+                </div>
+                {% if messages or form.errors %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="POST" action="{% url 'contact_url' %}">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="exampleInputname">Ism:</label>
+                            <input type="text" name="name" class="form-control" id="exampleInputname"
+                                   placeholder="Ismingizni kiriting ...">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputtextarea">Fikr bildiring:</label>
+                            <textarea name="text" id="" cols="30" class="form-control" placeholder="Fikringizni yozing..." rows="10"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputtextarea">Rasmni joylashtiring:</label>
+                            <input type="file" name="photo" class="form-control">
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

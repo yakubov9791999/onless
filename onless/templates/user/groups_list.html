@@ -14,7 +14,7 @@
                         <thead>
                         <tr>
                             <th>№</th>
-                            <th>Gruh nomi</th>
+                            <th>Guruh nomi</th>
                             <th>Guruh rahbari</th>
                             <th>O'qish boshlanishi</th>
                             <th>O'qish yakunlanishi</th>
@@ -28,14 +28,20 @@
                         {% for group in groups %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><b>{{ group.category }}-{{ group.number }} {{ group.year }}</b></td>
+                                <td><a href="{% url 'group_detail_url' group.id %}"><b>{{ group.category }}-{{ group.number }} {{ group.year }}</b></a></td>
                                 <td>{{ group.teacher }}</td>
                                 <td>{{ group.start }}</td>
                                 <td>{{ group.stop }}</td>
                                 <td></td>
-                                <td><a href=""><i class="fa fa-edit" style="font-size: 150%;"></i> </a>&nbsp;&nbsp;&nbsp;<a
-                                        href=""><i class="fa fa-trash"
+                                <td>
+                                    &nbsp;
+                                    <a href="{% url 'group_detail_url' group.id %}"><i class="fas fa-eye" style="font-size: 150%;"></i></a>
+                                    &nbsp;
+                                    <a href=""><i class="fa fa-edit" style="font-size: 150%;"></i> </a>
+                                    &nbsp;
+                                    <a href=""><i class="fa fa-trash"
                                                    style="font-size: 150%;"></i></a>
+
                                 </td>
                             </tr>
                         {% endfor %}

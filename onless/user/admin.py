@@ -31,5 +31,10 @@ class DistrictAdmin(admin.ModelAdmin):
     list_display_links = ['title']
     save_on_top = True
 
+@admin.register(Contact)
+class ConatctAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'text']
+    list_display_links = ['name']
+    save_on_top = True
 
 admin.site.register(Group)

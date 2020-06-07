@@ -56,3 +56,5 @@ onless/media/school/1.1.gif
 onless/media/school/2.1.gif
 onless/user/migrations/0002_auto_20200607_1855.py
 onless/user/migrations/0003_auto_20200607_1912.py
+onless/user/migrations/0005_auto_20200607_1942.py
+onless/user/migrations/0004_contact.py

@@ -14,4 +14,5 @@ urlpatterns = [
     path('group/<int:id>/', group_detail, name='group_detail_url'),
     path('profil_edit/', profil_edit, name='edit_profil_url'),
     path('school_edit/', school_edit, name='edit_school_url'),
+    path('contact/', contact, name='contact_url'),
 ]

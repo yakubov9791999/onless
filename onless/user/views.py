@@ -48,8 +48,6 @@ def add_teacher(request):
                             gender=request.POST['gender'],
                             birthday=form.cleaned_data['birthday'],
                             is_superuser=False,
-                            is_staff=False,
-                            is_admin=False,
                         )
                         user.set_password(phone)
                         user.save()
@@ -89,14 +87,12 @@ def add_pupil(request):
                             name=form.cleaned_data['name'],
                             phone=form.cleaned_data['phone'],
                             address=form.cleaned_data['address'],
-                            driving_school=request.user.school,
+                            school=request.user.school,
                             role='4',
                             gender=request.POST['gender'],
                             group=group,
                             birthday=form.cleaned_data['birthday'],
                             is_superuser=False,
-                            is_staff=False,
-                            is_admin=False,
                         )
                         user.set_password(phone)
                         user.save()
@@ -155,6 +151,9 @@ def groups_list(request):
 def group_detail(request, id):
     group = Group.objects.get(id=id)
     pupils = User.objects.filter(role=4, group=group)
+    test_answers = ResultQuiz.objects.filter(pupils=pupils)
+    print(test_answers)
+
     context = {
         'group': group,
         'pupils': pupils,
@@ -199,3 +198,18 @@ def school_edit(request):
         'form': form
     }
     return render(request, 'user/school_edit.html', context)
+
+def contact(request):
+    if request.POST or None:
+        form = AddContactForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            photo = request.POST['photo']
+            form = form.save(commit=False)
+            form.photo = photo
+            form.save()
+            messages.success(request, "Muvaffaqiyatli jo'natildi !")
+        else:
+            messages.error(request, "Formani to'ldiring !")
+    else:
+        form = AddContactForm()
+    return render(request, 'user/contact.html')

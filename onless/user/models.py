@@ -157,3 +157,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class Contact(models.Model):
+    name = models.CharField(max_length=60)
+    text = models.CharField(max_length=5000)
+    photo = models.ImageField(upload_to='contact/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name}"

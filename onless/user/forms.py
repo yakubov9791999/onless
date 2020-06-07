@@ -48,3 +48,8 @@ class EditSchoolForm(ModelForm):
         model = School
         fields = ('title', 'director_fio', 'phone', 'logo', 'region', 'district')
 
+class AddContactForm(ModelForm):
+    class Meta:
+        model = Contact
+        fields = ('name', 'text')
+        exclude = ('photo',)

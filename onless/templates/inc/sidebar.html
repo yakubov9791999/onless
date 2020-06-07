@@ -16,7 +16,7 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" class="img-circle elevation-2" alt="User Image">
+                    <img src="{{ request.user.avatar.url }}" class="img-circle elevation-2" alt="img">
                 {% else %}
                     {% if request.user.gender %}
                         {% if request.user.gender == 'M' %}

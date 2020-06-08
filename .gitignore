@@ -65,3 +65,7 @@ onless/user/migrations/0006_auto_20200608_1151.py
 onless/user/migrations/0007_auto_20200608_1631.py
 onless/user/migrations/0008_auto_20200608_1750.py
 onless/user/migrations/0009_auto_20200608_1752.py
+env/
+onless/media/school/0001_LG_F0J5LN3W_5кг-700x850.jpg
+onless/media/school/icon_django.png
+onless/quiz/migrations/0002_auto_20200608_1854.py

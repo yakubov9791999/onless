@@ -43,12 +43,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     {% if request.user.school %}
                         <div class="row">
                             {% if request.user.school.logo %}
-                                <div class="col-1"><img src="{{ request.user.school.logo.url }}" height="50px"
-                                                        width="50px"></div>
+                                <div class="col-1" style="margin-right: 17px"><img src="{{ request.user.school.logo.url }}" height="50px"
+                                                        width="50px" style="border-radius: 55px"></div>
                             {% else %}
-                                <div class="col-1"><img src="{% static 'online/car.jpg' %}" height="50px" width="50px"></div>
+                                <div class="col-1" style="margin-left: 25px"><img src="{% static 'online/car.jpg' %}" height="50px" width="50px"></div>
                             {% endif %}
-                            <div class="col-11 mt-2"><h1 class="text-dark">{% if request.user.school.title %}
+                            <div class="col-10 mt-2"><h1 class="text-dark">{% if request.user.school.title %}
                                 {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
                             </div>
                         </div>

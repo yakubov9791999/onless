@@ -1,7 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
+from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import UpdateView
+
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
@@ -81,26 +84,25 @@ def add_pupil(request):
                 if form.cleaned_data['phone']:
                     phone = str(form.cleaned_data['phone'])
                     school = School.objects.get(id=request.user.school.id)
-                    try:
-                        user = User.objects.create_user(
+                    user = User.objects.create_user(
                             username=phone,
                             password=phone,
+                            school=school,
                             turbo=phone,
                             name=form.cleaned_data['name'],
                             phone=form.cleaned_data['phone'],
                             address=form.cleaned_data['address'],
-                            school=school,
                             role='4',
                             gender=request.POST['gender'],
                             group=group,
                             birthday=form.cleaned_data['birthday'],
                             is_superuser=False,
                         )
-                        user.set_password(phone)
-                        user.save()
-                        messages.success(request, "O'quvchi muvaffaqaiyatli qo'shildi")
-                    except IntegrityError:
-                        messages.error(request, "Bunday loginli foydalanuvchi mavjud")
+                    user.set_password(phone)
+                    user.save()
+                    messages.success(request, "O'quvchi muvaffaqaiyatli qo'shildi")
+                    # except IntegrityError:
+                    #     messages.error(request, "Bunday loginli foydalanuvchi mavjud")
                 else:
                     messages.error(request, "Bu raqam allaqachon kiritilgan")
             else:
@@ -153,9 +155,8 @@ def group_detail(request, id):
     group = Group.objects.get(id=id)
     pupils = User.objects.filter(role=4, group=group)
     for pupil in pupils:
-        print(pupil)
-    # test_answers = ResultQuiz.objects.filter(pupils=pupils)
-
+        test_answers = ResultQuiz.objects.filter(user=pupil)
+        print(test_answers)
 
     context = {
         'group': group,
@@ -163,6 +164,25 @@ def group_detail(request, id):
     }
     return render(request, 'user/group_detail.html', context)
 
+def group_delete(request, id):
+    group = Group.objects.get(id=id)
+    if group.group_user.count() > 5:
+        group.is_active = False
+    else:
+        try:
+            group.delete()
+        except ProtectedError:
+            messages.error(request, "Guruhni o'chirib bo'lmaydi. Guruhda o'qiydigan o'quvchilar mavjud")
+    return redirect(groups_list)
+
+def group_update(request, id):
+    group = Group.objects.get(id=id)
+    form = GroupUpdateForm(instance=group)
+    context = {
+        'form': form,
+        'group': group,
+    }
+    return render(request, 'user/group_update.html', context)
 
 def profil_edit(request):
     user = get_object_or_404(User, id=request.user.id)

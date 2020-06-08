@@ -49,6 +49,7 @@ def add_teacher(request):
                             birthday=form.cleaned_data['birthday'],
                             is_superuser=False,
                         )
+
                         user.set_password(phone)
                         user.save()
                         messages.success(request, "O'qituvchi muvaffaqaiyatli qo'shildi")
@@ -77,8 +78,9 @@ def add_pupil(request):
         group = Group.objects.get(id=request.POST['group'])
         if not form.errors:
             if form.is_valid():
-                if request.POST['phone']:
+                if form.cleaned_data['phone']:
                     phone = str(form.cleaned_data['phone'])
+                    school = School.objects.get(id=request.user.school.id)
                     try:
                         user = User.objects.create_user(
                             username=phone,
@@ -87,7 +89,6 @@ def add_pupil(request):
                             name=form.cleaned_data['name'],
                             phone=form.cleaned_data['phone'],
                             address=form.cleaned_data['address'],
-                            school=request.user.school,
                             role='4',
                             gender=request.POST['gender'],
                             group=group,
@@ -96,8 +97,7 @@ def add_pupil(request):
                         )
                         user.set_password(phone)
                         user.save()
-                        messages.success(request, "O'qituvchi muvaffaqaiyatli qo'shildi")
-
+                        messages.success(request, "O'quvchi muvaffaqaiyatli qo'shildi")
                     except IntegrityError:
                         messages.error(request, "Bunday loginli foydalanuvchi mavjud")
                 else:
@@ -151,8 +151,10 @@ def groups_list(request):
 def group_detail(request, id):
     group = Group.objects.get(id=id)
     pupils = User.objects.filter(role=4, group=group)
-    test_answers = ResultQuiz.objects.filter(pupils=pupils)
-    print(test_answers)
+    for pupil in pupils:
+        print(pupil)
+    # test_answers = ResultQuiz.objects.filter(pupils=pupils)
+
 
     context = {
         'group': group,

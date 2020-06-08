@@ -60,3 +60,4 @@ onless/user/migrations/0005_auto_20200607_1942.py
 onless/user/migrations/0004_contact.py
 onless/onless/settings/local.py
 onless/media/school/1.1_ggONL0Q.gif
+db.sqlite3

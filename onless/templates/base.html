@@ -40,6 +40,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
+                    {% if request.user.school %}
                         <div class="row">
                             {% if request.user.school.logo %}
                                 <div class="col-1"><img src="{{ request.user.school.logo.url }}" height="50px"
@@ -51,6 +52,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
                             </div>
                         </div>
+                    {% endif %}
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">

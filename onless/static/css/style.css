@@ -155,7 +155,8 @@ a:active {
 .img-thumb-bg {
   padding: 0;
   overflow: hidden;
-  min-height: 200px;
+  min-height: 300px;
+  min-width: 600px;
   position: relative;
   border-radius: 3px;
   background-position: center;
@@ -260,10 +261,10 @@ a:active {
   display: none;
 }
 .img-thumb-bg:hover .overlay {
-  background: rgba(46, 49, 58, 0.8);
+  background: rgba(239, 224, 184, 0.8);
 }
 .img-thumb-bg:hover .caption {
-  bottom: 60px;
+  bottom: 10px;
 }
 .img-thumb-bg:hover .caption .meta-data {
   display: block;

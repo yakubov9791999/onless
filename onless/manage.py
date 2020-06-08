@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'onless.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'onless.settings.local')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -15,7 +15,8 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
+    n = 10000000
+    sys.setrecursionlimit(n)
 
 if __name__ == '__main__':
     main()

@@ -108,10 +108,10 @@ def add_pupil(request):
             else:
                 messages.error(request, "Formani to'ldiring")
         else:
-            messages.error(request, "Bu raqam oldin ro'yhatdan o'tkazilgan")
+            messages.error(request, "Formani to'liq to'ldiring !")
     else:
         form = AddUserForm()
-    return render(request, 'user/add_pupil.html', context )
+    return render(request, 'user/add_pupil.html', context)
 
 def add_group(request):
     choices = CATEGORY_CHOICES

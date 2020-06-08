@@ -22,9 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 SECRET_KEY = '(kbqdmc#xti0zu85h=u8!^qcoqf)u_yg67oj1bdi2_1f6=qlxe'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['onless.uz']
 
 # Application definition
 
@@ -148,3 +149,4 @@ AUTHENTICATION_BACKENDS = [
 ]
 LOGIN_REDIRECT_URL = '/video/mainsection/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+

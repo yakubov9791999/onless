@@ -101,7 +101,7 @@ CATEGORY_CHOICES = (
 class Group(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=15, default="B")
     number = models.IntegerField()
-    year = models.IntegerField(verbose_name="O'quv yili")
+    year = models.IntegerField(verbose_name="O'quv yili",validators=[MaxValueValidator(9999)])
     teacher = models.ForeignKey('User',verbose_name="O'qituvchi", on_delete=models.PROTECT, related_name='group_teacher')
     school = models.ForeignKey(School, on_delete=models.PROTECT, verbose_name="Avtomaktab", related_name='groups', null=True)
     start = models.DateField(verbose_name="O'qish boshlanishi",auto_now=False)
@@ -136,7 +136,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.IntegerField(null=True, blank=True, unique=True, validators=[MaxValueValidator(999999999)])
-    group = models.OneToOneField(Group, on_delete=models.PROTECT, related_name='group', blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT, related_name='group_user', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)

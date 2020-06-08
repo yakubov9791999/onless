@@ -23,6 +23,17 @@ class AddGroupForm(ModelForm):
         fields = ('number', 'year', 'teacher', 'start', 'stop', 'category')
         exclude = ('school',)
 
+class GroupUpdateForm(ModelForm):
+    number = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    year = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    teacher = forms.ModelChoiceField(queryset=User.objects.filter(role=3), widget=forms.Select(attrs={'class': 'form-control'}))
+    start = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}))
+    stop = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}))
+    category = forms.ChoiceField(choices=CATEGORY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Group
+        fields = ('number', 'year', 'teacher', 'start', 'stop', 'category')
 
 class EditUserForm(ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))

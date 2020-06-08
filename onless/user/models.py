@@ -115,7 +115,6 @@ class Group(models.Model):
         return reverse('group_detail_url', kwargs={'id': self.id })
 
 ROLE_CHOICES = (
-    ("1", "Admin"),
     ("2", "Direktor"),
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
@@ -130,7 +129,7 @@ GENDER_CHOICES = (
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
-    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='users')
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='users', blank=True)
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True)
     avatar = models.ImageField(upload_to='user/', default='', blank=True)

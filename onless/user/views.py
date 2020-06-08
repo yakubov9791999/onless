@@ -89,6 +89,7 @@ def add_pupil(request):
                             name=form.cleaned_data['name'],
                             phone=form.cleaned_data['phone'],
                             address=form.cleaned_data['address'],
+                            school=school,
                             role='4',
                             gender=request.POST['gender'],
                             group=group,

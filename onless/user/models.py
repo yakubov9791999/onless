@@ -115,6 +115,7 @@ class Group(models.Model):
         return reverse('group_detail_url', kwargs={'id': self.id })
 
 ROLE_CHOICES = (
+    ("1", "Admin"),
     ("2", "Direktor"),
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),

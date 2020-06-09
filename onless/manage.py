@@ -15,8 +15,7 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-    n = 10000000
-    sys.setrecursionlimit(n)
+
 
 if __name__ == '__main__':
     main()

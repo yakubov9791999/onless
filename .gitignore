@@ -61,6 +61,7 @@ onless/user/migrations/0004_contact.py
 onless/onless/settings/local.py
 onless/media/school/1.1_ggONL0Q.gif
 db.sqlite3
+onless/onless/settings.py
 onless/user/migrations/0006_auto_20200608_1151.py
 onless/user/migrations/0007_auto_20200608_1631.py
 onless/user/migrations/0008_auto_20200608_1750.py

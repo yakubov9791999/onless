@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% load prev_next_tags %}
+
+{% block mainsection_detail %}
+    <li class="breadcrumb-item active"><a href="{% url 'video_categories_list_url' %}">{{ section.title }}</a></li>
+{% endblock %}
+
 {% block content %}
 
     <div class="container-fluid">

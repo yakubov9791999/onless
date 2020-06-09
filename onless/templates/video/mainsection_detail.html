@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load prev_next_tags %}
+
+{% block mainsection_detail %}
+    <li class="breadcrumb-item"><a href="{% url 'video_mainsection_detail_url' mainsection.id %}">{{ mainsection.get_title_display }}</a></li>
+{% endblock %}
+
+
 {% block content %}
 
     <div class="container-fluid">
@@ -12,7 +18,8 @@
                             {#                        <div class="overlay-noexists"></div>#}
                             <div class="caption">
                                 <div class="tag"><a
-                                        href="{% url 'video_categories_list_url' %}">{{ mainsection.get_title_display }} </a></div>
+                                        href="{% url 'video_categories_list_url' %}">{{ mainsection.get_title_display }} </a>
+                                </div>
                                 <div class="title"><a
                                         href="{% url 'video_categories_list_url' %}">{{ section.title }}</a></div>
                             </div>

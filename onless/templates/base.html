@@ -40,26 +40,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                    {% if request.user.school %}
-                        <div class="row">
-                            {% if request.user.school.logo %}
-                                <div class="col-1" style="margin-right: 17px"><img src="{{ request.user.school.logo.url }}" height="50px"
-                                                        width="50px" style="border-radius: 55px"></div>
-                            {% else %}
-                                <div class="col-1" style="margin-left: 25px"><img src="{% static 'online/car.jpg' %}" height="50px" width="50px"></div>
-                            {% endif %}
-                            <div class="col-10 mt-2"><h1 class="text-dark">{% if request.user.school.title %}
-                                {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
-                            </div>
-                        </div>
-                    {% endif %}
-                    </div><!-- /.col -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'video_mainsections_list_url' %}">Bosh sahifa</a></li>
+                                {% block mainsections_list %}{% endblock %}
+                                {% block mainsection_detail %}{% endblock %}
+                                <li class="breadcrumb-item " aria-current="page">Data</li>
+
+                            </ol>
+                        </nav>
+                    </div>
                     <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{% url 'video_mainsections_list_url' %}">Bosh sahifa</a></li>
-                            <li class="breadcrumb-item active"><a href="{% url 'video_mainsection_detail_url' 1 %}">Yo'l harakati qoidalari</a></li>
-                        </ol>
+                        {% if request.user.school %}
+                            <div class="row">
+                                {% if request.user.school.logo %}
+                                    <div class="col-1" style="margin-right: 17px"><img
+                                            src="{{ request.user.school.logo.url }}" height="50px"
+                                            width="50px" style="border-radius: 55px"></div>
+                                {% else %}
+                                    <div class="col-1" style="margin-left: 25px"><img
+                                            src="{% static 'online/car.jpg' %}" height="50px" width="50px"></div>
+                                {% endif %}
+                                <div class="col-10 mt-2"><h1 class="text-dark">{% if request.user.school.title %}
+                                    {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div><!-- /.col -->
+                    {#                    <div class="col-sm-6">#}
+                    {#                        <ol class="breadcrumb float-sm-right">#}
+                    {#                            <li class="breadcrumb-item"><a href="{% url 'video_mainsections_list_url' %}">Bosh#}
+                    {#                                sahifa</a></li>#}
+                    {#                            <li class="breadcrumb-item active"><a href="{% url 'video_mainsection_detail_url' 1 %}">Yo'l#}
+                    {#                                harakati qoidalari</a></li>#}
+                    {#                        </ol>#}
+                    {#                    </div><!-- /.col -->#}
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>

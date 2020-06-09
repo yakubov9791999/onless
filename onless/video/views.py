@@ -30,10 +30,12 @@ def mainsections_list(request):
 @login_required
 def mainsection_detail(request, id):
     mainsection = MainSection.objects.get(id=id)
-
-    return render(request, 'video/mainsection_detail.html', {
-        'mainsection': mainsection,
-    })
+    context = {
+        'mainsection': mainsection
+    }
+    for section in mainsection.video_section.all():
+        context.update(section=section)
+    return render(request, 'video/mainsection_detail.html', context)
 
 @login_required
 def categories_list(request):

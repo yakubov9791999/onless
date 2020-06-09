@@ -11,7 +11,11 @@ class AuthenticationForm(ModelForm):
 
 
 class AddUserForm(ModelForm):
-    birthday = forms.DateField(widget=forms.SelectDateWidget())
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    phone = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
+    birthday = forms.DateField(widget=forms.SelectDateWidget(attrs={'class': 'form-control'}))
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     class Meta:
         model = User
         fields = ('name', 'address', 'phone', 'birthday',)

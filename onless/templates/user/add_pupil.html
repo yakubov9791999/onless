@@ -22,6 +22,7 @@
                 <form role="form" method="POST" action="{% url 'add_pupil_url' %}">
                     {% csrf_token %}
                     <div class="card-body">
+
                         <div class="form-group">
                             <label for="exampleInputname">F.I.O:</label>
                             <input type="text" name="name" class="form-control" id="exampleInputname"
@@ -29,7 +30,7 @@
                         </div>
 
                          <div class="form-group">
-                            <label for="exampleInputname">Grupa:</label>
+                            <label for="exampleInputname">Guruh:</label>
                              <select name="group" class="form-control" id="">
                                  {% for group in groups %}
                                      <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>

@@ -17,4 +17,5 @@ urlpatterns = [
     path('profil_edit/', profil_edit, name='edit_profil_url'),
     path('school_edit/', school_edit, name='edit_school_url'),
     path('contact/', contact, name='contact_url'),
+    path('search/', search, name='search_url'),
 ]

@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
-from django.db.models import ProtectedError
+from django.db.models import ProtectedError, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import UpdateView
@@ -76,6 +76,10 @@ def add_pupil(request):
         'groups': groups
     }
     form = AddUserForm()
+    context = {
+        'groups': groups,
+        'form': form,
+    }
     if request.method == 'POST':
         form = AddUserForm(data=request.POST)
         group = Group.objects.get(id=request.POST['group'])
@@ -236,3 +240,54 @@ def contact(request):
     else:
         form = AddContactForm()
     return render(request, 'user/contact.html')
+
+def search(request):
+    query = request.GET.get('q', False).lower()
+
+    context = {
+        'q': query,
+    }
+    results = list()
+    count = 0
+    if query:
+        try:
+            teachers = User.objects.filter(role=3,name__contains=query,school=request.user.school)
+            context.update(teachers=teachers)
+            results.append(teachers)
+            count += teachers.count()
+        except ValueError:
+            pass
+
+        try:
+            pupils = User.objects.filter(role=2, name__contains=query, school=request.user.school)
+            context.update(pupils=pupils)
+            results.append(pupils)
+            count += pupils.count()
+        except ValueError:
+            pass
+
+        try:
+            groups = Group.objects.filter(
+                Q(category__icontains=query) |
+                Q(number=int(query)) |
+                Q(year=int(query))
+            ).filter(school=request.user.school)
+            context.update(groups=groups)
+            results.append(groups)
+            count += groups.count()
+        except ValueError:
+            pass
+
+        try:
+            videos = Video.objects.filter(
+                title__contains=query
+            ).distinct()
+            results.append(videos)
+            context.update(videos=videos)
+            count += videos.count()
+        except ValueError:
+            pass
+
+        context.update(count=count)
+        context.update(results=results)
+    return render(request, 'user/search_result.html', context)

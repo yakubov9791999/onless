@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.db.backends import mysql
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -30,7 +32,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     #MyApp
-
     'user.apps.UserConfig',
     'quiz.apps.QuizConfig',
     'video.apps.VideoConfig',
@@ -85,13 +86,13 @@ WSGI_APPLICATION = 'onless.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'bcloudintelekt_onless',
-        'USER': 'bcloudintelekt',
-        'PASSWORD': 'm6232971',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'NAME': 'bcloudintelekt_onless',
+        # 'USER': 'bcloudintelekt',
+        # 'PASSWORD': 'm6232971',
+        # 'HOST': 'localhost',
+        # 'PORT': '3306',
     }
 }
 

@@ -1,8 +1,8 @@
 <li class="nav-item has-treeview">
-    <a href="{% url 'video_mainsections_list_url' %}" class="nav-link">
+    <a href="{% url 'video_mainsections_list_url' %}" class="nav-link {% if request.resolver_match.url_name == 'video_mainsections_list_url' %}active{% endif %}">
         <i class="nav-icon fas fa-th"></i>
         <p> &nbsp;Videodarslar
-            <span class="right badge badge-primary">onlayn</span>
+            <span class="right badge badge-info">onlayn</span>
         </p>
     </a>
 </li>

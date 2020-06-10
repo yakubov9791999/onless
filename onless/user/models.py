@@ -60,8 +60,9 @@ class Region(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = 'Tuman'
-        verbose_name_plural = 'Tumanlar'
+        verbose_name = 'Viloyat'
+        verbose_name_plural = 'Viloyatlar'
+
 
 class District(models.Model):
     title = models.CharField('Nomi',max_length=255)
@@ -71,9 +72,10 @@ class District(models.Model):
     def __str__(self):
         return self.title
 
+
     class Meta:
-        verbose_name = 'Viloyat'
-        verbose_name_plural = 'Viloyatlar'
+        verbose_name = 'Tuman'
+        verbose_name_plural = 'Tumanlar'
 
 class School(models.Model):
     title = models.CharField(verbose_name='Nomi',max_length=255)

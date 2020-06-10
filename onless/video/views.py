@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from quiz.models import *
+from user.models import School
+from user.views import groups_list, group_detail
 from video.models import *
 
 
@@ -20,11 +22,30 @@ def add_duration(request):
 
 @login_required
 def mainsections_list(request):
-    mainsections = MainSection.objects.all()
+    if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
+        mainsections = MainSection.objects.all()
+        return render(request, 'video/mainsections_list.html', {
+            'mainsections': mainsections,
+        })
+    elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
+        schools = School.objects.filter(region=request.user.school.region)
+        return render(request, 'inspecion/schools_list.html', {
+            'schools': schools,
+        })
 
-    return render(request, 'video/mainsections_list.html', {
-        'mainsections': mainsections,
-    })
+    elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
+        schools = School.objects.filter(region=request.user.school.region)
+        return redirect(group_detail)
+
+
+    elif request.user.role == "2":  # agarda role Direktor  bo'lsa
+        return redirect(groups_list)
+
+    elif request.user.role == "1":  # agarda role admin  bo'lsa
+        schools = School.objects.filter(region=request.user.district.region)
+        return render(request, 'admin/schools_list.html', {
+            'schools': schools,
+        })
 
 
 @login_required
@@ -35,6 +56,7 @@ def mainsection_detail(request, id):
         'mainsection': mainsection,
     })
 
+
 @login_required
 def categories_list(request):
     categories = VideoCategory.objects.all()
@@ -42,6 +64,7 @@ def categories_list(request):
     return render(request, 'video/categories_list.html', {
         'categories': categories,
     })
+
 
 @login_required
 def category_detail(request, id):
@@ -51,6 +74,7 @@ def category_detail(request, id):
         'category': category,
     })
 
+
 @login_required
 def video_detail(request, id):
     video = Video.objects.get(id=id)
@@ -59,6 +83,3 @@ def video_detail(request, id):
         'video': video,
         'questions': questions,
     })
-
-
-

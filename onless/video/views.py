@@ -3,8 +3,39 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from quiz.models import *
 from user.models import School
-from user.views import groups_list, group_detail
+from user.views import *
 from video.models import *
+
+def landing_page(request):
+    return render(request, 'landing/index.html')
+
+
+@login_required
+def home(request):
+    if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
+        if request.user.avatar != '' and request.user.birthday != '' and request.user.gender != '':
+            return redirect(profil_edit)
+        else:
+            return redirect(mainsections_list)
+    elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
+        schools = School.objects.filter(region=request.user.school.region)
+        return render(request, 'inspecion/schools_list.html', {
+            'schools': schools,
+        })
+
+    elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
+        return redirect(profil_edit)
+
+
+    elif request.user.role == "2":  # agarda role Direktor  bo'lsa
+        return redirect(profil_edit)
+
+    elif request.user.role == "1":  # agarda role admin  bo'lsa
+        schools = School.objects.filter(region=request.user.district.region)
+        return render(request, 'admin/schools_list.html', {
+            'schools': schools,
+        })
+
 
 
 @login_required
@@ -22,30 +53,11 @@ def add_duration(request):
 
 @login_required
 def mainsections_list(request):
-    if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
-        mainsections = MainSection.objects.all()
-        return render(request, 'video/mainsections_list.html', {
-            'mainsections': mainsections,
-        })
-    elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
-        schools = School.objects.filter(region=request.user.school.region)
-        return render(request, 'inspecion/schools_list.html', {
-            'schools': schools,
-        })
-
-    elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
-        schools = School.objects.filter(region=request.user.school.region)
-        return redirect(group_detail)
-
-
-    elif request.user.role == "2":  # agarda role Direktor  bo'lsa
-        return redirect(groups_list)
-
-    elif request.user.role == "1":  # agarda role admin  bo'lsa
-        schools = School.objects.filter(region=request.user.district.region)
-        return render(request, 'admin/schools_list.html', {
-            'schools': schools,
-        })
+    mainsections = MainSection.objects.all()
+    context = {
+        'mainsections': mainsections
+    }
+    return render(request, 'video/mainsections_list.html', context)
 
 
 @login_required

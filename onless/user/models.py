@@ -43,7 +43,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self,  username, password, **extra_fields):
+    def create_user(self, username, password, **extra_fields):
         return self._create_user(username, password, False, False, **extra_fields)
 
     def create_superuser(self, email, username, password, **extra_fields):
@@ -82,11 +82,18 @@ class School(models.Model):
     director_fio = models.CharField(verbose_name='Rahbar nomi',max_length=255, blank=True)
     phone = models.CharField('Tel',max_length=20, blank=True)
     logo = models.ImageField('Rasm',upload_to='school/')
-    district = models.ForeignKey(District,verbose_name='Viloyat',on_delete=models.PROTECT, related_name='school_distrinct', null=True)
-    region = models.ForeignKey(Region,verbose_name='Tuman', on_delete=models.PROTECT, related_name='school_region', null=True)
+    district = models.ForeignKey(District,verbose_name='Viloyat',on_delete=models.CASCADE, related_name='school_distrinct', null=True)
+    region = models.ForeignKey(Region,verbose_name='Tuman', on_delete=models.CASCADE, related_name='school_region', null=True)
+    schet = models.IntegerField(null=True, validators=[MaxValueValidator(99999999999999999999)], blank=True)
+    mfo = models.CharField(null=True, validators=[MaxValueValidator(99999)], blank=True, max_length=5)
+    bank = models.CharField(null=True,blank=True, max_length=50)
     reg_date = models.DateTimeField(auto_now_add=True)
     is_amet = models.BooleanField(default=False)
-
+    is_active = models.BooleanField(default=False)
+    sms_login = models.CharField(max_length=255, blank=True)
+    sms_token = models.CharField(max_length=255, blank=True)
+    sms_password = models.CharField(max_length=255, blank=True)
+    kredit = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -100,12 +107,15 @@ CATEGORY_CHOICES = (
     ("E", "E"),
 )
 
+
+
+
 class Group(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=15, default="B")
     number = models.IntegerField()
-    year = models.IntegerField(verbose_name="O'quv yili",validators=[MaxValueValidator(9999)])
-    teacher = models.ForeignKey('User',verbose_name="O'qituvchi", on_delete=models.PROTECT, related_name='group_teacher')
-    school = models.ForeignKey(School, on_delete=models.PROTECT, verbose_name="Avtomaktab", related_name='groups', null=True)
+    year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
+    teacher = models.ForeignKey('User',verbose_name="O'qituvchi", on_delete=models.CASCADE, related_name='group_teacher')
+    school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name="Avtomaktab", related_name='groups', null=True)
     start = models.DateField(verbose_name="O'qish boshlanishi",auto_now=False)
     stop = models.DateField(verbose_name="O'qish tugashi",auto_now=False)
     is_active = models.BooleanField(default=True)
@@ -134,12 +144,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='users', blank=True)
     address = models.CharField(max_length=255, blank=True)
-    email = models.EmailField(max_length=254, unique=False, blank=True)
+    email = models.EmailField(max_length=254, unique=False, blank=True, default='')
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
-    phone = models.IntegerField(null=True, blank=True, unique=True, validators=[MaxValueValidator(999999999)])
-    group = models.ForeignKey(Group, on_delete=models.PROTECT, related_name='group_user', blank=True, null=True)
+    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999)])
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_user', blank=True, null=True)
+    pasport = models.CharField(max_length=9, null=True, unique=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)

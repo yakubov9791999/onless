@@ -11,20 +11,15 @@ class AuthenticationForm(ModelForm):
 
 
 class AddUserForm(ModelForm):
-    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    phone = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
-    birthday = forms.DateField(widget=forms.SelectDateWidget(attrs={'class': 'form-control'}))
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     class Meta:
         model = User
-        fields = ('name', 'address', 'phone', 'birthday',)
-        exclude = ('gender', 'username', 'password', 'school')
+        fields = ('name', 'pasport', 'phone',)
+        exclude = ('username', 'password', 'school')
 
 class AddGroupForm(ModelForm):
     class Meta:
         model = Group
-        fields = ('number', 'year', 'teacher', 'start', 'stop', 'category')
+        fields = ('number', 'teacher', 'start', 'stop', 'category')
         exclude = ('school',)
 
 class GroupUpdateForm(ModelForm):

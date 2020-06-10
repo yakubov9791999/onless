@@ -5,9 +5,9 @@ from .models import *
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'role', 'username','name', 'birthday', 'email', 'is_active', 'is_superuser', 'is_staff', 'date_joined',
+    list_display = ['id', 'role', 'name','username', 'phone','email', 'turbo', 'birthday', 'is_active', 'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
-    list_display_links = ['username','role', 'email']
+    list_display_links = ['username','role']
     save_on_top = True
 
 

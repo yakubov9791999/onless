@@ -1,5 +1,5 @@
 <li class="nav-item has-treeview">
-    <a href="{% url 'add_list_url' %}" class="nav-link {% if request.resolver_match.url_name == 'add_list_url' %}active{% endif %}">
+    <a href="{% url 'add_list_url' %}" class="nav-link {% if request.resolver_match.url_name == 'add_list_url' or request.resolver_match.url_name == 'add_teacher_url' or request.resolver_match.url_name == 'add_pupil_url' or request.resolver_match.url_name == 'add_group_url' %}active{% endif %}">
         &nbsp;<i class="fas fa-folder-plus"></i>
         <p>
             &nbsp;&nbsp;&nbsp;Kiritishlar

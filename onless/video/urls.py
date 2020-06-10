@@ -5,7 +5,9 @@ from .views import *
 
 urlpatterns = [
     path('video/add_duration/', add_duration, name='add_duration'),
-    path('', mainsections_list, name='video_mainsections_list_url'),
+    path('mainsections/', mainsections_list, name='video_mainsections_list_url'),
+    path('home/', home, name='home_url'),
+    path('', landing_page, name='landing_page__url'),
     path('video/mainsection/<int:id>/', mainsection_detail, name='video_mainsection_detail_url'),
     path('video/category/', categories_list, name='video_categories_list_url'),
     path('video/category/<int:id>/', category_detail, name='video_category_detail_url'),

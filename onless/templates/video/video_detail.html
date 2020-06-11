@@ -50,11 +50,25 @@
                             {% for answer in question.answers.all %}
                                 <li>
                                     <label>
-                                        <input type="radio" name="answer" value="{{ answer.id }}"
-                                                {% if  answer.result_questions.exists %} checked
-                                               disabled="disabled" {% endif %}
-                                               name="answerGroup" value="0"
-                                               id="id_answer{{ forloop.counter }}">&nbsp;&nbsp; {{ answer.text }}
+
+
+                                                <input type="radio" name="answer"   {% for result in results %}{% if result.answer.id == answer.id %} checked  disabled {% else %}disabled{% endif %}    {% endfor %} value="{{ answer.id }}"
+                                                       id="id_answer{{ forloop.counter }}">&nbsp;&nbsp;
+                                                {{ answer.text }}
+
+
+
+                                        {% for result in results %}
+                                            {% if result.answer.id == answer.id %}
+                                                {% if result.answer.is_true %}
+                                                    <span class="text-success">[Javobingiz to'g'ri]</span>
+                                                {% else %}
+                                                    <span class="text-danger">[Javobingiz noto'g'ri]</span>
+                                                {% endif %}
+
+                                            {% endif %}
+                                        {% endfor %}
+
 
                                     </label>
                                 </li>
@@ -84,14 +98,12 @@
 {% block bottom %}
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
     <script>
-        $("#video_bottom_question").hide();
+        {#$("#video_bottom_question").hide();#}
         var vid = document.getElementById("my-video");
         vid.onloadedmetadata = function () {
-
             vid.ontimeupdate = function () {
                 if (vid.duration == vid.currentTime) {
-                    {#$("#video_bottom_question").show();#}
-
+                    $("#video_bottom_question").fadeIn();
                     $(document).ready(function () {
                         $.ajax({
                             type: "GET",
@@ -107,10 +119,8 @@
                             }
                         });
 
-
                     });
                 }
-
             };
         };
 

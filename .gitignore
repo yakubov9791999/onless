@@ -73,3 +73,10 @@ onless/quiz/migrations/0002_auto_20200608_1854.py
 onless/user/migrations/0010_auto_20200609_1909.py
 onless/user/migrations/0002_auto_20200609_2214.py
 onless/user/migrations/
+onless/video/migrations/0006_auto_20200611_1502.py
+onless/video/migrations/0004_video_school.py
+onless/video/migrations/0005_auto_20200611_1212.py
+onless/video/migrations/0003_remove_video_description.py
+onless/video/migrations/0002_video_is_active.py
+onless/quiz/migrations/0004_auto_20200611_1517.py
+onless/quiz/migrations/0003_question_pub_date.py

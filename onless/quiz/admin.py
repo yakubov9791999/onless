@@ -38,6 +38,17 @@ from .models import *
 # #     save_on_top = True
 #
 # # admin.site.register(Video)
-admin.site.register(Answer)
-admin.site.register(Question)
+
+class ChoiceInline(admin.StackedInline):
+    model = Answer
+    extra = 3
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['title']}),
+    ]
+    inlines = [ChoiceInline]
+
+admin.site.register(Question, QuestionAdmin)
 admin.site.register(ResultQuiz)

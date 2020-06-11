@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-
+from user.models import *
 from quiz.models import User
 
 SECTION_CHOICES = (
@@ -60,13 +60,13 @@ class VideoCategory(models.Model):
 class Video(models.Model):
     title = models.CharField(max_length=250)
     category = models.ForeignKey(VideoCategory, on_delete=models.PROTECT, null=True, related_name='videos')
-    description = models.TextField(max_length=600)
     is_free = models.BooleanField(default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
     likes = models.ManyToManyField(User, related_name='rating_likes', blank=True)
     dislikes = models.ManyToManyField(User, related_name='rating_dislikes', blank=True)
     video = models.FileField(upload_to='video/%Y-%m-%d/')
     photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -95,3 +95,8 @@ class Comment(models.Model):
     text = models.TextField(max_length=800)
 
 
+class Files(models.Model):
+    title = models.CharField(max_length=100,)
+    src = models.FileField(upload_to='file/%Y-%m-%d/')
+    pub_date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)

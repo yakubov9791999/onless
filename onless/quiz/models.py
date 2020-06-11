@@ -19,6 +19,7 @@ class Question(models.Model):
     video = models.ForeignKey(Video, on_delete=models.PROTECT, null=True)
     img = models.ImageField(upload_to='quiz/img/%Y-%m-%d/')
     is_active = models.BooleanField(default=True)
+    pub_date = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
         return self.title

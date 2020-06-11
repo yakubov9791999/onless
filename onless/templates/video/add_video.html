@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row ml-5">
+        <!-- left column -->
+        <div class="col-md-6" style="margin-left: 25%; margin-bottom: 50px">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Video qo'shish</h3>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="POST" action="{% url 'add_video_url' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Asosiy bo'lim:</label>
+                            <select name="mainsection" class="form-control" id="">
+                                {% for mainsection in mainsections %}
+                                    <option value="{{ mainsection.id }}">{{ mainsection.get_title_display }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Ichki bo'lim1:</label>
+                            <select name="section" class="form-control" id="">
+                                {% for section in sections %}
+                                    <option value="{{ section.id }}">{{ section.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Ichki bo'lim2:</label>
+                            <select name="category" class="form-control" id="">
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        {{ form }}
+
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

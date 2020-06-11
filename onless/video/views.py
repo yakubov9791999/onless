@@ -5,6 +5,7 @@ from quiz.models import *
 from user.models import School
 from user.views import *
 from video.models import *
+from video.forms import *
 
 def landing_page(request):
     return render(request, 'landing/index.html')
@@ -13,7 +14,7 @@ def landing_page(request):
 @login_required
 def home(request):
     if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
-        if request.user.avatar != '' and request.user.birthday != '' and request.user.gender != '':
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(profil_edit)
         else:
             return redirect(mainsections_list)
@@ -24,11 +25,17 @@ def home(request):
         })
 
     elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
-        return redirect(profil_edit)
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(profil_edit)
+        else:
+            return redirect(groups_list)
 
 
     elif request.user.role == "2":  # agarda role Direktor  bo'lsa
-        return redirect(profil_edit)
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(profil_edit)
+        else:
+            return redirect(groups_list)
 
     elif request.user.role == "1":  # agarda role admin  bo'lsa
         schools = School.objects.filter(region=request.user.district.region)
@@ -97,3 +104,42 @@ def video_detail(request, id):
         'video': video,
         'questions': questions,
     })
+
+@login_required
+def add_video(request):
+    if request.user.role == '2' or request.user.role == '3':
+        form = AddVideoForm()
+        if request.POST:
+            form = AddVideoForm(request.POST or None, request.FILES or None)
+            if form.is_valid():
+                category = request.POST['category']
+                form = form.save(commit=False)
+                form.category_id = category
+                form.save()
+                messages.success(request, "Video muvaffaqiyatli qo'shildi")
+            else:
+                messages.error(request, "Formani to'ldiring !")
+        else:
+            form = AddVideoForm()
+
+        mainsections = MainSection.objects.all()
+        sections = VideoSection.objects.all()
+        categories = VideoCategory.objects.all()
+        context = {
+            'form': form,
+            'mainsections': mainsections,
+            'sections': sections,
+            'categories': categories,
+        }
+        return render(request, 'video/add_video.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def myvideos_list(request):
+
+
+    context = {
+
+    }
+    return render(request, 'video/myvideos_list.html', context)

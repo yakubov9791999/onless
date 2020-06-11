@@ -100,9 +100,11 @@ def category_detail(request, id):
 def video_detail(request, id):
     video = Video.objects.get(id=id)
     questions = Question.objects.filter(video=video)
+    results = ResultQuiz.objects.filter(question__in=questions, question__video=video, user=request.user)
     return render(request, 'video/video_detail.html', {
         'video': video,
         'questions': questions,
+        'results': results
     })
 
 @login_required

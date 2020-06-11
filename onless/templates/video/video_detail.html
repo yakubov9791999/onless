@@ -52,21 +52,34 @@
                                     <label>
 
 
-                                                <input type="radio" name="answer"   {% for result in results %}{% if result.answer.id == answer.id %} checked  disabled {% else %}disabled{% endif %}    {% endfor %} value="{{ answer.id }}"
-                                                       id="id_answer{{ forloop.counter }}">&nbsp;&nbsp;
+                                        <input type="radio" name="answer"
+                                               {% for result in results %}{% if result.answer.id == answer.id %}checked
+                                               disabled {% else %}disabled{% endif %}    {% endfor %}
+                                               value="{{ answer.id }}"
+                                               id="id_answer{{ forloop.counter }}">&nbsp;&nbsp;
+                                        {% for result in results %}
+                                            {% if result.answer.id == answer.id %}
                                                 {{ answer.text }}
+
+                                            {% else %}
+                                                {% if answer.is_true == False %}
+                                                    <span class="text-danger">{{ answer.text }}</span>
+                                                {% else %}
+                                                    <span class="text-success"> {{ answer.text }}</span>
+
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
 
 
 
                                         {% for result in results %}
                                             {% if result.answer.id == answer.id %}
-                                                {% if result.answer.is_true %}
-                                                    <span class="text-success">[Javobingiz to'g'ri]</span>
-                                                {% else %}
-                                                    <span class="text-danger">[Javobingiz noto'g'ri]</span>
-                                                {% endif %}
+                                                <span class="text-primary">- Sizning javobingiz</span>
 
                                             {% endif %}
+
+
                                         {% endfor %}
 
 

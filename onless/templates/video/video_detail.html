@@ -25,7 +25,7 @@
         </p>
     </video>
     <p id="append"></p>
-    <div class="col-12">
+    <div class="col-12 " id="video_bottom_question">
         {% for question in questions %}
             <div class="privew">
                 <form action="{% url 'add_result_url' %}" method="POST">
@@ -34,14 +34,14 @@
                         <div class="questions">{{ question.title }}
                         </div>
 
-                    {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                                    <a class="close" href="#" data-dismiss="alert">×</a>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
 
                         <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="auto"
                                      height="300px;"
@@ -59,8 +59,8 @@
                                     </label>
                                 </li>
                             {% endfor %}
-                         <input type="hidden" name="next" value="{{ request.path }}">
-                         <input type="hidden" name="question" value="{{ question.id }}">
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="question" value="{{ question.id }}">
                         </ul>
                         <div class="questionsRow">
                             <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish</button>
@@ -84,11 +84,14 @@
 {% block bottom %}
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
     <script>
+        $("#video_bottom_question").hide();
         var vid = document.getElementById("my-video");
         vid.onloadedmetadata = function () {
 
             vid.ontimeupdate = function () {
                 if (vid.duration == vid.currentTime) {
+                    {#$("#video_bottom_question").show();#}
+
                     $(document).ready(function () {
                         $.ajax({
                             type: "GET",

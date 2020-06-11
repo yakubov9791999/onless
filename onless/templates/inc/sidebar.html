@@ -30,14 +30,18 @@
                 {% endif %}
             </div>
             <div class="info">
-                <a href="{% url 'edit_profil_url' %}" class="d-block">{% if request.user.name %}{{ request.user.name }}{% else %}
-                    {{ request.user.username }}{% endif %}</a>
+                <a href="{% url 'edit_profil_url' %}" class="d-block">
+                    {% if request.user.name %}{{ request.user.name }}{% else %}
+                        {{ request.user.username }}{% endif %}</a>
             </div>
         </div>
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                {% if user.is_authenticated and request.user.role == '2' %}
+                {% if user.is_authenticated and request.user.role == '1' %}
+                    {% include 'inc/role_sidebar/videos_page.html' %}
+                    {% include 'inc/role_sidebar/schools_list_page.html' %}
+                {% elif user.is_authenticated and request.user.role == '2' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/myvideos_page.html' %}
                     {% include 'inc/role_sidebar/groups_page.html' %}
@@ -53,11 +57,6 @@
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/myvideos_page.html' %}
                     {% include 'inc/role_sidebar/groups_page.html' %}
-                    {% include 'inc/role_sidebar/settings_page.html' %}
-                {% elif user.is_authenticated and request.user.role == '5'%}
-                    {% include 'inc/role_sidebar/videos_page.html' %}
-                    {% include 'inc/role_sidebar/myvideos_page.html' %}
-                    {% include 'inc/role_sidebar/schools_list_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% endif %}
             </ul>

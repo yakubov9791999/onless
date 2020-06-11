@@ -315,3 +315,8 @@ def search(request):
 @login_required
 def add_school(request):
     return render(request, 'user/add_school.html')
+
+
+@login_required
+def schools_list(request):
+    return render(request, 'inspecion/schools_list.html')

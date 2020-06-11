@@ -18,11 +18,6 @@ def home(request):
             return redirect(profil_edit)
         else:
             return redirect(mainsections_list)
-    elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
-        schools = School.objects.filter(region=request.user.school.region)
-        return render(request, 'inspecion/schools_list.html', {
-            'schools': schools,
-        })
 
     elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
@@ -37,10 +32,10 @@ def home(request):
         else:
             return redirect(groups_list)
 
-    elif request.user.role == "1":  # agarda role admin  bo'lsa
-        schools = School.objects.filter(region=request.user.district.region)
-        return render(request, 'admin/schools_list.html', {
-            'schools': schools,
+    elif request.user.role == "1":  # agarda role inspeksiya  bo'lsa
+        # schools = School.objects.filter(region=request.user.district.region)
+        return render(request, 'inspecion/schools_list.html', {
+            # 'schools': schools,
         })
 
 

@@ -45,7 +45,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li class="breadcrumb-item"><a href="{% url 'video_mainsections_list_url' %}">Bosh sahifa</a></li>
                                 {% block mainsections_list %}{% endblock %}
                                 {% block mainsection_detail %}{% endblock %}
-                                <li class="breadcrumb-item " aria-current="page">Data</li>
+{#                                <li class="breadcrumb-item " aria-current="page">Data</li>#}
 
                             </ol>
                         </nav>
@@ -61,8 +61,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-1" style="margin-left: 25px"><img
                                             src="{% static 'online/car.jpg' %}" height="50px" width="50px"></div>
                                 {% endif %}
-                                <div class="col-10 mt-2"><h1 class="text-dark">{% if request.user.school.title %}
-                                    {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h1>
+                                <div class="col-10 mt-2"><h3 class="text-dark">{% if request.user.school.title %}
+                                    {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h3>
                                 </div>
                             </div>
                         {% endif %}

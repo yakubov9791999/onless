@@ -7,13 +7,13 @@
             {% for video in videos %}
                     <a href="{{ video.category.get_absolute_url }}">
                         <div class="col-lg-3 col-md-3 col-sm-4">
-                            <div class="thumbnail img-thumb-bg" style="background: url('{% if video.category.photo %}{{ video.category.photo.url }}{% endif %}'); background-size: 100%">
+                            <div class="thumbnail img-thumb-bg" style="background: url('{% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: 100%">
                                 <div class="overlay-exists"></div>
                                 {#                        <div class="overlay-noexists"></div>#}
                                 <div class="caption">
-                                    <div class="tag"><a href="{{ video.category.get_absolute_url }}">{{ video.category.title }} </a>
-                                    </div>
-                                    <div class="title"><a href="{{ video.category.get_absolute_url }}">{{ video.category.title }}</a>
+{#                                    <div class="tag"><a href="{{ video.get_absolute_url }}"> </a>#}
+{#                                    </div>#}
+                                    <div class="title"><a href="{{ video.get_absolute_url }}">{{ video.title }}</a>
                                     </div>
                                 </div>
                             </div>

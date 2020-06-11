@@ -139,9 +139,9 @@ def add_video(request):
 
 @login_required
 def myvideos_list(request):
-
-
+    videos = Video.objects.all()
+    print(videos)
     context = {
-
+        'videos': videos
     }
     return render(request, 'video/myvideos_list.html', context)

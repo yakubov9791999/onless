@@ -11,6 +11,7 @@ from django.views.generic import UpdateView
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
+
 from django.db import IntegrityError
 
 #
@@ -22,7 +23,7 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/home/')
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
             return HttpResponseRedirect('/accounts/login/')

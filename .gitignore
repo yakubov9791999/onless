@@ -80,3 +80,4 @@ onless/video/migrations/0003_remove_video_description.py
 onless/video/migrations/0002_video_is_active.py
 onless/quiz/migrations/0004_auto_20200611_1517.py
 onless/quiz/migrations/0003_question_pub_date.py
+onless/video/migrations/

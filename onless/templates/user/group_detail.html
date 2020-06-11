@@ -31,7 +31,7 @@
 
                         {% for pupil in pupils %}
                             <tr>
-                                <td>1</td>
+                                <td>{{ forloop.counter }}</td>
                                 <td><b>{{ pupil.name }}</b></td>
                                 <td>{{ pupil.year }}</td>
                                 <td>{{ pupil.address }}</td>

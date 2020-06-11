@@ -1,0 +1,122 @@
+{
+  "settings": {
+    "name": "My Site",
+    "currentPage": "index.html",
+    "theme": {
+      "name": "mobirise4",
+      "title": "Mobirise 4",
+      "styling": {
+        "primaryColor": "#149dcc",
+        "secondaryColor": "#ff3366",
+        "successColor": "#F7ED4A",
+        "infoColor": "#82786E",
+        "warningColor": "#879A9F",
+        "dangerColor": "#B1A374",
+        "mainFont": "Rubik",
+        "display1Font": "Rubik",
+        "display1Size": 4.25,
+        "display2Font": "Rubik",
+        "display2Size": 3,
+        "display5Font": "Rubik",
+        "display5Size": 1.5,
+        "display7Font": "Rubik",
+        "display7Size": 1,
+        "display4Font": "Rubik",
+        "display4Size": 1,
+        "isRoundedButtons": true,
+        "isAnimatedOnScroll": false,
+        "isScrollToTopButton": false
+      }
+    },
+    "path": "@PROJECT_PATH@",
+    "siteFonts": [
+      {
+        "css": "'Rubik', sans-serif",
+        "name": "Rubik",
+        "url": "https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i,700,700i,900,900i"
+      }
+    ],
+    "versionFirst": "4.7.6",
+    "uniqCompNum": 11,
+    "versionPublish": "4.12.3",
+    "imageResize": true,
+    "screenshot": "screenshot.png"
+  },
+  "pages": {
+    "index.html": {
+      "settings": {
+        "main": true,
+        "title": "Home",
+        "meta_descr": "",
+        "header_custom": "",
+        "footer_custom": "",
+        "html_before": ""
+      },
+      "components": [
+        {
+          "alias": false,
+          "_styles": {
+            "& when not (@fullScreen)": {
+              "padding-top": "(@paddingTop * 15px)",
+              "padding-bottom": "(@paddingBottom * 15px)"
+            },
+            "& when (@bg-type = 'image')": {
+              "background-image": "url(@bg-value)"
+            },
+            ".form-control, .form-control:focus": {
+              "background": "@inputBg",
+              "border": "1px solid @borderColor"
+            },
+            "& when (@bg-type = 'color')": {
+              "background-color": "@bg-value"
+            },
+            ".form-container": {
+              "transition": "all .2s",
+              "border": "1px solid @borderColor",
+              "padding": "1rem",
+              "& when (@bgForm)": {
+                "background": "linear-gradient(@formColor1, @formColor2)",
+                "border": "none"
+              }
+            },
+            "textarea.form-control": {
+              "min-height": "188px"
+            },
+            ".input-group-btn": {
+              "justify-content": "center",
+              "-webkit-justify-content": "center"
+            },
+            ".content-container when not (@reverseContent)": {
+              "@media (min-width: 768px)": {
+                "padding-right": "5rem"
+              }
+            },
+            ".row when (@reverseContent)": {
+              "flex-direction": "row-reverse",
+              "-webkit-flex-direction": "row-reverse",
+              ".content-container": {
+                "@media (min-width: 768px)": {
+                  "padding-left": "5rem"
+                }
+              }
+            },
+            "H1": {
+              "text-align": "center"
+            },
+            ".mbr-text, .mbr-section-btn": {
+              "text-align": "center"
+            }
+          },
+          "_name": "header15",
+          "_customHTML": "<section class=\"header15\" group=\"Headers\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{\n         'mbr-fullscreen': fullScreen,\n         'mbr-parallax-background': bg.parallax}\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"checkbox\" title=\"Полный экран\" name=\"fullScreen\" checked>\n        <input type=\"range\" inline title=\"Сверху\" name=\"paddingTop\" min=\"0\" max=\"9\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline title=\"Снизу\" name=\"paddingBottom\" min=\"0\" max=\"9\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"checkbox\" title=\"Стрелка\" name=\"showArrow\">\n        <input type=\"checkbox\" title=\"Название\" name=\"showTitle\" checked>\n        <input type=\"checkbox\" title=\"Текст\" name=\"showText\" checked>\n        <input type=\"color\" title=\"Input Background\" name=\"inputBg\" value=\"#ffffff\">\n        <input type=\"color\" title=\"Border Color\" name=\"borderColor\" value=\"#ffffff\">\n        <input type=\"checkbox\" title=\"Фон формы\" name=\"bgForm\">\n        <input type=\"color\" title=\"Форма Цвет 1\" name=\"formColor1\" value=\"#ff7f9f\" condition=\"bgForm\">\n        <input type=\"color\" title=\"Форма Цвет 2\" name=\"formColor2\" value=\"#55b4d4\" condition=\"bgForm\">\n        <input type=\"checkbox\" title=\"Form On Right/Left\" name=\"reverseContent\">\n\n        <fieldset type=\"background\" name=\"bg\" parallax>\n            <input type=\"image\" title=\"Фоновое изображение\" value=\"@PROJECT_PATH@/assets/images/mbr-1920x1275.jpg\" parallax selected>\n            <input type=\"color\" title=\"Цвет фона\" value=\"#073B4C\">\n            <input type=\"video\" title=\"Фоновое видео\" value=\"https://www.youtube.com/watch?v=36YgDDJ7XSc\">\n        </fieldset>\n        <input type=\"checkbox\" title=\"Наложение\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n        <input type=\"color\" title=\"Цвет наложения\" name=\"overlayColor\" value=\"#073b4c\" condition=\"overlay && bg.type !== 'color'\">\n        <input type=\"range\" inline title=\"Прозрачность\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.5\" condition=\"overlay && bg.type !== 'color'\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\n    <div class=\"container align-right\">\n        <div class=\"row\">\n            <div class=\"mbr-white col-lg-8 col-md-7 content-container\">\n                <h1 class=\"mbr-section-title mbr-bold pb-3 mbr-fonts-style\" mbr-theme-style=\"display-1\" mbr-if=\"showTitle\">\n                    Onless.uz</h1>\n                <p class=\"mbr-text pb-3 mbr-fonts-style\" mbr-theme-style=\"display-5\" mbr-if=\"showText\" data-app-selector=\".mbr-text, .mbr-section-btn\">\n                    Agarda siz avtomaktabingizda online&nbsp;o'qitish tizimini joriy etmoqchi bo'lsangiz, avtomaktabingiz haqidagi ma'lumotlarni bizga jo'nating va tez orada biz siz bilan bog'lanamiz.</p>\n            </div>\n            <div class=\"col-lg-4 col-md-5\">\n                <div class=\"form-container\">\n                    <div mbr-form class=\"media-container-column\">\n                        <!---Formbuilder Form--->\n                        <form action name=\"Mobirise Form\" method=\"POST\" class=\"mbr-form form-with-styler\">\n                            <div class=\"row\">\n                                <div hidden=\"hidden\" data-form-alert class=\"alert alert-success col-12\">Спасибо за заполнение анкеты!</div>\n                                <div hidden=\"hidden\" data-form-alert-danger class=\"alert alert-danger col-12\">\n                                </div>\n                            </div>\n                            <div class=\"dragArea row\">\n                                <div class=\"col-md-12 form-group \" data-for=\"name\">\n                                    <input type=\"text\" name=\"name\" placeholder=\"Name\" data-form-field=\"Name\" mbr-theme-style=\"display-7\" required=\"required\" class=\"form-control px-3\">\n                                </div>\n                                <div class=\"col-md-12 form-group \" data-for=\"email\">\n                                    <input type=\"email\" name=\"email\" placeholder=\"Email\" data-form-field=\"Email\" mbr-theme-style=\"display-7\" required=\"required\" class=\"form-control px-3\">\n                                </div>\n                                <div data-for=\"phone\" class=\"col-md-12 form-group \">\n                                    <input type=\"tel\" name=\"phone\" placeholder=\"Phone\" data-form-field=\"Phone\" mbr-theme-style=\"display-7\" class=\"form-control px-3\">\n                                </div>\n                                <div data-for=\"message\" class=\"col-md-12 form-group \">\n                                    <textarea name=\"message\" placeholder=\"Message\" data-form-field=\"Message\" mbr-theme-style=\"display-7\" class=\"form-control px-3\"></textarea>\n                                </div>\n                                <div class=\"col-md-12 input-group-btn \" mbr-buttons=\"true\" mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove,-mbrBtnLink,-mbrBtnAdd\">\n                                    <a type=\"submit\" class=\"btn btn-secondary btn-form\">ОТПРАВИТЬ</a>\n                                </div>\n                            </div>\n                        </form><!---Formbuilder Form--->\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div mbr-if=\"showArrow\" class=\"mbr-arrow hidden-sm-down\" aria-hidden=\"true\">\n        <a href=\"#next\">\n            <i class=\"mbri-down mbr-iconfont\"></i>\n        </a>\n    </div>\n</section>",
+          "_cid": "s1rCQZefXB",
+          "_anchor": "header15-7",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        }
+      ]
+    }
+  }
+}

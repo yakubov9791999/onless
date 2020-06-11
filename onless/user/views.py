@@ -27,152 +27,181 @@ def user_login(request):
             messages.error(request, "Login yoki parol noto'g'ri!")
             return HttpResponseRedirect('/accounts/login/')
 
-
+@login_required
 def add_list(request):
-    return render(request, 'user/add_list.html')
+    if request.user.role == '2' or request.user.role == '3':
+        return render(request, 'user/add_list.html')
+    else:
+        return render(request, 'inc/404.html')
 
+@login_required
 def settings_list(request):
     return render(request, 'user/settings_list.html')
 
+@login_required
 def add_teacher(request):
-    if request.method == 'POST':
-        form = AddUserForm(data=request.POST)
-        password = random.randint(1000000, 9999999)
-        if form.is_valid():
-            try:
-                user = User.objects.create_user(
-                    username=request.POST['pasport'],
-                    school=request.user.school,
-                    turbo=password,
-                    password=password,
-                    name=form.cleaned_data['name'],
-                    phone=form.cleaned_data['phone'],
-                    role='3',
-                    is_superuser=False,
-                )
-                user.set_password(password)
-                user.username = request.POST['pasport']
-                user.email = ''
-                user.save()
-                messages.success(request, "O'qituvchi muvaffaqiyatli qo'shildi")
-            except IntegrityError:
-                messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+    if request.user.role == '2' or request.user.role == '3':
+        if request.method == 'POST':
+            form = AddUserForm(data=request.POST)
+            password = random.randint(1000000, 9999999)
+            if form.is_valid():
+                try:
+                    user = User.objects.create_user(
+                        username=request.POST['pasport'],
+                        school=request.user.school,
+                        turbo=password,
+                        password=password,
+                        name=form.cleaned_data['name'],
+                        phone=form.cleaned_data['phone'],
+                        role='3',
+                        is_superuser=False,
+                    )
+                    user.set_password(password)
+                    user.username = request.POST['pasport']
+                    user.email = ''
+                    user.save()
+                    messages.success(request, "O'qituvchi muvaffaqiyatli qo'shildi")
+                except IntegrityError:
+                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Formani to'liq to'ldiring !")
         else:
-            messages.error(request, "Formani to'liq to'ldiring !")
+            form = AddUserForm(request)
+        return render(request, 'user/add_teacher.html', )
     else:
-        form = AddUserForm(request)
-    return render(request, 'user/add_teacher.html', )
+        return render(request, 'inc/404.html')
 
-
+@login_required
 def add_pupil(request):
-    groups = Group.objects.all()
+    if request.user.role == '2' or request.user.role == '3':
+        groups = Group.objects.all()
 
-    context = {
-        'groups': groups,
+        context = {
+            'groups': groups,
 
-    }
-    form = AddUserForm()
-    context = {
-        'groups': groups,
-        'form': form,
-    }
-    if request.method == 'POST':
-        form = AddUserForm(data=request.POST)
-        group = Group.objects.get(id=request.POST['group'])
-        parol = random.randint(1000000,9999999)
-        if form.is_valid():
-            try:
-                user = User.objects.create_user(
-                    username=request.POST['pasport'],
-                    school=request.user.school,
-                    turbo=parol,
-                    password=parol,
-                    name=form.cleaned_data['name'],
-                    phone=form.cleaned_data['phone'],
-                    role='4',
-                    group=group,
-                    is_superuser=False,
-                                )
-                user.set_password(parol)
-                user.username = request.POST['pasport']
-                user.email = ''
-                user.save()
-                messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
-            except IntegrityError:
-                messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
-        else:
-            messages.error(request, "Formani to'liq to'ldiring !")
-    else:
+        }
         form = AddUserForm()
-    return render(request, 'user/add_pupil.html', context)
+        context = {
+            'groups': groups,
+            'form': form,
+        }
+        if request.method == 'POST':
+            form = AddUserForm(data=request.POST)
+            group = Group.objects.get(id=request.POST['group'])
+            parol = random.randint(1000000,9999999)
+            if form.is_valid():
+                try:
+                    user = User.objects.create_user(
+                        username=request.POST['pasport'],
+                        school=request.user.school,
+                        turbo=parol,
+                        password=parol,
+                        name=form.cleaned_data['name'],
+                        phone=form.cleaned_data['phone'],
+                        role='4',
+                        group=group,
+                        is_superuser=False,
+                                    )
+                    user.set_password(parol)
+                    user.username = request.POST['pasport']
+                    user.email = ''
+                    user.save()
+                    messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
+                except IntegrityError:
+                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Formani to'liq to'ldiring !")
+        else:
+            form = AddUserForm()
+        return render(request, 'user/add_pupil.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
+@login_required
 def add_group(request):
-    teachers = User.objects.filter(role=3)
-    school = School.objects.get(users=request.user)
-    context = {
-        'teachers': teachers,
-    }
-    if request.POST:
-        form = AddGroupForm(request.POST)
-        if form.is_valid():
-            number = form.cleaned_data['number']
-            category = request.POST['category']
-            teacher = form.cleaned_data['teacher']
-            form = form.save(commit=False)
-            form.number = number
-            form.category = category
-            form.teacher = teacher
-            form.school_id = school.id
-            form.start = request.POST['start']
-            form.stop = request.POST['stop']
-            form.save()
-            messages.success(request, "Guruh qo'shildi")
+    if request.user.role == '2' or request.user.role == '3':
+        teachers = User.objects.filter(role=3)
+        school = School.objects.get(users=request.user)
+        context = {
+            'teachers': teachers,
+        }
+        if request.POST:
+            form = AddGroupForm(request.POST)
+            if form.is_valid():
+                number = form.cleaned_data['number']
+                category = request.POST['category']
+                teacher = form.cleaned_data['teacher']
+                form = form.save(commit=False)
+                form.number = number
+                form.category = category
+                form.teacher = teacher
+                form.school_id = school.id
+                form.start = request.POST['start']
+                form.stop = request.POST['stop']
+                form.save()
+                messages.success(request, "Guruh qo'shildi")
+        else:
+            form = AddGroupForm()
+        return render(request, 'user/add_group.html', context)
     else:
-        form = AddGroupForm()
-    return render(request, 'user/add_group.html', context)
+        return render(request, 'inc/404.html')
 
-
+@login_required
 def groups_list(request):
-    groups = Group.objects.filter(school=request.user.school, is_active=True)
-    context = {
-        'groups': groups,
-    }
-    return render(request, 'user/groups_list.html', context)
-
-
-def group_detail(request, id):
-    group = Group.objects.get(id=id)
-    pupils = User.objects.filter(role=4, group=group)
-    for pupil in pupils:
-        test_answers = ResultQuiz.objects.filter(user=pupil)
-        print(test_answers)
-
-    context = {
-        'group': group,
-        'pupils': pupils,
-    }
-    return render(request, 'user/group_detail.html', context)
-
-def group_delete(request, id):
-    group = Group.objects.get(id=id)
-    if group.group_user.count() > 5:
-        group.is_active = False
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
+        groups = Group.objects.filter(school=request.user.school, is_active=True)
+        context = {
+            'groups': groups,
+        }
+        return render(request, 'user/groups_list.html', context)
     else:
-        try:
+        return render(request, 'inc/404.html')
+
+@login_required
+def group_detail(request, id):
+    if request.user.role == '2' or request.user.role == '3':
+        group = Group.objects.get(id=id)
+        pupils = User.objects.filter(role=4, group=group)
+        for pupil in pupils:
+            test_answers = ResultQuiz.objects.filter(user=pupil)
+            print(test_answers)
+
+        context = {
+            'group': group,
+            'pupils': pupils,
+        }
+        return render(request, 'user/group_detail.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def group_delete(request, id):
+    if request.user.role == '2' or request.user.role == '3':
+        group = Group.objects.get(id=id)
+        if group.group_user.count() > 2:
+            group.is_active = False
+            group.save()
+        else:
+            print('else')
             group.delete()
-        except ProtectedError:
-            messages.error(request, "Guruhni o'chirib bo'lmaydi. Guruhda o'qiydigan o'quvchilar mavjud")
-    return redirect(groups_list)
+        return redirect(groups_list)
+    else:
+        return render(request, 'inc/404.html')
 
+@login_required
 def group_update(request, id):
-    group = Group.objects.get(id=id)
-    form = GroupUpdateForm(instance=group)
-    context = {
-        'form': form,
-        'group': group,
-    }
-    return render(request, 'user/group_update.html', context)
+    if request.user.role == '2' or request.user.role == '3':
+        group = Group.objects.get(id=id)
+        form = GroupUpdateForm(instance=group)
+        context = {
+            'form': form,
+            'group': group,
+        }
+        return render(request, 'user/group_update.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
+@login_required
 def profil_edit(request):
     user = get_object_or_404(User, id=request.user.id)
     form = EditUserForm(instance=user)
@@ -193,24 +222,28 @@ def profil_edit(request):
 
 
 
-
+@login_required
 def school_edit(request):
-    school = School.objects.get(id=request.user.school.id)
-    form = EditSchoolForm(instance=request.user.school)
-    if request.POST:
-        form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-        else:
-            messages.success(request, "Formani to'ldirishda xatolik !")
-    else:
+    if request.user.role == '2' or request.user.role == '3':
+        school = School.objects.get(id=request.user.school.id)
         form = EditSchoolForm(instance=request.user.school)
-    context = {
-        'form': form
-    }
-    return render(request, 'user/school_edit.html', context)
+        if request.POST:
+            form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+            else:
+                messages.success(request, "Formani to'ldirishda xatolik !")
+        else:
+            form = EditSchoolForm(instance=request.user.school)
+        context = {
+            'form': form
+        }
+        return render(request, 'user/school_edit.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
+@login_required
 def contact(request):
     if request.POST or None:
         form = AddContactForm(request.POST or None, request.FILES or None)
@@ -226,6 +259,7 @@ def contact(request):
         form = AddContactForm()
     return render(request, 'user/contact.html')
 
+@login_required
 def search(request):
     query = request.GET.get('q', False).lower()
 
@@ -276,3 +310,7 @@ def search(request):
         context.update(count=count)
         context.update(results=results)
     return render(request, 'user/search_result.html', context)
+
+@login_required
+def add_school(request):
+    return render(request, 'user/add_school.html')

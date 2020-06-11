@@ -18,4 +18,5 @@ urlpatterns = [
     path('school_edit/', school_edit, name='edit_school_url'),
     path('contact/', contact, name='contact_url'),
     path('search/', search, name='search_url'),
+    path('add_school/', add_school, name='add_school_url'),
 ]

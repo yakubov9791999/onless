@@ -26,8 +26,9 @@
                             <th>Guruh rahbari</th>
                             <th>O'qish boshlanishi</th>
                             <th>O'qish yakunlanishi</th>
+                            {% if request.user.role == '2' or request.user.role == '3' %}
                             <th>Tahrirlash</th>
-
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -36,11 +37,18 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                    <a href="{% url 'group_detail_url' group.id %}"><b>{{ group.category }}-{{ group.number }} {{ group.year }}</b></a>
+                                    {% if request.user.role == '2' or request.user.role == '3' %}
+                                    <a href="{% url 'group_detail_url' group.id %}">
+                                        <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
+                                    </a>
+                                    {% else %}
+                                        <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
+                                    {% endif %}
                                 </td>
                                 <td>{{ group.teacher }}</td>
                                 <td>{{ group.start }}</td>
                                 <td>{{ group.stop }}</td>
+                                {% if request.user.role == '2' or request.user.role == '3' %}
                                 <td>
                                     &nbsp;
                                     <a href="{% url 'group_detail_url' group.id %}"><i class="fas fa-eye"
@@ -51,6 +59,7 @@
                                     <a href="{% url 'group_delete_url' group.id %}"><i class="fa fa-trash"
                                                                                        style="font-size: 150%;"></i></a>
                                 </td>
+                            {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

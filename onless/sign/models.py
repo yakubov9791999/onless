@@ -1,17 +1,16 @@
 from django.db import models
 
 CHOICES = (
-    ('1','Ogohlantiruvchi belgilar'),
-    ('2','Imtiyoz belgilari'),
-    ('3','Taqiqlovchi belgilar'),
-    ('4','Buyuruvchi belgilar'),
-    ('5','Axborot Ishora belgilari'),
-    ('6','Servis belgilari'),
-    ('7',"Qo'shimcha Axborot belgilari"),
+    ('1', 'Ogohlantiruvchi belgilar'),
+    ('2', 'Imtiyoz belgilari'),
+    ('3', 'Taqiqlovchi belgilar'),
+    ('4', 'Buyuruvchi belgilar'),
+    ('5', 'Axborot Ishora belgilari'),
+    ('6', 'Servis belgilari'),
+    ('7', "Qo'shimcha Axborot belgilari"),
 )
 
 
-# Create your models here.
 class SignCategory(models.Model):
     title = models.CharField(choices=CHOICES, max_length=30)
     text = models.TextField(max_length=5000, blank=True)

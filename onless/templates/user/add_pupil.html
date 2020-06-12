@@ -19,7 +19,7 @@
                 {% endif %}
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form role="form" method="POST" action="{% url 'add_pupil_url' %}">
+                <form role="form" method="POST" action="{% url 'user:add_pupil' %}">
                     {% csrf_token %}
                     <div class="card-body">
 

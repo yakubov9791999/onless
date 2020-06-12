@@ -22,7 +22,7 @@
 
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form method="POST" action="{% url 'edit_school_url' %}"
+                <form method="POST" action="{% url 'user:edit_school' %}"
                       enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="card-body">

@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
     <div class="container-fluid">
-        <div class="row mt-3">
+        <div class="row">
             {% for video in videos %}
                 <a href="{% url 'video:video_detail' video.id %}">
-                    <div class="col-lg-3 col-md-3 col-sm-4">
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-5">
                         <div class="thumbnail img-thumb-bg" style="background: url('{% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: 100%">
                             {% if request.user.user_view_complete.exists %}
                                 <div class="overlay-exists"></div>
@@ -14,8 +13,11 @@
                                 <div class="overlay-noexists"></div>
                             {% endif %}
                             <div class="caption">
+{#                                <div class="tag"><a#}
+{#                                        href="{% url 'video:category_detail' video.id %}">{{ video.title }} </a>#}
+{#                                </div>#}
                                 <div class="title"><a
-                                        href="{% url 'video:video_detail' video.id %}">{{ video.title }}</a>
+                                        href="{% url 'video:category_detail' video.id %}">{{ video.title }} </a>
                                 </div>
                             </div>
                         </div>
@@ -24,5 +26,4 @@
             {% endfor %}
         </div>
     </div>
-
 {% endblock content %}

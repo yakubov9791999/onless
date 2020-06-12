@@ -102,6 +102,7 @@ def add_pupil(request):
                 try:
                     user = User.objects.create_user(
                         username=request.POST['pasport'],
+                        pasport=request.POST['pasport'],
                         school=request.user.school,
                         turbo=parol,
                         password=parol,

@@ -1,29 +1,23 @@
 {% extends 'base.html' %}
-{% load prev_next_tags %}
-
-{% block mainsection_detail %}
-    <li class="breadcrumb-item active"><a href="{% url 'video_categories_list_url' %}">{{ section.title }}</a></li>
-{% endblock %}
 
 {% block content %}
-    <a href="{% url "video_categories_list_url" %}"><b>Darslar ro'yhatiga qaytish</b></a>
-
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
         <div class="row">
             {% for category in categories %}
-                 {{ category.videos.count }}
-                 {{ vide.video_section.count }}
-
-                <a href="{{ category.get_absolute_url }}">
-                    <div style="display: block" class="col-lg-3 col-md-3 col-sm-4">
+                {% if videos %}
+                <a href="{% url 'video:videos_list' category.id %}">
+                {% else %}
+                <a href="{% url 'video:category_detail' category.id %}">
+                {% endif %}
+                    <div class="col-lg-{% if category.categories %}4{% else %}6{% endif %} col-md-6 col-sm-6 mb-5">
                         <div class="thumbnail img-thumb-bg" style="background: url('{% if category.photo %}{{ category.photo.url }}{% endif %}'); background-size: 100%">
                             <div class="overlay-exists"></div>
-                            {#                        <div class="overlay-noexists"></div>#}
-
                             <div class="caption">
-                                <div class="tag"><a href="{{ category.get_absolute_url }}">{{ category.section.title }} </a>
+                                <div class="tag"><a
+                                        href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>
                                 </div>
-                                <div class="title"><a href="{{ category.get_absolute_url }}">{{ category.title }} </a>
+                                <div class="title"><a
+                                        href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>
                                 </div>
                             </div>
                         </div>
@@ -31,7 +25,5 @@
                 </a>
             {% endfor %}
         </div>
-
     </div>
-
 {% endblock content %}

@@ -38,7 +38,7 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
-                                    <a href="{% url 'group_detail_url' group.id %}">
+                                    <a href="{% url 'user:group_detail' group.id %}">
                                         <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
                                     </a>
                                     {% else %}
@@ -51,12 +51,12 @@
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                 <td>
                                     &nbsp;
-                                    <a href="{% url 'group_detail_url' group.id %}"><i class="fas fa-eye"
+                                    <a href="{% url 'user:group_detail' group.id %}"><i class="fas fa-eye"
                                                                                        style="font-size: 150%;"></i></a>
                                     &nbsp;
-                                    <a href="{% url 'group_update_url' group.id %}"><i class="fa fa-edit" style="font-size: 150%;"></i> </a>
+                                    <a href="{% url 'user:group_update' group.id %}"><i class="fa fa-edit" style="font-size: 150%;"></i> </a>
                                     &nbsp;
-                                    <a href="{% url 'group_delete_url' group.id %}"><i class="fa fa-trash"
+                                    <a href="{% url 'user:group_delete' group.id %}"><i class="fa fa-trash"
                                                                                        style="font-size: 150%;"></i></a>
                                 </td>
                             {% endif %}

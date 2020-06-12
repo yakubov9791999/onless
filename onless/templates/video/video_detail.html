@@ -32,7 +32,7 @@
     <div class="col-12 " id="video_bottom_question">
         {% for question in questions %}
             <div class="privew">
-                <form action="{% url 'add_result_url' %}" method="POST">
+                <form action="{% url 'quiz:add_result' %}" method="POST">
                     {% csrf_token %}
                     <div class="questionsBox">
                         <div class="questions">{{ question.title }}
@@ -111,7 +111,7 @@
                     $(document).ready(function () {
                         $.ajax({
                             type: "GET",
-                            url: "{% url 'add_duration' %}",
+                            url: "{% url 'video:add_duration' %}",
                             data: {
                                 'video': {{ video.id }} // from form
                             },

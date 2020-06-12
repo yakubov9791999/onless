@@ -19,7 +19,7 @@
                 {% endif %}
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form role="form" method="POST" action="{% url 'group_update_url' group.id %}">
+                <form role="form" method="POST" action="{% url 'user:group_update' group.id %}">
                     {% csrf_token %}
                     <div class="card-body">
 

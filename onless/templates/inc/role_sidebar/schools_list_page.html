@@ -1,5 +1,5 @@
 <li class="nav-item has-treeview">
-    <a href="{% url 'schools_list_url' %}" class="nav-link {% if request.resolver_match.url_name == 'groups_list_url' %}active{% endif %}">
+    <a href="{% url 'user:schools_list' %}" class="nav-link {% if request.resolver_match.url_name == 'groups_list' %}active{% endif %}">
         <i class="nav-icon fas fa-th"></i>
         <p>
             &nbsp;Avtomaktablar

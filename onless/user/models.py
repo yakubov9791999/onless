@@ -147,7 +147,7 @@ GENDER_CHOICES = (
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
-    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='users', blank=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='school_user', blank=True)
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True, default='')
     avatar = models.ImageField(upload_to='user/', default='', blank=True)

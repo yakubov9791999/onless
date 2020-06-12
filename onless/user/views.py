@@ -49,6 +49,7 @@ def add_teacher(request):
                 try:
                     user = User.objects.create_user(
                         username=request.POST['pasport'],
+                        pasport = request.POST['pasport'],
                         school=request.user.school,
                         turbo=password,
                         password=password,
@@ -122,7 +123,6 @@ def add_pupil(request):
 def add_group(request):
     if request.user.role == '2' or request.user.role == '3':
         teachers = User.objects.filter(role=3)
-        school = School.objects.get(users=request.user)
         context = {
             'teachers': teachers,
         }
@@ -136,7 +136,7 @@ def add_group(request):
                 form.number = number
                 form.category = category
                 form.teacher = teacher
-                form.school_id = school.id
+                form.school = request.user.school
                 form.start = request.POST['start']
                 form.stop = request.POST['stop']
                 form.save()

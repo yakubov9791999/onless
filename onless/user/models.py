@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 
+
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
     ext = filename.split('.')[-1]
@@ -53,7 +54,7 @@ class UserManager(BaseUserManager):
 
 
 class Region(models.Model):
-    title = models.CharField('Nomi',max_length=255)
+    title = models.CharField('Nomi', max_length=255)
     sort = models.IntegerField(blank=True, default=1)
 
     def __str__(self):
@@ -65,28 +66,30 @@ class Region(models.Model):
 
 
 class District(models.Model):
-    title = models.CharField('Nomi',max_length=255)
+    title = models.CharField('Nomi', max_length=255)
     region = models.ForeignKey(Region, verbose_name='Tuman', on_delete=models.CASCADE)
     sort = models.IntegerField(blank=True, default=1)
 
     def __str__(self):
         return self.title
 
-
     class Meta:
         verbose_name = 'Tuman'
         verbose_name_plural = 'Tumanlar'
 
+
 class School(models.Model):
-    title = models.CharField(verbose_name='Nomi',max_length=255)
-    director_fio = models.CharField(verbose_name='Rahbar nomi',max_length=255, blank=True)
-    phone = models.CharField('Tel',max_length=20, blank=True)
-    logo = models.ImageField('Rasm',upload_to='school/')
-    district = models.ForeignKey(District,verbose_name='Viloyat',on_delete=models.CASCADE, related_name='school_distrinct', null=True)
-    region = models.ForeignKey(Region,verbose_name='Tuman', on_delete=models.CASCADE, related_name='school_region', null=True)
-    schet = models.IntegerField(null=True, validators=[MaxValueValidator(99999999999999999999)], blank=True)
+    title = models.CharField(verbose_name='Nomi', max_length=255)
+    director_fio = models.CharField(verbose_name='Rahbar nomi', max_length=255, blank=True)
+    phone = models.CharField('Tel', max_length=20, blank=True)
+    logo = models.ImageField('Rasm', upload_to='school/')
+    region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.CASCADE, related_name='school_region',
+                               null=True)
+    district = models.ForeignKey(District, verbose_name='Tuman', on_delete=models.CASCADE,
+                                 related_name='school_district', null=True)
+    schet = models.CharField(null=True, max_length=255, validators=[MaxValueValidator(99999999999999999999)], blank=True)
     mfo = models.CharField(null=True, validators=[MaxValueValidator(99999)], blank=True, max_length=5)
-    bank = models.CharField(null=True,blank=True, max_length=50)
+    bank = models.CharField(null=True, blank=True, max_length=50)
     reg_date = models.DateTimeField(auto_now_add=True)
     is_amet = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -94,9 +97,10 @@ class School(models.Model):
     sms_token = models.CharField(max_length=255, blank=True)
     sms_password = models.CharField(max_length=255, blank=True)
     kredit = models.IntegerField(null=True, blank=True)
-
+ 
     def __str__(self):
         return self.title
+
 
 CATEGORY_CHOICES = (
     ("A", "A"),
@@ -108,23 +112,24 @@ CATEGORY_CHOICES = (
 )
 
 
-
-
 class Group(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=15, default="B")
     number = models.IntegerField()
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
-    teacher = models.ForeignKey('User',verbose_name="O'qituvchi", on_delete=models.CASCADE, related_name='group_teacher')
-    school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name="Avtomaktab", related_name='groups', null=True)
-    start = models.DateField(verbose_name="O'qish boshlanishi",auto_now=False)
-    stop = models.DateField(verbose_name="O'qish tugashi",auto_now=False)
+    teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.CASCADE,
+                                related_name='group_teacher')
+    school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name="Avtomaktab", related_name='groups',
+                               null=True)
+    start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
+    stop = models.DateField(verbose_name="O'qish tugashi", auto_now=False)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.category}-{self.number}"
 
     def get_absolute_url(self):
-        return reverse('group_detail_url', kwargs={'id': self.id })
+        return reverse('group_detail_url', kwargs={'id': self.id})
+
 
 ROLE_CHOICES = (
     ("1", "Inspeksiya"),
@@ -138,6 +143,7 @@ GENDER_CHOICES = (
     ('W', 'Ayol'),
 )
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
@@ -145,7 +151,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True, default='')
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
-    birthday = models.DateField( blank=True, null=True, default=datetime.date.today)
+    birthday = models.DateField(blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999)])
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_user', blank=True, null=True)

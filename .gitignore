@@ -83,3 +83,4 @@ onless/quiz/migrations/0003_question_pub_date.py
 onless/video/migrations/
 onless/quiz/migrations/
 onless/media/category/
+onless/media/school/

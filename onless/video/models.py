@@ -22,7 +22,7 @@ class Video(models.Model):
         default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
     likes = models.ManyToManyField(User, related_name='rating_likes', blank=True)
     dislikes = models.ManyToManyField(User, related_name='rating_dislikes', blank=True)
-    video = models.FileField(upload_to='video/%Y-%m-%d/')
+    video = models.TextField(max_length=5000)
     photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)

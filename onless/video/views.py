@@ -18,7 +18,7 @@ def landing_page(request):
 def home(request):
     if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(profil_edit)
+            return redirect(reverse_lazy('user:edit_profil'))
         else:
             return redirect(reverse_lazy("video:categories_list"))
 
@@ -30,16 +30,16 @@ def home(request):
 
     elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(profil_edit)
+            return redirect(reverse_lazy('user:edit_profil'))
         else:
-            return redirect(groups_list)
+            return redirect(reverse_lazy('user:groups_list'))
 
 
     elif request.user.role == "2":  # agarda role Direktor  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(profil_edit)
         else:
-            return redirect(groups_list)
+            return redirect(reverse_lazy('user:groups_list'))
 
     elif request.user.role == "1":  # agarda role inspeksiya  bo'lsa
         # schools = School.objects.filter(region=request.user.district.region)
@@ -128,7 +128,7 @@ def add_video(request):
 
 @login_required
 def myvideos_list(request):
-    videos = Video.objects.all()
+    videos = Video.objects.filter()
     context = {
         'videos': videos
     }

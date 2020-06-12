@@ -17,7 +17,7 @@ def home(request):
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(profil_edit)
         else:
-            return redirect(mainsections_list)
+            return redirect(categories_list)
     elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
         schools = School.objects.filter(region=request.user.school.region)
         return render(request, 'inspecion/schools_list.html', {
@@ -59,37 +59,8 @@ def add_duration(request):
 
 
 @login_required
-def mainsections_list(request):
-    mainsections = MainSection.objects.all()
-    context = {
-        'mainsections': mainsections
-    }
-    return render(request, 'video/mainsections_list.html', context)
-
-
-@login_required
-def mainsection_detail(request, id):
-    mainsection = MainSection.objects.get(id=id)
-    context = {
-        'mainsection': mainsection
-    }
-    for section in mainsection.video_section.all():
-        context.update(section=section)
-    return render(request, 'video/mainsection_detail.html', context)
-
-
-@login_required
-def categories_list(request):
-    categories = VideoCategory.objects.all()
-
-    return render(request, 'video/categories_list.html', {
-        'categories': categories,
-    })
-
-
-@login_required
-def category_detail(request, id):
-    category = VideoCategory.objects.get(id=id)
+def categories_list(request, id):
+    category = Category.objects.get(id=id)
 
     return render(request, 'video/category_detail.html', {
         'category': category,
@@ -124,13 +95,10 @@ def add_video(request):
         else:
             form = AddVideoForm()
 
-        mainsections = MainSection.objects.all()
-        sections = VideoSection.objects.all()
-        categories = VideoCategory.objects.all()
+
+        categories = Category.objects.all()
         context = {
             'form': form,
-            'mainsections': mainsections,
-            'sections': sections,
             'categories': categories,
         }
         return render(request, 'video/add_video.html', context)

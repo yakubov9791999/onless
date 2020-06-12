@@ -49,31 +49,23 @@
 
 
                                         <input type="radio" name="answer"
-                                               {% for result in results %}{% if result.answer.id == answer.id %}checked
-                                               disabled {% else %}disabled{% endif %}    {% endfor %}
+                                               {% for result in results %}{% if  answer.result_answer.exists %}checked
+                                               disabled {% else %}{% endif %}    {% endfor %}
                                                value="{{ answer.id }}"
-                                               id="id_answer{{ forloop.counter }}">&nbsp;&nbsp;
-                                        {% for result in results %}
-                                            {% if result.answer.id == answer.id %}
-                                                {{ answer.text }}
-
+                                               id="id_answer{{ forloop.counter }}">&nbsp;
+                                        {% if question.result_questions.exists %}
+                                            {% if answer.is_true == False %}
+                                                <span class="text-danger">{{ answer.text }}</span>
                                             {% else %}
-                                                {% if answer.is_true == False %}
-                                                    <span class="text-danger">{{ answer.text }}</span>
-                                                {% else %}
-                                                    <span class="text-success"> {{ answer.text }}</span>
+                                                <span class="text-success"> {{ answer.text }}</span>
 
-                                                {% endif %}
                                             {% endif %}
-                                        {% endfor %}
+
+                                        {% else %}
+                                            {{ answer.text }}
+                                        {% endif %}
 
 
-
-                                        {% for result in results %}
-                                            {% if result.answer.id == answer.id %}
-                                                <span class="text-primary">- Sizning javobingiz</span>
-                                            {% endif %}
-                                        {% endfor %}
                                     </label>
                                 </li>
                             {% endfor %}
@@ -102,7 +94,9 @@
 {% block bottom %}
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
     <script>
-        $("#video_bottom_question").hide();
+        {% if not request.user.user_view_complete.exists %}
+            $("#video_bottom_question").hide();
+        {% endif %}
         var vid = document.getElementById("my-video");
         vid.onloadedmetadata = function () {
             vid.ontimeupdate = function () {

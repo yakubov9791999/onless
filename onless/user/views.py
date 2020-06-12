@@ -1,6 +1,7 @@
 import random
 from random import randrange
 
+import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.db.models import ProtectedError, Q
@@ -13,6 +14,7 @@ from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
 
 from django.db import IntegrityError
+
 
 #
 def user_login(request):
@@ -28,6 +30,7 @@ def user_login(request):
             messages.error(request, "Login yoki parol noto'g'ri!")
             return HttpResponseRedirect('/accounts/login/')
 
+
 @login_required
 def add_list(request):
     if request.user.role == '2' or request.user.role == '3':
@@ -35,9 +38,11 @@ def add_list(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def settings_list(request):
     return render(request, 'user/settings_list.html')
+
 
 @login_required
 def add_teacher(request):
@@ -61,6 +66,7 @@ def add_teacher(request):
                     user.username = request.POST['pasport']
                     user.email = ''
                     user.save()
+
                     messages.success(request, "O'qituvchi muvaffaqiyatli qo'shildi")
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
@@ -71,6 +77,7 @@ def add_teacher(request):
         return render(request, 'user/add_teacher.html', )
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def add_pupil(request):
@@ -89,7 +96,7 @@ def add_pupil(request):
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             group = Group.objects.get(id=request.POST['group'])
-            parol = random.randint(1000000,9999999)
+            parol = random.randint(1000000, 9999999)
             if form.is_valid():
                 try:
                     user = User.objects.create_user(
@@ -102,11 +109,16 @@ def add_pupil(request):
                         role='4',
                         group=group,
                         is_superuser=False,
-                                    )
+                    )
                     user.set_password(parol)
                     user.username = request.POST['pasport']
                     user.email = ''
                     user.save()
+                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin:{user.username}%0aParol:{user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                    msg = msg.replace(" ", "+")
+                    url = f"https://developer.apix.uz/index.php?app=ws&u=jj39k&h=cb547db5ce188f49c1e1790c25ca6184&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                    response = requests.get(url)
+
                     messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
@@ -117,6 +129,7 @@ def add_pupil(request):
         return render(request, 'user/add_pupil.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def add_group(request):
@@ -147,6 +160,7 @@ def add_group(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def groups_list(request):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
@@ -157,6 +171,7 @@ def groups_list(request):
         return render(request, 'user/groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def group_detail(request, id):
@@ -175,6 +190,7 @@ def group_detail(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def group_delete(request, id):
     if request.user.role == '2' or request.user.role == '3':
@@ -189,6 +205,7 @@ def group_delete(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def group_update(request, id):
     if request.user.role == '2' or request.user.role == '3':
@@ -201,6 +218,7 @@ def group_update(request, id):
         return render(request, 'user/group_update.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def profil_edit(request):
@@ -219,8 +237,6 @@ def profil_edit(request):
         'form': form
     }
     return render(request, 'user/profil_edit.html', context)
-
-
 
 
 @login_required
@@ -244,6 +260,7 @@ def school_edit(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def contact(request):
     if request.POST or None:
@@ -260,6 +277,7 @@ def contact(request):
         form = AddContactForm()
     return render(request, 'user/contact.html')
 
+
 @login_required
 def search(request):
     query = request.GET.get('q', False).lower()
@@ -271,7 +289,7 @@ def search(request):
     count = 0
     if query:
         try:
-            teachers = User.objects.filter(role=3,name__contains=query,school=request.user.school)
+            teachers = User.objects.filter(role=3, name__contains=query, school=request.user.school)
             context.update(teachers=teachers)
             results.append(teachers)
             count += teachers.count()
@@ -311,6 +329,7 @@ def search(request):
         context.update(count=count)
         context.update(results=results)
     return render(request, 'user/search_result.html', context)
+
 
 @login_required
 def add_school(request):

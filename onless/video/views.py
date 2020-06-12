@@ -128,7 +128,7 @@ def add_video(request):
 
 @login_required
 def myvideos_list(request):
-    videos = Video.objects.filter()
+    videos = Video.objects.filter(school=request.user.school)
     context = {
         'videos': videos
     }

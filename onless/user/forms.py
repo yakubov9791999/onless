@@ -37,7 +37,7 @@ class GroupUpdateForm(ModelForm):
 class EditUserForm(ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
     birthday = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}))
     phone = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
     gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))

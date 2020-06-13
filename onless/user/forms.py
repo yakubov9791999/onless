@@ -43,6 +43,10 @@ class EditUserForm(ModelForm):
     gender = forms.ChoiceField(label='Jinsi',choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     turbo = forms.CharField(label='Parol',widget=forms.TextInput(attrs={'class': 'form-control'}))
 
+    def clean_turbo(self):
+        turbo = self.cleaned_data['turbo']
+        return turbo
+
     class Meta:
         model = User
         fields = ('name', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')

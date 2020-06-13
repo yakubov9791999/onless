@@ -9,7 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Profilni tahrirlash</h3>
                 </div>
-                {% if messages or form.errors %}
+                {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
                             <a class="close" href="#" data-dismiss="alert">×</a>
@@ -17,9 +17,6 @@
                         </div>
                     {% endfor %}
                 {% endif %}
-
-
-
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form method="POST" action="{% url 'user:edit_profil' %}"

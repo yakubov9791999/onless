@@ -13,7 +13,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(School)
 class DrivingSchoolAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'director_fio', 'phone']
+    list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']
     save_on_top = True
 

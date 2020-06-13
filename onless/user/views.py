@@ -26,7 +26,7 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/home/')
+                return redirect(reverse_lazy('video:home'))
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
             return HttpResponseRedirect('/accounts/login/')
@@ -204,9 +204,8 @@ def group_delete(request, id):
             group.is_active = False
             group.save()
         else:
-            print('else')
             group.delete()
-        return redirect(groups_list)
+        return redirect(reverse_lazy('user:groups_list'))
     else:
         return render(request, 'inc/404.html')
 
@@ -232,7 +231,15 @@ def profil_edit(request):
     if request.POST:
         form = EditUserForm(request.POST or None, request.FILES or None, instance=user)
         if form.is_valid():
+            form = form.save(commit=False)
+            password = user.set_password(request.POST['turbo'])
             form.save()
+            user = authenticate(username=request.user.username, password=password)
+            print(user)
+
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
             messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
         else:
             messages.error(request, "Formani to'ldiring !")

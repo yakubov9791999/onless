@@ -80,7 +80,7 @@ class District(models.Model):
 
 class School(models.Model):
     title = models.CharField(verbose_name='Nomi', max_length=255)
-    director_fio = models.CharField(verbose_name='Rahbar nomi', max_length=255, blank=True)
+    director = models.ForeignKey('User',on_delete=models.CASCADE, verbose_name='Rahbar nomi', related_name='school_director', max_length=100, blank=True, default=1)
     phone = models.CharField('Tel', max_length=20, blank=True)
     logo = models.ImageField('Rasm', upload_to='school/')
     region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.CASCADE, related_name='school_region',

@@ -2,13 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-
 from quiz.models import *
 from user.models import School
 from user.views import *
 from user.views import profil_edit
 from video.models import *
 from video.forms import *
+
 
 def landing_page(request):
     return render(request, 'landing/index.html')
@@ -73,12 +73,10 @@ def categories_list(request):
 @login_required
 def category_detail(request, id):
     categories = Category.objects.filter(categories=id)
-    videos = Video.objects.filter(category__in=categories)
-    print(categories)
-    print(videos)
+
     return render(request, 'video/categories_list.html', {
         'categories': categories,
-        'videos': videos,
+
     })
 
 @login_required

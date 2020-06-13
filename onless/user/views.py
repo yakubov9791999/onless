@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import UpdateView
 
+from quiz.models import *
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
@@ -179,13 +180,16 @@ def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3':
         group = Group.objects.get(id=id)
         pupils = User.objects.filter(role=4, group=group)
-        for pupil in pupils:
-            test_answers = ResultQuiz.objects.filter(user=pupil)
-            print(test_answers)
+        answer_count = ResultQuiz.objects.filter(user__in=pupils).count()
+        answer_true = ResultQuiz.objects.filter(user__in=pupils, answer__is_true=True).count()
+        res = int(answer_true * 100 / answer_count)
 
         context = {
             'group': group,
             'pupils': pupils,
+            'res': res,
+            'answer_true': answer_true,
+            'answer_count': answer_count,
         }
         return render(request, 'user/group_detail.html', context)
     else:

@@ -4,25 +4,39 @@
     <div class="container-fluid">
         <div class="row">
             {% for category in categories %}
-                {% if videos %}
-                <a href="{% url 'video:videos_list' category.id %}">
-                {% else %}
-                <a href="{% url 'video:category_detail' category.id %}">
-                {% endif %}
-                    <div class="col-lg-{% if category.categories %}4{% else %}6{% endif %} col-md-6 col-sm-6 mb-5">
-                        <div class="thumbnail img-thumb-bg" style="background: url('{% if category.photo %}{{ category.photo.url }}{% endif %}'); background-size: 100%">
-                            <div class="overlay-exists"></div>
-                            <div class="caption">
-                                <div class="tag"><a
-                                        href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>
-                                </div>
-                                <div class="title"><a
-                                        href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>
+                {% if category.video_category.exists %}
+                    <a href="{% url 'video:videos_list' category.id %}">
+                        <div class="col-lg-{% if category.categories %}4{% else %}6{% endif %} col-md-6 col-sm-6 mb-5">
+                            <div class="thumbnail img-thumb-bg" style="background: url('{% if category.photo %}{{ category.photo.url }}{% endif %}'); background-size: 100%">
+                                <div class="overlay-exists"></div>
+                                <div class="caption">
+                                    <div class="tag"><a
+                                            href="{% url 'video:videos_list' category.id %}">{{ category.title }} </a>
+                                    </div>
+                                    <div class="title"><a
+                                            href="{% url 'video:videos_list' category.id %}">{{ category.title }} </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                {% else %}
+                    <a href="{% url 'video:category_detail' category.id %}">
+                        <div class="col-lg-{% if category.categories %}4{% else %}6{% endif %} col-md-6 col-sm-6 mb-5">
+                            <div class="thumbnail img-thumb-bg" style="background: url('{% if category.photo %}{{ category.photo.url }}{% endif %}'); background-size: 100%">
+                                <div class="overlay-exists"></div>
+                                <div class="caption">
+                                    <div class="tag"><a
+                                            href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>
+                                    </div>
+                                    <div class="title"><a
+                                            href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

@@ -22,7 +22,7 @@
                             <th>Telefon</th>
                             <th>Login</th>
                             <th>Parol</th>
-                            <th>Test natijasi</th>
+                            <th>O'zlashtirish</th>
                             <th>Tahrirlash</th>
 
                         </tr>
@@ -38,7 +38,15 @@
                                 <td>+998{{ pupil.phone }}</td>
                                 <td>{{ pupil.username }}</td>
                                 <td>{{ pupil.turbo }}</td>
-                                <td></td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if res >= 85 and res <= 100 %}bg-success progress-bar-striped{% elif res >= 65 and res <= 84 %}bg-warning progress-bar-striped{% elif res < 64 %}bg-danger progress-bar-striped{%endif %}"
+                                             role="progressbar"
+                                             aria-valuenow="40" aria-valuemin="2" title="Javoblar/To'g'ri javoblar:  {{ answer_count }}/{{ answer_true }}" aria-valuemax="6" style="width:{{ res }}%">
+                                            <b>{{ res }}%</b>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td><a href=""><i class="fa fa-edit" style="font-size: 150%;"></i> </a>&nbsp;&nbsp;&nbsp;<a
                                         href=""><i class="fa fa-trash"
                                                    style="font-size: 150%;"></i></a>

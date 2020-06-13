@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">O'qituvchilar ro'yhati</h3>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>O'qituvchining ism familiyasi</th>
+                            <th>Tug'ilgan yili</th>
+                            <th>Manzili</th>
+                            <th>Telefon</th>
+                            <th>Login</th>
+                            <th>Parol</th>
+                            <th>O'chirish</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for teacher in teachers %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><b>{{ teacher.name }}</b></td>
+                                <td>{{ teacher.birthday|date:'SHORT_DATE_FORMAT' }}</td>
+                                <td>{{ teacher.address }}</td>
+                                <td>+998{{ teacher.phone }}</td>
+                                <td>{{ teacher.username }}</td>
+                                <td>{{ teacher.turbo }}</td>
+                                <td>
+                                    &nbsp;&nbsp;<a href="{% url 'user:teacher_edit' teacher.id %}"><i class="fa fa-edit"
+                                                                                                      style="font-size: 150%;"></i></a>
+                                    &nbsp;&nbsp;<a href="{% url 'user:teacher_delete' teacher.id %}"><i
+                                        class="fa fa-trash"
+                                        style="font-size: 150%;"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

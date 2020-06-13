@@ -1,73 +1,70 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row ml-5">
-        <!-- left column -->
-        <div class="col-md-6" style="margin-left: 25%; margin-bottom: 50px">
-            <!-- general form elements -->
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">O'qituvchi qo'shish</h3>
-                </div>
-                {% if messages or form.errors %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ error|escape }}</strong>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                    {% for error in form.non_field_errors %}
+<div class="row ml-5">
+    <!-- left column -->
+    <div class="col-md-6" style="margin-left: 25%; margin-bottom: 50px">
+        <!-- general form elements -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">O'qituvchi qo'shish</h3>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
                         <div class="alert alert-danger">
                             <strong>{{ error|escape }}</strong>
                         </div>
                     {% endfor %}
-                {% endif %}
-                <!-- /.card-header -->
-                <!-- form start -->
-                <form role="form" method="POST" action="{% url 'user:add_teacher' %}">
-                    {% csrf_token %}
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="exampleInputname">F.I.O:</label>
-                            <input type="text" name="name" class="form-control" id="exampleInputname"
-                                   placeholder="F.I.O ni kiriting ...">
-                        </div>
+                {% endfor %}
+            {% endif %}
 
-                         <div class="form-group">
-                            <label for="exampleInputname">Pasport:</label>
-                            <input type="text" name="pasport" maxlength="9" class="form-control" id="exampleInputPasport"
-                                   placeholder="Masalan: AA1234567">
-                        </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form role="form" method="POST" action="{% url 'user:add_teacher' %}">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="exampleInputname">F.I.O:</label>
+                        <input type="text" name="name" class="form-control" id="exampleInputname"
+                               placeholder="F.I.O ni kiriting ...">
+                    </div>
 
-                        <div class="form-group">
-                            <label for="phone">Telefon raqami:</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">+998</div>
-                                </div>
-                                <input type="text" class="form-control" id="phone" maxlength="9" name="phone"
-                                       placeholder="Telefon raqamini kiriting. Masalan: 972800809">
+                    <div class="form-group">
+                        <label for="exampleInputname">Pasport:</label>
+                        <input type="text" name="pasport" maxlength="9" class="form-control" id="exampleInputPasport"
+                               placeholder="Masalan: AA1234567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Telefon raqami:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">+998</div>
                             </div>
+                            <input type="text" class="form-control" id="phone" maxlength="9" name="phone"
+                                   placeholder="Telefon raqamini kiriting. Masalan: 972800809">
                         </div>
-
-
-
                     </div>
-                    <!-- /.card-body -->
 
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-success">Saqlash</button>
-                        <button type="reset" class="btn btn-danger">Tozalash</button>
-                    </div>
-                </form>
-            </div>
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success">Saqlash</button>
+                    <button type="reset" class="btn btn-danger">Tozalash</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 {% endblock content %}

@@ -46,8 +46,8 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ group.teacher }}</td>
-                                <td>{{ group.start }}</td>
-                                <td>{{ group.stop }}</td>
+                                <td>{{ group.start|date:'SHORT_DATE_FORMAT' }}</td>
+                                <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                 <td>
                                     &nbsp;

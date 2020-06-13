@@ -17,7 +17,7 @@
                         <tr>
                             <th>№</th>
                             <th>O'quvchining ism familiyasi</th>
-                            <th>Yili</th>
+                            <th>Tug'ilgan yili</th>
                             <th>Manzili</th>
                             <th>Telefon</th>
                             <th>Login</th>
@@ -33,30 +33,32 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td><b>{{ pupil.name }}</b></td>
-                                <td>{{ pupil.year }}</td>
+                                <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
                                 <td>{{ pupil.address }}</td>
                                 <td>+998{{ pupil.phone }}</td>
                                 <td>{{ pupil.username }}</td>
                                 <td>{{ pupil.turbo }}</td>
-                                <td>
+                                <td title="Javoblar/To'g'ri javoblar:  {{ answer_count }}/{{ answer_true }}">
                                     <div class="progress">
-                                    {% if answer_count > 0 and res > 0 %}
-                                        <div class="progress-bar {% if res >= 85 and res <= 100 %}bg-success progress-bar-striped{% elif res >= 65 and res <= 84 %}bg-warning progress-bar-striped{% elif res < 64 %}bg-danger progress-bar-striped{% endif %}"
-                                             role="progressbar"
-                                             aria-valuenow="40" aria-valuemin="2"
-                                             title="Javoblar/To'g'ri javoblar:  {{ answer_count }}/{{ answer_true }}"
-                                             aria-valuemax="6" style="width:{{ res }}%">
-                                            <b>{{ res }}%</b>
-                                        </div>
-                                    {% elif answer_count > 0 and res < 1 %}
-                                        <div title="Javoblar/To'g'ri javoblar:  {{ answer_count }}/{{ answer_true }}" style="width: 100%; margin-left: 45%">0%</div>
-                                    {% else %}
-                                        <div style="margin-left: 10%"><b>test yechilmagan</b></div>
-                                    {% endif %}
+                                        {% if answer_count > 0 and res > 0 %}
+                                            <div class="progress-bar {% if res >= 85 and res <= 100 %}bg-success progress-bar-striped{% elif res >= 65 and res <= 84 %}bg-warning progress-bar-striped{% elif res < 64 %}bg-danger progress-bar-striped{% endif %}"
+                                                 role="progressbar"
+                                                 aria-valuenow="40" aria-valuemin="2"
+
+                                                 aria-valuemax="6" style="width:{{ res }}%">
+                                                <b>{{ res }}%</b>
+                                            </div>
+                                        {% elif answer_count > 0 and res < 1 %}
+                                            <div style="width: 100%; margin-left: 45%">0%</div>
+                                        {% else %}
+                                            <div style="margin-left: 10%"><b>test yechilmagan</b></div>
+                                        {% endif %}
                                     </div>
                                 </td>
-                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
-                                        href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
+                                <td>
+                                    &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i class="fa fa-edit"
+                                                                                        style="font-size: 150%;"></i></a>
+                                    &nbsp;&nbsp;<a href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
                                                                                          style="font-size: 150%;"></i></a>
                                 </td>
                             </tr>

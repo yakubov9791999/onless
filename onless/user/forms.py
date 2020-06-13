@@ -23,12 +23,12 @@ class AddGroupForm(ModelForm):
         exclude = ('school',)
 
 class GroupUpdateForm(ModelForm):
-    number = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    year = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    teacher = forms.ModelChoiceField(queryset=User.objects.filter(role=3), widget=forms.Select(attrs={'class': 'form-control'}))
-    start = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}))
-    stop = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}))
-    category = forms.ChoiceField(choices=CATEGORY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    number = forms.IntegerField(label="Raqami",widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    year = forms.IntegerField(label="O'quv yili",widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    teacher = forms.ModelChoiceField(label="O'qituvchi",queryset=User.objects.filter(role=3), widget=forms.Select(attrs={'class': 'form-control'}))
+    start = forms.DateField(label="O'qish boshlanishi",widget=forms.DateInput(attrs={'class': 'form-control'}))
+    stop = forms.DateField(label="O'qish tugashi",widget=forms.DateInput(attrs={'class': 'form-control'}))
+    category = forms.ChoiceField(label="Toifasi",choices=CATEGORY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Group
@@ -42,6 +42,11 @@ class EditUserForm(ModelForm):
     phone = forms.IntegerField(label='Tel raqam',widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
     gender = forms.ChoiceField(label='Jinsi',choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     turbo = forms.CharField(label='Parol',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    pasport = forms.CharField(label='Pasport',widget=forms.TextInput(attrs={'class': 'form-control',}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['pasport'].disabled = True
 
     def clean_turbo(self):
         turbo = self.cleaned_data['turbo']
@@ -49,20 +54,20 @@ class EditUserForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('name', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
+        fields = ('name','pasport', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
 
 
 
 class EditSchoolForm(ModelForm):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    director_fio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    logo = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    district = forms.ModelChoiceField(queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    title = forms.CharField(label="Nomi",widget=forms.TextInput(attrs={'class': 'form-control'}))
+    director = forms.ModelChoiceField(label="Rahbar nomi",queryset=User.objects.filter(role=2), widget=forms.Select(attrs={'class': 'form-control'}))
+    phone = forms.CharField(label="Tel raqam",widget=forms.TextInput(attrs={'class': 'form-control'}))
+    logo = forms.ImageField(label="Rasm",widget=forms.FileInput(attrs={'class': 'form-control'}))
+    region = forms.ModelChoiceField(label="Viloyat",queryset=Region.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    district = forms.ModelChoiceField(label="Tuman",queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
     class Meta:
         model = School
-        fields = ('title', 'director_fio', 'phone', 'logo', 'region', 'district')
+        fields = ('title', 'director', 'phone', 'logo', 'region', 'district')
 
 class AddContactForm(ModelForm):
     class Meta:

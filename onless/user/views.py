@@ -234,15 +234,14 @@ def profil_edit(request):
             form = form.save(commit=False)
             password = user.set_password(request.POST['turbo'])
             form.save()
-            user = authenticate(username=request.user.username, password=password)
-            print(user)
-
+            user = authenticate(username=request.user.username, password=request.POST['turbo'])
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    form = EditUserForm(instance=user)
             messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
         else:
-            messages.error(request, "Formani to'ldiring !")
+            messages.error(request, "Formani to'ldirishda xatolik !")
     else:
         form = EditUserForm(instance=user)
     context = {

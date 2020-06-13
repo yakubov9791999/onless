@@ -13,8 +13,8 @@ class AuthenticationForm(ModelForm):
 class AddUserForm(ModelForm):
     class Meta:
         model = User
-        fields = ('name', 'pasport', 'phone',)
-        exclude = ('username', 'password', 'school')
+        fields = ('name', 'phone',)
+        exclude = ('username', 'password', 'school', 'pasport')
 
 class AddGroupForm(ModelForm):
     class Meta:
@@ -35,16 +35,18 @@ class GroupUpdateForm(ModelForm):
         fields = ('number', 'year', 'teacher', 'start', 'stop', 'category')
 
 class EditUserForm(ModelForm):
-    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
-    birthday = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}))
-    phone = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    address = forms.CharField(label='Manzil',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    avatar = forms.ImageField(label='Rasm',widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    birthday = forms.DateField(label="Tug'ilgan kun",widget=forms.DateInput(attrs={'class': 'form-control'}))
+    phone = forms.IntegerField(label='Tel raqam',widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
+    gender = forms.ChoiceField(label='Jinsi',choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    turbo = forms.CharField(label='Parol',widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
-        fields = ('name', 'address', 'avatar', 'birthday', 'phone', 'gender')
+        fields = ('name', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
+
 
 
 class EditSchoolForm(ModelForm):

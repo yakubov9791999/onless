@@ -13,11 +13,10 @@
                                 <div class="overlay-noexists"></div>
                             {% endif %}
                             <div class="caption">
-{#                                <div class="tag"><a#}
-{#                                        href="{% url 'video:category_detail' video.id %}">{{ video.title }} </a>#}
-{#                                </div>#}
-                                <div class="title"><a
-                                        href="{% url 'video:category_detail' video.id %}">{{ video.title }} </a>
+                                <div class="tag"><a
+                                        href="">{{ video.category.title }} </a>
+                                </div>
+                                <div class="title"><a href="{% url 'video:video_detail' video.id %}">{{ video.title }} </a>
                                 </div>
                             </div>
                         </div>

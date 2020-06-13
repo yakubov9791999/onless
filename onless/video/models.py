@@ -5,7 +5,7 @@ from quiz.models import User
 
 
 class Category(models.Model):
-    categories = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True)
+    categories = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True, related_name='category_category')
     title = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="category/%Y-%m-%d/")
     sort = models.IntegerField(default=1)

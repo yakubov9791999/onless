@@ -14,7 +14,7 @@ class Answer(models.Model):
 
 class Question(models.Model):
     title = models.CharField(max_length=600)
-    video = models.ForeignKey(Video, on_delete=models.PROTECT, null=True)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
     img = models.ImageField(upload_to='quiz/img/%Y-%m-%d/')
     is_active = models.BooleanField(default=True)
     pub_date = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -26,7 +26,7 @@ class Question(models.Model):
 class ResultQuiz(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='result_questions', null=True)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='result_answer', null=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='result_user', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user', blank=True, null=True)
 
     def __str__(self):
         return f"{self.question} ning javobi {self.answer}"

@@ -20,4 +20,5 @@ urlpatterns = [
     path('search/', search, name='search'),
     path('add_school/', add_school, name='add_school'),
     path('schools/', schools_list, name='schools_list'),
+    path('pupil_delete/<int:id>/', pupil_delete, name='pupil_delete'),
 ]

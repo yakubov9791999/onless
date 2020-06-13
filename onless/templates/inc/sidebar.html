@@ -43,19 +43,19 @@
                     {% include 'inc/role_sidebar/schools_list_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '2' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
-                    {% include 'inc/role_sidebar/myvideos_page.html' %}
+{#                    {% include 'inc/role_sidebar/myvideos_page.html' %}#}
                     {% include 'inc/role_sidebar/groups_page.html' %}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '3' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
-                    {% include 'inc/role_sidebar/myvideos_page.html' %}
+{#                    {% include 'inc/role_sidebar/myvideos_page.html' %}#}
                     {% include 'inc/role_sidebar/groups_page.html' %}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '4' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
-                    {% include 'inc/role_sidebar/myvideos_page.html' %}
+{#                    {% include 'inc/role_sidebar/myvideos_page.html' %}#}
                     {% include 'inc/role_sidebar/groups_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% endif %}

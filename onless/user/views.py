@@ -97,7 +97,7 @@ def add_pupil(request):
         }
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
-            group = Group.objects.get(id=request.POST['group'])
+            group = get_object_or_404(Group, id=request.POST['group'])
             parol = random.randint(1000000, 9999999)
             if form.is_valid():
                 try:
@@ -178,12 +178,14 @@ def groups_list(request):
 @login_required
 def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3':
-        group = Group.objects.get(id=id)
-        pupils = User.objects.filter(role=4, group=group)
+        group = get_object_or_404(Group, id=id)
+        pupils = User.objects.filter(role=4,school=request.user.school, group=group)
         answer_count = ResultQuiz.objects.filter(user__in=pupils).count()
         answer_true = ResultQuiz.objects.filter(user__in=pupils, answer__is_true=True).count()
-        res = int(answer_true * 100 / answer_count)
-        print(res)
+        try:
+            res = int(answer_true * 100 / answer_count)
+        except ZeroDivisionError:
+            res = 0
         context = {
             'group': group,
             'pupils': pupils,
@@ -199,7 +201,7 @@ def group_detail(request, id):
 @login_required
 def group_delete(request, id):
     if request.user.role == '2' or request.user.role == '3':
-        group = Group.objects.get(id=id)
+        group = get_object_or_404(Group, id=id)
         if group.group_user.count() > 2:
             group.is_active = False
             group.save()
@@ -213,7 +215,7 @@ def group_delete(request, id):
 @login_required
 def group_update(request, id):
     if request.user.role == '2' or request.user.role == '3':
-        group = Group.objects.get(id=id)
+        group = get_object_or_404(Group, id=id)
         form = GroupUpdateForm(instance=group)
         context = {
             'form': form,
@@ -261,7 +263,7 @@ def school_edit(request):
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
             else:
-                messages.success(request, "Formani to'ldirishda xatolik !")
+                messages.error(request, "Formani to'ldirishda xatolik !")
         else:
             form = EditSchoolForm(instance=request.user.school)
         context = {
@@ -350,3 +352,9 @@ def add_school(request):
 @login_required
 def schools_list(request):
     return render(request, 'inspecion/schools_list.html')
+
+def pupil_delete(request, id):
+    pupil = get_object_or_404(User, id=id)
+    pupil.delete()
+    next = request.META.get('HTTP_REFERER')
+    return HttpResponseRedirect(next)

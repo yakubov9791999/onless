@@ -183,7 +183,7 @@ def group_detail(request, id):
         answer_count = ResultQuiz.objects.filter(user__in=pupils).count()
         answer_true = ResultQuiz.objects.filter(user__in=pupils, answer__is_true=True).count()
         res = int(answer_true * 100 / answer_count)
-
+        print(res)
         context = {
             'group': group,
             'pupils': pupils,

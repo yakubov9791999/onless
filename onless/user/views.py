@@ -275,6 +275,33 @@ def school_edit(request):
 
 
 @login_required
+def pupil_edit(request, id):
+    if request.user.role == '2' or request.user.role == '3':
+        user = get_object_or_404(User, id=id)
+        form = EditPupilForm(instance=user)
+        if request.POST:
+            form = EditPupilForm(request.POST, request.FILES, instance=user)
+            if form.is_valid():
+                form = form.save(commit=False)
+                form.pasport = request.POST['pasport']
+                form.username = request.POST['pasport']
+                user.set_password(request.POST['turbo'])
+                form.save()
+                messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+                form = EditPupilForm(instance=user)
+            else:
+                messages.error(request, "Formani to'ldirishda xatolik !")
+        else:
+            form = EditPupilForm(instance=user)
+        context = {
+            'form': form,
+            'user': user,
+        }
+        return render(request, 'user/pupil_edit.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
 def contact(request):
     if request.POST or None:
         form = AddContactForm(request.POST or None, request.FILES or None)
@@ -351,10 +378,66 @@ def add_school(request):
 
 @login_required
 def schools_list(request):
-    return render(request, 'inspecion/schools_list.html')
+    if request.user.role == '1':
+        return render(request, 'inspecion/schools_list.html')
+    else:
+        return render(request, 'inc/404.html')
 
 def pupil_delete(request, id):
-    pupil = get_object_or_404(User, id=id)
-    pupil.delete()
-    next = request.META.get('HTTP_REFERER')
-    return HttpResponseRedirect(next)
+    if request.user.role == '2' or request.user.role == '3':
+        pupil = get_object_or_404(User, id=id)
+        pupil.delete()
+        next = request.META.get('HTTP_REFERER')
+        return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def teachers_list(request):
+    if request.user.role == '2' or request.user.role == '3':
+        teachers = User.objects.filter(school=request.user.school, role=3)
+        context = {
+            'teachers': teachers
+        }
+        return render(request, 'user/teachers_list.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def teacher_edit(request, id):
+    if request.user.role == '2' or request.user.role == '3':
+        teacher = get_object_or_404(User, id=id)
+        form = EditPupilForm(instance=teacher)
+        if request.POST:
+            form = EditPupilForm(request.POST, request.FILES, instance=teacher)
+            if form.is_valid():
+                form = form.save(commit=False)
+                form.pasport = request.POST['pasport']
+                form.username = request.POST['pasport']
+                teacher.set_password(request.POST['turbo'])
+                form.save()
+                messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+                form = EditPupilForm(instance=teacher)
+            else:
+                messages.error(request, "Formani to'ldirishda xatolik !")
+        else:
+            form = EditPupilForm(instance=teacher)
+        context = {
+            'teacher': teacher,
+            'form': form
+        }
+        return render(request, 'user/teacher_edit.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+
+@login_required
+def teacher_delete(request, id):
+    if request.user.role == '2' or request.user.role == '3':
+        teacher = get_object_or_404(User, id=id)
+        teacher.delete()
+        next = request.META.get('HTTP_REFERER')
+        messages.success(request, "O'qituvchi muvaffaqiyatli o'chirildi !")
+        return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')

@@ -47,6 +47,7 @@ class EditUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['pasport'].disabled = True
+        # self.fields['pasport'].widget.attrs['readonly'] = True
 
     def clean_turbo(self):
         turbo = self.cleaned_data['turbo']
@@ -56,7 +57,19 @@ class EditUserForm(ModelForm):
         model = User
         fields = ('name','pasport', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
 
+class EditPupilForm(ModelForm):
+    name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    address = forms.CharField(label='Manzil',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    avatar = forms.ImageField(label='Rasm',widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    birthday = forms.DateField(label="Tug'ilgan kun",widget=forms.DateInput(attrs={'class': 'form-control'}))
+    phone = forms.IntegerField(label='Tel raqam',widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
+    gender = forms.ChoiceField(label='Jinsi',choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    turbo = forms.CharField(label='Parol',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    pasport = forms.CharField(label='Pasport',widget=forms.TextInput(attrs={'class': 'form-control',}))
 
+    class Meta:
+        model = User
+        fields = ('name','pasport', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
 
 class EditSchoolForm(ModelForm):
     title = forms.CharField(label="Nomi",widget=forms.TextInput(attrs={'class': 'form-control'}))

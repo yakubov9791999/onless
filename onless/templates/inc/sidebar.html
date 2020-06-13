@@ -31,7 +31,7 @@
             </div>
             <div class="info">
                 <a href="{% url 'user:edit_profil' %}" class="d-block">
-                    {% if request.user.name %}{{ request.user.name }}{% else %}
+                    {% if request.user.name %}{{ request.user.name|truncatewords:2 }}{% else %}
                         {{ request.user.username }}{% endif %}</a>
             </div>
         </div>
@@ -45,12 +45,14 @@
                     {% include 'inc/role_sidebar/videos_page.html' %}
 {#                    {% include 'inc/role_sidebar/myvideos_page.html' %}#}
                     {% include 'inc/role_sidebar/groups_page.html' %}
+                    {% include 'inc/role_sidebar/teachers_page.html' %}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '3' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
 {#                    {% include 'inc/role_sidebar/myvideos_page.html' %}#}
                     {% include 'inc/role_sidebar/groups_page.html' %}
+                    {% include 'inc/role_sidebar/teachers_page.html' %}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '4' %}

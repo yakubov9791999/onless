@@ -17,6 +17,15 @@
                         </div>
                     {% endfor %}
                 {% endif %}
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" method="POST" action="{% url 'user:add_pupil' %}">
@@ -29,18 +38,19 @@
                                    placeholder="F.I.O ni kiriting ...">
                         </div>
 
-                         <div class="form-group">
+                        <div class="form-group">
                             <label for="exampleInputname">Guruh:</label>
-                             <select name="group" class="form-control" id="">
-                                 {% for group in groups %}
-                                     <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>
-                                 {% endfor %}
-                             </select>
+                            <select name="group" class="form-control" id="">
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
 
                         <div class="form-group">
                             <label for="exampleInputname">Pasport:</label>
-                            <input type="text" name="pasport" maxlength="9" class="form-control" id="exampleInputPasport"
+                            <input type="text" name="pasport" maxlength="9" class="form-control"
+                                   id="exampleInputPasport"
                                    placeholder="Masalan: AA1234567">
                         </div>
 

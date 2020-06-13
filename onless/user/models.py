@@ -67,7 +67,7 @@ class Region(models.Model):
 
 class District(models.Model):
     title = models.CharField('Nomi', max_length=255)
-    region = models.ForeignKey(Region, verbose_name='Tuman', on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, verbose_name='Tuman', on_delete=models.SET_NULL, null=True)
     sort = models.IntegerField(blank=True, default=1)
 
     def __str__(self):
@@ -80,12 +80,12 @@ class District(models.Model):
 
 class School(models.Model):
     title = models.CharField(verbose_name='Nomi', max_length=255)
-    director = models.ForeignKey('User',on_delete=models.CASCADE, verbose_name='Rahbar nomi', related_name='school_director', max_length=100, blank=True, default=1)
+    director = models.ForeignKey('User',on_delete=models.SET_NULL, null=True, verbose_name='Rahbar nomi', related_name='school_director', max_length=100, blank=True)
     phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999)], default=919791999)
     logo = models.ImageField('Rasm', upload_to='school/')
-    region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.CASCADE, related_name='school_region',
+    region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.SET_NULL, related_name='school_region',
                                null=True)
-    district = models.ForeignKey(District, verbose_name='Tuman', on_delete=models.CASCADE,
+    district = models.ForeignKey(District, verbose_name='Tuman', on_delete=models.SET_NULL,
                                  related_name='school_district', null=True)
     schet = models.CharField(null=True, max_length=255, validators=[MaxValueValidator(99999999999999999999)], blank=True)
     mfo = models.CharField(null=True, validators=[MaxValueValidator(99999)], blank=True, max_length=5)
@@ -116,9 +116,9 @@ class Group(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=15, default="B")
     number = models.IntegerField()
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
-    teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.CASCADE,
-                                related_name='group_teacher')
-    school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name="Avtomaktab", related_name='groups',
+    teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
+                                related_name='group_teacher', null=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups',
                                null=True)
     start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
     stop = models.DateField(verbose_name="O'qish tugashi", auto_now=False)
@@ -146,15 +146,15 @@ GENDER_CHOICES = (
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
-    role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="4")
-    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, related_name='school_user', blank=True)
+    role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="2")
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name='school_user', blank=True)
     address = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True, default='')
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField(blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999)])
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_user', blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, related_name='group_user', blank=True, null=True)
     pasport = models.CharField(max_length=9, null=True, unique=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)

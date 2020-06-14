@@ -131,3 +131,7 @@ def myvideos_list(request):
         'videos': videos
     }
     return render(request, 'video/myvideos_list.html', context)
+
+
+# def show_categories(request):
+#     return render(request, 'inc/breadcumb.html', {'categories': Category.objects.all()})

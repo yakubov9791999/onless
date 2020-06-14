@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
+{% load user_tags %}
 
 {% block content %}
     <div class="row">
-
         <div class="col-lg-4 col-md-6 col-sm-12">
             <!-- small box -->
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>1</h3>
-
+                {% get_count request.user.school.id as count %}
+                    <h3>{{ count.teachers }}</h3>
                     <h5>O'qituvchilarni qo'shish</h5>
                 </div>
                 <div class="icon">
@@ -22,7 +22,7 @@
             <!-- small box -->
             <div class="small-box bg-gradient-teal">
                 <div class="inner">
-                    <h3>2</h3>
+                    <h3>{{ count.groups }}</h3>
 
                     <h5>Guruhlarni qo'shish</h5>
                 </div>
@@ -37,7 +37,7 @@
             <!-- small box -->
             <div class="small-box bg-gradient-lightblue">
                 <div class="inner">
-                    <h3>3</h3>
+                    <h3>{{ count.pupils }}</h3>
 
                     <h5>O'quvchilarni qo'shish</h5>
                 </div>

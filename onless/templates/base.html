@@ -43,8 +43,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="">Bosh sahifa</a></li>
-                                {% block mainsections_list %}{% endblock %}
-                                {% block mainsection_detail %}{% endblock %}
+{#                                {% block breadcumb %}{% endblock %}#}
 {#                                <li class="breadcrumb-item " aria-current="page">Data</li>#}
 
                             </ol>
@@ -116,5 +115,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- AdminLTE App -->
 <script src="{% static 'js/adminlte.min.js' %}"></script>
 {% block bottom %}{% endblock bottom %}
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(64861804, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/64861804" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
 </body>
 </html>

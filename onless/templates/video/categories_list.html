@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
-
+{% load breadcumb_tags %}
+{% block breadcumb %}
+    {% category_breadcumb as categories %}
+    {% for category in categories %}
+        <li class="breadcrumb-item " aria-current="page">{{ category.title }}</li>
+    {% endfor %}
+{% endblock %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">

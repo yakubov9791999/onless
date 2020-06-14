@@ -98,6 +98,7 @@ def add_pupil(request):
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
+            print(group)
             parol = random.randint(1000000, 9999999)
             if form.is_valid():
                 try:
@@ -155,7 +156,7 @@ def add_group(request):
                 form.start = request.POST['start']
                 form.stop = request.POST['stop']
                 form.save()
-                messages.success(request, "Guruh qo'shildi")
+                messages.success(request, f"{form.category}-{form.number}-{form.year} guruh qo'shildi")
         else:
             form = AddGroupForm()
         return render(request, 'user/add_group.html', context)
@@ -180,18 +181,9 @@ def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4,school=request.user.school, group=group)
-        answer_count = ResultQuiz.objects.filter(user__in=pupils).count()
-        answer_true = ResultQuiz.objects.filter(user__in=pupils, answer__is_true=True).count()
-        try:
-            res = int(answer_true * 100 / answer_count)
-        except ZeroDivisionError:
-            res = 0
         context = {
             'group': group,
             'pupils': pupils,
-            'res': res,
-            'answer_true': answer_true,
-            'answer_count': answer_count,
         }
         return render(request, 'user/group_detail.html', context)
     else:
@@ -207,6 +199,7 @@ def group_delete(request, id):
             group.save()
         else:
             group.delete()
+            messages.success(request, f"{group.category}-{group.number}-{group.year} muvaffaqiyatli o'chirildi")
         return redirect(reverse_lazy('user:groups_list'))
     else:
         return render(request, 'inc/404.html')

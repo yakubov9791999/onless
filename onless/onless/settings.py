@@ -33,15 +33,16 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    #MyApp
+    # MyApp
     'user.apps.UserConfig',
     'quiz.apps.QuizConfig',
     'video.apps.VideoConfig',
-    #django apps
+    # django apps
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'mptt',
 
     'django.contrib.admin',
     'django.contrib.auth',

@@ -5,7 +5,7 @@ from quiz.models import User
 
 
 class Category(models.Model):
-    categories = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True, related_name='category_category')
+    categories = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=True, null=True, related_name='category_category')
     title = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="category/%Y-%m-%d/")
     sort = models.IntegerField(default=1)
@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Video(models.Model):
     title = models.CharField(max_length=250)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, related_name='video_category',
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='video_category',
                                  blank=True)
     is_free = models.BooleanField(
         default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
@@ -26,7 +26,7 @@ class Video(models.Model):
     photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
-    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -41,7 +41,7 @@ class Video(models.Model):
 
 class ViewComplete(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='video_view_complete')
-    user = models.ForeignKey(User, related_name='user_view_complete', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='user_view_complete', on_delete=models.CASCADE, null=True)
     time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -50,8 +50,8 @@ class ViewComplete(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
-    video = models.ForeignKey(Video, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True)
     text = models.TextField(max_length=800)
 
 
@@ -59,4 +59,4 @@ class Files(models.Model):
     title = models.CharField(max_length=100, )
     src = models.FileField(upload_to='file/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

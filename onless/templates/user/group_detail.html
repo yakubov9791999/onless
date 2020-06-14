@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load quiz_tags %}
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -38,20 +38,21 @@
                                 <td>+998{{ pupil.phone }}</td>
                                 <td>{{ pupil.username }}</td>
                                 <td>{{ pupil.turbo }}</td>
-                                <td title="Javoblar/To'g'ri javoblar:  {{ answer_count }}/{{ answer_true }}">
+                            {% pupil_result pupil.id as pupil_res %}
+                                <td title="Javoblar/To'g'ri javoblar:  {{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}">
                                     <div class="progress">
-                                        {% if answer_count > 0 and res > 0 %}
-                                            <div class="progress-bar {% if res >= 85 and res <= 100 %}bg-success progress-bar-striped{% elif res >= 65 and res <= 84 %}bg-warning progress-bar-striped{% elif res < 64 %}bg-danger progress-bar-striped{% endif %}"
+                                        {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
+                                            <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
                                                  role="progressbar"
                                                  aria-valuenow="40" aria-valuemin="2"
 
-                                                 aria-valuemax="6" style="width:{{ res }}%">
-                                                <b>{{ res }}%</b>
+                                                 aria-valuemax="6" style="width:{{ pupil_res.res }}%">
+                                                <b>{{ pupil_res.res }}%</b>
                                             </div>
-                                        {% elif answer_count > 0 and res < 1 %}
+                                        {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
                                             <div style="width: 100%; margin-left: 45%">0%</div>
                                         {% else %}
-                                            <div style="margin-left: 10%"><b>test yechilmagan</b></div>
+                                            <div style="margin-left: 10%">test yechilmagan</div>
                                         {% endif %}
                                     </div>
                                 </td>

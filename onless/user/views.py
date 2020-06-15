@@ -131,7 +131,7 @@ def add_pupil(request):
 @login_required
 def add_group(request):
     if request.user.role == '2' or request.user.role == '3':
-        teachers = User.objects.filter(role=3)
+        teachers = User.objects.filter(role=3, school=request.user.school)
         context = {
             'teachers': teachers,
         }

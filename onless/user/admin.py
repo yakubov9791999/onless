@@ -8,8 +8,8 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'role', 'name','username', 'phone','email', 'turbo', 'birthday', 'is_active', 'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
     list_display_links = ['username','role']
-    list_filter = ['role',]
-    search_fields = ['name', 'username', 'phone', 'role']
+    list_filter = ['role','school']
+    search_fields = ['name', 'username', 'phone', 'role',]
     save_on_top = True
 
 
@@ -18,7 +18,7 @@ class DrivingSchoolAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']
     search_fields = ['title', 'director', 'phone']
-    list_filter = ['title',]
+    list_filter = ['title', ]
     save_on_top = True
 
 

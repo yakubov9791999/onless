@@ -30,6 +30,7 @@ class Video(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
+    sort = models.SmallIntegerField(default=1)
 
     def __str__(self):
         return self.title
@@ -40,7 +41,7 @@ class Video(models.Model):
     class Meta:
         verbose_name = "Video"
         verbose_name_plural = "Videolar"
-
+        ordering = ('sort',)
 
 class ViewComplete(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='video_view_complete')

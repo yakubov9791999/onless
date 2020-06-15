@@ -13,8 +13,11 @@ class AuthenticationForm(ModelForm):
 class AddUserForm(ModelForm):
     class Meta:
         model = User
-        fields = ('name', 'phone',)
-        exclude = ('username', 'password', 'school', 'pasport')
+        fields = ('name', 'phone', )
+        exclude = ('username', 'password', 'school','pasport')
+
+
+
 
 class AddGroupForm(ModelForm):
     class Meta:

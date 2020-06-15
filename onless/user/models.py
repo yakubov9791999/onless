@@ -8,7 +8,7 @@ from django.http import Http404
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator, MaxLengthValidator
 
 
 def path_and_rename(instance, filename):
@@ -81,7 +81,7 @@ class District(models.Model):
 class School(models.Model):
     title = models.CharField(verbose_name='Nomi', max_length=255)
     director = models.ForeignKey('User',on_delete=models.SET_NULL, null=True, verbose_name='Rahbar nomi', related_name='school_director', max_length=100, blank=True)
-    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999)], default=919791999)
+    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999),MinValueValidator(100000000)])
     logo = models.ImageField('Rasm', upload_to='school/')
     region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.SET_NULL, related_name='school_region',
                                null=True)
@@ -153,16 +153,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField(blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
-    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999)])
+    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999),MinValueValidator(100000000)])
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, related_name='group_user', blank=True, null=True)
-    pasport = models.CharField(max_length=9, null=True, unique=True)
+    pasport = models.CharField(max_length=9, null=True, unique=True,validators=[MinLengthValidator(9),MaxLengthValidator(9)])
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)
     last_login = models.DateTimeField(null=True, auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=5)
-    turbo = models.CharField(max_length=200, blank=True, null=True)
+    turbo = models.CharField(max_length=200, blank=True, null=True, validators=[MinLengthValidator(7)])
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

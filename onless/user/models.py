@@ -82,11 +82,11 @@ class School(models.Model):
     title = models.CharField(verbose_name='Nomi', max_length=255)
     director = models.ForeignKey('User',on_delete=models.SET_NULL, null=True, verbose_name='Rahbar nomi', related_name='school_director', max_length=100, blank=True)
     phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999),MinValueValidator(100000000)])
-    logo = models.ImageField('Rasm', upload_to='school/')
+    logo = models.ImageField('Rasm', upload_to='school/', blank=True,)
     region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.SET_NULL, related_name='school_region',
                                null=True)
     district = models.ForeignKey(District, verbose_name='Tuman', on_delete=models.SET_NULL,
-                                 related_name='school_district', null=True)
+                                 related_name='school_district',blank=True, null=True)
     schet = models.CharField(null=True, max_length=255, validators=[MaxValueValidator(99999999999999999999)], blank=True)
     mfo = models.CharField(null=True, validators=[MaxValueValidator(99999)], blank=True, max_length=5)
     bank = models.CharField(null=True, blank=True, max_length=50)

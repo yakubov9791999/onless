@@ -30,7 +30,7 @@
                             <th>Telefon</th>
                             <th>Login</th>
                             <th>Parol</th>
-                            <th>O'chirish</th>
+                            <th>Tahrirlash</th>
 
                         </tr>
                         </thead>
@@ -47,10 +47,10 @@
                                 <td>{{ teacher.turbo }}</td>
                                 <td>
                                     &nbsp;&nbsp;<a href="{% url 'user:teacher_edit' teacher.id %}"><i class="fa fa-edit"
-                                                                                                      style="font-size: 150%;"></i></a>
+                                                                                                      ></i></a>
                                     &nbsp;&nbsp;<a href="{% url 'user:teacher_delete' teacher.id %}"><i
                                         class="fa fa-trash"
-                                        style="font-size: 150%;"></i></a>
+                                        ></i></a>
                                 </td>
                             </tr>
                         {% endfor %}

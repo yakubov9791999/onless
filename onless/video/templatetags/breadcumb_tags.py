@@ -6,7 +6,7 @@ register = template.Library()
 
 
 @register.simple_tag()
-def category_breadcumb():
-    categories = Category.objects.all()
-    return categories
+def category_breadcumb(id):
+    category = Category.objects.get(id=id)
+    return category
 

@@ -80,10 +80,11 @@ class EditSchoolForm(ModelForm):
     phone = forms.CharField(label="Tel raqam",widget=forms.TextInput(attrs={'class': 'form-control'}))
     logo = forms.ImageField(label="Rasm",widget=forms.FileInput(attrs={'class': 'form-control'}))
     region = forms.ModelChoiceField(label="Viloyat",queryset=Region.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    district = forms.ModelChoiceField(label="Tuman",queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    district = forms.ModelChoiceField(label="Tuman",queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
     class Meta:
         model = School
-        fields = ('title', 'director', 'phone', 'logo', 'region', 'district')
+        fields = ('title', 'director', 'phone', 'logo', 'region',)
+        exclude = ('district',)
 
 class AddContactForm(ModelForm):
     class Meta:

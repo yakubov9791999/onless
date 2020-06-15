@@ -52,15 +52,15 @@
                                         {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
                                             <div style="width: 100%; margin-left: 45%">0%</div>
                                         {% else %}
-                                            <div style="margin-left: 10%">test yechilmagan</div>
+                                            <div style="margin-left: 10%">yechilmagan</div>
                                         {% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i class="fa fa-edit"
-                                                                                        style="font-size: 150%;"></i></a>
+                                                                                        ></i></a>
                                     &nbsp;&nbsp;<a href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
-                                                                                         style="font-size: 150%;"></i></a>
+                                                                                        ></i></a>
                                 </td>
                             </tr>
                         {% endfor %}

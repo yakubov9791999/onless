@@ -13,6 +13,9 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ('sort',)
+
 
 class Video(models.Model):
     title = models.CharField(max_length=250)

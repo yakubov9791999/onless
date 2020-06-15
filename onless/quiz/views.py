@@ -23,13 +23,21 @@ def add_result(request):
                         form.question = question
                         form.save()
 
-                    if answer.is_true:
-                        messages.success(request, "Javobingiz to'g'ri")
-                    else:
-                        messages.error(request, "Javobingiz noto'g'ri")
+                    # if answer.is_true:
+                    #     messages.success(request, "Javobingiz to'g'ri")
+                    # else:
+                    #     messages.error(request, "Javobingiz noto'g'ri")
         except MultiValueDictKeyError:
             form = AddResultForm()  #shu joyida keyingi savolga o'tishni qilish kerak
     else:
         form = AddResultForm()
     next = request.POST['next']
     return HttpResponseRedirect(next)
+
+@login_required
+def tests_list(request):
+    questions = Question.objects.all()
+    context = {
+        'questions': questions
+    }
+    return render(request, 'quiz/tests_list.html', context)

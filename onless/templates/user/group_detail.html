@@ -9,6 +9,20 @@
                 <div class="card-header">
                     <h3 class="card-title">O'quvchilar ro'yhati</h3>
                 </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+{#                <form action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">#}
+{#                    {% csrf_token %}#}
+{#                    <input type="file" name="file">#}
+{#                    <input type="hidden" name="group" value="{{ group.id }}">#}
+{#                    <input type="submit">#}
+{#                </form>#}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
@@ -38,7 +52,7 @@
                                 <td>+998{{ pupil.phone }}</td>
                                 <td>{{ pupil.username }}</td>
                                 <td>{{ pupil.turbo }}</td>
-                            {% pupil_result pupil.id as pupil_res %}
+                                {% pupil_result pupil.id as pupil_res %}
                                 <td title="Javoblar/To'g'ri javoblar:  {{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}">
                                     <div class="progress">
                                         {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
@@ -58,9 +72,9 @@
                                 </td>
                                 <td>
                                     &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i class="fa fa-edit"
-                                                                                        ></i></a>
+                                ></i></a>
                                     &nbsp;&nbsp;<a href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
-                                                                                        ></i></a>
+                                ></i></a>
                                 </td>
                             </tr>
                         {% endfor %}

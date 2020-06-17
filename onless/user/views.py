@@ -2,6 +2,7 @@ import random
 from random import randrange
 
 import requests
+import xlrd
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.db.models import ProtectedError, Q
@@ -9,7 +10,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import UpdateView
 
+from onless.settings import BASE_DIR
 from quiz.models import *
+
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
@@ -173,7 +176,7 @@ def groups_list(request):
 def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
-        pupils = User.objects.filter(role=4,school=request.user.school, group=group)
+        pupils = User.objects.filter(role=4,school=request.user.school, group=group).order_by('name')
         context = {
             'group': group,
             'pupils': pupils,
@@ -365,7 +368,12 @@ def add_school(request):
 @login_required
 def schools_list(request):
     if request.user.role == '1':
-        return render(request, 'inspecion/schools_list.html')
+        schools = School.objects.all()
+
+        context = {
+            'schools': schools
+        }
+        return render(request, 'inspecion/schools_list.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -427,3 +435,55 @@ def teacher_delete(request, id):
         return HttpResponseRedirect(next)
     else:
         return render(request, 'inc/404.html')
+
+
+def upload_file(request):
+    if request.POST:
+        file= request.FILES['file']
+        file = File.objects.create(file=file)
+        print(os.path.join('{}{}'.format(BASE_DIR, file.file.url)))
+        group = get_object_or_404(Group, id=request.POST['group'])
+        wb = xlrd.open_workbook()
+        sheet = wb.sheet_by_index(0)
+        number_of_rows = sheet.nrows
+        number_of_columns = sheet.ncols
+
+        for row in range(1,number_of_rows):
+            values = []
+            for col in range(1,number_of_columns):
+                value = (sheet.cell(row, col).value)
+                values.append(value)
+            name = str(values[0])
+            pasport = str(values[1])
+            phone = str(int(values[2]))
+            if len(pasport) == 9 and len(phone) == 9:
+                try:
+                    parol = random.randint(1000000, 9999999)
+                    user = User.objects.create_user(
+                        username=pasport,
+                        pasport=pasport,
+                        school=request.user.school,
+                        turbo=parol,
+                        password=parol,
+                        name=name,
+                        phone=phone,
+                        role='4',
+                        group=group,
+                        is_superuser=False,
+                    )
+                    user.set_password(parol)
+                    user.username = pasport
+                    user.email = ''
+                    user.save()
+                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                    msg = msg.replace(" ", "+")
+                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                    response = requests.get(url)
+                    messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
+                except IntegrityError:
+                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
+
+
+    return render(request, 'user/group_detail.html',)

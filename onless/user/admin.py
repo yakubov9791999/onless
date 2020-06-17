@@ -9,12 +9,12 @@ class UserAdmin(admin.ModelAdmin):
                     'last_login']
     list_display_links = ['username','role']
     list_filter = ['role','school']
-    search_fields = ['name', 'username', 'phone', 'role',]
+    search_fields = ['name', 'username', 'phone', 'role','pasport']
     save_on_top = True
 
 
 @admin.register(School)
-class DrivingSchoolAdmin(admin.ModelAdmin):
+class SchoolAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']
     search_fields = ['title', 'director', 'phone']

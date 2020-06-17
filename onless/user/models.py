@@ -136,6 +136,7 @@ ROLE_CHOICES = (
     ("2", "Direktor"),
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
+    ("5", "Bugalter"),
 )
 
 GENDER_CHOICES = (
@@ -187,3 +188,10 @@ class Contact(models.Model):
 
 class File(models.Model):
     file = models.FileField(upload_to='',)
+
+
+
+class Pay(models.Model):
+    total = models.IntegerField(default=0)
+    payment = models.IntegerField(default=0)
+    pay_date = models.DateTimeField(auto_now=True)

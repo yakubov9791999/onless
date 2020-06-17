@@ -50,7 +50,7 @@ def settings_list(request):
 
 @login_required
 def add_teacher(request):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             password = random.randint(1000000, 9999999)
@@ -162,7 +162,7 @@ def add_group(request):
 
 @login_required
 def groups_list(request):
-    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4' or request.user.role == '5':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
         context = {
             'groups': groups,
@@ -174,7 +174,7 @@ def groups_list(request):
 
 @login_required
 def group_detail(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4,school=request.user.school, group=group).order_by('name')
         context = {
@@ -188,7 +188,7 @@ def group_detail(request, id):
 
 @login_required
 def group_delete(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         group = get_object_or_404(Group, id=id)
         if group.group_user.count() > 2:
             group.is_active = False
@@ -243,7 +243,7 @@ def profil_edit(request):
 
 @login_required
 def school_edit(request):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         school = School.objects.get(id=request.user.school.id)
         form = EditSchoolForm(instance=request.user.school)
         if request.POST:
@@ -368,7 +368,7 @@ def add_school(request):
 
 
 def pupil_delete(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
         pupil.delete()
         next = request.META.get('HTTP_REFERER')
@@ -378,7 +378,7 @@ def pupil_delete(request, id):
 
 @login_required
 def teachers_list(request):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         teachers = User.objects.filter(school=request.user.school, role=3)
         context = {
             'teachers': teachers
@@ -389,7 +389,7 @@ def teachers_list(request):
 
 @login_required
 def teacher_edit(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         teacher = get_object_or_404(User, id=id)
         form = EditPupilForm(instance=teacher)
         if request.POST:
@@ -417,7 +417,7 @@ def teacher_edit(request, id):
 
 @login_required
 def teacher_delete(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         teacher = get_object_or_404(User, id=id)
         teacher.delete()
         next = request.META.get('HTTP_REFERER')
@@ -480,3 +480,13 @@ def upload_file(request):
         os.unlink(file_path)
     next = request.META['HTTP_REFERER']
     return HttpResponseRedirect(next)
+
+
+@login_required
+def bugalter_group_detail(request, id):
+    group = get_object_or_404(Group, id=id)
+    pupils = User.objects.filter(school=request.user.school, role=4, group=group)
+    context = {
+        'pupils': pupils
+    }
+    return render(request , 'bugalter/group_detail.html', context)

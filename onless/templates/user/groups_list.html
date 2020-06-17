@@ -20,7 +20,7 @@
 
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-hovered">
-                        <thead >
+                        <thead>
                         <tr style="background-color: #ecebeb">
                             <th>№</th>
                             <th>Guruh nomi</th>
@@ -38,8 +38,12 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                    {% if request.user.role == '2' or request.user.role == '3' %}
+                                    {% if request.user.role == '2' or request.user.role == '3'%}
                                         <a href="{% url 'user:group_detail' group.id %}">
+                                            <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
+                                        </a>
+                                     {% elif request.user.role == '5'  %}
+                                        <a href="{% url 'user:bugalter_group_detail' group.id %}">
                                             <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
                                         </a>
                                     {% else %}
@@ -51,16 +55,20 @@
                                 <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                     <td>
+
                                         &nbsp;
                                         <a href="{% url 'user:group_detail' group.id %}"><i class="fas fa-eye"
-                                                                                            ></i></a>
+                                        ></i></a>
+
                                         &nbsp;
                                         <a href="{% url 'user:group_update' group.id %}"><i class="fa fa-edit"
-                                                                                            ></i>
+                                        ></i>
                                         </a>
-                                        &nbsp;
-                                        <a href="{% url 'user:group_delete' group.id %}"><i class="fa fa-trash"
-                                                                                            ></i></a>
+                                        {% if request.user.role == '2' %}
+                                            &nbsp;
+                                            <a href="{% url 'user:group_delete' group.id %}"><i class="fa fa-trash"
+                                            ></i></a>
+                                        {% endif %}
                                     </td>
                                 {% endif %}
                             </tr>

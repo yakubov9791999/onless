@@ -9,6 +9,7 @@ class Category(models.Model):
     title = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="category/%Y-%m-%d/")
     sort = models.IntegerField(default=1)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

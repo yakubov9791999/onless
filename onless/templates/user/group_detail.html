@@ -53,8 +53,8 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td><b>{{ pupil.name }}</b></td>
                                 <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
-                                <td>{{ pupil.address }}</td>
-                                <td>+998{{ pupil.phone }}</td>
+                                <td>{% if pupil.address %}{{ pupil.address }}{% endif %}</td>
+                                <td>+998{% if pupil.phone %}{{ pupil.phone }}{% endif %}</td>
                                 <td>{{ pupil.username }}</td>
                                 <td>{{ pupil.turbo }}</td>
                                 {% pupil_result pupil.id as pupil_res %}

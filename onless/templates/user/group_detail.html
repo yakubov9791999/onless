@@ -9,20 +9,19 @@
                 <div class="card-header">
                     <h3 class="card-title">O'quvchilar ro'yhati</h3>
                 </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-{#                <form action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">#}
-{#                    {% csrf_token %}#}
-{#                    <input type="file" name="file">#}
-{#                    <input type="hidden" name="group" value="{{ group.id }}">#}
-{#                    <input type="submit">#}
-{#                </form>#}
+
+                {% include 'inc/messages.html' %}
+
+
+                 <a id="button_add_pupil" onclick="add_pupil()" style="color: whitesmoke; width: 20%; margin-top: 1%; margin-left: 1.5%" href="/media/online/namuna.xlsx" class="btn btn-secondary">Excel orqali qo'shish</a>
+
+                <form id="export_excel_form" style="display: none" class="form-group mt-3 ml-3" action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <input type="file" name="file">
+                    <input type="hidden" name="group" value="{{ group.id }}">
+                    <input type="submit" class="btn btn-secondary" value="Yuklash">
+                </form>
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
@@ -87,4 +86,13 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+    function add_pupil() {
+        alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
+        document.getElementById('button_add_pupil').style.display = 'none';
+        document.getElementById('export_excel_form').style.display = 'block';
+    }
+
+    </script>
 {% endblock content %}

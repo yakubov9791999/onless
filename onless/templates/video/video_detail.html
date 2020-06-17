@@ -5,23 +5,26 @@
 
     <style>
 
-.video-js-responsive-container.vjs-hd {
-    padding-top: 56.25%;
-}
-.video-js-responsive-container.vjs-sd {
-    padding-top: 75%;
-}
-.video-js-responsive-container {
-    width: 100%;
-    position: relative;
-}
-.video-js-responsive-container .video-js {
-    height: 100% !important;
-    width: 100% !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
+        .video-js-responsive-container.vjs-hd {
+            padding-top: 56.25%;
+        }
+
+        .video-js-responsive-container.vjs-sd {
+            padding-top: 75%;
+        }
+
+        .video-js-responsive-container {
+            width: 100%;
+            position: relative;
+        }
+
+        .video-js-responsive-container .video-js {
+            height: 100% !important;
+            width: 100% !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
     </style>
 
     <h1 class="text-center">{{ video.title }}</h1>
@@ -66,11 +69,9 @@
                             {% for answer in question.answers.all %}
                                 <li>
                                     <label>
-
-
+                                        {% get_results request.user.id question.id answer.id as result_question %}
                                         <input type="radio" name="answer"
-                                               {% for result in results %}{% if  answer.result_answer.exists %}checked
-                                               disabled {% else %}{% endif %}    {% endfor %}
+                                               {% if result_question.exists %}checked disabled{% endif %}
                                                value="{{ answer.id }}"
                                                id="id_answer{{ forloop.counter }}">&nbsp;
                                         {% if question.result_questions.exists %}
@@ -78,14 +79,10 @@
                                                 <span class="text-danger">{{ answer.text }}</span>
                                             {% else %}
                                                 <span class="text-success"> {{ answer.text }}</span>
-
                                             {% endif %}
-
                                         {% else %}
                                             {{ answer.text }}
                                         {% endif %}
-
-
                                     </label>
                                 </li>
                             {% endfor %}
@@ -128,7 +125,7 @@
                             type: "GET",
                             url: "{% url 'video:add_duration' %}",
                             data: {
-                                'video': {{ video.id }} // from form
+                                'video': {{ video.id }}, // from form
                             },
                             success: function (message) {
                                 var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');

@@ -29,7 +29,7 @@ class ResultQuiz(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.question} ning javobi {self.answer}"
+        return f"{self.user}"
 
     class Meta:
         verbose_name = 'Test javobi'

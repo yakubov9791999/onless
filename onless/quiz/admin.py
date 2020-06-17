@@ -51,4 +51,7 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [ChoiceInline]
 
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(ResultQuiz)
+
+@admin.register(ResultQuiz)
+class ResultQuizAdmin(admin.ModelAdmin):
+    list_filter = ['user','answer', 'question',]

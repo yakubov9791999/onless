@@ -2,7 +2,26 @@
 {% load static %}
 {% block content %}
 
+    <style>
 
+.video-js-responsive-container.vjs-hd {
+    padding-top: 56.25%;
+}
+.video-js-responsive-container.vjs-sd {
+    padding-top: 75%;
+}
+.video-js-responsive-container {
+    width: 100%;
+    position: relative;
+}
+.video-js-responsive-container .video-js {
+    height: 100% !important;
+    width: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+    </style>
 
     <h1 class="text-center">{{ video.title }}</h1>
     <div class="video-js-responsive-container vjs-hd">
@@ -17,9 +36,9 @@
                poster="{{ video.photo.url }}"
                data-setup="{}"
         >
-            <source src="{{ video.video.url }}"
-                    type="video/mp4"/>
-            <source src="{{ video.video }}"/>
+            <source src="{{ video.src2 }}" type="video/webm"/>
+            <source src="{{ video.src }}" type="video/mp4"/>
+
             <p class="vjs-no-js">
                 Kechirasiz, sizning brauzeringiz eski versiyada bo'lganligi sababli, ushbu videoni qo'llay olmaydi.
                 Iltimos

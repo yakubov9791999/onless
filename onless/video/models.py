@@ -13,6 +13,9 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ('sort',)
+
 
 class Video(models.Model):
     title = models.CharField(max_length=250)
@@ -22,11 +25,13 @@ class Video(models.Model):
         default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
     likes = models.ManyToManyField(User, related_name='rating_likes', blank=True)
     dislikes = models.ManyToManyField(User, related_name='rating_dislikes', blank=True)
-    video = models.TextField(max_length=5000)
+    src = models.TextField('Mp4',max_length=5000, blank=True)
+    src2 = models.TextField('Webm',max_length=5000, blank=True)
     photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
+    sort = models.SmallIntegerField(default=1)
 
     def __str__(self):
         return self.title
@@ -37,7 +42,7 @@ class Video(models.Model):
     class Meta:
         verbose_name = "Video"
         verbose_name_plural = "Videolar"
-
+        ordering = ('sort',)
 
 class ViewComplete(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='video_view_complete')

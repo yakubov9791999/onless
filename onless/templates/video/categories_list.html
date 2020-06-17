@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 {% load breadcumb_tags %}
+
 {% block breadcumb %}
-    {% category_breadcumb as categories %}
-    {% for category in categories %}
-        <li class="breadcrumb-item " aria-current="page">{{ category.title }}</li>
-    {% endfor %}
+   {% for category in categories %}
+        {% category_breadcumb category.id as breadcumb_category %}
+       <li class="breadcrumb-item " aria-current="page">{{ breadcumb_category.categories }}</li>
+ {% endfor %}
+
 {% endblock %}
 {% block content %}
+
     <div class="container-fluid">
         <div class="row">
             {% for category in categories %}
+{#                 {% category_breadcumb  category.id %}#}
                 {% if category.video_category.exists %}
                     <a href="{% url 'video:videos_list' category.id %}">
                         <div class="col-lg-{% if category.categories %}4{% else %}6{% endif %} col-md-6 col-sm-6 mb-5">

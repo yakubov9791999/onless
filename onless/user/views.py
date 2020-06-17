@@ -73,7 +73,7 @@ def add_teacher(request):
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
-                messages.error(request, "Formani to'liq to'ldiring !")
+                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
         else:
             form = AddUserForm(request)
         return render(request, 'user/add_teacher.html', )
@@ -84,12 +84,7 @@ def add_teacher(request):
 @login_required
 def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
-        groups = Group.objects.all()
-
-        context = {
-            'groups': groups,
-
-        }
+        groups = Group.objects.filter(school=request.user.school)
         form = AddUserForm()
         context = {
             'groups': groups,
@@ -98,7 +93,6 @@ def add_pupil(request):
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
-            print(group)
             parol = random.randint(1000000, 9999999)
             if form.is_valid():
                 try:
@@ -122,12 +116,11 @@ def add_pupil(request):
                     msg = msg.replace(" ", "+")
                     url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token }&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                     response = requests.get(url)
-
                     messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
-                messages.error(request, "Formani to'liq to'ldiring !")
+                messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
         else:
             form = AddUserForm()
         return render(request, 'user/add_pupil.html', context)
@@ -138,7 +131,7 @@ def add_pupil(request):
 @login_required
 def add_group(request):
     if request.user.role == '2' or request.user.role == '3':
-        teachers = User.objects.filter(role=3)
+        teachers = User.objects.filter(role=3, school=request.user.school)
         context = {
             'teachers': teachers,
         }

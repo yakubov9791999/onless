@@ -66,7 +66,7 @@ def add_duration(request):
 
 @login_required
 def categories_list(request):
-    categories = Category.objects.filter(categories__isnull=True)
+    categories = Category.objects.filter(categories__isnull=True, is_active=True)
 
     return render(request, 'video/categories_list.html', {
         'categories': categories,
@@ -74,7 +74,7 @@ def categories_list(request):
 
 @login_required
 def category_detail(request, id):
-    categories = Category.objects.filter(categories=id)
+    categories = Category.objects.filter(categories=id, is_active=True)
 
     return render(request, 'video/categories_list.html', {
         'categories': categories,

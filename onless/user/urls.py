@@ -25,6 +25,6 @@ urlpatterns = [
     path('teacher_update/<int:id>/', teacher_edit, name='teacher_edit'),
     path('teacher_delete/<int:id>/', teacher_delete, name='teacher_delete'),
     path('upload_file/', upload_file, name='upload_file'),
-
+    path('bugalter/group/<int:id>/', bugalter_group_detail, name='bugalter_group_detail'),
 
 ]

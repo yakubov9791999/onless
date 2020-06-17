@@ -48,9 +48,11 @@
                                 <td>
                                     &nbsp;&nbsp;<a href="{% url 'user:teacher_edit' teacher.id %}"><i class="fa fa-edit"
                                                                                                       ></i></a>
+                                    {% if request.user.role == '2' %}
                                     &nbsp;&nbsp;<a href="{% url 'user:teacher_delete' teacher.id %}"><i
                                         class="fa fa-trash"
                                         ></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

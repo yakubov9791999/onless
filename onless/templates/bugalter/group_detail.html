@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">O'quvchilar ro'yhati</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead>
+                        <tr style="background-color: #ecebeb">
+                            <th>№</th>
+                            <th>O'quvchining ism familiyasi</th>
+                            <th>Umumiy</th>
+                            <th>To'lovi</th>
+                            <th>Qarzdorligi</th>
+                            <th>To'lov qo'shish</th>
+                            <th>To'lovlar tarixi</th>
+                            {% if request.user.role == '2' or request.user.role == '3' %}
+                                <th>
+                                    Tahrirlash
+                                </th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for pupil in pupils %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><b>{{ pupil.name }}</b></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function add_pupil() {
+            alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
+            document.getElementById('button_add_pupil').style.display = 'none';
+            document.getElementById('export_excel_form').style.display = 'block';
+        }
+
+    </script>
+{% endblock content %}

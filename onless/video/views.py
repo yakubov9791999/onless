@@ -41,6 +41,12 @@ def home(request):
         else:
             return redirect(reverse_lazy('user:groups_list'))
 
+    elif request.user.role == "5":  # agarda role Bugalter  bo'lsa
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(profil_edit)
+        else:
+            return redirect(reverse_lazy('user:groups_list'))
+
 
 
 

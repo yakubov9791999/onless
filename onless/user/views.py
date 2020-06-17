@@ -365,17 +365,7 @@ def add_school(request):
     return render(request, 'user/add_school.html')
 
 
-@login_required
-def schools_list(request):
-    if request.user.role == '1':
-        schools = School.objects.all()
 
-        context = {
-            'schools': schools
-        }
-        return render(request, 'inspecion/schools_list.html', context)
-    else:
-        return render(request, 'inc/404.html')
 
 def pupil_delete(request, id):
     if request.user.role == '2' or request.user.role == '3':

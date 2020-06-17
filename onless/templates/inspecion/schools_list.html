@@ -19,6 +19,7 @@
                             <th>№</th>
                             <th>Maktab nomi</th>
                             <th>Maktab rahbari</th>
+                            <th>Rahbar raqami</th>
                             <th>Joylashgan joyi</th>
                             <th>Guruhlar</th>
                             <th>O'quvchilar</th>
@@ -33,6 +34,7 @@
                                    {{ school.title }}
                                 </td>
                                 <td>{{ school.director }}</td>
+                                <td>{% if school.director.phone %}{{ school.director.phone }}{% endif %}</td>
                                 <td>{{ school.region }} {% if school.district %} , {{ school.district }}{% endif %}</td>
                                 {% get_count school.id as count %}
                                  <td>{{ count.groups }}</td>

@@ -22,7 +22,7 @@ def home(request):
         else:
             return redirect(reverse_lazy("video:categories_list"))
 
-    elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
+    elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
         schools = School.objects.filter(region=request.user.school.region)
         return render(request, 'inspecion/schools_list.html', {
             'schools': schools,
@@ -41,11 +41,7 @@ def home(request):
         else:
             return redirect(reverse_lazy('user:groups_list'))
 
-    elif request.user.role == "1":  # agarda role inspeksiya  bo'lsa
-        # schools = School.objects.filter(region=request.user.district.region)
-        return render(request, 'inspecion/schools_list.html', {
-            # 'schools': schools,
-        })
+
 
 
 

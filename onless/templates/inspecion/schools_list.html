@@ -1,1 +1,49 @@
-{{ request.user.school.region }}
+{% extends 'base.html' %}
+{% load user_tags %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Maktablar ro'yhati</h3>
+                </div>
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Maktab nomi</th>
+                            <th>Maktab rahbari</th>
+                            <th>Joylashgan joyi</th>
+                            <th>Guruhlar</th>
+                            <th>O'quvchilar</th>
+                            <th>Avtomatlashgan tizim</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for school in schools %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                   {{ school.title }}
+                                </td>
+                                <td>{{ school.director }}</td>
+                                <td>{{ school.region }} , {{ school.district }}</td>
+                                {% get_count school.id as count %}
+                                 <td>{{ count.groups }}</td>
+                                 <td>{{ count.pupils }}</td>
+                                <td>{% if school.is_amet %}<span  style="color: #00b44e">O'rnatilgan</span>{% else %}<span  style="color: red">O'rnatilmagan</span>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

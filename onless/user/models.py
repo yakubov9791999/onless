@@ -184,3 +184,6 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+class File(models.Model):
+    file = models.FileField(upload_to='',)

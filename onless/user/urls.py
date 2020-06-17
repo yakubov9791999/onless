@@ -25,5 +25,7 @@ urlpatterns = [
     path('teachers/', teachers_list, name='teachers_list'),
     path('teacher_update/<int:id>/', teacher_edit, name='teacher_edit'),
     path('teacher_delete/<int:id>/', teacher_delete, name='teacher_delete'),
+    path('upload_file/', upload_file, name='upload_file'),
+
 
 ]

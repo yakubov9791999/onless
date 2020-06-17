@@ -39,8 +39,8 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 {% if user.is_authenticated and request.user.role == '1' %}
+                      {% include 'inc/role_sidebar/schools_list_page.html' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
-                    {% include 'inc/role_sidebar/schools_list_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '2' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}

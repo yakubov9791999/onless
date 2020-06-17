@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': 'bcloudintelekt_onless',
         # 'NAME': 'onless',
         'USER': 'bcloudintelekt',
-        'PASSWORD': 'm6232971',
+        'PASSWORD': 'sierus2971',
         'HOST': 'localhost',
         'PORT': '3306',
     }

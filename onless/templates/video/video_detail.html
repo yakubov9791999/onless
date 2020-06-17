@@ -73,15 +73,19 @@
                                         <input type="radio" name="answer"
                                                {% if result_question.exists %}checked disabled{% endif %}
                                                value="{{ answer.id }}"
-                                               id="id_answer{{ forloop.counter }}">&nbsp;
-                                        {% if question.result_questions.exists %}
+                                               id="id_answer{{ forloop.counter }}">
+                                        {% if result_question.exists %}
                                             {% if answer.is_true == False %}
                                                 <span class="text-danger">{{ answer.text }}</span>
                                             {% else %}
                                                 <span class="text-success"> {{ answer.text }}</span>
                                             {% endif %}
                                         {% else %}
-                                            {{ answer.text }}
+                                            {% if answer.is_true == False %}
+                                                <span class="text-danger">{{ answer.text }}</span>
+                                            {% else %}
+                                                <span class="text-success"> {{ answer.text }}</span>
+                                            {% endif %}
                                         {% endif %}
                                     </label>
                                 </li>

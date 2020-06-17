@@ -58,7 +58,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             width="50px" style="border-radius: 55px"></div>
                                 {% else %}
                                     <div class="col-1" style="margin-left: 25px"><img
-                                            src="{% static 'online/car.jpg' %}" height="50px" width="50px"></div>
+                                            src="{% static 'online/car.jpg' %}" height="50px" width="50px" style="border-radius: 55px"></div>
                                 {% endif %}
                                 <div class="col-10 mt-2"><h3 class="text-dark">{% if request.user.school.title %}
                                     {{ request.user.school.title|capfirst }}{% else %}AVTOMAKTAB{% endif %}</h3>

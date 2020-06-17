@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load video_tags %}
 {% block content %}
 
     <style>
@@ -113,7 +114,8 @@
 {% block bottom %}
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
     <script>
-        {% if not request.user.user_view_complete.exists %}
+        {% get_view_video request.user.id video.id as view_video_complete %}
+        {% if not view_video_complete.exists %}
             $("#video_bottom_question").hide();
         {% endif %}
         var vid = document.getElementById("my-video");

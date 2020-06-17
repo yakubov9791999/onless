@@ -441,9 +441,9 @@ def upload_file(request):
     if request.POST:
         file= request.FILES['file']
         file = File.objects.create(file=file)
-        print(os.path.join('{}{}'.format(BASE_DIR, file.file.url)))
+        file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
         group = get_object_or_404(Group, id=request.POST['group'])
-        wb = xlrd.open_workbook()
+        wb = xlrd.open_workbook(file_path)
         sheet = wb.sheet_by_index(0)
         number_of_rows = sheet.nrows
         number_of_columns = sheet.ncols
@@ -455,7 +455,10 @@ def upload_file(request):
                 values.append(value)
             name = str(values[0])
             pasport = str(values[1])
-            phone = str(int(values[2]))
+            try:
+                phone = str(int(values[2]))
+            except ValueError:
+                pass
             if len(pasport) == 9 and len(phone) == 9:
                 try:
                     parol = random.randint(1000000, 9999999)
@@ -466,7 +469,7 @@ def upload_file(request):
                         turbo=parol,
                         password=parol,
                         name=name,
-                        phone=phone,
+                        phone=int(phone),
                         role='4',
                         group=group,
                         is_superuser=False,
@@ -479,11 +482,11 @@ def upload_file(request):
                     msg = msg.replace(" ", "+")
                     url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                     response = requests.get(url)
-                    messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
+                    messages.success(request, "Muvaffaqiyatli qo'shildi !")
                 except IntegrityError:
-                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+                    messages.error(request, "Siz jadvalga kiritgan pasport oldin ro'yhatdan o'tkazilgan !")
             else:
-                messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
-
-
-    return render(request, 'user/group_detail.html',)
+                messages.error(request, "Jadvalni to'ldirishda xatolik !")
+        os.unlink(file_path)
+    next = request.META['HTTP_REFERER']
+    return HttpResponseRedirect(next)

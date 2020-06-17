@@ -23,7 +23,7 @@ def home(request):
             return redirect(reverse_lazy("video:categories_list"))
 
     elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
-        schools = School.objects.filter(region=request.user.school.region).exclude(school_user=request.user)
+        schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(school_user=request.user)
         return render(request, 'inspecion/schools_list.html', {
             'schools': schools,
         })

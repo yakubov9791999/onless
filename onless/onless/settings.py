@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'mptt',
     'import_export',
     'django.contrib.humanize',
+    'django_template_maths',
 
     'django.contrib.admin',
     'django.contrib.auth',

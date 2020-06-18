@@ -559,7 +559,7 @@ def pay_history(request, user_id, group_id):
 
 @login_required()
 def history_view_video_all(request):
-    views = ViewComplete.objects.filter(user=User.objects.filter(school=request.user.school)).order_by('-time')
+    views = ViewComplete.objects.filter(user__school=request.user.school).order_by('-time')
     cotext = {
         'views': views,
     }

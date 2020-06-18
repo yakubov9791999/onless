@@ -47,7 +47,7 @@
 
                         <div class="form-group">
                             <label for="exampleInputname">Guruh:</label>
-                            <select name="group" class="form-control" id="">
+                            <select name="group" class="form-control" id="" required="required">
                                 {% for group in groups %}
                                     <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>
                                 {% endfor %}

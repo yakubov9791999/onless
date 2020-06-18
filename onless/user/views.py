@@ -2,14 +2,18 @@ import random
 from random import randrange
 
 import requests
+import xlrd
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db.models import ProtectedError, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import UpdateView
 
+from onless.settings import BASE_DIR
 from quiz.models import *
+
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
@@ -47,7 +51,7 @@ def settings_list(request):
 
 @login_required
 def add_teacher(request):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             password = random.randint(1000000, 9999999)
@@ -85,20 +89,21 @@ def add_teacher(request):
 def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
         groups = Group.objects.filter(school=request.user.school)
-        form = AddUserForm()
+        form = AddPupilForm()
         context = {
             'groups': groups,
             'form': form,
         }
         if request.method == 'POST':
-            form = AddUserForm(data=request.POST)
+            form = AddPupilForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
             parol = random.randint(1000000, 9999999)
+            pasport = str(request.POST['pasport']).replace('А','A').replace('В', 'B').replace('С','C')
             if form.is_valid():
                 try:
                     user = User.objects.create_user(
-                        username=request.POST['pasport'],
-                        pasport=request.POST['pasport'],
+                        username=pasport,
+                        pasport=pasport,
                         school=request.user.school,
                         turbo=parol,
                         password=parol,
@@ -109,7 +114,7 @@ def add_pupil(request):
                         is_superuser=False,
                     )
                     user.set_password(parol)
-                    user.username = request.POST['pasport']
+                    user.username = pasport
                     user.email = ''
                     user.save()
                     msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
@@ -122,7 +127,7 @@ def add_pupil(request):
             else:
                 messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
         else:
-            form = AddUserForm()
+            form = AddPupilForm()
         return render(request, 'user/add_pupil.html', context)
     else:
         return render(request, 'inc/404.html')
@@ -159,7 +164,7 @@ def add_group(request):
 
 @login_required
 def groups_list(request):
-    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4' or request.user.role == '5':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
         context = {
             'groups': groups,
@@ -171,9 +176,9 @@ def groups_list(request):
 
 @login_required
 def group_detail(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
-        pupils = User.objects.filter(role=4,school=request.user.school, group=group)
+        pupils = User.objects.filter(role=4,school=request.user.school, group=group).order_by('name')
         context = {
             'group': group,
             'pupils': pupils,
@@ -185,7 +190,7 @@ def group_detail(request, id):
 
 @login_required
 def group_delete(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         group = get_object_or_404(Group, id=id)
         if group.group_user.count() > 2:
             group.is_active = False
@@ -240,7 +245,7 @@ def profil_edit(request):
 
 @login_required
 def school_edit(request):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         school = School.objects.get(id=request.user.school.id)
         form = EditSchoolForm(instance=request.user.school)
         if request.POST:
@@ -362,15 +367,10 @@ def add_school(request):
     return render(request, 'user/add_school.html')
 
 
-@login_required
-def schools_list(request):
-    if request.user.role == '1':
-        return render(request, 'inspecion/schools_list.html')
-    else:
-        return render(request, 'inc/404.html')
+
 
 def pupil_delete(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
         pupil.delete()
         next = request.META.get('HTTP_REFERER')
@@ -380,7 +380,7 @@ def pupil_delete(request, id):
 
 @login_required
 def teachers_list(request):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         teachers = User.objects.filter(school=request.user.school, role=3)
         context = {
             'teachers': teachers
@@ -391,7 +391,7 @@ def teachers_list(request):
 
 @login_required
 def teacher_edit(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         teacher = get_object_or_404(User, id=id)
         form = EditPupilForm(instance=teacher)
         if request.POST:
@@ -419,11 +419,137 @@ def teacher_edit(request, id):
 
 @login_required
 def teacher_delete(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2':
         teacher = get_object_or_404(User, id=id)
         teacher.delete()
         next = request.META.get('HTTP_REFERER')
         messages.success(request, "O'qituvchi muvaffaqiyatli o'chirildi !")
         return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')
+
+
+
+
+def upload_file(request):
+    if request.POST:
+        file= request.FILES['file']
+        file = File.objects.create(file=file)
+        file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
+        group = get_object_or_404(Group, id=request.POST['group'])
+        wb = xlrd.open_workbook(file_path)
+        sheet = wb.sheet_by_index(0)
+        number_of_rows = sheet.nrows
+        number_of_columns = sheet.ncols
+
+        for row in range(1,number_of_rows):
+            values = []
+            for col in range(1,number_of_columns):
+                value = (sheet.cell(row, col).value)
+                values.append(value)
+            name = str(values[0])
+            pasport = str(values[1])
+            try:
+                phone = str(int(values[2]))
+            except ValueError:
+                pass
+            if len(pasport) == 9 and len(phone) == 9:
+                try:
+                    parol = random.randint(1000000, 9999999)
+                    user = User.objects.create_user(
+                        username=pasport,
+                        pasport=pasport,
+                        school=request.user.school,
+                        turbo=parol,
+                        password=parol,
+                        name=name,
+                        phone=int(phone),
+                        role='4',
+                        group=group,
+                        is_superuser=False,
+                    )
+                    user.set_password(parol)
+                    user.username = pasport
+                    user.email = ''
+                    user.save()
+                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                    msg = msg.replace(" ", "+")
+                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                    response = requests.get(url)
+                    messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                except IntegrityError:
+                    messages.error(request, "Siz jadvalga kiritgan pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Jadvalni to'ldirishda xatolik !")
+        os.unlink(file_path)
+    next = request.META['HTTP_REFERER']
+    return HttpResponseRedirect(next)
+
+
+@login_required
+def bugalter_groups_list(request):
+    if request.user.role == '5':
+        groups = Group.objects.filter(school=request.user.school, is_active=True)
+        context = {
+            'groups': groups
+        }
+        return render(request, 'bugalter/groups_list.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def bugalter_group_detail(request, id):
+    if request.user.role == '5':
+        group = get_object_or_404(Group, id=id)
+        pupils = User.objects.filter(role=4, school=request.user.school, group=group)
+        total_pay = group.price * pupils.count()
+
+        context = {
+            'group': group,
+            'pupils': pupils,
+            'total_pay': total_pay,
+
+        }
+        return render(request, 'bugalter/group_detail.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def add_pay(request):
+    if request.user.role == '5':
+        if request.POST:
+            if not request.POST['pay'] == '0':
+                pupil = get_object_or_404(User, id=request.POST['pupil'])
+                group = get_object_or_404(Group, id=request.POST['group'])
+                values = Pay.objects.filter(pupil=pupil)
+                payment = 0
+                for value in values:
+                    payment += value.payment
+                payment += int(request.POST['pay'])
+                if group.price >= payment:
+                    Pay.objects.create(pupil=pupil, payment=int(request.POST['pay']))
+                    messages.success(request, "O'qish puli muvaffaqiyatli qo'shildi !")
+                else:
+                    messages.error(request, f"O'qish puli {group.price} dan ortiq bo'lishi mumkin emas !")
+            else:
+                messages.error(request, "Summani to'g'ri kiriting !")
+        next = request.META['HTTP_REFERER']
+        return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')
+
+
+@login_required
+def pay_history(request, user_id, group_id):
+    if request.user.role == '5':
+        pupil = get_object_or_404(User, id=user_id)
+        payments = Pay.objects.filter(pupil=pupil)
+        group = get_object_or_404(Group, id=group_id)
+        cotext = {
+            'pupil': pupil,
+            'payments': payments,
+            'group': group
+        }
+        return render(request, 'bugalter/pay_history.html', cotext)
     else:
         return render(request, 'inc/404.html')

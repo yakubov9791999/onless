@@ -22,11 +22,14 @@ def home(request):
         else:
             return redirect(reverse_lazy("video:categories_list"))
 
-    elif request.user.role == "5":  # agarda role inspeksiya bo'lsa
-        schools = School.objects.filter(region=request.user.school.region)
-        return render(request, 'inspecion/schools_list.html', {
-            'schools': schools,
-        })
+    elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(reverse_lazy('user:edit_profil'))
+        else:
+            schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(school=request.user.school).order_by('region__district__sort')
+            return render(request, 'inspecion/schools_list.html', {
+                'schools': schools,
+            })
 
     elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
@@ -41,11 +44,13 @@ def home(request):
         else:
             return redirect(reverse_lazy('user:groups_list'))
 
-    elif request.user.role == "1":  # agarda role inspeksiya  bo'lsa
-        # schools = School.objects.filter(region=request.user.district.region)
-        return render(request, 'inspecion/schools_list.html', {
-            # 'schools': schools,
-        })
+    elif request.user.role == "5":  # agarda role Bugalter  bo'lsa
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(profil_edit)
+        else:
+            return redirect(reverse_lazy('user:bugalter_groups_list'))
+
+
 
 
 
@@ -64,7 +69,7 @@ def add_duration(request):
 
 @login_required
 def categories_list(request):
-    categories = Category.objects.filter(categories__isnull=True)
+    categories = Category.objects.filter(categories__isnull=True, is_active=True)
 
     return render(request, 'video/categories_list.html', {
         'categories': categories,
@@ -72,7 +77,7 @@ def categories_list(request):
 
 @login_required
 def category_detail(request, id):
-    categories = Category.objects.filter(categories=id)
+    categories = Category.objects.filter(categories=id, is_active=True)
 
     return render(request, 'video/categories_list.html', {
         'categories': categories,

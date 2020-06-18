@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-hovered">
                         <thead>
-                        <tr>
+                        <tr style="background-color: #ecebeb">
                             <th>№</th>
                             <th>O'qituvchining ism familiyasi</th>
                             <th>Tug'ilgan yili</th>
@@ -30,8 +30,9 @@
                             <th>Telefon</th>
                             <th>Login</th>
                             <th>Parol</th>
+                            {% if request.user.role == '2' %}
                             <th>Tahrirlash</th>
-
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -45,13 +46,19 @@
                                 <td>+998{{ teacher.phone }}</td>
                                 <td>{{ teacher.username }}</td>
                                 <td>{{ teacher.turbo }}</td>
+                                {% if request.user.role == '2' %}
                                 <td>
-                                    &nbsp;&nbsp;<a href="{% url 'user:teacher_edit' teacher.id %}"><i class="fa fa-edit"
-                                                                                                      ></i></a>
-                                    &nbsp;&nbsp;<a href="{% url 'user:teacher_delete' teacher.id %}"><i
-                                        class="fa fa-trash"
+
+                                        &nbsp;&nbsp;
+                                        <a href="{% url 'user:teacher_edit' teacher.id %}"><i class="fa fa-edit"
                                         ></i></a>
+
+                                        &nbsp;&nbsp;<a href="{% url 'user:teacher_delete' teacher.id %}"><i
+                                            class="fa fa-trash"
+                                    ></i></a>
+
                                 </td>
+                             {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

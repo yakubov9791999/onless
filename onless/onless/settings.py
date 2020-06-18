@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
-
+    'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -89,14 +88,14 @@ WSGI_APPLICATION = 'onless.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'NAME': 'onless',
-        # 'NAME': 'onless',
-        # 'USER': 'bcloudintelekt',
-        # 'PASSWORD': 'm6232971',
-        # 'HOST': 'localhost',
-        # 'PORT': '3306',
+        'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': 'bcloudintelekt_onless',
+        'USER': 'bcloudintelekt',
+        'PASSWORD': 'sierus2971',
+        'HOST': 'localhost',
+        'PORT': '3306',
+
     }
 }
 

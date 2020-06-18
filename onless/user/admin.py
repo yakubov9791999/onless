@@ -9,12 +9,12 @@ class UserAdmin(admin.ModelAdmin):
                     'last_login']
     list_display_links = ['username','role']
     list_filter = ['role','school']
-    search_fields = ['name', 'username', 'phone', 'role',]
+    search_fields = ['name', 'username', 'phone', 'role','pasport']
     save_on_top = True
 
 
 @admin.register(School)
-class DrivingSchoolAdmin(admin.ModelAdmin):
+class SchoolAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']
     search_fields = ['title', 'director', 'phone']
@@ -42,3 +42,11 @@ class ConatctAdmin(admin.ModelAdmin):
     save_on_top = True
 
 admin.site.register(Group)
+
+
+@admin.register(Pay)
+class PayAdmin(admin.ModelAdmin):
+    list_display = ['id', 'pupil','payment', 'pay_date']
+    list_display_links = ['pupil',]
+    list_filter = ['pupil', 'pay_date']
+    save_on_top = True

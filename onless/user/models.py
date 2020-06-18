@@ -123,6 +123,7 @@ class Group(models.Model):
     start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
     stop = models.DateField(verbose_name="O'qish tugashi", auto_now=False)
     is_active = models.BooleanField(default=True)
+    price = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.category}-{self.number}"
@@ -136,6 +137,7 @@ ROLE_CHOICES = (
     ("2", "Direktor"),
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
+    ("5", "Bugalter"),
 )
 
 GENDER_CHOICES = (
@@ -184,3 +186,16 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+class File(models.Model):
+    file = models.FileField(upload_to='',)
+
+
+
+class Pay(models.Model):
+    payment = models.IntegerField(default=0)
+    pay_date = models.DateTimeField(auto_now=True)
+    pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_pay')
+
+    def __str__(self):
+        return f"{self.pupil}"

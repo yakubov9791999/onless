@@ -17,7 +17,11 @@ class AddUserForm(ModelForm):
         exclude = ('username', 'password', 'school','pasport')
 
 
-
+class AddPupilForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ('name', 'phone', 'group')
+        exclude = ('username', 'password', 'school','pasport')
 
 class AddGroupForm(ModelForm):
     class Meta:
@@ -35,7 +39,7 @@ class GroupUpdateForm(ModelForm):
 
     class Meta:
         model = Group
-        fields = ('number', 'year', 'teacher', 'start', 'stop', 'category')
+        fields = ('category','number', 'year', 'teacher', 'start', 'stop', )
 
 class EditUserForm(ModelForm):
     name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))

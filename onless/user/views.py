@@ -88,13 +88,13 @@ def add_teacher(request):
 def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
         groups = Group.objects.filter(school=request.user.school)
-        form = AddUserForm()
+        form = AddPupilForm()
         context = {
             'groups': groups,
             'form': form,
         }
         if request.method == 'POST':
-            form = AddUserForm(data=request.POST)
+            form = AddPupilForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
             parol = random.randint(1000000, 9999999)
             if form.is_valid():
@@ -125,7 +125,7 @@ def add_pupil(request):
             else:
                 messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
         else:
-            form = AddUserForm()
+            form = AddPupilForm()
         return render(request, 'user/add_pupil.html', context)
     else:
         return render(request, 'inc/404.html')
@@ -427,6 +427,8 @@ def teacher_delete(request, id):
         return render(request, 'inc/404.html')
 
 
+
+
 def upload_file(request):
     if request.POST:
         file= request.FILES['file']
@@ -483,10 +485,47 @@ def upload_file(request):
 
 
 @login_required
+def bugalter_groups_list(request):
+    if request.user.role == '5':
+        groups = Group.objects.filter(school=request.user.school, is_active=True)
+        context = {
+            'groups': groups
+        }
+        return render(request, 'bugalter/groups_list.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
 def bugalter_group_detail(request, id):
-    group = get_object_or_404(Group, id=id)
-    pupils = User.objects.filter(school=request.user.school, role=4, group=group)
-    context = {
-        'pupils': pupils
-    }
-    return render(request , 'bugalter/group_detail.html', context)
+    if request.user.role == '5':
+        group = get_object_or_404(Group, id=id)
+        pupils = User.objects.filter(role=4, school=request.user.school, group=group)
+        context = {
+            'group': group,
+            'pupils': pupils
+        }
+        return render(request, 'bugalter/group_detail.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def add_pay(request):
+    if request.user.role == '5':
+        if request.POST:
+            pupil = get_object_or_404(User, id=request.POST['pupil'])
+            group = get_object_or_404(Group, id=request.POST['group'])
+            values = Pay.objects.filter(pupil=pupil)
+            payment = 0
+            for value in values:
+                payment += value.payment
+            payment += int(request.POST['pay'])
+            if group.price > payment:
+                for value in values:
+                    value.save()
+                    messages.success(request, "O'qish puli muvaffaqiyatli qo'shildi !")
+            else:
+                messages.error(request, f"O'qish puli {group.price} dan ortiq bo'lishi mumkin emas !")
+        next = request.META['HTTP_REFERER']
+        return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')

@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load quiz_tags %}
+{% block top%}
+    <link rel="stylesheet" href="{% static "plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" %}">
+{% endblock top%}
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -47,3 +51,26 @@
 
 
 {% endblock content %}
+
+{% block bottom %}
+    <script src="{% static "plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-responsive/js/dataTables.responsive.min.js" %}"></script>
+    <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock bottom %}

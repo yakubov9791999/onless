@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">O'quvchilar ro'yhati</h3>
+                </div>
+
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead>
+                        <tr style="background-color: #ecebeb">
+                            <th>№</th>
+                            <th>O'quvchining ism familiyasi</th>
+                            <th>Guruhi</th>
+                            <th>Ko'rgan darsi</th>
+                            <th>Ko'rilgan vaqti</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for view in views %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ view.user }}</td>
+                                <td>{{ view.user.group }}</td>
+                                <td>{{ view.video }}</td>
+                                <td>{{ view.time }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}

@@ -17,7 +17,8 @@ from quiz.models import *
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
-
+from video.models import *
+from .models import *
 from django.db import IntegrityError
 
 
@@ -59,7 +60,7 @@ def add_teacher(request):
                 try:
                     user = User.objects.create_user(
                         username=request.POST['pasport'],
-                        pasport = request.POST['pasport'],
+                        pasport=request.POST['pasport'],
                         school=request.user.school,
                         turbo=password,
                         password=password,
@@ -98,7 +99,7 @@ def add_pupil(request):
             form = AddPupilForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
             parol = random.randint(1000000, 9999999)
-            pasport = str(request.POST['pasport']).replace('А','A').replace('В', 'B').replace('С','C')
+            pasport = str(request.POST['pasport']).replace('А', 'A').replace('В', 'B').replace('С', 'C')
             if form.is_valid():
                 try:
                     user = User.objects.create_user(
@@ -119,7 +120,7 @@ def add_pupil(request):
                     user.save()
                     msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
                     msg = msg.replace(" ", "+")
-                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token }&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                     response = requests.get(url)
                     messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
                 except IntegrityError:
@@ -178,7 +179,7 @@ def groups_list(request):
 def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
-        pupils = User.objects.filter(role=4,school=request.user.school, group=group).order_by('name')
+        pupils = User.objects.filter(role=4, school=request.user.school, group=group).order_by('name')
         context = {
             'group': group,
             'pupils': pupils,
@@ -292,6 +293,7 @@ def pupil_edit(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def contact(request):
     if request.POST or None:
@@ -367,8 +369,6 @@ def add_school(request):
     return render(request, 'user/add_school.html')
 
 
-
-
 def pupil_delete(request, id):
     if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
@@ -377,6 +377,7 @@ def pupil_delete(request, id):
         return HttpResponseRedirect(next)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def teachers_list(request):
@@ -388,6 +389,7 @@ def teachers_list(request):
         return render(request, 'user/teachers_list.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def teacher_edit(request, id):
@@ -429,11 +431,9 @@ def teacher_delete(request, id):
         return render(request, 'inc/404.html')
 
 
-
-
 def upload_file(request):
     if request.POST:
-        file= request.FILES['file']
+        file = request.FILES['file']
         file = File.objects.create(file=file)
         file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
         group = get_object_or_404(Group, id=request.POST['group'])
@@ -442,9 +442,9 @@ def upload_file(request):
         number_of_rows = sheet.nrows
         number_of_columns = sheet.ncols
 
-        for row in range(1,number_of_rows):
+        for row in range(1, number_of_rows):
             values = []
-            for col in range(1,number_of_columns):
+            for col in range(1, number_of_columns):
                 value = (sheet.cell(row, col).value)
                 values.append(value)
             name = str(values[0])
@@ -497,6 +497,7 @@ def bugalter_groups_list(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def bugalter_group_detail(request, id):
     if request.user.role == '5':
@@ -513,6 +514,7 @@ def bugalter_group_detail(request, id):
         return render(request, 'bugalter/group_detail.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def add_pay(request):
@@ -553,3 +555,13 @@ def pay_history(request, user_id, group_id):
         return render(request, 'bugalter/pay_history.html', cotext)
     else:
         return render(request, 'inc/404.html')
+
+
+@login_required()
+def history_view_video_all(request):
+    views = ViewComplete.objects.filter(user=User.objects.get(school=request.user.school)).order_by('-time')
+    cotext = {
+        'views': views,
+    }
+    return render(request, 'user/view_video_history_all.html', cotext)
+

@@ -30,4 +30,5 @@ urlpatterns = [
     path('add_pay/', add_pay, name='add_pay'),
     path('pay_history/<int:user_id>/<int:group_id>/', pay_history, name='pay_history'),
 
+    path('history/view-video/all/', history_view_video_all, name='history_view_video_all'),
 ]

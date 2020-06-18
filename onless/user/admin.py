@@ -42,3 +42,11 @@ class ConatctAdmin(admin.ModelAdmin):
     save_on_top = True
 
 admin.site.register(Group)
+
+
+@admin.register(Pay)
+class PayAdmin(admin.ModelAdmin):
+    list_display = ['id', 'pupil','payment', 'pay_date']
+    list_display_links = ['pupil',]
+    list_filter = ['pupil', 'pay_date']
+    save_on_top = True

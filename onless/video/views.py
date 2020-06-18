@@ -23,10 +23,13 @@ def home(request):
             return redirect(reverse_lazy("video:categories_list"))
 
     elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
-        schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(school_user=request.user).order_by('region__district__sort')
-        return render(request, 'inspecion/schools_list.html', {
-            'schools': schools,
-        })
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(reverse_lazy('user:edit_profil'))
+        else:
+            schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(school=request.user.school).order_by('region__district__sort')
+            return render(request, 'inspecion/schools_list.html', {
+                'schools': schools,
+            })
 
     elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':

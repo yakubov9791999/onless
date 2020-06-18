@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'mptt',
     'import_export',
+    'django.contrib.humanize',
 
     'django.contrib.admin',
     'django.contrib.auth',

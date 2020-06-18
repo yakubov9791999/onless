@@ -123,6 +123,7 @@ class Group(models.Model):
     start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
     stop = models.DateField(verbose_name="O'qish tugashi", auto_now=False)
     is_active = models.BooleanField(default=True)
+    price = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.category}-{self.number}"
@@ -192,6 +193,9 @@ class File(models.Model):
 
 
 class Pay(models.Model):
-    total = models.IntegerField(default=0)
     payment = models.IntegerField(default=0)
     pay_date = models.DateTimeField(auto_now=True)
+    pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_pay')
+
+    def __str__(self):
+        return f"{self.pupil}"

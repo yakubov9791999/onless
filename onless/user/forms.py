@@ -17,7 +17,11 @@ class AddUserForm(ModelForm):
         exclude = ('username', 'password', 'school','pasport')
 
 
-
+class AddPupilForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ('name', 'phone', 'group')
+        exclude = ('username', 'password', 'school','pasport')
 
 class AddGroupForm(ModelForm):
     class Meta:

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
+{% load user_tags %}
+{% load humanize %}
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -7,8 +9,10 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">O'quvchilar ro'yhati</h3>
+                    <h3 class="card-title">{{ group.category }}-{{ group.number }}-{{ group.year }} guruhi o'quvchilari
+                        ro'yhati</h3>
                 </div>
+            {% include 'inc/messages.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
@@ -30,15 +34,23 @@
                         </tr>
                         </thead>
                         <tbody>
-
                         {% for pupil in pupils %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td><b>{{ pupil.name }}</b></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                {% get_payments pupil.id group.id as payment %}
+                                <td>{{ payment.total|intcomma }}</td>
+                                <td style="color: green">{{ payment.payment|intcomma }}</td>
+                                <td style="color: red">{{ payment.debit|intcomma }}</td>
+                                <td>
+                                    <form action="{% url 'user:add_pay' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="number" name="pay">
+                                        <input type="hidden" name="pupil" value="{{ pupil.id }}">
+                                        <input type="hidden" name="group" value="{{ group.id }}">
+                                        <button><i class="fas fa-plus-square"></i></button>
+                                    </form>
+                                </td>
 
                                 <td></td>
                             </tr>

@@ -48,7 +48,7 @@ def home(request):
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(profil_edit)
         else:
-            return redirect(reverse_lazy('user:groups_list'))
+            return redirect(reverse_lazy('user:bugalter_groups_list'))
 
 
 

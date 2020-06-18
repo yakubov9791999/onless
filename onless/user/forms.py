@@ -39,7 +39,7 @@ class GroupUpdateForm(ModelForm):
 
     class Meta:
         model = Group
-        fields = ('number', 'year', 'teacher', 'start', 'stop', 'category')
+        fields = ('category','number', 'year', 'teacher', 'start', 'stop', )
 
 class EditUserForm(ModelForm):
     name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))

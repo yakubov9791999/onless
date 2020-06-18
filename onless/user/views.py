@@ -5,6 +5,7 @@ import requests
 import xlrd
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db.models import ProtectedError, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -97,11 +98,12 @@ def add_pupil(request):
             form = AddPupilForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
             parol = random.randint(1000000, 9999999)
+            pasport = str(request.POST['pasport']).replace('А','A').replace('В', 'B').replace('С','C')
             if form.is_valid():
                 try:
                     user = User.objects.create_user(
-                        username=request.POST['pasport'],
-                        pasport=request.POST['pasport'],
+                        username=pasport,
+                        pasport=pasport,
                         school=request.user.school,
                         turbo=parol,
                         password=parol,
@@ -112,7 +114,7 @@ def add_pupil(request):
                         is_superuser=False,
                     )
                     user.set_password(parol)
-                    user.username = request.POST['pasport']
+                    user.username = pasport
                     user.email = ''
                     user.save()
                     msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
@@ -500,9 +502,13 @@ def bugalter_group_detail(request, id):
     if request.user.role == '5':
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4, school=request.user.school, group=group)
+        total_pay = group.price * pupils.count()
+
         context = {
             'group': group,
-            'pupils': pupils
+            'pupils': pupils,
+            'total_pay': total_pay,
+
         }
         return render(request, 'bugalter/group_detail.html', context)
     else:
@@ -512,20 +518,38 @@ def bugalter_group_detail(request, id):
 def add_pay(request):
     if request.user.role == '5':
         if request.POST:
-            pupil = get_object_or_404(User, id=request.POST['pupil'])
-            group = get_object_or_404(Group, id=request.POST['group'])
-            values = Pay.objects.filter(pupil=pupil)
-            payment = 0
-            for value in values:
-                payment += value.payment
-            payment += int(request.POST['pay'])
-            if group.price > payment:
+            if not request.POST['pay'] == '0':
+                pupil = get_object_or_404(User, id=request.POST['pupil'])
+                group = get_object_or_404(Group, id=request.POST['group'])
+                values = Pay.objects.filter(pupil=pupil)
+                payment = 0
                 for value in values:
-                    value.save()
+                    payment += value.payment
+                payment += int(request.POST['pay'])
+                if group.price >= payment:
+                    Pay.objects.create(pupil=pupil, payment=int(request.POST['pay']))
                     messages.success(request, "O'qish puli muvaffaqiyatli qo'shildi !")
+                else:
+                    messages.error(request, f"O'qish puli {group.price} dan ortiq bo'lishi mumkin emas !")
             else:
-                messages.error(request, f"O'qish puli {group.price} dan ortiq bo'lishi mumkin emas !")
+                messages.error(request, "Summani to'g'ri kiriting !")
         next = request.META['HTTP_REFERER']
         return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')
+
+
+@login_required
+def pay_history(request, user_id, group_id):
+    if request.user.role == '5':
+        pupil = get_object_or_404(User, id=user_id)
+        payments = Pay.objects.filter(pupil=pupil)
+        group = get_object_or_404(Group, id=group_id)
+        cotext = {
+            'pupil': pupil,
+            'payments': payments,
+            'group': group
+        }
+        return render(request, 'bugalter/pay_history.html', cotext)
     else:
         return render(request, 'inc/404.html')

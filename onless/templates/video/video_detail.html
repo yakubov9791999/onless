@@ -70,6 +70,8 @@
                                 <li>
                                     <label>
                                         {% get_results request.user.id question.id answer.id as result_question %}
+                                        {% get_answer request.user.id question.id as result_answer %}
+
                                         <input type="radio" name="answer"
                                                {% if result_question.exists %}checked disabled{% endif %}
                                                value="{{ answer.id }}"
@@ -77,11 +79,23 @@
                                         {% if result_question.exists %}
                                             {% if answer.is_true == False %}
                                                 <span class="text-danger">{{ answer.text }}</span>
-                                            {% else %}
+                                            {% elif answer.is_true == True %}
                                                 <span class="text-success"> {{ answer.text }}</span>
+                                            {% else %}
+                                                {{ answer.text }}
                                             {% endif %}
                                         {% else %}
-                                            {{ answer.text }}
+                                            {% if result_answer.exists %}
+                                                {% if answer.is_true == True %}
+                                                    <span class="text-success">  {{ answer.text }}</span>
+                                                {% else %}
+                                                    <span class="text-danger">  {{ answer.text }}</span>
+
+                                                {% endif %}
+
+                                            {% else %}
+                                                {{ answer.text }}
+                                            {% endif %}
 
                                         {% endif %}
                                     </label>

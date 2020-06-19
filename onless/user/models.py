@@ -157,7 +157,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999),MinValueValidator(100000000)])
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, related_name='group_user', blank=True, null=True)
-    pasport = models.CharField(max_length=9, null=True, unique=True,validators=[MinLengthValidator(9),MaxLengthValidator(9)])
+    pasport = models.CharField(max_length=9, null=True, unique=True,validators=[MaxLengthValidator(9)])
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)

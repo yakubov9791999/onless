@@ -517,10 +517,12 @@ def upload_file(request):
                 'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
             pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C')
             try:
-                phone = str(int(values[2]))
+                phone = int(values[2])
             except ValueError:
                 pass
-            if len(pasport) == 9 and len(phone) == 9:
+            print(len(pasport))
+            print(len(str(phone)))
+            if len(str(phone)) == 9:
                 try:
                     parol = random.randint(1000000, 9999999)
                     user = User.objects.create_user(

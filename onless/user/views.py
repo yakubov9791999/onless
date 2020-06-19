@@ -137,7 +137,7 @@ def add_pupil(request):
 @login_required
 def add_group(request):
     if request.user.role == '2' or request.user.role == '3':
-        teachers = User.objects.filter(role=3, school=request.user.school)
+        teachers = User.objects.filter(role=3 or 2, school=request.user.school)
         context = {
             'teachers': teachers,
         }
@@ -248,24 +248,16 @@ def profil_edit(request):
 def school_edit(request):
     if request.user.role == '2':
         school = School.objects.get(id=request.user.school.id)
-        form = EditSchoolForm(instance=request.user.school)
+        form = EditSchoolForm(instance=request.user.school, user=request.user)
         if request.POST:
-            form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school)
+            form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school, user=request.user)
             if form.is_valid():
-                if request.POST['district']:
-                    form = form.save(commit=False)
-                    form.district_id = request.POST['district']
-                    form.save()
-                    messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-                    form = EditSchoolForm(instance=request.user.school)
-                else:
-                    form.save()
-                    messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-                    form = EditSchoolForm(instance=request.user.school)
+                form.save()
+                messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = EditSchoolForm(instance=request.user.school)
+            form = EditSchoolForm(instance=request.user.school, user=request.user)
         context = {
             'form': form
         }

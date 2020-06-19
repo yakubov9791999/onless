@@ -79,16 +79,25 @@ class EditPupilForm(ModelForm):
         fields = ('name','pasport', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
 
 class EditSchoolForm(ModelForm):
+    def __init__(self, *args, user=None, **kwargs, ):
+        super().__init__(*args, **kwargs,)
+        if user:
+            self.fields['district'].queryset = self.fields['district'].queryset.filter(region=user.school.region)
+
+
+
     title = forms.CharField(label="Nomi",widget=forms.TextInput(attrs={'class': 'form-control'}))
     director = forms.ModelChoiceField(label="Rahbar nomi",queryset=User.objects.filter(role=2), widget=forms.Select(attrs={'class': 'form-control'}))
     phone = forms.CharField(label="Tel raqam",widget=forms.TextInput(attrs={'class': 'form-control'}))
-    logo = forms.ImageField(label="Rasm",widget=forms.FileInput(attrs={'class': 'form-control'}))
+    logo = forms.ImageField(label="Rasm",widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
     region = forms.ModelChoiceField(label="Viloyat",queryset=Region.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    district = forms.ModelChoiceField(label="Tuman",queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+    district = forms.ModelChoiceField(label="Tuman/Shahar",queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+
     class Meta:
         model = School
-        fields = ('title', 'director', 'phone', 'logo', 'region',)
-        exclude = ('district',)
+        fields = ('title', 'director', 'phone', 'logo', 'region','district')
+
+
 
 class AddContactForm(ModelForm):
     class Meta:

@@ -67,15 +67,15 @@ class Region(models.Model):
 
 class District(models.Model):
     title = models.CharField('Nomi', max_length=255)
-    region = models.ForeignKey(Region, verbose_name='Tuman', on_delete=models.SET_NULL, null=True)
+    region = models.ForeignKey(Region, verbose_name='Tuman/Shahar', on_delete=models.SET_NULL, null=True)
     sort = models.IntegerField(blank=True, default=1)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = 'Tuman'
-        verbose_name_plural = 'Tumanlar'
+        verbose_name = 'Tuman/Shahar'
+        verbose_name_plural = 'Tumanlar/Shaharlar'
 
 
 class School(models.Model):

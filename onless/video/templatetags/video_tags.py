@@ -25,5 +25,5 @@ def get_results(user_id, question_id, answer_id):
 def get_answer(user_id, question_id):
     user = User.objects.get(id=user_id)
     question = Question.objects.get(id=question_id)
-    result = ResultQuiz.objects.filter(user=user, question=question)
-    return result
+    result_quiz = ResultQuiz.objects.filter(user=user, question=question)
+    return result_quiz

@@ -81,10 +81,9 @@
                                                 <span class="text-success"> {{ answer.text }}</span>
                                             {% endif %}
                                         {% else %}
-                                            {% if answer.is_true == False %}
-                                                <span class="text-danger">{{ answer.text }}</span>
+                                            {{{ answer.text }}
                                             {% else %}
-                                                <span class="text-success"> {{ answer.text }}</span>
+                                                {{ answer.text }}
                                             {% endif %}
                                         {% endif %}
                                     </label>

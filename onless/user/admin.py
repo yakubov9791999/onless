@@ -15,9 +15,9 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    def queryset(self, request):
-        qs = super(SchoolAdmin, self).queryset(request)
-        return qs.filter(author=request.user)
+    # def queryset(self, request):
+    #     qs = super(SchoolAdmin, self).queryset(request)
+    #     return qs.filter(author=request.user)
 
     list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']

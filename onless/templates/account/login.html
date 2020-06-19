@@ -21,11 +21,12 @@
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <style>
-        body{
+        body {
             background-image: url("/media/online/front/back.jpg") !important;
             background-size: cover;
 
         }
+
         #show_password {
             cursor: pointer;
         }
@@ -51,7 +52,7 @@
             <form class="login" method="POST" action="{% url 'user:login' %}">
                 {% csrf_token %}
                 <div class="input-group mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="Loginni kiriting ..."
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Loginni kiriting ..."
                            style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
                     <div class="input-group-append">
                         <div class="input-group-text" style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
@@ -117,13 +118,28 @@
             var type_password = $("#password").attr('type');
             if (type_password == 'text') {
                 $("#password").attr("type", 'password');
-            }else {
+            } else {
                 $("#password").attr("type", 'text');
             }
 
 
             alert(test)
         });
+    });
+
+    $("#username").keypress(function (event) {
+        var ew = event.which;
+        if (ew == 32)
+            return true;
+        if (48 <= ew && ew <= 57)
+            return true;
+        if (65 <= ew && ew <= 90)
+            return true;
+        if (97 <= ew && ew <= 122)
+            return true;
+        alert("Faqat lotin harflari va raqamlar kiriting")
+
+        return false;
     });
 </script>
 </body>

@@ -56,6 +56,7 @@ def add_teacher(request):
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             password = random.randint(1000000, 9999999)
+            name = request.POST['name']
             if form.is_valid():
                 try:
                     user = User.objects.create_user(

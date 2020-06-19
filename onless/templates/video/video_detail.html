@@ -54,7 +54,7 @@
     <p id="append"></p>
     <div class="col-12 " id="video_bottom_question">
         {% for question in questions %}
-            <div class="privew">
+            <div class="privew" id="question{{ question.id }}">
                 <form action="{% url 'quiz:add_result' %}" method="POST">
                     {% csrf_token %}
                     <div class="questionsBox">
@@ -62,9 +62,9 @@
                         </div>
 
 
-                        <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="100%"
-                                     height="300px;"
-                                     style="margin: 0 auto"></center>
+                        <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="300px"
+
+                                     style="margin: 0 auto;"></center>
                         <ul class="answerList">
                             {% for answer in question.answers.all %}
                                 <li>

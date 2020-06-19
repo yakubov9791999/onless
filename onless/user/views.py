@@ -56,8 +56,18 @@ def add_teacher(request):
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             password = random.randint(1000000, 9999999)
-            name = request.POST['name']
             if form.is_valid():
+                name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                       'yu').replace(
+                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                               'e').replace(
+                    'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                               'k').replace(
+                    'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                              'r').replace(
+                    'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                                'f').replace(
+                    'э', 'ye').replace('ы','i').replace('я','ya').replace('ь',"'").title()
                 try:
                     user = User.objects.create_user(
                         username=request.POST['pasport'],
@@ -65,7 +75,7 @@ def add_teacher(request):
                         school=request.user.school,
                         turbo=password,
                         password=password,
-                        name=form.cleaned_data['name'],
+                        name=name,
                         phone=form.cleaned_data['phone'],
                         role='3',
                         is_superuser=False,
@@ -102,6 +112,17 @@ def add_pupil(request):
             parol = random.randint(1000000, 9999999)
             pasport = request.POST['pasport']
             if form.is_valid():
+                name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                       'yu').replace(
+                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                              'e').replace(
+                    'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                               'k').replace(
+                    'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                              'r').replace(
+                    'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                                'f').replace(
+                    'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
                 try:
                     user = User.objects.create_user(
                         username=pasport,
@@ -109,7 +130,7 @@ def add_pupil(request):
                         school=request.user.school,
                         turbo=parol,
                         password=parol,
-                        name=form.cleaned_data['name'],
+                        name=name,
                         phone=form.cleaned_data['phone'],
                         role='4',
                         group=group,
@@ -226,7 +247,19 @@ def profil_edit(request):
     if request.POST:
         form = EditUserForm(request.POST or None, request.FILES or None, instance=user)
         if form.is_valid():
+            name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                   'yu').replace(
+                'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                          'e').replace(
+                'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                           'k').replace(
+                'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                          'r').replace(
+                'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                            'f').replace(
+                'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
             form = form.save(commit=False)
+            form.name = name
             password = user.set_password(request.POST['turbo'])
             form.save()
             user = authenticate(username=request.user.username, password=request.POST['turbo'])
@@ -275,7 +308,19 @@ def pupil_edit(request, id):
         if request.POST:
             form = EditPupilForm(request.POST, request.FILES, instance=user)
             if form.is_valid():
+                name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                       'yu').replace(
+                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                              'e').replace(
+                    'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                               'k').replace(
+                    'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                              'r').replace(
+                    'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                                'f').replace(
+                    'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
                 form = form.save(commit=False)
+                form.name = name
                 form.pasport = request.POST['pasport']
                 form.username = request.POST['pasport']
                 user.set_password(request.POST['turbo'])

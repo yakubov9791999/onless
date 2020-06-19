@@ -72,7 +72,7 @@ class EditPupilForm(ModelForm):
     phone = forms.IntegerField(label='Tel raqam',widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
     gender = forms.ChoiceField(label='Jinsi',choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     turbo = forms.CharField(label='Parol',widget=forms.TextInput(attrs={'class': 'form-control'}))
-    pasport = forms.CharField(label='Pasport',widget=forms.TextInput(attrs={'class': 'form-control',}))
+    pasport = forms.CharField(label='Pasport',widget=forms.TextInput(attrs={'class': 'form-control','id': 'pasport'}))
 
     class Meta:
         model = User

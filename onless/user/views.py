@@ -512,12 +512,17 @@ def bugalter_group_detail(request, id):
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4, school=request.user.school, group=group)
         total_pay = group.price * pupils.count()
-
+        payments = Pay.objects.filter(pupil__in=pupils)
+        total_payments = 0
+        for pay in payments:
+            total_payments += pay.payment
+        total_debit = total_pay - total_payments
         context = {
             'group': group,
             'pupils': pupils,
             'total_pay': total_pay,
-
+            'total_payments': total_payments,
+            'total_debit': total_debit
         }
         return render(request, 'bugalter/group_detail.html', context)
     else:
@@ -555,12 +560,13 @@ def pay_history(request, user_id, group_id):
         pupil = get_object_or_404(User, id=user_id)
         payments = Pay.objects.filter(pupil=pupil)
         group = get_object_or_404(Group, id=group_id)
-        cotext = {
+
+        context = {
             'pupil': pupil,
             'payments': payments,
             'group': group
         }
-        return render(request, 'bugalter/pay_history.html', cotext)
+        return render(request, 'bugalter/pay_history.html', context)
     else:
         return render(request, 'inc/404.html')
 

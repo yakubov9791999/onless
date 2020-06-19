@@ -20,3 +20,10 @@ def get_results(user_id, question_id, answer_id):
     answer = Answer.objects.get(id=answer_id)
     result = ResultQuiz.objects.filter(user=user, question=question, answer=answer)
     return result
+
+@register.simple_tag()
+def get_answer(user_id, question_id):
+    user = User.objects.get(id=user_id)
+    question = Question.objects.get(id=question_id)
+    result_quiz = ResultQuiz.objects.filter(user=user, question=question)
+    return result_quiz

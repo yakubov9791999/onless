@@ -17,7 +17,8 @@ from quiz.models import *
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
-
+from video.models import *
+from .models import *
 from django.db import IntegrityError
 
 
@@ -560,3 +561,12 @@ def pay_history(request, user_id, group_id):
         return render(request, 'bugalter/pay_history.html', context)
     else:
         return render(request, 'inc/404.html')
+
+
+@login_required()
+def history_view_video_all(request):
+    views = ViewComplete.objects.filter(user__school=request.user.school, user__role=4).order_by('-time')
+    cotext = {
+        'views': views,
+    }
+    return render(request, 'user/view_video_history_all.html', cotext)

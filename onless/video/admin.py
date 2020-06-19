@@ -15,9 +15,10 @@ class VideoAdmin(admin.ModelAdmin):
 
 @admin.register(ViewComplete)
 class ViewCompleteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'video']
+    list_display = ['id', 'video', 'time']
     list_display_links = ['video']
     save_on_top = True
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

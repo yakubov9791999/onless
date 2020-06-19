@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load quiz_tags %}
+{% block top%}
+    <link rel="stylesheet" href="{% static "plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" %}">
+{% endblock top%}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">O'quvchilar ro'yhati</h3>
+                </div>
+
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead>
+                        <tr style="background-color: #ecebeb">
+                            <th>№</th>
+                            <th>O'quvchining ism familiyasi</th>
+                            <th>Guruhi</th>
+                            <th>Ko'rgan darsi</th>
+                            <th>Ko'rilgan vaqti</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for view in views %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ view.user }}</td>
+                                <td>{{ view.user.group }}</td>
+                                <td><a href="{% url 'video:video_detail' view.video.id %}">{{ view.video }}</a></td></td>
+                                <td>{{ view.time }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block bottom %}
+    <script src="{% static "plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-responsive/js/dataTables.responsive.min.js" %}"></script>
+    <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock bottom %}

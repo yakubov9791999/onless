@@ -42,11 +42,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'mptt',
-    'import_export',
     'django.contrib.humanize',
-    'django_template_maths',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -35,10 +35,11 @@
         {% if request.user.is_authenticated %}
             <a class="" href="/accounts/logout">
             <i class="fas fa-sign-out-alt size-32"></i>
-
+            </a>
         {% else %}
             <a class="" href="/accounts/login">
             <i class="far fa-sign-in-alt"></i>
+            </a>
         {% endif %}
         <!-- Messages Dropdown Menu -->
         {#        <li class="nav-item dropdown">#}
@@ -120,3 +121,6 @@
     </ul>
 </nav>
 <!-- /.navbar -->
+
+<div class="alert alert-warning text-center"><b>DIQQAT! Tizim test rejimida ishlamoqda! Tizimda xatolar yuzaga kelganda
+    <a href="{{ request.user.school.phone }}" style="color: #0c525d">{{ request.user.school.phone }} </a>raqamiga bildiring</b></div>

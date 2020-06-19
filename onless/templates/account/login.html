@@ -20,6 +20,11 @@
     <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <style>
+        #show_password {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="hold-transition login-page">
 
@@ -41,7 +46,8 @@
             <form class="login" method="POST" action="{% url 'user:login' %}">
                 {% csrf_token %}
                 <div class="input-group mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="Loginni kiriting ..." style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
+                    <input type="text" name="username" class="form-control" placeholder="Loginni kiriting ..."
+                           style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
                     <div class="input-group-append">
                         <div class="input-group-text" style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
                             <i class="fa fa-user" aria-hidden="true"></i>
@@ -49,17 +55,20 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Parolni kiriting ..." style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
+                    <input type="password" name="password" id="password" class="form-control"
+                           placeholder="Parolni kiriting ..."
+                           style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
                     <div class="input-group-append">
                         <div class="input-group-text" style="box-shadow: 0 0 5px rgba(0,0,0,0.5)">
-                            <span class="fas fa-lock"></span>
+                            <span id="show_password" class="fas fa-eye"></span>
+
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-8">
                         <div class="icheck-primary">
-                            <input type="checkbox" name="checkbox" value="True" id="remember" >
+                            <input type="checkbox" name="checkbox" value="True" id="remember">
                             <label for="remember">
                                 Eslab qol
                             </label>
@@ -75,7 +84,7 @@
 
 
             <p class="mb-1">
-{#                <a href="{% url 'account_reset_password' %}">{% trans "Parolni unutdingizmi ?" %}</a>#}
+                {#                <a href="{% url 'account_reset_password' %}">{% trans "Parolni unutdingizmi ?" %}</a>#}
                 <a onclick="my_func()" href="">{% trans "Parolni unutdingizmi ?" %}</a>
             </p>
         </div>
@@ -87,6 +96,8 @@
     function my_func() {
         alert('Guruh rahbaridan parol loginingizni oling !')
     }
+
+
 </script>
 <!-- jQuery -->
 <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
@@ -94,7 +105,22 @@
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'js/adminlte.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#show_password').on('click', function () {
+            {#$(".prevSpan").text("«");#}
+            var type_password = $("#password").attr('type');
+            if (type_password == 'text') {
+                $("#password").attr("type", 'password');
+            }else {
+                $("#password").attr("type", 'text');
+            }
 
+
+            alert(test)
+        });
+    });
+</script>
 </body>
 </html>
 

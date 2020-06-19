@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="exampleInputname">Pasport:</label>
+                        <label for="exampleInputPasport">Pasport:</label>
                         <input type="text" name="pasport" maxlength="9" class="form-control" id="exampleInputPasport"
                                placeholder="Masalan: AA1234567">
                     </div>
@@ -53,3 +53,22 @@
     </div>
 </div>
 {% endblock content %}
+{% block bottom %}
+    <script>
+        $("#exampleInputPasport").keypress(function (event) {
+            var ew = event.which;
+            if (ew == 32)
+                return true;
+            if (48 <= ew && ew <= 57)
+                return true;
+            if (65 <= ew && ew <= 90)
+                return true;
+            if (97 <= ew && ew <= 122)
+                return true;
+            alert("Faqat lotin harflari va raqamlar kiriting")
+
+            return false;
+        });
+
+    </script>
+{% endblock bottom %}

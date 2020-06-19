@@ -29,8 +29,8 @@
                 {% if form.non_field_errors %}
                     {% for error in form.non_field_errors %}
                         <div class="alert alert-danger">
-                                <strong>{{ error|escape }}</strong>
-                            </div>
+                            <strong>{{ error|escape }}</strong>
+                        </div>
                     {% endfor %}
                 {% endif %}
                 <!-- /.card-header -->
@@ -66,7 +66,8 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">+998</div>
                                 </div>
-                                <input type="text" class="form-control" id="phone" required="required" maxlength="9" name="phone"
+                                <input type="text" class="form-control" id="phone" required="required" maxlength="9"
+                                       name="phone"
                                        placeholder="Telefon raqamini kiriting. Masalan: 901234567">
                             </div>
                         </div>
@@ -83,3 +84,22 @@
         </div>
     </div>
 {% endblock content %}
+{% block bottom %}
+    <script>
+        $("#exampleInputPasport").keypress(function (event) {
+            var ew = event.which;
+            if (ew == 32)
+                return true;
+            if (48 <= ew && ew <= 57)
+                return true;
+            if (65 <= ew && ew <= 90)
+                return true;
+            if (97 <= ew && ew <= 122)
+                return true;
+            alert("Faqat lotin harflari va raqamlar kiriting")
+
+            return false;
+        });
+
+    </script>
+{% endblock bottom %}

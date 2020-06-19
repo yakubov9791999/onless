@@ -504,8 +504,18 @@ def upload_file(request):
             for col in range(1, number_of_columns):
                 value = (sheet.cell(row, col).value)
                 values.append(value)
-            name = str(values[0])
-            pasport = str(values[1])
+            name = str(values[0]).lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                   'yu').replace(
+                'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                          'e').replace(
+                'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                           'k').replace(
+                'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                          'r').replace(
+                'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                            'f').replace(
+                'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
+            pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C')
             try:
                 phone = str(int(values[2]))
             except ValueError:

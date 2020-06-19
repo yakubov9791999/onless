@@ -252,8 +252,16 @@ def school_edit(request):
         if request.POST:
             form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school)
             if form.is_valid():
-                form.save()
-                messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+                if request.POST['district']:
+                    form = form.save(commit=False)
+                    form.district_id = request.POST['district']
+                    form.save()
+                    messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+                    form = EditSchoolForm(instance=request.user.school)
+                else:
+                    form.save()
+                    messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+                    form = EditSchoolForm(instance=request.user.school)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:

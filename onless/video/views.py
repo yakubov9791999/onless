@@ -86,7 +86,7 @@ def category_detail(request, id):
 
 @login_required
 def videos_list(request, id):
-    videos = Video.objects.filter(category=id)
+    videos = Video.objects.filter(category=id, is_active=)
     return render(request, 'video/videos_list.html', {
         'videos': videos,
     })

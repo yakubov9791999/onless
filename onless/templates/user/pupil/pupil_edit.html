@@ -9,23 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">O'quvchini tahrirlash</h3>
                 </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-            {% endif %}
+                {% include 'inc/messages.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form method="POST" action="{% url 'user:edit_pupil' user.id %}"
@@ -45,3 +29,22 @@
         </div>
     </div>
 {% endblock content %}
+{% block bottom %}
+    <script>
+        $("#pasport").keypress(function (event) {
+            var ew = event.which;
+            if (ew == 32)
+                return true;
+            if (48 <= ew && ew <= 57)
+                return true;
+            if (65 <= ew && ew <= 90)
+                return true;
+            if (97 <= ew && ew <= 122)
+                return true;
+            alert("Faqat lotin harflari va raqamlar kiriting")
+
+            return false;
+        });
+
+    </script>
+{% endblock bottom %}

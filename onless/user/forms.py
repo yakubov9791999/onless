@@ -26,7 +26,7 @@ class AddPupilForm(ModelForm):
 class AddGroupForm(ModelForm):
     class Meta:
         model = Group
-        fields = ('number', 'teacher', 'start', 'stop', 'category')
+        fields = ('number', 'teacher', 'start', 'stop', 'category', 'price')
         exclude = ('school',)
 
 class GroupUpdateForm(ModelForm):
@@ -36,10 +36,11 @@ class GroupUpdateForm(ModelForm):
     start = forms.DateField(label="O'qish boshlanishi",widget=forms.DateInput(attrs={'class': 'form-control'}))
     stop = forms.DateField(label="O'qish tugashi",widget=forms.DateInput(attrs={'class': 'form-control'}))
     category = forms.ChoiceField(label="Toifasi",choices=CATEGORY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    price = forms.IntegerField(label="O'qish summasi",widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Group
-        fields = ('category','number', 'year', 'teacher', 'start', 'stop', )
+        fields = ('category','number', 'year', 'teacher', 'start', 'stop', 'price' )
 
 class EditUserForm(ModelForm):
     name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))

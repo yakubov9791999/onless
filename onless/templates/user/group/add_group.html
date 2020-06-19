@@ -9,23 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Guruh qo'shish</h3>
                 </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% if form.errors %}
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ error|escape }}</strong>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                {% endif %}
+                {% include 'inc/messages.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" method="POST" action="{% url 'user:add_group' %}">
@@ -66,6 +50,10 @@
                             <input type="date" name="stop" class="form-control" required="required">
                         </div>
 
+                        <div class="form-group">
+                            <label for="exampleInputpay">O'qish summasi:</label>
+                            <input type="number"  id="exampleInputpay" name="price" placeholder="Masalan: 2 000 000" class="form-control" required="required">
+                        </div>
                     </div>
                     <!-- /.card-body -->
 

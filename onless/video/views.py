@@ -27,7 +27,7 @@ def home(request):
             return redirect(reverse_lazy('user:edit_profil'))
         else:
             schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(school=request.user.school).order_by('region__district__sort')
-            return render(request, 'inspecion/schools_list.html', {
+            return render(request, 'user/inspection/schools_list.html', {
                 'schools': schools,
             })
 

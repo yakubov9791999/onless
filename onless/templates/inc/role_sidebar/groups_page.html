@@ -1,8 +1,8 @@
 <li class="nav-item has-treeview">
-    <a href="{% url 'user:groups_list' %}" class="nav-link {% if request.resolver_match.url_name == 'groups_list' %}active{% endif %}">
+    <a href="{% url 'user:groups_list' %}" class="nav-link {% if request.resolver_match.url_name == 'groups_list' or request.resolver_match.url_name == 'group_detail' %}active{% endif %}">
         <i class="nav-icon fas fa-th"></i>
         <p>
-            &nbsp;Guruhlar
+            &nbsp;&nbsp;Guruhlar
         </p>
     </a>
 </li>

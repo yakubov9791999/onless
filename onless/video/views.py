@@ -26,6 +26,9 @@ def home(request):
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(reverse_lazy('user:edit_profil'))
         else:
+
+            schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(
+                school=request.user.school).order_by('region__district__sort')
             schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(school=request.user.school).order_by('region__district__sort')
             return render(request, 'user/inspection/schools_list.html', {
                 'schools': schools,
@@ -51,15 +54,13 @@ def home(request):
             return redirect(reverse_lazy('user:bugalter_groups_list'))
 
 
-
-
-
 @login_required
 def add_duration(request):
     if request.is_ajax():
         video_id = request.GET.get('video', None)
         video = Video.objects.get(id=video_id)
-        if video:
+        view_complete = ViewComplete.objects.filter(video=video, user=request.user)
+        if not view_complete.exists:
             ViewComplete.objects.create(video=video, user=request.user)
         message = "Siz darsni muvaffaqiyatli tugatdingiz! Agarda yana qaytadan ko'rmoqchi bo'lsangiz, istalgan vaqtda buni amalga oshirishingiz mumkin"
         return message
@@ -75,6 +76,7 @@ def categories_list(request):
         'categories': categories,
     })
 
+
 @login_required
 def category_detail(request, id):
     categories = Category.objects.filter(categories=id, is_active=True)
@@ -84,12 +86,14 @@ def category_detail(request, id):
 
     })
 
+
 @login_required
 def videos_list(request, id):
     videos = Video.objects.filter(category=id, is_active=True)
     return render(request, 'video/videos_list.html', {
         'videos': videos,
     })
+
 
 @login_required
 def video_detail(request, id):
@@ -101,6 +105,7 @@ def video_detail(request, id):
         'questions': questions,
         'results': results
     })
+
 
 @login_required
 def add_video(request):
@@ -119,7 +124,6 @@ def add_video(request):
         else:
             form = AddVideoForm()
 
-
         categories = Category.objects.all()
         context = {
             'form': form,
@@ -129,6 +133,7 @@ def add_video(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def myvideos_list(request):
     videos = Video.objects.filter(school=request.user.school)
@@ -136,7 +141,6 @@ def myvideos_list(request):
         'videos': videos
     }
     return render(request, 'video/myvideos_list.html', context)
-
 
 # def show_categories(request):
 #     return render(request, 'inc/breadcumb.html', {'categories': Category.objects.all()})

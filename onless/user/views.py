@@ -92,7 +92,7 @@ def add_teacher(request):
                 messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
         else:
             form = AddUserForm(request)
-        return render(request, 'user/add_teacher.html', )
+        return render(request, 'user/teacher/add_teacher.html', )
     else:
         return render(request, 'inc/404.html')
 
@@ -151,7 +151,7 @@ def add_pupil(request):
                 messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
         else:
             form = AddPupilForm()
-        return render(request, 'user/add_pupil.html', context)
+        return render(request, 'user/pupil/add_pupil.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -169,8 +169,10 @@ def add_group(request):
                 number = form.cleaned_data['number']
                 category = request.POST['category']
                 teacher = form.cleaned_data['teacher']
+                price = form.cleaned_data['price']
                 form = form.save(commit=False)
                 form.number = number
+                form.price = price
                 form.category = category
                 form.teacher = teacher
                 form.school = request.user.school
@@ -180,7 +182,7 @@ def add_group(request):
                 messages.success(request, f"{form.category}-{form.number}-{form.year} guruh qo'shildi")
         else:
             form = AddGroupForm()
-        return render(request, 'user/add_group.html', context)
+        return render(request, 'user/group/add_group.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -192,7 +194,7 @@ def groups_list(request):
         context = {
             'groups': groups,
         }
-        return render(request, 'user/groups_list.html', context)
+        return render(request, 'user/group/groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -206,7 +208,7 @@ def group_detail(request, id):
             'group': group,
             'pupils': pupils,
         }
-        return render(request, 'user/group_detail.html', context)
+        return render(request, 'user/group/group_detail.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -231,11 +233,20 @@ def group_update(request, id):
     if request.user.role == '2' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
         form = GroupUpdateForm(instance=group)
+        if request.POST:
+            form = GroupUpdateForm(request.POST, instance=group)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Guruh muvaffaqiyatli tahrirlandi !")
+            else:
+                messages.error(request, "Formani to'ldirishda xatolik !")
+        else:
+            form = GroupUpdateForm(instance=group)
         context = {
             'form': form,
             'group': group,
         }
-        return render(request, 'user/group_update.html', context)
+        return render(request, 'user/group/group_update.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -295,7 +306,7 @@ def school_edit(request):
         context = {
             'form': form
         }
-        return render(request, 'user/school_edit.html', context)
+        return render(request, 'user/school/school_edit.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -335,7 +346,7 @@ def pupil_edit(request, id):
             'form': form,
             'user': user,
         }
-        return render(request, 'user/pupil_edit.html', context)
+        return render(request, 'user/pupil/pupil_edit.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -412,7 +423,7 @@ def search(request):
 
 @login_required
 def add_school(request):
-    return render(request, 'user/add_school.html')
+    return render(request, 'user/school/add_school.html')
 
 
 def pupil_delete(request, id):
@@ -432,7 +443,7 @@ def teachers_list(request):
         context = {
             'teachers': teachers
         }
-        return render(request, 'user/teachers_list.html', context)
+        return render(request, 'user/teacher/teachers_list.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -460,7 +471,7 @@ def teacher_edit(request, id):
             'teacher': teacher,
             'form': form
         }
-        return render(request, 'user/teacher_edit.html', context)
+        return render(request, 'user/teacher/teacher_edit.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -533,20 +544,68 @@ def upload_file(request):
 
 
 @login_required
+def add_bugalter(request):
+    if request.user.role == '2':
+        if request.POST:
+            form = AddUserForm(data=request.POST)
+            password = random.randint(1000000, 9999999)
+            if form.is_valid():
+                name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                       'yu').replace(
+                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                              'e').replace(
+                    'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                               'k').replace(
+                    'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                              'r').replace(
+                    'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                                'f').replace(
+                    'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
+                try:
+                    user = User.objects.create_user(
+                        username=request.POST['pasport'],
+                        pasport=request.POST['pasport'],
+                        school=request.user.school,
+                        turbo=password,
+                        password=password,
+                        name=name,
+                        phone=form.cleaned_data['phone'],
+                        role='5',
+                        is_superuser=False,
+                    )
+                    user.set_password(password)
+                    user.username = request.POST['pasport']
+                    user.email = ''
+                    user.save()
+                    messages.success(request, "Hisobchi muvaffaqiyatli qo'shildi")
+
+                except IntegrityError:
+                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
+        else:
+            form = AddUserForm(request)
+        return render(request, 'user/bugalter/add_bugalter.html')
+    else:
+        return render(request, 'inc/404.html')
+
+
+
+@login_required
 def bugalter_groups_list(request):
-    if request.user.role == '5':
+    if request.user.role == '5' or request.user.role == '2' or request.user.role == '3':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
         context = {
             'groups': groups
         }
-        return render(request, 'bugalter/groups_list.html', context)
+        return render(request, 'user/bugalter/groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
 
 
 @login_required
 def bugalter_group_detail(request, id):
-    if request.user.role == '5':
+    if request.user.role == '5' or request.user.role == '2' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4, school=request.user.school, group=group)
         total_pay = group.price * pupils.count()
@@ -562,7 +621,7 @@ def bugalter_group_detail(request, id):
             'total_payments': total_payments,
             'total_debit': total_debit
         }
-        return render(request, 'bugalter/group_detail.html', context)
+        return render(request, 'user/bugalter/group_detail.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -594,7 +653,7 @@ def add_pay(request):
 
 @login_required
 def pay_history(request, user_id, group_id):
-    if request.user.role == '5':
+    if request.user.role == '5' or request.user.role == '2' or request.user.role == '4' or request.user.role == '3':
         pupil = get_object_or_404(User, id=user_id)
         payments = Pay.objects.filter(pupil=pupil)
         group = get_object_or_404(Group, id=group_id)
@@ -604,7 +663,7 @@ def pay_history(request, user_id, group_id):
             'payments': payments,
             'group': group
         }
-        return render(request, 'bugalter/pay_history.html', context)
+        return render(request, 'user/bugalter/pay_history.html', context)
     else:
         return render(request, 'inc/404.html')
 

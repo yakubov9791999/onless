@@ -5,9 +5,9 @@
     <div class="row">
     {% get_count request.user.school.id as count %}
         {% if request.user.role == '2' %}
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
-                <div class="small-box bg-info">
+                <div class="small-box bg-lightblue">
                     <div class="inner">
 
                         <h3>{{ count.teachers }}</h3>
@@ -20,9 +20,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
-                <div class="small-box bg-gradient-teal">
+                <div class="small-box bg-gradient-cyan">
                     <div class="inner">
                         <h3>{{ count.groups }}</h3>
 
@@ -35,9 +35,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
-                <div class="small-box bg-gradient-lightblue">
+                <div class="small-box bg-gradient-cyan">
                     <div class="inner">
                         <h3>{{ count.pupils }}</h3>
 
@@ -47,6 +47,21 @@
                         <i class="fas fa-user-plus"></i>
                     </div>
                     <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <!-- small box -->
+                <div class="small-box bg-gradient-lightblue">
+                    <div class="inner">
+                        <h3>{{ count.bugalters }}</h3>
+
+                        <h5>Hisobchini qo'shish</h5>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <a href="{% url 'user:add_bugalter' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
         {% elif request.user.role == '3' %}

@@ -9,16 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Avtomaktabni tahrirlash</h3>
                 </div>
-                {% if messages or form.errors %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-
+                {% include 'inc/messages.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

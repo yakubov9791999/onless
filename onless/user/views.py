@@ -421,9 +421,7 @@ def search(request):
     return render(request, 'user/search_result.html', context)
 
 
-@login_required
-def add_school(request):
-    return render(request, 'user/school/add_school.html')
+
 
 
 def pupil_delete(request, id):

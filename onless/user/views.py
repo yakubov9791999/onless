@@ -605,7 +605,7 @@ def add_bugalter(request):
 
 @login_required
 def bugalter_groups_list(request):
-    if request.user.role == '5' or request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '5'  or request.user.role == '3':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
         context = {
             'groups': groups

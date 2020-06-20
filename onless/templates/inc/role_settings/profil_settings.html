@@ -1,4 +1,8 @@
-<div class="col-lg-6 col-sm-12">
+{% if request.user.role == '2' %}
+<div class="col-lg-6 col-md-12 col-sm-12">
+{% else %}
+    <div class="col-lg-12 col-md-12 col-sm-12">
+{% endif %}
     <!-- small box -->
     <div class="small-box bg-white">
         <div class="inner">
@@ -7,7 +11,8 @@
                 {% else %}
                 {{ request.user.username }}
             {% endif %}</h6>
-            <h3>Profilni tahrirlash</h3>
+
+            <h3 style="">Profilni tahrirlash</h3>
         </div>
         <div class="icon">
             <i class="fas fa-user-cog"></i>

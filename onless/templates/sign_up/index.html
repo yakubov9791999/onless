@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <!-- Site made with Mobirise Website Builder v4.12.3, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v4.12.3, mobirise.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="{% static 'online/onless.png' %}" type="image/x-icon">
+    <meta name="description" content="">
+
+
+    <title>Onless.uz - Onlayn avtomaktab platformasi</title>
+    <link rel="stylesheet" href="{% static 'asset/web/assets/mobirise-icons/mobirise-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/bootstrap/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/bootstrap/css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/tether/tether.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/theme/css/style.css' %}">
+    <link rel="preload" as="style" href="{% static 'asset/mobirise/css/mbr-additional.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/mobirise/css/mbr-additional.css' %}" type="text/css">
+
+
+</head>
+<body>
+<section class="header15 cid-s1rCQZefXB mbr-fullscreen mbr-parallax-background" id="header15-7">
+
+
+    <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(7, 59, 76);"></div>
+
+    <div class="container align-right">
+        <div class="row">
+            <div class="mbr-white col-lg-8 col-md-7 content-container">
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">
+                    Onless.uz</h1>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Agarda siz onlayn tarzda o'qimoqchi bo'lsangiz yoki avtomaktabingizga onlayn o'qitish tizimini joriy etmoqchi bo'lsangiz, quyidagi formani to'ldiring. Bizning mutaxasislarimiz tez orada siz bilan bog'lanishadi .</p>
+            </div>
+            <div class="col-lg-4 col-md-5">
+                <div class="form-container">
+                    <div class="media-container-column" data-form-type="formoid">
+                        <!---Formbuilder Form--->
+                        <form action="{% url 'video:sign_up' %}" method="post" class="mbr-form form-with-styler">
+                            {% csrf_token %}
+
+                                {#                                <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Спасибо за заполнение анкеты!</div>#}
+                                {#                                <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">#}
+                                {#                                </div>#}
+                                {% include 'inc/messages.html' %}
+
+
+                            <div class="dragArea row">
+                                <div class="col-md-12 form-group " data-for="name">
+                                    <label style="float: left" class="text-light"
+                                           for="name-header15-7">Ismingiz:</label>
+                                    <input type="text" name="name" placeholder="Ismingizni kiriting ..."
+                                           data-form-field="Name" required="required"
+                                           class="form-control px-3 display-7" id="name-header15-7">
+                                </div>
+                                <div class="col-md-12 form-group " data-for="email">
+                                    <label style="float: left" class="text-light" for="name-header15-7">Sizning
+                                        maqsadingiz:</label>
+                                    <select name="select" class="form-control px-3 display-7" id="name-header15-7">
+                                        <option value="1">Avtomaktabimga o'rnatmoqchiman</option>
+                                        <option value="0">Onlayn o'qimoqchiman</option>
+                                    </select>
+                                </div>
+                                <div data-for="phone" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="name-header15-7">Tel
+                                        raqam:</label>
+                                    <input type="text" name="phone" placeholder="Tel raqamingizni kiriting ..."
+                                           data-form-field="Phone" class="form-control px-3 display-7"
+                                           id="phone-header15-7">
+                                </div>
+                                <div data-for="phone" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="name-header15-7">Viloyat:</label>
+                                    <input type="text" name="region" placeholder="Viloyatni kiriting ..."
+                                           data-form-field="address" class="form-control px-3 display-7"
+                                           id="phone-header15-7">
+                                </div>
+                                <div data-for="phone" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="name-header15-7">Tuman:</label>
+                                    <input type="text" name="district" placeholder="Tumanni kiriting ..."
+                                           data-form-field="address" class="form-control px-3 display-7"
+                                           id="phone-header15-7">
+                                </div>
+                                <div data-for="message" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="name-header15-7">Xabar
+                                        matni:</label>
+                                    <textarea name="text" placeholder="Xabar matnini kiriting ..."
+                                              data-form-field="Message" class="form-control px-3 display-7"
+                                              id="message-header15-7"></textarea>
+                                </div>
+                                <div class="col-md-12 input-group-btn">
+                                    <button type="submit" name="button" class="btn btn-secondary btn-form display-4">Yuborish</button>
+                                </div>
+                            </div>
+                        </form><!---Formbuilder Form--->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<script src="{% static 'asset/web/assets/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'asset/popper/popper.min.js' %}"></script>
+<script src="{% static 'asset/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'asset/tether/tether.min.js' %}"></script>
+<script src="{% static 'asset/smoothscroll/smooth-scroll.js' %}"></script>
+<script src="{% static 'asset/parallax/jarallax.min.js' %}"></script>
+<script src="{% static 'asset/theme/js/script.js' %}"></script>
+
+
+</body>
+</html>

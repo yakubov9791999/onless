@@ -66,3 +66,13 @@ class Files(models.Model):
     src = models.FileField(upload_to='file/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+
+class SignUpSchool(models.Model):
+    name = models.CharField(max_length=100,)
+    region = models.CharField(max_length=500)
+    district = models.CharField(max_length=500)
+    phone = models.CharField(max_length=100)
+    select = models.BooleanField(default=False)
+    text = models.TextField()
+

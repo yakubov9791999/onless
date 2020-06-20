@@ -13,3 +13,9 @@ class AddVideoForm(forms.ModelForm):
         model = Video
         fields = ('title', 'video', 'photo')
         exclude = ('category',)
+
+
+class SignUpSchoolForm(forms.ModelForm):
+    class Meta:
+        model = SignUpSchool
+        fields = ['name', 'select', 'phone', 'region','district', 'text']

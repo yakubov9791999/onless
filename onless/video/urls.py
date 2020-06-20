@@ -7,6 +7,7 @@ urlpatterns = [
     path('video/add_duration/', add_duration, name='add_duration'),
     path('home/', home, name='home'),
     path('', landing_page, name='landing_page'),
+    path('qabul/', sign_up, name='sign_up'),
     path('video/categories/', categories_list, name='categories_list'),
     path('video/category/<int:id>', category_detail, name='category_detail'),
     path('video/videos/<int:id>', videos_list, name='videos_list'),

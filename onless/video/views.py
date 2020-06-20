@@ -14,6 +14,15 @@ def landing_page(request):
     return render(request, 'landing/index.html')
 
 
+def sign_up(request):
+    if request.POST:
+        form = SignUpSchoolForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Muvaffaqiyatli yuborildi !')
+    return render(request, 'sign_up/index.html')
+
+
 @login_required
 def home(request):
     if request.user.role == "4":  # agarda role o'quvchi  bo'lsa

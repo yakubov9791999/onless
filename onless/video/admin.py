@@ -31,4 +31,5 @@ class CategoryAdmin(admin.ModelAdmin):
 class SignUpSchoolAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'select', 'phone', 'region', 'district', 'text']
     list_display_links = ['name']
+    list_filter = ['select','region', 'district']
     save_on_top = True

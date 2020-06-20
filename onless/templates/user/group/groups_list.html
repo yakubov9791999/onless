@@ -9,14 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Guruhlar ro'yhati</h3>
                 </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                {% include 'inc/messages.html' %}
 
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-hovered">

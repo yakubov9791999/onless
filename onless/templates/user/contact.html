@@ -9,23 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Fikringizni qoldiring</h3>
                 </div>
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
-                            <a class="close" href="#" data-dismiss="alert">×</a>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% if form.errors %}
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ error|escape }}</strong>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                {% endif %}
+                {% include 'inc/messages.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

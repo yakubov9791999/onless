@@ -153,3 +153,6 @@ def myvideos_list(request):
 
 # def show_categories(request):
 #     return render(request, 'inc/breadcumb.html', {'categories': Category.objects.all()})
+
+def kirish(request):
+    return HttpResponseRedirect(reverse('account_login'))  # or http response

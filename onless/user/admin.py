@@ -1,10 +1,19 @@
 from django.contrib import admin
+from django.contrib.admin.forms import AdminPasswordChangeForm
 
 from .models import *
 
 
+
+
+
+
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
+
+
     list_display = ['id', 'role', 'name','username', 'phone','email', 'turbo', 'birthday', 'is_active', 'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
     list_display_links = ['username','role']
@@ -13,15 +22,18 @@ class UserAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
+
+
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    # def queryset(self, request):
-    #     qs = super(SchoolAdmin, self).queryset(request)
-    #     return qs.filter(author=request.user)
+    
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['director'].queryset = User.objects.filter(role=2)
+        return super().render_change_form(request, context, *args, **kwargs)
 
     list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']
-    search_fields = ['title', 'director', 'phone']
+    search_fields = ['title', 'director', 'phone', 'username', 'pasport']
     list_filter = ['title', ]
     save_on_top = True
 

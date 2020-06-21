@@ -14,6 +14,6 @@ urlpatterns = [
     path('video/detail/<int:id>/', video_detail, name='video_detail'),
     path('video/add/', add_video, name='add_video'),
     path('video/myvideo/', myvideos_list, name='myvideos_list'),
-
+    path('kirish/', kirish, name='kirish')
 
 ]

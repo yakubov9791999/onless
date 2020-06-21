@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="{% static 'asset/theme/css/style.css' %}">
     <link rel="preload" as="style" href="{% static 'asset/mobirise/css/mbr-additional.css' %}">
     <link rel="stylesheet" href="{% static 'asset/mobirise/css/mbr-additional.css' %}" type="text/css">
-<meta name="google-site-verification" content="z3cdkH-gaRw1HB809OCNvVIJNq0ES3akEBL5heXra0g" />
+    <meta name="google-site-verification" content="z3cdkH-gaRw1HB809OCNvVIJNq0ES3akEBL5heXra0g"/>
+    <meta name="yandex-verification" content="3e286ce9f8498780"/>
 
 </head>
 <body>
@@ -35,7 +36,9 @@
                 <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">
                     Onless.uz</h1>
                 <p class="mbr-text pb-3 mbr-fonts-style display-5">
-                    Agarda siz onlayn tarzda o'qimoqchi bo'lsangiz yoki avtomaktabingizga onlayn o'qitish tizimini joriy etmoqchi bo'lsangiz, quyidagi formani to'ldiring. Bizning mutaxasislarimiz tez orada siz bilan bog'lanishadi .</p>
+                    Agarda siz onlayn tarzda o'qimoqchi bo'lsangiz yoki avtomaktabingizga onlayn o'qitish tizimini joriy
+                    etmoqchi bo'lsangiz, quyidagi formani to'ldiring. Bizning mutaxasislarimiz tez orada siz bilan
+                    bog'lanishadi .</p>
             </div>
             <div class="col-lg-4 col-md-5">
                 <div class="form-container">
@@ -44,10 +47,10 @@
                         <form action="{% url 'video:sign_up' %}" method="post" class="mbr-form form-with-styler">
                             {% csrf_token %}
 
-                                {#                                <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Спасибо за заполнение анкеты!</div>#}
-                                {#                                <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">#}
-                                {#                                </div>#}
-                                {% include 'inc/messages.html' %}
+                            {#                                <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Спасибо за заполнение анкеты!</div>#}
+                            {#                                <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">#}
+                            {#                                </div>#}
+                            {% include 'inc/messages.html' %}
 
 
                             <div class="dragArea row">
@@ -93,7 +96,9 @@
                                               id="message-header15-7"></textarea>
                                 </div>
                                 <div class="col-md-12 input-group-btn">
-                                    <button type="submit" name="button" class="btn btn-secondary btn-form display-4">Yuborish</button>
+                                    <button type="submit" name="button" class="btn btn-secondary btn-form display-4">
+                                        Yuborish
+                                    </button>
                                 </div>
                             </div>
                         </form><!---Formbuilder Form--->
@@ -115,19 +120,26 @@
 <script src="{% static 'asset/theme/js/script.js' %}"></script>
 
 <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+<script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-   ym(64861804, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:true
-   });
+    ym(64861804, "init", {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true
+    });
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/64861804" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/64861804" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
 <!-- /Yandex.Metrika counter -->
 </body>
 </html>

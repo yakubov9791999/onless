@@ -74,5 +74,6 @@ class SignUpSchool(models.Model):
     district = models.CharField(max_length=500)
     phone = models.CharField(max_length=100)
     select = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
     text = models.TextField()
 

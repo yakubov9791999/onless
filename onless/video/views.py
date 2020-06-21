@@ -18,6 +18,12 @@ def sign_up(request):
     if request.POST:
         form = SignUpSchoolForm(request.POST)
         if form.is_valid():
+            if request.POST['select'] == '1':
+                form = form.save(commit=False)
+                form.select = True
+            elif request.POST['select'] == '0':
+                form = form.save(commit=False)
+                form.select = False
             form.save()
             messages.success(request, 'Muvaffaqiyatli yuborildi !')
     return render(request, 'sign_up/index.html')

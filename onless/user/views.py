@@ -615,7 +615,7 @@ def bugalter_groups_list(request):
 
 @login_required
 def bugalter_group_detail(request, id):
-    if request.user.role == '5' or request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '5' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4, school=request.user.school, group=group)
         total_pay = group.price * pupils.count()

@@ -77,12 +77,16 @@
                                            data-form-field="Phone" class="form-control px-3 display-7"
                                            id="phone-header15-7">
                                 </div>
+
                                 <div data-for="phone" class="col-md-12 form-group ">
                                     <label style="float: left" class="text-light" for="name-header15-7">Viloyat:</label>
-                                    <input type="text" name="region" placeholder="Viloyatni kiriting ..."
-                                           data-form-field="address" class="form-control px-3 display-7"
-                                           id="phone-header15-7">
+                                    <select name="region" id="" class="form-control">
+                                        {% for region in regions %}
+                                        <option value="{{ region.id }}">{{ region.title }}</option>
+                                         {% endfor %}
+                                    </select>
                                 </div>
+
                                 <div data-for="phone" class="col-md-12 form-group ">
                                     <label style="float: left" class="text-light" for="name-header15-7">Tuman:</label>
                                     <input type="text" name="district" placeholder="Tumanni kiriting ..."

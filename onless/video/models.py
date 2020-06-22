@@ -70,6 +70,7 @@ class Files(models.Model):
 
 class SignUpSchool(models.Model):
     name = models.CharField(max_length=100,)
+    viloyat = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
     region = models.CharField(max_length=500)
     district = models.CharField(max_length=500)
     phone = models.CharField(max_length=100)

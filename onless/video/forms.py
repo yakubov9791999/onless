@@ -16,6 +16,7 @@ class AddVideoForm(forms.ModelForm):
 
 
 class SignUpSchoolForm(forms.ModelForm):
+
     class Meta:
         model = SignUpSchool
         fields = ['name', 'select', 'phone', 'region','district', 'text']

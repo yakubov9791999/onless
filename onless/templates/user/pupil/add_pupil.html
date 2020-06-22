@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
     <div class="row ml-5">
         <!-- left column -->
         <div class="col-md-6" style="margin-left: 25%; margin-bottom: 50px">
@@ -10,6 +11,7 @@
                     <h3 class="card-title">O'quvchi qo'shish</h3>
                 </div>
                 {% include 'inc/messages.html' %}
+
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" method="POST" action="{% url 'user:add_pupil' %}">

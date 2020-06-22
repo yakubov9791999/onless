@@ -100,7 +100,13 @@ def add_teacher(request):
 @login_required
 def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
-        groups = Group.objects.filter(school=request.user.school)
+        if request.user.role == '2':
+            groups = Group.objects.filter(school=request.user.school, is_active=True)
+        elif request.user.role == '3':
+            teacher = User.objects.get(id=request.user.id)
+            groups = Group.objects.filter(school=request.user.school, is_active=True, teacher=teacher)
+            if not groups.exists():
+                messages.error(request, "O'quvchi qo'shish uchun avval guruh ro'yhatdan o'tkazing !")
         form = AddPupilForm()
         context = {
             'groups': groups,
@@ -219,6 +225,8 @@ def groups_list(request):
     elif request.user.role == '3':
         teacher = User.objects.get(id=request.user.id)
         groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True)
+        if not groups.exists():
+            messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
             'groups': groups,
         }
@@ -474,6 +482,8 @@ def pupil_delete(request, id):
 def workers_list(request):
     if request.user.role == '2':
         workers = User.objects.filter(Q(school=request.user.school,role=5) | Q(school=request.user.school,role=3))
+        if not workers.exists():
+            messages.error(request, "Xodimlar ro'yhatga olinmagan !")
         context = {
             'workers': workers
         }
@@ -641,6 +651,8 @@ def add_bugalter(request):
 def bugalter_groups_list(request):
     if request.user.role == '2' or request.user.role == '5':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
+        if not groups.exists():
+            messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
             'groups': groups
         }
@@ -648,6 +660,8 @@ def bugalter_groups_list(request):
     elif request.user.role == '3':
         teacher = User.objects.get(id=request.user.id)
         groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True)
+        if not groups.exists():
+            messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
             'groups': groups
         }
@@ -663,6 +677,8 @@ def bugalter_group_detail(request, id):
         pupils = User.objects.filter(role=4, school=request.user.school, group=group)
         total_pay = group.price * pupils.count()
         payments = Pay.objects.filter(pupil__in=pupils)
+        if not payments.exists():
+            messages.error(request, "To'lovlar mavjud emas !")
         total_payments = 0
         for pay in payments:
             total_payments += pay.payment

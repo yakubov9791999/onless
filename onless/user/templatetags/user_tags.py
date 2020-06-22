@@ -37,3 +37,4 @@ def get_payments(pupil_id, group_id):
             'debit': debit,
             'values': values
         }
+

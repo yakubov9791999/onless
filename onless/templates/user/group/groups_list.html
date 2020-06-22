@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load user_tags %}
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -31,7 +31,7 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                    {% if request.user.role == '2' or request.user.role == '3'%}
+                                    {% if request.user.role == '2' or request.user.role == '3' %}
                                         <a href="{% url 'user:group_detail' group.id %}">
                                             <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
                                         </a>
@@ -50,9 +50,13 @@
                                         ></i></a>
 
                                         &nbsp;
+
                                         <a href="{% url 'user:group_update' group.id %}"><i class="fa fa-edit"
                                         ></i>
                                         </a>
+
+
+
                                         {% if request.user.role == '2' %}
                                             &nbsp;
                                             <a href="{% url 'user:group_delete' group.id %}"><i class="fa fa-trash"
@@ -61,6 +65,7 @@
                                     </td>
                                 {% endif %}
                             </tr>
+
                         {% endfor %}
                         </tbody>
                         <tfoot>

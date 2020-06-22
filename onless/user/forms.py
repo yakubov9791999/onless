@@ -29,6 +29,12 @@ class AddGroupForm(ModelForm):
         fields = ('number', 'teacher', 'start', 'stop', 'category', 'price')
         exclude = ('school',)
 
+class AddTeacherGroupForm(ModelForm):
+    class Meta:
+        model = Group
+        fields = ('number', 'start', 'stop', 'category', 'price')
+        exclude = ('school','teacher')
+
 class GroupUpdateForm(ModelForm):
     number = forms.IntegerField(label="Raqami",widget=forms.NumberInput(attrs={'class': 'form-control'}))
     year = forms.IntegerField(label="O'quv yili",widget=forms.NumberInput(attrs={'class': 'form-control'}))

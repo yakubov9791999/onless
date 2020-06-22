@@ -158,8 +158,8 @@ def add_pupil(request):
 
 @login_required
 def add_group(request):
-    if request.user.role == '2' or request.user.role == '3':
-        teachers = User.objects.filter(role=3 or 2, school=request.user.school)
+    if request.user.role == '2':
+        teachers = User.objects.filter(Q(role=3, school=request.user.school)|Q(role=2, school=request.user.school))
         context = {
             'teachers': teachers,
         }
@@ -183,14 +183,50 @@ def add_group(request):
         else:
             form = AddGroupForm()
         return render(request, 'user/group/add_group.html', context)
+    elif request.user.role == '3':
+        if request.POST:
+            form = AddTeacherGroupForm(request.POST)
+            if form.is_valid():
+                number = form.cleaned_data['number']
+                category = request.POST['category']
+                teacher = get_object_or_404(User, id=request.user.id)
+                price = form.cleaned_data['price']
+                form = form.save(commit=False)
+                form.number = number
+                form.price = price
+                form.category = category
+                form.teacher = teacher
+                form.school = request.user.school
+                form.start = request.POST['start']
+                form.stop = request.POST['stop']
+                form.save()
+                messages.success(request, f"{form.category}-{form.number}-{form.year} guruh qo'shildi")
+        else:
+            form = AddTeacherGroupForm()
+        return render(request, 'user/teacher/add_group.html')
     else:
         return render(request, 'inc/404.html')
 
 
 @login_required
 def groups_list(request):
-    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4' or request.user.role == '5':
+    if request.user.role == '2':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
+        context = {
+            'groups': groups,
+        }
+        return render(request, 'user/group/groups_list.html', context)
+    elif request.user.role == '3':
+        teacher = User.objects.get(id=request.user.id)
+        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True)
+        context = {
+            'groups': groups,
+        }
+        return render(request, 'user/group/groups_list.html', context)
+    elif request.user.role == '4':
+        pupil = User.objects.get(id=request.user.id)
+        print(pupil.group.id)
+        groups = Group.objects.filter(id=pupil.group.id, school=request.user.school,  is_active=True)
         context = {
             'groups': groups,
         }
@@ -436,7 +472,7 @@ def pupil_delete(request, id):
 
 @login_required
 def workers_list(request):
-    if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
+    if request.user.role == '2':
         workers = User.objects.filter(Q(school=request.user.school,role=5) | Q(school=request.user.school,role=3))
         context = {
             'workers': workers
@@ -487,71 +523,71 @@ def teacher_delete(request, id):
 
 
 def upload_file(request):
-    if request.POST:
-        file = request.FILES['file']
-        file = File.objects.create(file=file)
-        file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
-        group = get_object_or_404(Group, id=request.POST['group'])
-        wb = xlrd.open_workbook(file_path)
-        sheet = wb.sheet_by_index(0)
-        number_of_rows = sheet.nrows
-        number_of_columns = sheet.ncols
+    if request.user.role == '2' or request.user.role == '3':
+        if request.POST:
+            file = request.FILES['file']
+            file = File.objects.create(file=file)
+            file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
+            group = get_object_or_404(Group, id=request.POST['group'])
+            wb = xlrd.open_workbook(file_path)
+            sheet = wb.sheet_by_index(0)
+            number_of_rows = sheet.nrows
+            number_of_columns = sheet.ncols
 
-        for row in range(1, number_of_rows):
-            values = []
-            for col in range(1, number_of_columns):
-                value = (sheet.cell(row, col).value)
-                values.append(value)
-            name = str(values[0]).lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
-                                                                                                   'yu').replace(
-                'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
-                                                                                                          'e').replace(
-                'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
-                                                                                                           'k').replace(
-                'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
-                                                                                                          'r').replace(
-                'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
-                                                                                                            'f').replace(
-                'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
-            pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C')
-            try:
-                phone = int(values[2])
-            except ValueError:
-                pass
-            print(len(pasport))
-            print(len(str(phone)))
-            if len(str(phone)) == 9:
+            for row in range(1, number_of_rows):
+                values = []
+                for col in range(1, number_of_columns):
+                    value = (sheet.cell(row, col).value)
+                    values.append(value)
+                name = str(values[0]).lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                                                       'yu').replace(
+                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                                                              'e').replace(
+                    'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                               'k').replace(
+                    'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                              'r').replace(
+                    'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                                'f').replace(
+                    'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
+                pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C')
                 try:
-                    parol = random.randint(1000000, 9999999)
-                    user = User.objects.create_user(
-                        username=pasport,
-                        pasport=pasport,
-                        school=request.user.school,
-                        turbo=parol,
-                        password=parol,
-                        name=name,
-                        phone=int(phone),
-                        role='4',
-                        group=group,
-                        is_superuser=False,
-                    )
-                    user.set_password(parol)
-                    user.username = pasport
-                    user.email = ''
-                    user.save()
-                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
-                    msg = msg.replace(" ", "+")
-                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                    response = requests.get(url)
-                    messages.success(request, "Muvaffaqiyatli qo'shildi !")
-                except IntegrityError:
-                    messages.error(request, "Siz jadvalga kiritgan pasport oldin ro'yhatdan o'tkazilgan !")
-            else:
-                messages.error(request, "Jadvalni to'ldirishda xatolik !")
-        os.unlink(file_path)
-    next = request.META['HTTP_REFERER']
-    return HttpResponseRedirect(next)
-
+                    phone = int(values[2])
+                except ValueError:
+                    pass
+                if len(str(phone)) == 9:
+                    try:
+                        parol = random.randint(1000000, 9999999)
+                        user = User.objects.create_user(
+                            username=pasport,
+                            pasport=pasport,
+                            school=request.user.school,
+                            turbo=parol,
+                            password=parol,
+                            name=name,
+                            phone=int(phone),
+                            role='4',
+                            group=group,
+                            is_superuser=False,
+                        )
+                        user.set_password(parol)
+                        user.username = pasport
+                        user.email = ''
+                        user.save()
+                        msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                        msg = msg.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                        response = requests.get(url)
+                        messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                    except IntegrityError:
+                        messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
+                else:
+                    messages.error(request, "Jadvalni to'ldirishda xatolik !")
+            os.unlink(file_path)
+        next = request.META['HTTP_REFERER']
+        return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def add_bugalter(request):
@@ -603,8 +639,15 @@ def add_bugalter(request):
 
 @login_required
 def bugalter_groups_list(request):
-    if request.user.role == '2' or request.user.role == '5'  or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '5':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/bugalter/groups_list.html', context)
+    elif request.user.role == '3':
+        teacher = User.objects.get(id=request.user.id)
+        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True)
         context = {
             'groups': groups
         }

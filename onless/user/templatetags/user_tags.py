@@ -38,3 +38,10 @@ def get_payments(pupil_id, group_id):
             'values': values
         }
 
+@register.simple_tag()
+def get_teacher_group(teacher_id):
+    teacher = User.objects.get(id=teacher_id)
+    groups = Group.objects.filter(teacher=teacher)
+    return {
+        'groups': groups
+    }

@@ -40,6 +40,8 @@
                     Agarda siz onlayn tarzda o'qimoqchi bo'lsangiz yoki avtomaktabingizga onlayn o'qitish tizimini joriy
                     etmoqchi bo'lsangiz, quyidagi formani to'ldiring. Bizning mutaxasislarimiz tez orada siz bilan
                     bog'lanishadi .</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">Agarda siz tizimdan ro'yhatdan o'tgan bo'lsangiz</p>
+                <a href="{% url 'video:kirish' %}" class="btn btn-primary">Tizimga kirish</a>
             </div>
             <div class="col-lg-4 col-md-5">
                 <div class="form-container">
@@ -80,7 +82,7 @@
 
                                 <div data-for="phone" class="col-md-12 form-group ">
                                     <label style="float: left" class="text-light" for="name-header15-7">Viloyat:</label>
-                                    <select name="region" id="" class="form-control">
+                                    <select name="viloyat" id="" class="form-control">
                                         {% for region in regions %}
                                         <option value="{{ region.id }}">{{ region.title }}</option>
                                          {% endfor %}
@@ -101,7 +103,7 @@
                                               id="message-header15-7"></textarea>
                                 </div>
                                 <div class="col-md-12 input-group-btn">
-                                    <button type="submit" name="button" class="btn btn-secondary btn-form display-4">
+                                    <button type="submit" class="btn btn-secondary btn-form display-4">
                                         Yuborish
                                     </button>
                                 </div>

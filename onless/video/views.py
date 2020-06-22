@@ -21,17 +21,21 @@ def sign_up(request):
     }
 
     if request.POST:
+        print(request.POST)
         form = SignUpSchoolForm(request.POST)
+        viloyat = Region.objects.get(id=request.POST.get('viloyat'))
+        print(form.errors)
         if form.is_valid():
             if request.POST['select'] == '1':
                 form = form.save(commit=False)
-                form.region_id = request.POST['region']
+                form.viloyat = viloyat
                 form.select = True
+                form.save()
             elif request.POST['select'] == '0':
                 form = form.save(commit=False)
-                form.region_id = request.POST['region']
+                form.viloyat = viloyat
                 form.select = False
-            form.save()
+                form.save()
             messages.success(request, 'Muvaffaqiyatli yuborildi !')
     return render(request, 'sign_up/index.html', context)
 

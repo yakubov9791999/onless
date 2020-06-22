@@ -70,7 +70,7 @@ class Files(models.Model):
 
 class SignUpSchool(models.Model):
     name = models.CharField(max_length=100,)
-    region = models.CharField(max_length=500)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
     district = models.CharField(max_length=500)
     phone = models.CharField(max_length=100)
     select = models.BooleanField(default=False)

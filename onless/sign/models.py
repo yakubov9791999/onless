@@ -1,5 +1,7 @@
 from django.db import models
 
+from user.models import *
+
 CHOICES = (
     ('1', 'Ogohlantiruvchi belgilar'),
     ('2', 'Imtiyoz belgilari'),
@@ -30,3 +32,30 @@ class Sign(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Subject(models.Model):
+    title = models.CharField(verbose_name='Nomi',max_length=600)
+    category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=3, default='A')
+    sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Fan"
+        verbose_name_plural = "Fanlar"
+
+class Schedule(models.Model):
+    title = models.CharField(max_length=900)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_schedule', null=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_schedule', null=True)
+    sort = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Dars jadvali"
+        verbose_name_plural = "Dars jadvallari"

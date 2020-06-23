@@ -7,20 +7,17 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Avtomaktabni tahrirlash</h3>
+                    <h3 class="card-title">Fanni qo'shish</h3>
                 </div>
                 {% include 'inc/messages.html' %}
-
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form method="POST" action="{% url 'user:edit_school' %}"
-                      enctype="multipart/form-data">
+
+                <form role="form" method="POST" action="{% url 'sign:add_subject' %}">
                     {% csrf_token %}
                     <div class="card-body">
                         {{ form }}
                     </div>
-                    <!-- /.card-body -->
-
                     <div class="card-footer">
                         <button type="submit" class="btn btn-success">Saqlash</button>
                         <button type="reset" class="btn btn-danger">Tozalash</button>

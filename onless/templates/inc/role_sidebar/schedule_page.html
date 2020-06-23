@@ -1,5 +1,5 @@
 <li class="nav-item has-treeview">
-    <a href="" class="nav-link {% if request.resolver_match.url_name == 'myvideos_list' %}active{% endif %}">
+    <a href="{% url 'sign:schedules_list' %}" class="nav-link {% if request.resolver_match.url_name == 'schedules_list' %}active{% endif %}">
         &nbsp;<i class="fas fa-file-video"></i>&nbsp;&nbsp;&nbsp;&nbsp;
         <p>
             Dars jadvali

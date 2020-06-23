@@ -24,11 +24,13 @@ def sign_up(request):
         print(request.POST)
         form = SignUpSchoolForm(request.POST)
         viloyat = Region.objects.get(id=request.POST.get('viloyat'))
+        tuman = District.objects.get(id=request.POST.get('tuman'))
         print(form.errors)
         if form.is_valid():
             if request.POST['select'] == '1':
                 form = form.save(commit=False)
                 form.viloyat = viloyat
+                form.tuman = tuman
                 form.select = True
                 form.save()
             elif request.POST['select'] == '0':

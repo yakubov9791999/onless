@@ -758,7 +758,7 @@ def history_view_video_all(request):
 def get_district(request):
     if request.is_ajax():
         districts = District.objects.filter(region=request.GET.get('region'))
-        options = ""
+        options = "<option>--- --- ---</option>"
         for district in districts:
             options += f"<option value='{district.id}'>{district.title}</option>"
         return HttpResponse(options)

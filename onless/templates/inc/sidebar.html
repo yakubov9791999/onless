@@ -48,14 +48,14 @@
                     {% include 'inc/role_sidebar/groups_page.html' %}
                     {% include 'inc/role_sidebar/payments_page.html' %}
                     {% include 'inc/role_sidebar/history_view_video.html' %}
-{#                    {% include 'inc/role_sidebar/schedule_page.html' %}#}
+                    {% include 'inc/role_sidebar/schedule_page.html' %}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '3' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/payments_page.html' %}
                     {% include 'inc/role_sidebar/groups_page.html' %}
-{#                    {% include 'inc/role_sidebar/schedule_page.html' %}#}
+                    {% include 'inc/role_sidebar/schedule_page.html' %}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
                 {% elif user.is_authenticated and request.user.role == '4' %}

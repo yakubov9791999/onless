@@ -1,13 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin.forms import AdminPasswordChangeForm
 
+from quiz.admin import ChoiceInline
 from .models import *
-
-
-
-
-
-
 
 
 @admin.register(User)
@@ -39,19 +34,18 @@ class SchoolAdmin(admin.ModelAdmin):
 
 
 
+class DistrictInline(admin.StackedInline):
+    model = District
+    extra = 13
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title']
-    list_display_links = ['title']
-    save_on_top = True
+    fieldsets = [
+        (None,               {'fields': ['title']}),
+    ]
+    inlines = [DistrictInline]
 
 
-@admin.register(District)
-class DistrictAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title']
-    list_display_links = ['title']
-    save_on_top = True
 
 @admin.register(Contact)
 class ConatctAdmin(admin.ModelAdmin):

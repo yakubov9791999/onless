@@ -80,6 +80,7 @@ class SignUpSchool(models.Model):
     result = models.CharField(max_length=255, blank=True, verbose_name='Natija')
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Avtomaktab')
     text = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True, blank=True, default=timezone.now)
 
     class Meta:
         verbose_name = 'Qabul'

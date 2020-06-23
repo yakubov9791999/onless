@@ -61,6 +61,7 @@ class Region(models.Model):
         return self.title
 
     class Meta:
+        ordering = ['sort',]
         verbose_name = 'Viloyat'
         verbose_name_plural = 'Viloyatlar'
 
@@ -74,6 +75,7 @@ class District(models.Model):
         return self.title
 
     class Meta:
+        ordering = ['sort', ]
         verbose_name = 'Tuman/Shahar'
         verbose_name_plural = 'Tumanlar/Shaharlar'
 

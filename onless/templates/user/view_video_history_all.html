@@ -3,7 +3,7 @@
 {% load quiz_tags %}
 {% block top%}
     <link rel="stylesheet" href="{% static "plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" %}">
-{% endblock top%}
+{% endblock top %}
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -13,7 +13,7 @@
                 <div class="card-header">
                     <h3 class="card-title">O'quvchilar ro'yhati</h3>
                 </div>
-
+                {% include 'inc/messages.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">

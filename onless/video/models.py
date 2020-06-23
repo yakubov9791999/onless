@@ -72,6 +72,7 @@ class SignUpSchool(models.Model):
     name = models.CharField(max_length=100,)
     viloyat = models.ForeignKey(Region, on_delete=models.CASCADE, null=True, blank=True)
     region = models.CharField(max_length=500)
+    tuman = models.ForeignKey(District, on_delete=models.CASCADE, default=1)
     district = models.CharField(max_length=500)
     phone = models.CharField(max_length=100)
     select = models.BooleanField(default=False)

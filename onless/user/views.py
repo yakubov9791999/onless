@@ -102,6 +102,8 @@ def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
         if request.user.role == '2':
             groups = Group.objects.filter(school=request.user.school, is_active=True)
+            if not groups.exists():
+                messages.error(request, "O'quvchi qo'shish uchun avval guruh ro'yhatdan o'tkazing !")
         elif request.user.role == '3':
             teacher = User.objects.get(id=request.user.id)
             groups = Group.objects.filter(school=request.user.school, is_active=True, teacher=teacher)
@@ -218,6 +220,8 @@ def add_group(request):
 def groups_list(request):
     if request.user.role == '2':
         groups = Group.objects.filter(school=request.user.school, is_active=True)
+        if not groups.exists():
+            messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
             'groups': groups,
         }
@@ -235,6 +239,8 @@ def groups_list(request):
         pupil = User.objects.get(id=request.user.id)
         print(pupil.group.id)
         groups = Group.objects.filter(id=pupil.group.id, school=request.user.school,  is_active=True)
+        if not groups.exists():
+            messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
             'groups': groups,
         }
@@ -725,6 +731,8 @@ def pay_history(request, user_id, group_id):
     if request.user.role == '5' or request.user.role == '2' or request.user.role == '4' or request.user.role == '3':
         pupil = get_object_or_404(User, id=user_id)
         payments = Pay.objects.filter(pupil=pupil)
+        if not payments.exists():
+            messages.error(request, "Siz hali to'lov amalga oshirmagansiz !")
         group = get_object_or_404(Group, id=group_id)
 
         context = {
@@ -740,7 +748,19 @@ def pay_history(request, user_id, group_id):
 @login_required()
 def history_view_video_all(request):
     views = ViewComplete.objects.filter(user__school=request.user.school, user__role=4).order_by('-time')
+    if not views.exists():
+        messages.error(request, "Ko'rishlar mavjud emas !")
     cotext = {
         'views': views,
     }
     return render(request, 'user/view_video_history_all.html', cotext)
+
+def get_district(request):
+    if request.is_ajax():
+        districts = District.objects.filter(region=request.GET.get('region'))
+        options = ""
+        for district in districts:
+            options += f"<option value='{district.id}'>{district.title}</option>"
+        return HttpResponse(options)
+    else:
+        return False

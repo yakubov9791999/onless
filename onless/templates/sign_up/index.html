@@ -65,15 +65,16 @@
                                            class="form-control px-3 display-7" id="name-header15-7">
                                 </div>
                                 <div class="col-md-12 form-group " data-for="email">
-                                    <label style="float: left" class="text-light" for="name-header15-7">Sizning
+                                    <label style="float: left" class="text-light" for="select-header15-7">Sizning
                                         maqsadingiz:</label>
-                                    <select name="select" class="form-control px-3 display-7" id="name-header15-7">
-                                        <option value="1">Avtomaktabimga o'rnatmoqchiman</option>
+                                    <select name="select" class="form-control px-3 display-7" id="select-header15-7">
                                         <option value="0">Onlayn o'qimoqchiman</option>
+                                        <option value="1">Avtomaktabimga o'rnatmoqchiman</option>
+
                                     </select>
                                 </div>
                                 <div data-for="phone" class="col-md-12 form-group ">
-                                    <label style="float: left" class="text-light" for="name-header15-7">Tel
+                                    <label style="float: left" class="text-light" for="phone-header15-7">Tel
                                         raqam:</label>
                                     <input type="text" name="phone" placeholder="Tel raqamingizni kiriting ..."
                                            data-form-field="Phone" class="form-control px-3 display-7"
@@ -81,26 +82,26 @@
                                 </div>
 
                                 <div data-for="phone" class="col-md-12 form-group ">
-                                    <label style="float: left" class="text-light" for="name-header15-7">Viloyat:</label>
-                                    <select name="viloyat" id="" class="form-control">
+                                    <label style="float: left" class="text-light" for="viloyat">Viloyat:</label>
+                                    <select name="viloyat" id="viloyat" class="form-control">
                                         {% for region in regions %}
-                                        <option value="{{ region.id }}">{{ region.title }}</option>
-                                         {% endfor %}
+                                            <option value="{{ region.id }}">{{ region.title }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
-
                                 <div data-for="phone" class="col-md-12 form-group ">
-                                    <label style="float: left" class="text-light" for="name-header15-7">Tuman:</label>
-                                    <input type="text" name="district" placeholder="Tumanni kiriting ..."
-                                           data-form-field="address" class="form-control px-3 display-7"
-                                           id="phone-header15-7">
+                                    <label style="float: left" class="text-light" for="tuman">Tumanni tanlang:</label>
+
+                                    <select id="tuman" class="form-control">
+                                        <option value="">-- Viloyatni tanlang --</option>
+                                    </select>
                                 </div>
                                 <div data-for="message" class="col-md-12 form-group ">
-                                    <label style="float: left" class="text-light" for="name-header15-7">Xabar
+                                    <label style="float: left" class="text-light" for="text-header15-7">Xabar
                                         matni:</label>
                                     <textarea name="text" placeholder="Xabar matnini kiriting ..."
                                               data-form-field="Message" class="form-control px-3 display-7"
-                                              id="message-header15-7"></textarea>
+                                              id="text-header15-7"></textarea>
                                 </div>
                                 <div class="col-md-12 input-group-btn">
                                     <button type="submit" class="btn btn-secondary btn-form display-4">
@@ -125,6 +126,7 @@
 <script src="{% static 'asset/smoothscroll/smooth-scroll.js' %}"></script>
 <script src="{% static 'asset/parallax/jarallax.min.js' %}"></script>
 <script src="{% static 'asset/theme/js/script.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -148,5 +150,29 @@
     <div><img src="https://mc.yandex.ru/watch/64861804" style="position:absolute; left:-9999px;" alt=""/></div>
 </noscript>
 <!-- /Yandex.Metrika counter -->
+
+
+<script>
+    $(document).ready(function () {
+        $("#viloyat").change(function () {
+
+
+            var selectedCountry = $(this).children("option:selected").val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'user:get_district' %}",
+                data: {
+                    'region': selectedCountry, // from form
+                },
+                success: function (message) {
+                    $('#tuman').empty().append(message)
+                    {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                    {#$('#append').append(e);#}
+                    {#e.attr('id', 'myid');#}
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

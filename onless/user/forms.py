@@ -21,7 +21,7 @@ class AddPupilForm(ModelForm):
     class Meta:
         model = User
         fields = ('name', 'phone', 'group')
-        exclude = ('username', 'password', 'school','pasport')
+        exclude = ('username', 'password', 'school','pasport', 'birthday')
 
 class AddGroupForm(ModelForm):
     class Meta:
@@ -50,7 +50,10 @@ class GroupUpdateForm(ModelForm):
 
 class EditUserForm(ModelForm):
     name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))
-    address = forms.CharField(label='Manzil',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    region = forms.ModelChoiceField(label="Viloyat", queryset=Region.objects.all(),
+                                      widget=forms.Select(attrs={'class': 'form-control', 'id': 'region', 'required': 'required'}))
+    district = forms.ModelChoiceField(label="Tuman/Shahar", queryset=District.objects.all(),
+                                    widget=forms.Select(attrs={'class': 'form-control', 'id': 'district','required': 'required'}))
     avatar = forms.ImageField(label='Rasm',widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
     birthday = forms.DateField(label="Tug'ilgan kun",widget=forms.DateInput(attrs={'class': 'form-control'}))
     phone = forms.IntegerField(label='Tel raqam',widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
@@ -69,12 +72,15 @@ class EditUserForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('name','pasport', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
+        fields = ('name','pasport', 'region','district', 'avatar', 'birthday', 'phone', 'gender','turbo',)
 
 class EditPupilForm(ModelForm):
     name = forms.CharField(label='F.I.O',widget=forms.TextInput(attrs={'class': 'form-control'}))
-    address = forms.CharField(label='Manzil',widget=forms.TextInput(attrs={'class': 'form-control'}))
-    avatar = forms.ImageField(label='Rasm',widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    region = forms.ModelChoiceField(label="Viloyat", queryset=Region.objects.all(),
+                                    widget=forms.Select(
+                                        attrs={'class': 'form-control', 'id': 'region', 'required': 'required'}))
+    district = forms.ModelChoiceField(label="Tuman/Shahar", queryset=District.objects.all(),
+                                      widget=forms.Select(attrs={'class': 'form-control', 'id': 'district', 'required': 'required'}))
     birthday = forms.DateField(label="Tug'ilgan kun",widget=forms.DateInput(attrs={'class': 'form-control'}))
     phone = forms.IntegerField(label='Tel raqam',widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9',}))
     gender = forms.ChoiceField(label='Jinsi',choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -83,13 +89,13 @@ class EditPupilForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('name','pasport', 'address', 'avatar', 'birthday', 'phone', 'gender','turbo')
+        fields = ('name','pasport', 'region', 'district', 'birthday', 'phone', 'gender','turbo')
 
 class EditSchoolForm(ModelForm):
-    def __init__(self, *args, user=None, **kwargs, ):
-        super().__init__(*args, **kwargs,)
-        if user:
-            self.fields['district'].queryset = self.fields['district'].queryset.filter(region=user.school.region)
+    # def __init__(self, *args, user=None, **kwargs, ):
+    #     super().__init__(*args, **kwargs,)
+    #     if user:
+    #         self.fields['district'].queryset = self.fields['district'].queryset.filter(region=user.school.region)
 
 
 
@@ -97,8 +103,12 @@ class EditSchoolForm(ModelForm):
     director = forms.ModelChoiceField(label="Rahbar nomi",queryset=User.objects.filter(role=2), widget=forms.Select(attrs={'class': 'form-control'}))
     phone = forms.CharField(label="Tel raqam",widget=forms.TextInput(attrs={'class': 'form-control'}))
     logo = forms.ImageField(label="Rasm",widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
-    region = forms.ModelChoiceField(label="Viloyat",queryset=Region.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    district = forms.ModelChoiceField(label="Tuman/Shahar",queryset=District.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+    region = forms.ModelChoiceField(label="Viloyat", queryset=Region.objects.all(),
+                                    widget=forms.Select(
+                                        attrs={'class': 'form-control', 'id': 'region', 'required': 'required'}))
+    district = forms.ModelChoiceField(label="Tuman/Shahar", queryset=District.objects.all(),
+                                      widget=forms.Select(
+                                          attrs={'class': 'form-control', 'id': 'district', 'required': 'required'}))
 
     class Meta:
         model = School

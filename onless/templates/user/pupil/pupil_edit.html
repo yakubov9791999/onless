@@ -28,6 +28,7 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 {% endblock content %}
 {% block bottom %}
     <script>
@@ -46,5 +47,25 @@
             return false;
         });
 
-    </script>
+    $(document).ready(function () {
+        $("#region").change(function () {
+
+
+            var selectedCountry = $(this).children("option:selected").val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'user:get_district' %}",
+                data: {
+                    'region': selectedCountry, // from form
+                },
+                success: function (message) {
+                    $('#district').empty().append(message)
+                    {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                    {#$('#append').append(e);#}
+                    {#e.attr('id', 'myid');#}
+                }
+            });
+        });
+    });
+</script>
 {% endblock bottom %}

@@ -152,7 +152,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15, default="2")
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name='school_user', blank=True)
-    address = models.CharField(max_length=255, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     email = models.EmailField(max_length=254, unique=False, blank=True, default='')
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField(blank=True, null=True, default=datetime.date.today)
@@ -165,7 +166,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, blank=True)
     last_login = models.DateTimeField(null=True, auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=5)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=5,default='M')
     turbo = models.CharField(max_length=200, blank=True, null=True, validators=[MinLengthValidator(7)])
 
     USERNAME_FIELD = 'username'

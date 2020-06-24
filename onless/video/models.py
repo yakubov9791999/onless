@@ -76,7 +76,7 @@ class SignUpSchool(models.Model):
     district = models.CharField(max_length=500)
     phone = models.CharField(max_length=100)
     select = models.BooleanField(default=False, verbose_name='Avtomaktab')
-    is_active = models.BooleanField(default=False, verbose_name="Masala o'rganilgan")
+    is_active = models.BooleanField(default=False, verbose_name="M/o'")
     result = models.CharField(max_length=255, blank=True, verbose_name='Natija')
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Avtomaktab')
     text = models.TextField()

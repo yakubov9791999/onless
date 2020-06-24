@@ -89,7 +89,7 @@ def add_teacher(request):
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
-                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
+                messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
         else:
             form = AddUserForm(request)
         return render(request, 'user/teacher/add_teacher.html', )
@@ -146,6 +146,8 @@ def add_pupil(request):
                     )
                     user.set_password(parol)
                     user.username = pasport
+                    if request.POST['birthday']:
+                        user.birthday = request.POST['birthday']
                     user.email = ''
                     user.save()
                     msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
@@ -343,16 +345,16 @@ def profil_edit(request):
 def school_edit(request):
     if request.user.role == '2':
         school = School.objects.get(id=request.user.school.id)
-        form = EditSchoolForm(instance=request.user.school, user=request.user)
+        form = EditSchoolForm(instance=request.user.school)
         if request.POST:
-            form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school, user=request.user)
+            form = EditSchoolForm(request.POST or None, request.FILES or None, instance=request.user.school)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = EditSchoolForm(instance=request.user.school, user=request.user)
+            form = EditSchoolForm(instance=request.user.school)
         context = {
             'form': form
         }
@@ -499,40 +501,40 @@ def workers_list(request):
 
 
 @login_required
-def teacher_edit(request, id):
+def worker_edit(request, id):
     if request.user.role == '2':
-        teacher = get_object_or_404(User, id=id)
-        form = EditPupilForm(instance=teacher)
+        worker = get_object_or_404(User, id=id)
+        form = EditPupilForm(instance=worker)
         if request.POST:
-            form = EditPupilForm(request.POST, request.FILES, instance=teacher)
+            form = EditPupilForm(request.POST, request.FILES, instance=worker)
             if form.is_valid():
                 form = form.save(commit=False)
                 form.pasport = request.POST['pasport']
                 form.username = request.POST['pasport']
-                teacher.set_password(request.POST['turbo'])
+                worker.set_password(request.POST['turbo'])
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-                form = EditPupilForm(instance=teacher)
+                form = EditPupilForm(instance=worker)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = EditPupilForm(instance=teacher)
+            form = EditPupilForm(instance=worker)
         context = {
-            'teacher': teacher,
+            'worker': worker,
             'form': form
         }
-        return render(request, 'user/teacher/teacher_edit.html', context)
+        return render(request, 'user/teacher/../templates/user/worker_edit.html', context)
     else:
         return render(request, 'inc/404.html')
 
 
 @login_required
-def teacher_delete(request, id):
+def worker_delete(request, id):
     if request.user.role == '2':
-        teacher = get_object_or_404(User, id=id)
-        teacher.delete()
+        worker = get_object_or_404(User, id=id)
+        worker.delete()
         next = request.META.get('HTTP_REFERER')
-        messages.success(request, "O'qituvchi muvaffaqiyatli o'chirildi !")
+        messages.success(request, "Xodim muvaffaqiyatli o'chirildi !")
         return HttpResponseRedirect(next)
     else:
         return render(request, 'inc/404.html')

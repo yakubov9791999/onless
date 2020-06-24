@@ -29,8 +29,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(SignUpSchool)
 class SignUpSchoolAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'select', 'is_active', 'phone', 'viloyat','region' ,'district', 'text', 'pub_date']
+    list_display = ['id', 'name', 'select', 'is_active', 'phone', 'viloyat','region' ,'district','tuman', 'text', 'pub_date']
     list_display_links = ['name']
-    list_filter = ['is_active','select','viloyat','region', 'district' ]
+    list_filter = ['is_active','select','viloyat','region', 'district', 'tuman' ]
     save_on_top = True
-    search_fields = ['name','text','viloyat__title','region', 'district' ]
+    search_fields = ['name','text','viloyat__title','region', 'district', 'tuman__title' ]

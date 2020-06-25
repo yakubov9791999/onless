@@ -28,57 +28,58 @@
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
+                    <div class="table-responsive">
+                        <table style="font-size: 0.9rem" id="example1"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th style="width: 2%">№</th>
+                                <th>O'quvchining ism familiyasi</th>
+                                <th>Tug'ilgan yili</th>
+                                <th>Manzili</th>
+                                <th>Telefon</th>
+                                <th>Login</th>
+                                <th>Parol</th>
 
-                    <table style="font-size: 0.8rem" id="example1" class="table table-bordered table-hovered table-hover table-responsive">
-                        <thead>
-                        <tr style="background-color: #ecebeb">
-                            <th style="width: 2%">№</th>
-                            <th>O'quvchining ism familiyasi</th>
-                            <th>Tug'ilgan yili</th>
-                            <th>Manzili</th>
-                            <th>Telefon</th>
-                            <th>Login</th>
-                            <th>Parol</th>
-
-                            <th>Javobga nisbatan o'zlashtirish</th>
+                                <th>Javobga nisbatan o'zlashtirish</th>
                                 <th>Umumiy o'zlashtirish</th>
-                            {% if request.user.role == '2' or request.user.role == '3' %}
-                                <th style="width: 4%">
-                                    Tahrirlash
-                                </th>
-                            {% endif %}
-                        </tr>
-                        </thead>
-                        <tbody>
+                                {% if request.user.role == '2' or request.user.role == '3' %}
+                                    <th style="width: 4%">
+                                        Tahrirlash
+                                    </th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                        {% for pupil in pupils %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><b>{{ pupil.name }}</b></td>
-                                <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
-                                <td>{% if pupil.address %}{{ pupil.address }}{% endif %}</td>
-                                <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
-                                <td>{{ pupil.username }}</td>
-                                <td>{{ pupil.turbo }}</td>
-                                {% pupil_result pupil.id as pupil_res %}
-                                <td title="Javoblar/To'g'ri javoblar:  {{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}">
-                                    <div class="progress">
-                                        {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
-                                            <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
-                                                 role="progressbar"
-                                                 aria-valuenow="40" aria-valuemin="2"
+                            {% for pupil in pupils %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><b>{{ pupil.name }}</b></td>
+                                    <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
+                                    <td>{% if pupil.address %}{{ pupil.address }}{% endif %}</td>
+                                    <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
+                                    <td>{{ pupil.username }}</td>
+                                    <td>{{ pupil.turbo }}</td>
+                                    {% pupil_result pupil.id as pupil_res %}
+                                    <td title="Javoblar/To'g'ri javoblar:  {{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}">
+                                        <div class="progress">
+                                            {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
+                                                <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                                                     role="progressbar"
+                                                     aria-valuenow="40" aria-valuemin="2"
 
-                                                 aria-valuemax="6" style="width:{{ pupil_res.res }}%">
-                                                <b>{{ pupil_res.res }}%</b>
-                                            </div>
-                                        {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
-                                            <div style="width: 100%; margin-left: 45%">0%</div>
-                                        {% else %}
-                                            <div style="margin-left: 10%">yechilmagan</div>
-                                        {% endif %}
-                                    </div>
-                                </td>
-                            <td title="Savollar/To'g'ri javoblar:  {{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}">
+                                                     aria-valuemax="6" style="width:{{ pupil_res.res }}%">
+                                                    <b>{{ pupil_res.res }}%</b>
+                                                </div>
+                                            {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
+                                                <div style="width: 100%; margin-left: 45%">0%</div>
+                                            {% else %}
+                                                <div style="margin-left: 10%">yechilmagan</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td title="Savollar/To'g'ri javoblar:  {{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}">
                                         <div class="progress">
 
                                             {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
@@ -96,27 +97,28 @@
                                             {% endif %}
                                         </div>
                                     </td>
-                            {% if request.user.role == '2' or request.user.role == '3' %}
-                                <td>
+                                    {% if request.user.role == '2' or request.user.role == '3' %}
+                                        <td>
 
-                                        &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i class="fa fa-edit"
-                                    ></i></a>
-                                        {% if request.user.role == '2' %}
-                                            &nbsp;&nbsp;
-                                            <a href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
-                                            ></i></a>
-                                        {% endif %}
+                                            &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i
+                                                class="fa fa-edit"
+                                        ></i></a>
+                                            {% if request.user.role == '2' %}
+                                                &nbsp;&nbsp;
+                                                <a href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
+                                                ></i></a>
+                                            {% endif %}
 
-                                </td>
-                             {% endif %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                        <tfoot>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
 
-                        </tfoot>
-                    </table>
-
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

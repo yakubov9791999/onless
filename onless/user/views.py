@@ -750,13 +750,29 @@ def pay_history(request, user_id, group_id):
 
 @login_required()
 def history_view_video_all(request):
-    views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4)).order_by('-time')
-    if not views.exists():
-        messages.error(request, "Ko'rishlar mavjud emas !")
-    context = {
-        'views': views,
-    }
-    return render(request, 'user/view_video_history_all.html', context)
+    if request.user.role == '2' or request.user.role == '3':
+        if request.user.role == '2':
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4)).order_by('-time')
+            if not views.exists():
+                messages.error(request, "Ko'rishlar mavjud emas !")
+            context = {
+                'views': views,
+            }
+            return render(request, 'user/view_video_history_all.html', context)
+        elif request.user.role == '3':
+            teacher = get_object_or_404(User, id=request.user.id)
+            groups = Group.objects.filter(teacher=teacher)
+            pupils = User.objects.filter(group__in=groups)
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils)).order_by(
+                '-time')
+            if not views.exists():
+                messages.error(request, "Ko'rishlar mavjud emas !")
+            context = {
+                'views': views,
+            }
+            return render(request, 'user/view_video_history_all.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
 
 @login_required

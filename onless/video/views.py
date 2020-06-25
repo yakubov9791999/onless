@@ -85,7 +85,9 @@ def add_duration(request):
         video_id = request.GET.get('video', None)
         video = Video.objects.get(id=video_id)
 
-        if video:
+        views = ViewComplete.objects.filter(video=video, user=request.user)
+
+        if not views:
             ViewComplete.objects.create(video=video, user=request.user)
         message = "Siz darsni muvaffaqiyatli tugatdingiz! Agarda yana qaytadan ko'rmoqchi bo'lsangiz, istalgan vaqtda buni amalga oshirishingiz mumkin"
         return message

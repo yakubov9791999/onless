@@ -5,7 +5,7 @@ from quiz.models import User
 
 
 class Category(models.Model):
-    categories = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True, related_name='category_category')
+    categories = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=True, null=True, related_name='category_category')
     title = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="category/%Y-%m-%d/")
     sort = models.IntegerField(default=1)
@@ -20,7 +20,7 @@ class Category(models.Model):
 
 class Video(models.Model):
     title = models.CharField(max_length=250)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name='video_category',
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='video_category',
                                  blank=True)
     is_free = models.BooleanField(
         default=True)  # video bepul bo'lsa, pul to'lamagan foydalanuvchiga foydalanishga ruxsat etadi
@@ -31,7 +31,7 @@ class Video(models.Model):
     photo = models.ImageField(upload_to='photo/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
-    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
     sort = models.SmallIntegerField(default=1)
 
     def __str__(self):
@@ -46,9 +46,10 @@ class Video(models.Model):
         ordering = ('sort',)
 
 class ViewComplete(models.Model):
-    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='video_view_complete')
-    user = models.ForeignKey(User, related_name='user_view_complete', on_delete=models.CASCADE, null=True)
+    video = models.ForeignKey(Video, on_delete=models.SET_NULL,null=True, blank=True, related_name='video_view_complete')
+    user = models.ForeignKey(User, related_name='user_view_complete', on_delete=models.SET_NULL, null=True)
     time = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return str(self.video)
@@ -60,8 +61,8 @@ class ViewComplete(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True)
     text = models.TextField(max_length=800)
 
 
@@ -77,9 +78,9 @@ class Files(models.Model):
 
 class SignUpSchool(models.Model):
     name = models.CharField(max_length=100,)
-    viloyat = models.ForeignKey(Region, on_delete=models.CASCADE, null=True, blank=True)
+    viloyat = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
     region = models.CharField(max_length=500, blank=True)
-    tuman = models.ForeignKey(District, on_delete=models.CASCADE,)
+    tuman = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
     district = models.CharField(max_length=500)
     phone = models.CharField(max_length=100)
     select = models.BooleanField(default=False, verbose_name='Avtomaktab')

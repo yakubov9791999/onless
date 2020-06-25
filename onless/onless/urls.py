@@ -27,10 +27,8 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('quiz/', include('quiz.urls')),
     path('accounts/', include('allauth.urls')),
-    path('^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
-    path('^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
 
-if settings.DEBUG is True:
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

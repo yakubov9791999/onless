@@ -750,7 +750,7 @@ def pay_history(request, user_id, group_id):
 
 @login_required()
 def history_view_video_all(request):
-    views = ViewComplete.objects.filter(user__school=request.user.school, user__role=4).order_by('-time')
+    views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4)).order_by('-time')
     if not views.exists():
         messages.error(request, "Ko'rishlar mavjud emas !")
     cotext = {

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row">
         <!-- left column -->
-        <div class="col-md-12 col-sm-12" >
+        <div class="col-md-12 col-sm-12">
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -13,54 +13,58 @@
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-hovered">
-                        <thead>
-                        <tr style="background-color: #ecebeb">
-                            <th>№</th>
-                            <th>O'qituvchining ism familiyasi</th>
-                            <th>Lavozimi</th>
-                            <th>Tug'ilgan yili</th>
-                            <th>Manzili</th>
-                            <th>Telefon</th>
-                            <th>Login</th>
-                            <th>Parol</th>
-                            {% if request.user.role == '2' %}
-                            <th>Tahrirlash</th>
-                            {% endif %}
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        {% for worker in workers %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><b>{{ worker.name }}</b></td>
-                                <td><b>{% if worker.role == '5' %}Hisobchi{% elif worker.role == '3' %}O'qituvchi{% endif %}</b></td>
-                                <td>{{ worker.birthday|date:'SHORT_DATE_FORMAT' }}</td>
-                                <td>{{ worker.address }}</td>
-                                <td>+998{{ worker.phone }}</td>
-                                <td>{{ worker.username }}</td>
-                                <td>{{ worker.turbo }}</td>
+                    <div class="table-responsive">
+                        <table id="example1" style="font-size: 0.8rem"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th>№</th>
+                                <th>O'qituvchining ism familiyasi</th>
+                                <th>Lavozimi</th>
+                                <th>Tug'ilgan yili</th>
+                                <th>Manzili</th>
+                                <th>Telefon</th>
+                                <th>Login</th>
+                                <th>Parol</th>
                                 {% if request.user.role == '2' %}
-                                <td>
+                                    <th>Tahrirlash</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                                        &nbsp;&nbsp;
-                                        <a href="{% url 'user:worker_edit' worker.id %}"><i class="fa fa-edit"
+                            {% for worker in workers %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><b>{{ worker.name }}</b></td>
+                                    <td><b>{% if worker.role == '5' %}Hisobchi{% elif worker.role == '3' %}
+                                        O'qituvchi{% endif %}</b></td>
+                                    <td>{{ worker.birthday|date:'SHORT_DATE_FORMAT' }}</td>
+                                    <td>{{ worker.address }}</td>
+                                    <td>+998{{ worker.phone }}</td>
+                                    <td>{{ worker.username }}</td>
+                                    <td>{{ worker.turbo }}</td>
+                                    {% if request.user.role == '2' %}
+                                        <td>
+
+                                            &nbsp;&nbsp;
+                                            <a href="{% url 'user:worker_edit' worker.id %}"><i class="fa fa-edit"
+                                            ></i></a>
+
+                                            &nbsp;&nbsp;<a href="{% url 'user:worker_delete' worker.id %}"><i
+                                                class="fa fa-trash"
                                         ></i></a>
 
-                                        &nbsp;&nbsp;<a href="{% url 'user:worker_delete' worker.id %}"><i
-                                            class="fa fa-trash"
-                                    ></i></a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
 
-                                </td>
-                             {% endif %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                        <tfoot>
-
-                        </tfoot>
-                    </table>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

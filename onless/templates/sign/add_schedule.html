@@ -16,6 +16,15 @@
                 <form role="form" method="POST" action="{% url 'sign:add_schedule' %}">
                     {% csrf_token %}
                     <div class="card-body">
+                        <label for="exampleInputname">Toifani tanlang:</label>
+                        <select name="category" id="category" class="form-control">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="BC">BC</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
                         {{ form }}
                     </div>
                     <div class="card-footer">
@@ -26,4 +35,29 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#category").change(function () {
+
+                var selectedCategory = $(this).children("option:selected").val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'sign:get_subject' %}",
+                    data: {
+                        'category': selectedCategory, // from form
+                    },
+                    success: function (message) {
+                        $('#subject').empty().append(message)
+
+                        {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                        {#$('#append').append(e);#}
+                        {#e.attr('id', 'myid');#}
+                    }
+                });
+            });
+
+
+        });
+    </script>
 {% endblock content %}

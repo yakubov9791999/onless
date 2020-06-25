@@ -9,42 +9,47 @@
             <div class="card card">
                 <div class="card-header"> {% get_payments pupil.id group.id as result %}
                     <h3 style="font-weight: bold; text-align: center">{{ pupil.name }}ning to'lovlari tarixi</h3>
-                    <h4 style="font-weight: bold; text-align: center">Kategoriya bo'yicha summa: <span class="text-success">{{ group.price|intcomma }}</span> so'm</h4>
+                    <h4 style="font-weight: bold; text-align: center">Kategoriya bo'yicha summa: <span
+                            class="text-success">{{ group.price|intcomma }}</span> so'm</h4>
                 </div>
                 {% include 'inc/messages.html' %}
 
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-hovered">
-                        <thead>
-                        <tr style="background-color: #ecebeb">
-                            <th>№</th>
-                            <th>To'lov summasi</th>
-                             <th>To'lov sanasi</th>
+                    <div class="table-responsive">
+                        <table id="example1" style="font-size: 0.8rem" class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th>№</th>
+                                <th>To'lov summasi</th>
+                                <th>To'lov sanasi</th>
 
 
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for payment in payments %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-
-                                <td>{{ payment.payment|intcomma }}</td>
-
-                                <td>{{ payment.pay_date|date:'SHORT_DATETIME_FORMAT' }}</td>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                        <tfoot>
-                        <tr style="background-color: #f1f1f1">
-                            <td></td>
+                            </thead>
+                            <tbody>
+                            {% for payment in payments %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
 
-                            <td><b>To'landi:</b> <span class="text-success">{{ result.payment|intcomma }}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Qarzdorlik: </b><span class="text-danger">{{ result.debit|intcomma }}</span></td>
-                            <td></td>
+                                    <td>{{ payment.payment|intcomma }}</td>
 
-                        </tr>
-                        </tfoot>
-                    </table>
+                                    <td>{{ payment.pay_date|date:'SHORT_DATETIME_FORMAT' }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr style="background-color: #f1f1f1">
+                                <td></td>
+
+                                <td><b>To'landi:</b> <span class="text-success">{{ result.payment|intcomma }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Qarzdorlik: </b><span
+                                            class="text-danger">{{ result.debit|intcomma }}</span></td>
+                                <td></td>
+
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

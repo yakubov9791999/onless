@@ -7,12 +7,12 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Toifani tanlang</h3>
+                    <h3 class="card-title">Dars jadvali</h3>
                 </div>
                 {% include 'inc/messages.html' %}
                 <div class="card-body">
 
-                    <label for="exampleInputname">Toifasi:</label>
+                    <label for="exampleInputname">Toifani tanlang:</label>
                     <select name="category" id="category" class="form-control">
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -30,26 +30,29 @@
                 </div>
             </div>
             <div class="card-header">
-                <h2 class="card-title" id="title_subject" style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem">
+                <h2 class="card-title" id="title_subject"
+                    style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem">
 
                 </h2>
             </div>
-            <table id="example1" class="table table-bordered table-hovered">
-                <thead>
-                <tr style="background-color: #ecebeb">
-                    <th>Tartibi</th>
-                    <th>Mavzu</th>
+            <div class="table-responsive">
+                <table id="example1" class="table table-bordered table-hovered table-hover">
+                    <thead>
+                    <tr style="background-color: #ecebeb">
+                        <th style="width: 5%">№</th>
+                        <th>Mavzu</th>
+                        <th style="width: 5%">Tahrirlash</th>
+                    </tr>
+                    </thead>
+                    <tbody id="schedule">
 
-                </tr>
-                </thead>
-                <tbody id="schedule">
 
+                    </tbody>
+                    <tfoot>
 
-                </tbody>
-                <tfoot>
-
-                </tfoot>
-            </table>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
     <div id="schedule">

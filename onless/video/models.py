@@ -63,9 +63,12 @@ class Comment(models.Model):
 
 class Files(models.Model):
     title = models.CharField(max_length=100, )
+    video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True)
     src = models.FileField(upload_to='file/%Y-%m-%d/')
     pub_date = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    is_active = models.BooleanField(default=True)
+    is_all = models.BooleanField(default=False)
 
 
 class SignUpSchool(models.Model):

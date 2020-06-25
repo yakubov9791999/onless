@@ -7,13 +7,13 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Fanni qo'shish</h3>
+                    <h3 class="card-title">Mavzuni tahrirlash</h3>
                 </div>
                 {% include 'inc/messages.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
 
-                <form role="form" method="POST" action="{% url 'sign:add_subject' %}">
+                <form role="form" method="POST" action="{% url 'sign:update_schedule' schedule.id %}">
                     {% csrf_token %}
                     <div class="card-body">
                         {{ form }}

@@ -13,7 +13,8 @@
                     <h3 class="card-title">Maktablar ro'yhati</h3>
                 </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-hovered">
+                <div class="table-responsive">
+                    <table id="example1" style="font-size: 0.8rem" class="table table-bordered table-hovered table-hover">
                         <thead>
                         <tr style="background-color: #ecebeb">
                             <th>№</th>
@@ -31,7 +32,7 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                   {{ school.title }}
+                                    <a href="{% url 'user:school_groups' school.id %}">{{ school.title }}</a>
                                 </td>
                                 <td>{{ school.director }}</td>
                                 <td>{% if school.director.phone %}{{ school.director.phone }}{% endif %}</td>
@@ -47,6 +48,7 @@
 
                         </tfoot>
                     </table>
+                </div>
                 </div>
             </div>
         </div>

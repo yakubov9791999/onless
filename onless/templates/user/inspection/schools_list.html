@@ -34,7 +34,7 @@
                                 <td>
                                     <a href="{% url 'user:school_groups' school.id %}">{{ school.title }}</a>
                                 </td>
-                                <td>{{ school.director }}</td>
+                                <td>{% if school.director %}{{ school.director }}{% else %}{% endif %}</td>
                                 <td>{% if school.director.phone %}{{ school.director.phone }}{% endif %}</td>
                                 <td>{{ school.region }} {% if school.district %} , {{ school.district }}{% endif %}</td>
                                 {% get_count school.id as count %}

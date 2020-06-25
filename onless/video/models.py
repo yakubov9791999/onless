@@ -50,9 +50,13 @@ class ViewComplete(models.Model):
     user = models.ForeignKey(User, related_name='user_view_complete', on_delete=models.CASCADE, null=True)
     time = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return str(self.video)
+
     class Meta:
         verbose_name = "Ko'rilgan video"
         verbose_name_plural = "Ko'rilgan videolar"
+
 
 
 class Comment(models.Model):

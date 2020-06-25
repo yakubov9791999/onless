@@ -753,10 +753,27 @@ def history_view_video_all(request):
     views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4)).order_by('-time')
     if not views.exists():
         messages.error(request, "Ko'rishlar mavjud emas !")
-    cotext = {
+    context = {
         'views': views,
     }
-    return render(request, 'user/view_video_history_all.html', cotext)
+    return render(request, 'user/view_video_history_all.html', context)
+
+
+@login_required
+def history_pupil_view_video(request, id):
+    if request.user.role == '2' or request.user.role == '3':
+        pupil = get_object_or_404(User, id=id)
+        videos = Video.objects.filter(is_active=True).order_by('-id')
+        if not videos.exists():
+            messages.error(request, "Ko'rishlar mavjud emas !")
+        context = {
+            'videos': videos,
+            'pupil': pupil
+        }
+        return render(request, 'user/pupil/history_pupil_view_video.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
 
 @login_required
 def get_district(request):

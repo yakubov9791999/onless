@@ -2,6 +2,7 @@ from django import template
 from django.shortcuts import get_object_or_404
 
 from user.models import *
+from video.models import *
 
 register = template.Library()
 
@@ -45,3 +46,11 @@ def get_teacher_group(teacher_id):
     return {
         'groups': groups
     }
+
+@register.simple_tag()
+def get_view(user_id, video_id):
+    pupil = get_object_or_404(User, id=user_id)
+    video = get_object_or_404(Video, id=video_id)
+    views = ViewComplete.objects.filter(user=pupil, video=video)
+    for view in views:
+        return view

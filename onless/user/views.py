@@ -243,6 +243,7 @@ def groups_list(request):
         groups = Group.objects.filter(id=pupil.group.id, school=request.user.school,  is_active=True)
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
+
         context = {
             'groups': groups,
         }
@@ -284,16 +285,16 @@ def group_delete(request, id):
 def group_update(request, id):
     if request.user.role == '2' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
-        form = GroupUpdateForm(instance=group)
+        form = GroupUpdateForm(instance=group,user=request.user)
         if request.POST:
-            form = GroupUpdateForm(request.POST, instance=group)
+            form = GroupUpdateForm(request.POST,instance=group, user=request.user)
             if form.is_valid():
                 form.save()
                 messages.success(request, "Guruh muvaffaqiyatli tahrirlandi !")
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = GroupUpdateForm(instance=group)
+            form = GroupUpdateForm(instance=group,user=request.user)
         context = {
             'form': form,
             'group': group,
@@ -734,7 +735,7 @@ def pay_history(request, user_id, group_id):
         pupil = get_object_or_404(User, id=user_id)
         payments = Pay.objects.filter(pupil=pupil)
         if not payments.exists():
-            messages.error(request, "Siz hali to'lov amalga oshirmagansiz !")
+            messages.error(request, "To'lov amalga oshirilmagan !")
         group = get_object_or_404(Group, id=group_id)
 
         context = {
@@ -757,6 +758,7 @@ def history_view_video_all(request):
     }
     return render(request, 'user/view_video_history_all.html', cotext)
 
+@login_required
 def get_district(request):
     if request.is_ajax():
         districts = District.objects.filter(region=request.GET.get('region'))
@@ -766,3 +768,22 @@ def get_district(request):
         return HttpResponse(options)
     else:
         return False
+
+@login_required
+def school_groups(request, id):
+    school = get_object_or_404(School, id=id)
+    groups = Group.objects.filter(school=school, is_active=True)
+    context = {
+        'groups': groups
+    }
+    return render(request, 'user/inspection/school_groups.html', context)
+
+@login_required
+def school_group_detail(request, id):
+    group = get_object_or_404(Group, id=id)
+    pupils = User.objects.filter(group=group)
+    context = {
+        'pupils': pupils,
+        'group': group
+    }
+    return render(request, 'user/inspection/school_group_detail.html', context)

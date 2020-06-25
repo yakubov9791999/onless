@@ -7,23 +7,22 @@ from .models import *
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-
-
-    list_display = ['id', 'role', 'name','username', 'phone','email', 'turbo', 'birthday', 'is_active', 'is_superuser', 'is_staff', 'date_joined',
+    list_display = ['id', 'role', 'name', 'username', 'phone', 'email', 'turbo', 'birthday', 'is_active',
+                    'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
-    list_display_links = ['username','role']
-    list_filter = ['role','school']
-    search_fields = ['name', 'username', 'phone', 'role','pasport']
+    list_display_links = ['username', 'role']
+    list_filter = ['role', 'school']
+    search_fields = ['name', 'username', 'phone', 'role', 'pasport']
     save_on_top = True
-
-
 
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    
+
     def render_change_form(self, request, context, *args, **kwargs):
         context['adminform'].form.fields['director'].queryset = User.objects.filter(role=2)
+
+        context['adminform'].form.fields['district'].queryset = District.objects.all()
         return super().render_change_form(request, context, *args, **kwargs)
 
     list_display = ['id', 'title', 'director', 'phone']
@@ -33,18 +32,17 @@ class SchoolAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-
 class DistrictInline(admin.StackedInline):
     model = District
     extra = 13
 
+
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['title']}),
+        (None, {'fields': ['title']}),
     ]
     inlines = [DistrictInline]
-
 
 
 @admin.register(Contact)
@@ -53,12 +51,13 @@ class ConatctAdmin(admin.ModelAdmin):
     list_display_links = ['name']
     save_on_top = True
 
+
 admin.site.register(Group)
 
 
 @admin.register(Pay)
 class PayAdmin(admin.ModelAdmin):
-    list_display = ['id', 'pupil','payment', 'pay_date']
-    list_display_links = ['pupil',]
+    list_display = ['id', 'pupil', 'payment', 'pay_date']
+    list_display_links = ['pupil', ]
     list_filter = ['pupil', 'pay_date']
     save_on_top = True

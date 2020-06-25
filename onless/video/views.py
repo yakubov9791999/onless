@@ -54,7 +54,7 @@ def home(request):
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(reverse_lazy('user:edit_profil'))
         else:
-            schools = School.objects.filter(region=request.user.school.region, is_active=True).exclude(id=request.user.school.id)
+            schools = School.objects.filter(Q(region=request.user.school.region)& Q(is_active=True)).exclude(id=request.user.school.id)
             return render(request, 'user/inspection/schools_list.html', {
                 'schools': schools,
             })

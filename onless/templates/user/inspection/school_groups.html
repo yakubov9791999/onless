@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load user_tags %}
+
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -12,60 +12,33 @@
                 {% include 'inc/messages.html' %}
 
                 <div class="card-body">
+                <div class="table-responsive">
                     <table id="example1" style="font-size: 0.8rem" class="table table-bordered table-hovered table-hover">
                         <thead>
                         <tr style="background-color: #ecebeb">
-                            <th style="width: 3%">№</th>
+                            <th style="width: 2%">№</th>
                             <th>Guruh nomi</th>
                             <th>Guruh rahbari</th>
                             <th>O'qish boshlanishi</th>
                             <th>O'qish yakunlanishi</th>
-                            {% if request.user.role == '2' or request.user.role == '3' %}
-                                <th style="width: 10%">Tahrirlash</th>
-                            {% endif %}
+                            <th style="width: 2%">Ko'rish</th>
                         </tr>
                         </thead>
                         <tbody>
-
                         {% for group in groups %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>
-                                    {% if request.user.role == '2' or request.user.role == '3' %}
-                                        <a href="{% url 'user:group_detail' group.id %}">
+                                        <a href="{% url 'user:school_group_detail' group.id %}">
                                             <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
                                         </a>
-                                    {% else %}
-                                        <b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
-                                    {% endif %}
                                 </td>
                                 <td>{{ group.teacher }}</td>
                                 <td>{{ group.start|date:'SHORT_DATE_FORMAT' }}</td>
                                 <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>
-                                {% if request.user.role == '2' or request.user.role == '3' %}
-                                    <td>
-
-                                        &nbsp;
-                                        <a href="{% url 'user:group_detail' group.id %}"><i class="fas fa-eye"
-                                        ></i></a>
-
-                                        &nbsp;
-
-                                        <a href="{% url 'user:group_update' group.id %}"><i class="fa fa-edit"
-                                        ></i>
-                                        </a>
-
-
-
-                                        {% if request.user.role == '2' %}
-                                            &nbsp;
-                                            <a href="{% url 'user:group_delete' group.id %}"><i class="fa fa-trash"
-                                            ></i></a>
-                                        {% endif %}
-                                    </td>
-                                {% endif %}
+                                <td><a href="{% url 'user:school_group_detail' group.id %}"><i class="fas fa-eye"
+                                        ></i></a></td>
                             </tr>
-
                         {% endfor %}
                         </tbody>
                         <tfoot>
@@ -73,7 +46,9 @@
                         </tfoot>
                     </table>
                 </div>
+                </div>
             </div>
         </div>
     </div>
 {% endblock content %}
+

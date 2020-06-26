@@ -524,7 +524,7 @@ def worker_edit(request, id):
             'worker': worker,
             'form': form
         }
-        return render(request, 'user/teacher/../templates/user/worker_edit.html', context)
+        return render(request, 'user/worker_edit.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -574,34 +574,37 @@ def upload_file(request):
                     phone = int(values[2])
                 except ValueError:
                     pass
-                if len(str(phone)) == 9:
-                    try:
-                        parol = random.randint(1000000, 9999999)
-                        user = User.objects.create_user(
-                            username=pasport,
-                            pasport=pasport,
-                            school=request.user.school,
-                            turbo=parol,
-                            password=parol,
-                            name=name,
-                            phone=int(phone),
-                            role='4',
-                            group=group,
-                            is_superuser=False,
-                        )
-                        user.set_password(parol)
-                        user.username = pasport
-                        user.email = ''
-                        user.save()
-                        msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
-                        msg = msg.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                        response = requests.get(url)
-                        messages.success(request, "Muvaffaqiyatli qo'shildi !")
-                    except IntegrityError:
-                        messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
-                else:
-                    messages.error(request, "Jadvalni to'ldirishda xatolik !")
+                try:
+                    if len(str(phone)) == 9:
+                        try:
+                            parol = random.randint(1000000, 9999999)
+                            user = User.objects.create_user(
+                                username=pasport,
+                                pasport=pasport,
+                                school=request.user.school,
+                                turbo=parol,
+                                password=parol,
+                                name=name,
+                                phone=int(phone),
+                                role='4',
+                                group=group,
+                                is_superuser=False,
+                            )
+                            user.set_password(parol)
+                            user.username = pasport
+                            user.email = ''
+                            user.save()
+                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                            msg = msg.replace(" ", "+")
+                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                            response = requests.get(url)
+                            messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                        except IntegrityError:
+                            messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
+                    else:
+                        messages.error(request, "Jadvalni to'ldirishda xatolik !")
+                except UnboundLocalError:
+                    messages.error(request, "Formani to'liq to'ldiring !")
             os.unlink(file_path)
         next = request.META['HTTP_REFERER']
         return HttpResponseRedirect(next)
@@ -820,3 +823,7 @@ def school_group_detail(request, id):
         'group': group
     }
     return render(request, 'user/inspection/school_group_detail.html', context)
+
+@login_required
+def messeges(request):
+    return render(request, 'user/messeges.html')

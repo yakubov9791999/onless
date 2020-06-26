@@ -34,6 +34,7 @@ urlpatterns = [
     path('get-district/', get_district, name='get_district'),
     path('school-groups/<int:id>/', school_groups, name='school_groups'),
     path('school-group/<int:id>/', school_group_detail, name='school_group_detail'),
+    path('messeges/', messeges, name='messeges'),
 
 ]
 

@@ -59,7 +59,7 @@ def add_teacher(request):
             if form.is_valid():
                 name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
-                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                    'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                                'e').replace(
                     'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
                                                                                                                'k').replace(
@@ -122,7 +122,7 @@ def add_pupil(request):
             if form.is_valid():
                 name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
-                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                    'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                               'e').replace(
                     'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
                                                                                                                'k').replace(
@@ -313,7 +313,7 @@ def profil_edit(request):
         if form.is_valid():
             name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                    'yu').replace(
-                'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                           'e').replace(
                 'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
                                                                                                            'k').replace(
@@ -374,7 +374,7 @@ def pupil_edit(request, id):
             if form.is_valid():
                 name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
-                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                    'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                               'e').replace(
                     'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
                                                                                                                'k').replace(
@@ -560,7 +560,7 @@ def upload_file(request):
                     values.append(value)
                 name = str(values[0]).lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
-                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                    'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                               'e').replace(
                     'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
                                                                                                                'k').replace(
@@ -620,7 +620,7 @@ def add_bugalter(request):
             if form.is_valid():
                 name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
-                    'а', 'a').replace('б', 'b').replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                    'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                               'e').replace(
                     'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
                                                                                                                'k').replace(

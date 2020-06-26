@@ -569,7 +569,7 @@ def upload_file(request):
                     'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
                                                                                                                 'f').replace(
                     'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
-                pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C')
+                pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C').replace('Т','T').replace('О','O').replace('М','M').replace('Р','P')
                 try:
                     phone = int(values[2])
                 except ValueError:

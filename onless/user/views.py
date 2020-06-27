@@ -101,12 +101,12 @@ def add_teacher(request):
 def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
         if request.user.role == '2':
-            groups = Group.objects.filter(school=request.user.school, is_active=True)
+            groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
             if not groups.exists():
                 messages.error(request, "O'quvchi qo'shish uchun avval guruh ro'yhatdan o'tkazing !")
         elif request.user.role == '3':
             teacher = User.objects.get(id=request.user.id)
-            groups = Group.objects.filter(school=request.user.school, is_active=True, teacher=teacher)
+            groups = Group.objects.filter(school=request.user.school, is_active=True, teacher=teacher).order_by('sort')
             if not groups.exists():
                 messages.error(request, "O'quvchi qo'shish uchun avval guruh ro'yhatdan o'tkazing !")
         form = AddPupilForm()
@@ -221,7 +221,7 @@ def add_group(request):
 @login_required
 def groups_list(request):
     if request.user.role == '2':
-        groups = Group.objects.filter(school=request.user.school, is_active=True)
+        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
@@ -230,7 +230,7 @@ def groups_list(request):
         return render(request, 'user/group/groups_list.html', context)
     elif request.user.role == '3':
         teacher = User.objects.get(id=request.user.id)
-        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True)
+        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
@@ -239,8 +239,7 @@ def groups_list(request):
         return render(request, 'user/group/groups_list.html', context)
     elif request.user.role == '4':
         pupil = User.objects.get(id=request.user.id)
-        print(pupil.group.id)
-        groups = Group.objects.filter(id=pupil.group.id, school=request.user.school,  is_active=True)
+        groups = Group.objects.filter(id=pupil.group.id, school=request.user.school,  is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
 
@@ -285,7 +284,7 @@ def group_delete(request, id):
 def group_update(request, id):
     if request.user.role == '2' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
-        form = GroupUpdateForm(instance=group,user=request.user)
+        form = GroupUpdateForm(instance=group, user=request.user)
         if request.POST:
             form = GroupUpdateForm(request.POST,instance=group, user=request.user)
             if form.is_valid():
@@ -368,9 +367,9 @@ def school_edit(request):
 def pupil_edit(request, id):
     if request.user.role == '2' or request.user.role == '3':
         user = get_object_or_404(User, id=id)
-        form = EditPupilForm(instance=user)
+        form = EditPupilForm(instance=user, request=request)
         if request.POST:
-            form = EditPupilForm(request.POST, request.FILES, instance=user)
+            form = EditPupilForm(request.POST, request.FILES, instance=user,request=request)
             if form.is_valid():
                 name = form.cleaned_data['name'].lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
@@ -390,11 +389,11 @@ def pupil_edit(request, id):
                 user.set_password(request.POST['turbo'])
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-                form = EditPupilForm(instance=user)
+                form = EditPupilForm(instance=user,request=request)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = EditPupilForm(instance=user)
+            form = EditPupilForm(instance=user,request=request)
         context = {
             'form': form,
             'user': user,
@@ -662,7 +661,7 @@ def add_bugalter(request):
 @login_required
 def bugalter_groups_list(request):
     if request.user.role == '2' or request.user.role == '5':
-        groups = Group.objects.filter(school=request.user.school, is_active=True)
+        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
@@ -671,7 +670,7 @@ def bugalter_groups_list(request):
         return render(request, 'user/bugalter/groups_list.html', context)
     elif request.user.role == '3':
         teacher = User.objects.get(id=request.user.id)
-        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True)
+        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
         context = {
@@ -808,7 +807,7 @@ def get_district(request):
 @login_required
 def school_groups(request, id):
     school = get_object_or_404(School, id=id)
-    groups = Group.objects.filter(school=school, is_active=True)
+    groups = Group.objects.filter(school=school, is_active=True).order_by('sort')
     context = {
         'groups': groups
     }

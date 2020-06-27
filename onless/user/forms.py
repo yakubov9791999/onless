@@ -59,11 +59,12 @@ class GroupUpdateForm(ModelForm):
     category = forms.ChoiceField(label="Toifasi", choices=CATEGORY_CHOICES,
                                  widget=forms.Select(attrs={'class': 'form-control'}))
     price = forms.IntegerField(label="O'qish summasi", widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    sort = forms.IntegerField(label='Tartibi', widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
 
     class Meta:
         model = Group
-        fields = ('category', 'number', 'year', 'teacher', 'start', 'stop', 'price')
+        fields = ('category', 'number', 'year', 'teacher', 'start', 'stop', 'price', 'sort')
 
 
 class EditUserForm(ModelForm):
@@ -98,6 +99,12 @@ class EditUserForm(ModelForm):
 
 
 class EditPupilForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+        self.fields['group'].queryset = Group.objects.filter(school=request.user.school)
+
+
     name = forms.CharField(label='F.I.O', widget=forms.TextInput(attrs={'class': 'form-control'}))
     region = forms.ModelChoiceField(label="Viloyat", queryset=Region.objects.all(),
                                     widget=forms.Select(
@@ -112,10 +119,11 @@ class EditPupilForm(ModelForm):
                                widget=forms.Select(attrs={'class': 'form-control'}))
     turbo = forms.CharField(label='Parol', widget=forms.TextInput(attrs={'class': 'form-control'}))
     pasport = forms.CharField(label='Pasport', widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'pasport'}))
+    group = forms.ModelChoiceField(label='Guruh',queryset=Group.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
-        fields = ('name', 'pasport', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo')
+        fields = ('name', 'pasport','group', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo')
 
 
 class EditSchoolForm(ModelForm):

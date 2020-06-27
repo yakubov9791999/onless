@@ -120,12 +120,12 @@ class Group(models.Model):
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
     teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
                                 related_name='group_teacher', null=True)
-    school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups',
-                               null=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups', null=True)
     start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
     stop = models.DateField(verbose_name="O'qish tugashi", auto_now=False)
     is_active = models.BooleanField(default=True)
     price = models.IntegerField(default=0)
+    sort = models.IntegerField(default=1)
 
     def __str__(self):
         return f"{self.category}-{self.number}"

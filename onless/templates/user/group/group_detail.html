@@ -57,7 +57,7 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td><b><a href="{% url 'user:history_pupil_view_video' pupil.id %}">{{ pupil.name }}</a></b></td>
                                     <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
-                                    <td>{% if pupil.address %}{{ pupil.address }}{% endif %}</td>
+                                    <td>{% if pupil.district %}{{ pupil.district }}{% endif %}</td>
                                     <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
                                     <td>{{ pupil.username }}</td>
                                     <td>{{ pupil.turbo }}</td>

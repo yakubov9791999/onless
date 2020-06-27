@@ -52,7 +52,11 @@ class ConatctAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-admin.site.register(Group)
+@admin.register(Group)
+class GroupAdmin(admin.ModelAdmin):
+    list_display_links = ['category',]
+    list_display = ['id', 'category', 'number', 'year',]
+    list_filter = ['is_active', 'category', 'number',]
 
 
 @admin.register(Pay)

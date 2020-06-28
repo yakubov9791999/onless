@@ -19,5 +19,5 @@ class SignUpSchoolForm(forms.ModelForm):
 
     class Meta:
         model = SignUpSchool
-        fields = ['name', 'select', 'phone','district', 'tuman', 'text']
-        exclude = ['region','district']
+        fields = ['name', 'select', 'phone','district','district', 'text']
+        exclude = ['region',]

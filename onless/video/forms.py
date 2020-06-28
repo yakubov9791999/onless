@@ -8,7 +8,7 @@ class AddVideoForm(forms.ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     video = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
     photo = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}))
-
+    district = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'},required=False))
     class Meta:
         model = Video
         fields = ('title', 'video', 'photo')

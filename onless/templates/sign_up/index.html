@@ -84,7 +84,7 @@
                                 <div data-for="phone" class="col-md-12 form-group ">
                                     <label style="float: left" class="text-light" for="viloyat">Viloyat:</label>
                                     <select name="viloyat" id="viloyat" class="form-control">
-                                    
+
                                         {% for region in regions %}
                                             <option value="{{ region.id }}">{{ region.title }}</option>
                                         {% endfor %}
@@ -92,7 +92,7 @@
                                 </div>
                                 <div data-for="phone" class="col-md-12 form-group ">
                                     <label style="float: left" class="text-light">Tumanni tanlang:</label>
-                                    <input type="text" name="district">
+                                    <input type="text" class="form-control px-3 display-7" required="required" name="district">
                                 </div>
                                 <div data-for="message" class="col-md-12 form-group ">
                                     <label style="float: left" class="text-light" for="text-header15-7">Xabar

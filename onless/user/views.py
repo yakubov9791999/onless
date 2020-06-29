@@ -568,46 +568,72 @@ def upload_file(request):
                     'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
 
                 pasport = str((sheet.cell(row, 2).value)).replace('А','A').replace('В','B').replace('С','C').replace('Т','T').replace('О','O').replace('М','M').replace('Р','P')
-                print(sheet.cell(row, 3).value)
-                phone = str((sheet.cell(row, 3).value)).replace('.','')
-                print(phone)
-                if phone < 999999999 and phone > int('000000001'):
-                    print('if')
-                else:
-                    print('else')
-                    messages.error(request, f"{phone} raqam 9 ta sondan iborat bo'lishi kerak !")
-                    break
 
+                split_phone = str((sheet.cell(row, 3).value)).split('.')
                 try:
+                    phone = int(split_phone[0])
+
                     try:
-                        parol = random.randint(1000000, 9999999)
-                        user = User.objects.create_user(
-                                    username=pasport,
-                                    pasport=pasport,
-                                    school=request.user.school,
-                                    turbo=parol,
-                                    password=parol,
-                                    name=name,
-                                    phone=int(phone),
-                                    role='4',
-                                    group=group,
-                                    is_superuser=False,
-                                )
-                        user.set_password(parol)
-                        user.username = pasport
-                        user.email = ''
-                        user.save()
-                        msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
-                        msg = msg.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                        response = requests.get(url)
-                        messages.success(request, "Muvaffaqiyatli qo'shildi !")
-                    except IntegrityError:
-                        messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
+                        try:
+                            parol = random.randint(1000000, 9999999)
+                            user = User.objects.create_user(
+                                username=pasport,
+                                pasport=pasport,
+                                school=request.user.school,
+                                turbo=parol,
+                                password=parol,
+                                name=name,
+                                phone=int(phone),
+                                role='4',
+                                group=group,
+                                is_superuser=False,
+                            )
+                            user.set_password(parol)
+                            user.username = pasport
+                            user.email = ''
+                            user.save()
+                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                            msg = msg.replace(" ", "+")
+                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                            response = requests.get(url)
+                            messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                        except IntegrityError:
+                            messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
+                            break
+                    except UnboundLocalError:
+                        messages.error(request, "Formani to'liq to'ldiring !")
                         break
-                except UnboundLocalError:
-                    messages.error(request, "Formani to'liq to'ldiring !")
-                    break
+
+                except ValueError:
+                    phone = None
+
+                    try:
+                        try:
+                            parol = random.randint(1000000, 9999999)
+                            user = User.objects.create_user(
+                                username=pasport,
+                                pasport=pasport,
+                                school=request.user.school,
+                                turbo=parol,
+                                password=parol,
+                                name=name,
+                                phone=phone,
+                                role='4',
+                                group=group,
+                                is_superuser=False,
+                            )
+                            user.set_password(parol)
+                            user.username = pasport
+                            user.email = ''
+                            user.save()
+                            messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                        except IntegrityError:
+                            messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
+                            break
+                    except UnboundLocalError:
+                       
+                        messages.error(request, "Formani to'liq to'ldiring !")
+                        break
 
             next = request.META['HTTP_REFERER']
             return HttpResponseRedirect(next)

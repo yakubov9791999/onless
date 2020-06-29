@@ -27,6 +27,7 @@
         }
     </style>
 <div id="video">
+<div class="alert alert-success text-center"><b>Hurmatli o'quvchi! Testlarni yechish uchun videoni to'liq ko'rishingiz talab etiladi! </b></div>
     <h1 class="text-center">{{ video.title }}</h1>
     <div class="video-js-responsive-container vjs-hd">
 
@@ -152,16 +153,6 @@
                 }
             };
         };
-
-    </script>
-    <script type="text/javascript">
-
-    new Vue({
-        el: '#video',
-        data: {
-            messege: 'Hello Vue js'
-        }
-    })
 
     </script>
 {% endblock bottom %}

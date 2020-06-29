@@ -505,9 +505,9 @@ def workers_list(request):
 def worker_edit(request, id):
     if request.user.role == '2':
         worker = get_object_or_404(User, id=id)
-        form = EditPupilForm(instance=worker)
+        form = EditWorkerForm(instance=worker)
         if request.POST:
-            form = EditPupilForm(request.POST, request.FILES, instance=worker)
+            form = EditWorkerForm(request.POST, request.FILES, instance=worker)
             if form.is_valid():
                 form = form.save(commit=False)
                 form.pasport = request.POST['pasport']
@@ -515,11 +515,11 @@ def worker_edit(request, id):
                 worker.set_password(request.POST['turbo'])
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-                form = EditPupilForm(instance=worker)
+                form = EditWorkerForm(instance=worker)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = EditPupilForm(instance=worker)
+            form = EditWorkerForm(instance=worker)
         context = {
             'worker': worker,
             'form': form

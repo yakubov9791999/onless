@@ -26,7 +26,8 @@
             left: 0;
         }
     </style>
-
+<div id="video">
+    <div class="alert alert-warning text-center"><b>Hurmatli o'quvchi! Videoni to'liq ko'rib tugatganingizdan so'ng test savollari paydo bo'ladi</b></div>
     <h1 class="text-center">{{ video.title }}</h1>
     <div class="video-js-responsive-container vjs-hd">
 
@@ -62,7 +63,7 @@
                         </div>
 
 
-                        <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="300px"
+                        <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" :title="messege + 123456" alt="" width="300px"
 
                                      style="margin: 0 auto;"></center>
                         <ul class="answerList">
@@ -113,7 +114,7 @@
 
     </div>
     <p class="pb-5"></p>
-
+</div>
 {% endblock content %}
 {% block top %}
     <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>
@@ -152,5 +153,16 @@
                 }
             };
         };
+
+    </script>
+    <script type="text/javascript">
+
+    new Vue({
+        el: '#video',
+        data: {
+            messege: 'Hello Vue js'
+        }
+    })
+
     </script>
 {% endblock bottom %}

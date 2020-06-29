@@ -191,7 +191,7 @@ class Contact(models.Model):
         return f"{self.name}"
 
 class File(models.Model):
-    file = models.FileField(upload_to='',)
+    file = models.FileField(upload_to='excel/',)
 
 
 

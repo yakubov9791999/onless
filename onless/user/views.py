@@ -1,4 +1,5 @@
 import random
+import shutil
 from random import randrange
 
 import requests
@@ -542,7 +543,7 @@ def worker_delete(request, id):
 
 def upload_file(request):
     if request.user.role == '2' or request.user.role == '3':
-        if request.POST:
+        if request.POST and request.FILES:
             file = request.FILES['file']
             file = File.objects.create(file=file)
             file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
@@ -553,11 +554,8 @@ def upload_file(request):
             number_of_columns = sheet.ncols
 
             for row in range(1, number_of_rows):
-                values = []
-                for col in range(1, number_of_columns):
-                    value = (sheet.cell(row, col).value)
-                    values.append(value)
-                name = str(values[0]).lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+
+                name = str((sheet.cell(row, 1).value)).lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                                                        'yu').replace(
                     'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ', "h'").replace('в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                                                               'e').replace(
@@ -568,45 +566,55 @@ def upload_file(request):
                     'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
                                                                                                                 'f').replace(
                     'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").title()
-                pasport = str(values[1]).replace('А','A').replace('В','B').replace('С','C').replace('Т','T').replace('О','O').replace('М','M').replace('Р','P')
+
+                pasport = str((sheet.cell(row, 2).value)).replace('А','A').replace('В','B').replace('С','C').replace('Т','T').replace('О','O').replace('М','M').replace('Р','P')
+                print(sheet.cell(row, 3).value)
+                phone = str((sheet.cell(row, 3).value)).replace('.','')
+                print(phone)
+                if phone < 999999999 and phone > int('000000001'):
+                    print('if')
+                else:
+                    print('else')
+                    messages.error(request, f"{phone} raqam 9 ta sondan iborat bo'lishi kerak !")
+                    break
+
                 try:
-                    phone = int(values[2])
-                except ValueError:
-                    pass
-                try:
-                    if len(str(phone)) == 9:
-                        try:
-                            parol = random.randint(1000000, 9999999)
-                            user = User.objects.create_user(
-                                username=pasport,
-                                pasport=pasport,
-                                school=request.user.school,
-                                turbo=parol,
-                                password=parol,
-                                name=name,
-                                phone=int(phone),
-                                role='4',
-                                group=group,
-                                is_superuser=False,
-                            )
-                            user.set_password(parol)
-                            user.username = pasport
-                            user.email = ''
-                            user.save()
-                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
-                            msg = msg.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                            response = requests.get(url)
-                            messages.success(request, "Muvaffaqiyatli qo'shildi !")
-                        except IntegrityError:
-                            messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
-                    else:
-                        messages.error(request, "Jadvalni to'ldirishda xatolik !")
+                    try:
+                        parol = random.randint(1000000, 9999999)
+                        user = User.objects.create_user(
+                                    username=pasport,
+                                    pasport=pasport,
+                                    school=request.user.school,
+                                    turbo=parol,
+                                    password=parol,
+                                    name=name,
+                                    phone=int(phone),
+                                    role='4',
+                                    group=group,
+                                    is_superuser=False,
+                                )
+                        user.set_password(parol)
+                        user.username = pasport
+                        user.email = ''
+                        user.save()
+                        msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
+                        msg = msg.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                        response = requests.get(url)
+                        messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                    except IntegrityError:
+                        messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
+                        break
                 except UnboundLocalError:
                     messages.error(request, "Formani to'liq to'ldiring !")
-            os.unlink(file_path)
-        next = request.META['HTTP_REFERER']
-        return HttpResponseRedirect(next)
+                    break
+
+            next = request.META['HTTP_REFERER']
+            return HttpResponseRedirect(next)
+        else:
+            messages.error(request, "Faylni kiriting !")
+            next = request.META['HTTP_REFERER']
+            return HttpResponseRedirect(next)
     else:
         return render(request, 'inc/404.html')
 

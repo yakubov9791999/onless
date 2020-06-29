@@ -125,6 +125,25 @@ class EditPupilForm(ModelForm):
         model = User
         fields = ('name', 'pasport','group', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo')
 
+class EditWorkerForm(ModelForm):
+    name = forms.CharField(label='F.I.O', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    region = forms.ModelChoiceField(label="Viloyat", queryset=Region.objects.all(),
+                                    widget=forms.Select(
+                                        attrs={'class': 'form-control', 'id': 'region', 'required': 'required'}))
+    district = forms.ModelChoiceField(label="Tuman/Shahar", queryset=District.objects.all(),
+                                      widget=forms.Select(
+                                          attrs={'class': 'form-control', 'id': 'district', 'required': 'required'}))
+    birthday = forms.DateField(label="Tug'ilgan kun", widget=forms.DateInput(attrs={'class': 'form-control'}))
+    phone = forms.IntegerField(label='Tel raqam',
+                               widget=forms.NumberInput(attrs={'class': 'form-control', 'maxlength': '9', }))
+    gender = forms.ChoiceField(label='Jinsi', choices=GENDER_CHOICES,
+                               widget=forms.Select(attrs={'class': 'form-control'}))
+    turbo = forms.CharField(label='Parol', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    pasport = forms.CharField(label='Pasport', widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'pasport'}))
+
+    class Meta:
+        model = User
+        fields = ('name', 'pasport', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo')
 
 class EditSchoolForm(ModelForm):
     # def __init__(self, *args, user=None, **kwargs, ):

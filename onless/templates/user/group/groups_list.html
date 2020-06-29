@@ -17,12 +17,12 @@
                             <thead>
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 3%">№</th>
-                                <th>Guruh nomi</th>
+                                <th >Guruh nomi</th>
                                 <th>Guruh rahbari</th>
-                                <th>O'qish boshlanishi</th>
-                                <th>O'qish yakunlanishi</th>
+                                <th style="width: 15%">O'qish boshlanishi</th>
+                                <th style="width: 15%">O'qish yakunlanishi</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
-                                    <th style="width: 10%">Tahrirlash</th>
+                                    <th style="width: 14%">Tahrirlash</th>
                                 {% endif %}
                             </tr>
                             </thead>

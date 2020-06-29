@@ -569,10 +569,19 @@ def upload_file(request):
 
                 pasport = str((sheet.cell(row, 2).value)).replace('А','A').replace('В','B').replace('С','C').replace('Т','T').replace('О','O').replace('М','M').replace('Р','P')
 
+                if len(str(pasport)) >= 7 and len(str(pasport)) < 9:
+                    messages.error(request, f"Excel fayldagi {row + 1}-ustunda pasport noto'g'ri kiritilgan ! ")
+                    break
+
+                if not name:
+                    messages.error(request, f"Excel fayldagi {row + 1}-ustunda ism kiritilmagan ! ")
+                    break
+
                 split_phone = str((sheet.cell(row, 3).value)).split('.')
+
                 try:
                     phone = int(split_phone[0])
-
+                    
                     try:
                         try:
                             parol = random.randint(1000000, 9999999)
@@ -597,13 +606,19 @@ def upload_file(request):
                             url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                             response = requests.get(url)
                             messages.success(request, "Muvaffaqiyatli qo'shildi !")
+
+
                         except IntegrityError:
                             messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
-                            break
-                    except UnboundLocalError:
+                            next = request.META['HTTP_REFERER']
+                            return HttpResponseRedirect(next)
 
+
+                    except UnboundLocalError:
                         messages.error(request, "Formani to'liq to'ldiring !")
-                        break
+                        next = request.META['HTTP_REFERER']
+                        return HttpResponseRedirect(next)
+
 
                 except ValueError:
                     phone = None
@@ -628,14 +643,20 @@ def upload_file(request):
                             user.email = ''
                             user.save()
                             messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                            # messages.error(request, f"Excel fayldagi {row + 1}-ustunda xatolik ! ")
+                            # next = request.META['HTTP_REFERER']
+                            # return HttpResponseRedirect(next)
+
                         except IntegrityError:
                             messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
-                            break
+                            next = request.META['HTTP_REFERER']
+                            return HttpResponseRedirect(next)
+
                     except UnboundLocalError:
                         messages.error(request, "Formani to'liq to'ldiring !")
-                        break
+                        next = request.META['HTTP_REFERER']
+                        return HttpResponseRedirect(next)
 
-                messages.error(request,"XX")
             next = request.META['HTTP_REFERER']
             return HttpResponseRedirect(next)
         else:

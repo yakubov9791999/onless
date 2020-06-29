@@ -601,6 +601,7 @@ def upload_file(request):
                             messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
                             break
                     except UnboundLocalError:
+
                         messages.error(request, "Formani to'liq to'ldiring !")
                         break
 
@@ -631,10 +632,10 @@ def upload_file(request):
                             messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
                             break
                     except UnboundLocalError:
-                       
                         messages.error(request, "Formani to'liq to'ldiring !")
                         break
 
+                messages.error(request,"XX")
             next = request.META['HTTP_REFERER']
             return HttpResponseRedirect(next)
         else:

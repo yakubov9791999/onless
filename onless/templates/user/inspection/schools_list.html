@@ -24,7 +24,7 @@
                             <th>Joylashgan joyi</th>
                             <th>Guruhlar</th>
                             <th>O'quvchilar</th>
-
+{#                            <th>Avtomatlashgan tizim</th>#}
                         </tr>
                         </thead>
                         <tbody>
@@ -40,7 +40,7 @@
                                 {% get_count school.id as count %}
                                  <td>{{ count.groups }}</td>
                                  <td>{{ count.pupils }}</td>
-                                
+{#                                <td>{% if school.is_amet %}<span  style="color: #00b44e">O'rnatilgan</span>{% else %}<span  style="color: red">O'rnatilmagan</span>{% endif %}</td>#}
                             </tr>
                         {% endfor %}
                         </tbody>

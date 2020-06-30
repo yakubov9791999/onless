@@ -4,6 +4,7 @@ def makename(name):
         names = self.split(' ')
         names_list = list()
         for name in names:
+
             name = name.lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
                                                                               'yu').replace(
                 'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ',

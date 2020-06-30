@@ -3,6 +3,7 @@ def makename(name):
     def wrapped(self):
         names = self.split(' ')
         names_list = list()
+        i = 0
         for name in names:
 
             name = name.lower().replace('ц', 'ts').replace('ч', 'ch').replace('ю',
@@ -18,7 +19,10 @@ def makename(name):
                 'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
                                                                                                             'f').replace(
                 'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").replace('ъ',"'")
-            name = name.capitalize()
+
+            i += 1
+            if i != 4:
+                name = name.capitalize()
             names_list.append(name)
         final_name = ' '.join(names_list)
 
@@ -43,3 +47,7 @@ def get_name(name):
 @makepasport
 def get_pasport(pasport):
     return pasport
+
+
+
+

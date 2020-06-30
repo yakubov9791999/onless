@@ -235,6 +235,8 @@ def groups_list(request):
             'groups': groups,
         }
         return render(request, 'user/group/groups_list.html', context)
+
+
     else:
         return render(request, 'inc/404.html')
 

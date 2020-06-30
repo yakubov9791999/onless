@@ -1,3 +1,4 @@
+
 def makename(name):
     def wrapped(self):
         names = self.split(' ')
@@ -15,7 +16,7 @@ def makename(name):
                                                                                                           'r').replace(
                 'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
                                                                                                             'f').replace(
-                'э', 'ye').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").replace('ъ',"'")
+                'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").replace('ъ',"'")
             name = name.capitalize()
             names_list.append(name)
         final_name = ' '.join(names_list)

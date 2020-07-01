@@ -125,7 +125,7 @@ def add_material(request):
             form = AddMaterialFrom(request.POST or None, request.FILES or None)
             if form.is_valid():
                 title = form.cleaned_data['title']
-                title = get_name(title)
+                title = get_title(title)
                 file = request.FILES['file']
                 ext = os.path.splitext(file.name)[1]
                 if file.size < 5242880:

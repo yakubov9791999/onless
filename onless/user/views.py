@@ -43,7 +43,7 @@ def user_login(request):
 @login_required
 def add_list(request):
     if request.user.role == '2' or request.user.role == '3':
-        return render(request, 'user/add_list.html')
+        return render(request, 'inc/add_list.html')
     else:
         return render(request, 'inc/404.html')
 
@@ -157,7 +157,7 @@ def add_pupil(request):
 @login_required
 def add_group(request):
     if request.user.role == '2':
-        teachers = User.objects.filter(Q(role=3, school=request.user.school)|Q(role=2, school=request.user.school))
+        teachers = User.objects.filter(Q(role=3, school=request.user.school)|Q(role=2, school=request.user.school)).order_by('name')
         context = {
             'teachers': teachers,
         }
@@ -167,10 +167,11 @@ def add_group(request):
                 number = form.cleaned_data['number']
                 category = request.POST['category']
                 teacher = form.cleaned_data['teacher']
-                price = form.cleaned_data['price']
                 form = form.save(commit=False)
                 form.number = number
-                form.price = price
+                if request.POST['price']:
+                    price = request.POST['price']
+                    form.price = price
                 form.category = category
                 form.teacher = teacher
                 form.school = request.user.school
@@ -406,7 +407,7 @@ def search(request):
     count = 0
     if query:
         try:
-            teachers = User.objects.filter(role=3, name__contains=query, school=request.user.school, is_active=True)
+            teachers = User.objects.filter(role=3, name__contains=query, school=request.user.school, is_active=True).order_by('name')
             context.update(teachers=teachers)
             results.append(teachers)
             count += teachers.count()
@@ -414,7 +415,7 @@ def search(request):
             pass
 
         try:
-            pupils = User.objects.filter(role=2, name__contains=query, school=request.user.school, is_active=True)
+            pupils = User.objects.filter(role=2, name__contains=query, school=request.user.school, is_active=True).order_by('name')
             context.update(pupils=pupils)
             results.append(pupils)
             count += pupils.count()
@@ -464,7 +465,7 @@ def pupil_delete(request, id):
 @login_required
 def workers_list(request):
     if request.user.role == '2':
-        workers = User.objects.filter(Q(school=request.user.school,role=5, is_active=True) | Q(school=request.user.school,role=3, is_active=True))
+        workers = User.objects.filter(Q(school=request.user.school,role=5, is_active=True) | Q(school=request.user.school,role=3, is_active=True)).order_by('name')
         if not workers.exists():
             messages.error(request, "Xodimlar ro'yhatga olinmagan !")
         context = {
@@ -685,7 +686,7 @@ def bugalter_groups_list(request):
         }
         return render(request, 'user/bugalter/groups_list.html', context)
     elif request.user.role == '3':
-        teacher = User.objects.get(id=request.user.id)
+        teacher = get_object_or_404(User, id=request.user.id)
         groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
@@ -701,7 +702,7 @@ def bugalter_groups_list(request):
 def bugalter_group_detail(request, id):
     if request.user.role == '2' or request.user.role == '5' or request.user.role == '3':
         group = get_object_or_404(Group, id=id)
-        pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True)
+        pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
         total_pay = group.price * pupils.count()
         payments = Pay.objects.filter(pupil__in=pupils)
         if not payments.exists():
@@ -832,7 +833,7 @@ def school_groups(request, id):
 @login_required
 def school_group_detail(request, id):
     group = get_object_or_404(Group, id=id)
-    pupils = User.objects.filter(group=group, is_active=True)
+    pupils = User.objects.filter(group=group, is_active=True).order_by('name')
     context = {
         'pupils': pupils,
         'group': group

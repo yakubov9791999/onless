@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load sign_tags %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Qo'shimcha materiallar ro'yhati</h3>
+                </div>
+                {% include 'inc/messages.html' %}
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tableExample1" style="font-size: 0.9rem" class="table table-bordered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th style="width: 3%">№</th>
+                                <th >Manba nomi</th>
+                                <th >Video nomi</th>
+                                <th style="width: 13%">Qo'shilgan vaqti</th>
+                                <th style="width: 15%">Muallif</th>
+                                <th style="width: 7%">Hajmi</th>
+
+                                    <th style="width: 5%">Yuklash</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for material in materials %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        {{ material.title }}
+                                    </td>
+                                    <td>{% if material.video %}{{ material.video }}{% endif %}</td>
+                                    <td>{{ material.pub_date|date:'SHORT_DATETIME_FORMAT' }}</td>
+
+                                    <td>{% if material.author %}{{ material.author }}{% endif %}</td>
+                                      <td>{{ material.file.size|filesizeformat }}</td>
+                                        {% get_file_url material.id as url %}
+                                        <td>&nbsp;
+                                                <a href="{{ url }}"><i class="fas fa-download"></i></a>
+                                            {% if material.author == request.user %}
+                                                <a href="{% url 'sign:delete_material' material.id %}"><i class="fas fa-trash ml-2"></i></a>
+                                            {% endif %}
+                                        </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block bottom %}
+    <script src="{% static "plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-responsive/js/dataTables.responsive.min.js" %}"></script>
+    <script>
+  $(function () {
+    $("#tableExample1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock bottom %}

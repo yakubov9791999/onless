@@ -30,8 +30,8 @@ class AddPupilForm(ModelForm):
 class AddGroupForm(ModelForm):
     class Meta:
         model = Group
-        fields = ('number', 'teacher', 'start', 'stop', 'category', 'price')
-        exclude = ('school',)
+        fields = ('number', 'teacher', 'start', 'stop', 'category',)
+        exclude = ('school', 'price')
 
 
 class AddTeacherGroupForm(ModelForm):

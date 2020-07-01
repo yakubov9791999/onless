@@ -1,3 +1,9 @@
+
+.label_required:after {
+            content: "*";
+            color: red;
+        }
+
 .video_content_title {
     font-size: 20px;
 }

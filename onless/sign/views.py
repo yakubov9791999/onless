@@ -1,11 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
+from sign.decorators import *
+from user.decorators import *
 from sign.forms import *
 from sign.models import *
+from video.models import Category
 
 
 @login_required
@@ -70,7 +73,7 @@ def delete_schedule(request, id):
 def schedules_list(request):
     return render(request, 'sign/schedules_list.html')
 
-
+@login_required
 def get_subject(request):
     if request.is_ajax():
         subjects = Subject.objects.filter(category=request.GET.get('category'))
@@ -81,7 +84,7 @@ def get_subject(request):
     else:
         return False
 
-
+@login_required
 def get_schedule(request):
     if request.is_ajax():
         schedules = Schedule.objects.filter(subject=request.GET.get('subject'))
@@ -98,3 +101,74 @@ def get_schedule(request):
         return HttpResponse(td)
     else:
         return False
+
+
+@login_required
+def materials(request):
+    materials = Material.objects.filter(is_active=True).order_by('sort')
+
+    context = {
+        'materials': materials
+    }
+
+    return render(request, "sign/materials.html", context)
+
+
+@login_required
+def add_material(request):
+    if request.user.role == '2' or request.user.role == '3':
+        categories = Category.objects.filter(is_active=True)
+        context = {
+            'categories': categories
+        }
+        if request.POST and request.FILES:
+            form = AddMaterialFrom(request.POST or None, request.FILES or None)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                title = get_slug(title)
+                file = request.FILES['file']
+                ext = os.path.splitext(file.name)[1]
+                if file.size < 5242880:
+                    form = form.save(commit=False)
+                    form.title = title
+                    form.school = request.user.school
+                    if request.POST['video'] != 'False':
+                        video = get_object_or_404(Video, id=request.POST['video'])
+                        form.video = video
+                    form.author = request.user
+                    form.save()
+                    messages.success(request, "Muvaffaqiyatli qo'shildi !")
+                else:
+                    messages.error(request, "Fayl hajmi 5 mb dan ortiq bo'lmasligi kerak !")
+        else:
+            form = AddMaterialFrom()
+        context.update(form=form)
+
+        return render(request, "sign/add_material.html", context)
+    else:
+        return render(request, 'inc/404.html')
+
+
+@login_required
+def get_video(request):
+    if request.is_ajax():
+        category = get_object_or_404(Category, id=request.GET.get('category'))
+        videos = Video.objects.filter(is_active=True, category=category)
+        options = "<option>--- --- ---</option>"
+        for video in videos:
+            options += f"<option value='{video.id}'>{video.title}</option>"
+        return HttpResponse(options)
+    else:
+        return False
+
+
+@login_required
+def delete_material(request, id):
+    material = get_object_or_404(Material, id=id)
+    if material.author == request.user:
+        material.is_active = False
+        material.save()
+        next = request.META['HTTP_REFERER']
+        return HttpResponseRedirect(next)
+    else:
+        return render(request, 'inc/404.html')

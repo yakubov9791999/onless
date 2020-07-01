@@ -125,12 +125,12 @@ def add_material(request):
             form = AddMaterialFrom(request.POST or None, request.FILES or None)
             if form.is_valid():
                 title = form.cleaned_data['title']
-                title = get_slug(title)
+                title = get_name(title)
                 file = request.FILES['file']
                 ext = os.path.splitext(file.name)[1]
                 if file.size < 5242880:
                     form = form.save(commit=False)
-                    form.title = title
+                    form.title = '{}{}'.format(title, ext)
                     form.school = request.user.school
                     if request.POST['video'] != 'False':
                         video = get_object_or_404(Video, id=request.POST['video'])

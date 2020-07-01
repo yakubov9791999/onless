@@ -841,5 +841,5 @@ def school_group_detail(request, id):
     return render(request, 'user/inspection/school_group_detail.html', context)
 
 @login_required
-def messeges(request):
+def support(request):
     return render(request, 'user/messeges.html')

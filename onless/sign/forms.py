@@ -26,3 +26,9 @@ class UpdateScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
         fields = ('subject', 'title', 'sort')
+
+class AddMaterialFrom(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ('title', 'file')
+        exclude = ('video', 'school' )

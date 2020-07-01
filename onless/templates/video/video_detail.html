@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load video_tags %}
+{% load sign_tags %}
 {% block content %}
 
     <style>
@@ -26,95 +27,139 @@
             left: 0;
         }
     </style>
-<div id="video">
-<div class="alert alert-success text-center"><b>Hurmatli o'quvchi! Testlarni yechish uchun videoni to'liq ko'rishingiz talab etiladi! </b></div>
-    <h1 class="text-center">{{ video.title }}</h1>
-    <div class="video-js-responsive-container vjs-hd">
+    <div id="video">
+        <div class="alert alert-success text-center"><b>Hurmatli o'quvchi! Testlarni yechish uchun videoni to'liq
+            ko'rishingiz talab etiladi! </b></div>
+        <h1 class="text-center">{{ video.title }}</h1>
+        <div class="video-js-responsive-container vjs-hd">
 
-        <video style="margin: 0 auto"
-               id="my-video"
-               class="video-js "
-               controls
-               preload="auto"
-               width="1080"
-               height="640"
-               poster="{{ video.photo.url }}"
-               data-setup="{}"
-        >
-            <source src="{{ video.src2 }}" type="video/webm"/>
-            <source src="{{ video.src }}" type="video/mp4"/>
+            <video style="margin: 0 auto"
+                   id="my-video"
+                   class="video-js "
+                   controls
+                   preload="auto"
+                   width="1080"
+                   height="640"
+                   poster="{{ video.photo.url }}"
+                   data-setup="{}"
+            >
+                <source src="{{ video.src2 }}" type="video/webm"/>
+                <source src="{{ video.src }}" type="video/mp4"/>
 
-            <p class="vjs-no-js">
-                Kechirasiz, sizning brauzeringiz eski versiyada bo'lganligi sababli, ushbu videoni qo'llay olmaydi.
-                Iltimos
-                brauzeringizni yangilang!
-                <a href="https://www.google.com/intl/ru/chrome/" target="_blank">Yangi versiya Google Chrome</a>
-            </p>
-        </video>
-    </div>
-    <p id="append"></p>
-    <div class="col-12 " id="video_bottom_question">
-        {% for question in questions %}
-            <div class="privew" id="question{{ question.id }}">
-                <form action="{% url 'quiz:add_result' %}" method="POST">
-                    {% csrf_token %}
-                    <div class="questionsBox">
-                        <div class="questions">{{ question.title }}
-                        </div>
+                <p class="vjs-no-js">
+                    Kechirasiz, sizning brauzeringiz eski versiyada bo'lganligi sababli, ushbu videoni qo'llay olmaydi.
+                    Iltimos
+                    brauzeringizni yangilang!
+                    <a href="https://www.google.com/intl/ru/chrome/" target="_blank">Yangi versiya Google Chrome</a>
+                </p>
+            </video>
+        </div>
+        {% get_video_materials video.id as materials %}
+        {% if materials %}
+            <div class="card">
+                <div class="card-header" style="background-color: #efefef">
+                    <h3 class="card-title">Qo'shimcha materiallar</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th style="width: 10px">№</th>
+                                <th>Nomi</th>
+                                <th>Muallif</th>
+                                <th style="width: 5%">Hajmi</th>
+                                <th style="width: 5%">Yuklash</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for material in materials %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ material.title }}</td>
+                                    <td>{{ material.author }}</td>
+                                    <td>{{ material.file.size|filesizeformat }}</td>
+
+                                    {% get_file_url material.id as url %}
+                                    <td>&nbsp;
+                                        <a href="{{ url }}"><i class="fas fa-download"></i></a>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        {% endif %}
+        <p id="append"></p>
+        <div class="col-12 " id="video_bottom_question">
+            {% for question in questions %}
+                <div class="privew" id="question{{ question.id }}">
+                    <form action="{% url 'quiz:add_result' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="questionsBox">
+                            <div class="questions">{{ question.title }}
+                            </div>
 
 
-                        <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt="" width="300px"
+                            <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt=""
+                                         width="300px"
 
-                                     style="margin: 0 auto;"></center>
-                        <ul class="answerList">
-                            {% for answer in question.answers.all %}
-                                <li>
-                                    <label>
-                                        {% get_results request.user.id question.id answer.id as result_question %}
-                                        {% get_answer request.user.id question.id as result_answer %}
+                                         style="margin: 0 auto;"></center>
+                            <ul class="answerList">
+                                {% for answer in question.answers.all %}
+                                    <li>
+                                        <label>
+                                            {% get_results request.user.id question.id answer.id as result_question %}
+                                            {% get_answer request.user.id question.id as result_answer %}
 
-                                        <input type="radio" name="answer"
-                                               {% if result_question.exists %}checked disabled{% endif %}
-                                               value="{{ answer.id }}"
-                                               id="id_answer{{ forloop.counter }}">
-                                        {% if result_question.exists %}
-                                            {% if answer.is_true == False %}
-                                                <span class="text-danger">{{ answer.text }}</span>
-                                            {% elif answer.is_true == True %}
-                                                <span class="text-success"> {{ answer.text }}</span>
-                                            {% else %}
-                                                {{ answer.text }}
-                                            {% endif %}
-                                        {% else %}
-                                            {% if result_answer.exists %}
-                                                {% if answer.is_true == True %}
-                                                    <span class="text-success">  {{ answer.text }}</span>
+                                            <input type="radio" name="answer"
+                                                   {% if result_question.exists %}checked disabled{% endif %}
+                                                   value="{{ answer.id }}"
+                                                   id="id_answer{{ forloop.counter }}">
+                                            {% if result_question.exists %}
+                                                {% if answer.is_true == False %}
+                                                    <span class="text-danger">{{ answer.text }}</span>
+                                                {% elif answer.is_true == True %}
+                                                    <span class="text-success"> {{ answer.text }}</span>
                                                 {% else %}
-                                                    <span class="text-danger">  {{ answer.text }}</span>
+                                                    {{ answer.text }}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if result_answer.exists %}
+                                                    {% if answer.is_true == True %}
+                                                        <span class="text-success">  {{ answer.text }}</span>
+                                                    {% else %}
+                                                        <span class="text-danger">  {{ answer.text }}</span>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    {{ answer.text }}
                                                 {% endif %}
 
-                                            {% else %}
-                                                {{ answer.text }}
                                             {% endif %}
-
-                                        {% endif %}
-                                    </label>
-                                </li>
-                            {% endfor %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="question" value="{{ question.id }}">
-                        </ul>
-                        <div class="questionsRow">
-                            <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish</button>
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <input type="hidden" name="question" value="{{ question.id }}">
+                            </ul>
+                            <div class="questionsRow">
+                                <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-        {% endfor %}
+                    </form>
+                </div>
+            {% endfor %}
 
+        </div>
+        <p class="pb-5"></p>
     </div>
-    <p class="pb-5"></p>
-</div>
 {% endblock content %}
 {% block top %}
     <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>

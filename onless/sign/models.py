@@ -1,6 +1,10 @@
 from django.db import models
 
+from user.decorators import get_name
+from .decorators import get_slug
+from .validators import *
 from user.models import *
+from video.models import Video
 
 CHOICES = (
     ('1', 'Ogohlantiruvchi belgilar'),
@@ -59,3 +63,33 @@ class Schedule(models.Model):
     class Meta:
         verbose_name = "Dars jadvali"
         verbose_name_plural = "Dars jadvallari"
+
+
+def path_and_rename(instance, filename):
+    upload_to = 'sign/materials/'
+    ext = filename.split('.')[-1]
+    # filetitle = filename.rsplit(',', 1)
+    # get filename
+    filename = get_slug(instance.title)
+    # set filename as random string
+    filename = '{}.{}'.format(filename, ext)
+        # filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
+
+class Material(models.Model):
+    title = models.CharField(max_length=255)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True, blank=True)
+    sort = models.IntegerField(default=1)
+    file =models.FileField(upload_to=path_and_rename, validators=[validate_file_extension])
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='author_material')
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name="school_material")
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Material"
+        verbose_name_plural = "Materiallar"

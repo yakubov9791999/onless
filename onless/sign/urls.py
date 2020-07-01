@@ -11,5 +11,9 @@ urlpatterns = [
     path('schedules/', schedules_list, name='schedules_list'),
     path('get-subject/', get_subject, name='get_subject'),
     path('get-schedule/', get_schedule, name='get_schedule'),
+    path('materials/', materials, name='materials'),
+    path('add_material/', add_material, name='add_material'),
+    path('get-video/', get_video, name='get_video'),
+    path('delete-material/<int:id>/', delete_material, name='delete_material'),
 
 ]

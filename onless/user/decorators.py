@@ -1,4 +1,3 @@
-
 def makename(name):
     def wrapped(self):
         names = self.split(' ')
@@ -18,7 +17,12 @@ def makename(name):
                                                                                                           'r').replace(
                 'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
                                                                                                             'f').replace(
-                'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ь', "'").replace('ъ',"'")
+                'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ў',"o'").replace('ь', "'").replace('ъ', "'").replace('*',
+                                                                                                           '').replace(
+                '!', '').replace('~', '').replace('@', '').replace('#', '').replace('№', '').replace('$', '').replace(
+                '%', '').replace('^', '').replace(':', '').replace('&', '').replace('?', '').replace('(', '').replace(
+                ')', '').replace('-', '').replace('+', '').replace('=', '').replace('/', '').replace('<', '').replace(
+                '>', '').replace('|', '').replace('€', '')
 
             i += 1
             if i != 4:
@@ -34,8 +38,11 @@ def makename(name):
 def makepasport(pasport):
     def wrapped(self):
         pasport = str(self)
-        pasport = pasport.replace('А','A').replace('В','B').replace('С','C').replace('Т','T').replace('О','O').replace('М','M').replace('Р','P')
+        pasport = pasport.replace('А', 'A').replace('В', 'B').replace('С', 'C').replace('Т', 'T').replace('О',
+                                                                                                          'O').replace(
+            'М', 'M').replace('Р', 'P')
         return pasport
+
     return wrapped
 
 
@@ -47,7 +54,3 @@ def get_name(name):
 @makepasport
 def get_pasport(pasport):
     return pasport
-
-
-
-

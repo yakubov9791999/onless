@@ -154,7 +154,7 @@ def get_video(request):
     if request.is_ajax():
         category = get_object_or_404(Category, id=request.GET.get('category'))
         videos = Video.objects.filter(is_active=True, category=category)
-        options = "<option>--- --- ---</option>"
+        options = "<option value='False'>--- --- ---</option>"
         for video in videos:
             options += f"<option value='{video.id}'>{video.title}</option>"
         return HttpResponse(options)

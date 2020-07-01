@@ -34,7 +34,8 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>
-                                        {{ material.title }}
+                                        {% get_file_url material.id as url %}
+                                        <a href="{{ url }}">{{ material.title }}</a>
                                     </td>
                                     <td>{% if material.video %}{{ material.video }}{% endif %}</td>
                                     <td>{{ material.pub_date|date:'SHORT_DATETIME_FORMAT' }}</td>

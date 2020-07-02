@@ -1,7 +1,8 @@
 import random
 import shutil
 from random import randrange
-
+from datetime import datetime as dt
+import datetime
 import requests
 import xlrd
 from django.contrib import messages
@@ -157,7 +158,8 @@ def add_pupil(request):
 @login_required
 def add_group(request):
     if request.user.role == '2':
-        teachers = User.objects.filter(Q(role=3, school=request.user.school)|Q(role=2, school=request.user.school)).order_by('name')
+        teachers = User.objects.filter(
+            Q(role=3, school=request.user.school) | Q(role=2, school=request.user.school)).order_by('name')
         context = {
             'teachers': teachers,
         }
@@ -228,7 +230,7 @@ def groups_list(request):
         return render(request, 'user/group/groups_list.html', context)
     elif request.user.role == '4':
         pupil = get_object_or_404(User, id=request.user.id)
-        groups = Group.objects.filter(id=pupil.group.id, school=request.user.school,  is_active=True).order_by('sort')
+        groups = Group.objects.filter(id=pupil.group.id, school=request.user.school, is_active=True).order_by('sort')
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
 
@@ -278,14 +280,14 @@ def group_update(request, id):
         group = get_object_or_404(Group, id=id)
         form = GroupUpdateForm(instance=group, user=request.user)
         if request.POST:
-            form = GroupUpdateForm(request.POST,instance=group, user=request.user)
+            form = GroupUpdateForm(request.POST, instance=group, user=request.user)
             if form.is_valid():
                 form.save()
                 messages.success(request, "Guruh muvaffaqiyatli tahrirlandi !")
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = GroupUpdateForm(instance=group,user=request.user)
+            form = GroupUpdateForm(instance=group, user=request.user)
         context = {
             'form': form,
             'group': group,
@@ -354,7 +356,7 @@ def pupil_edit(request, id):
         if request.POST:
             pasport = request.POST['pasport']
             pasport = get_pasport(pasport)
-            form = EditPupilForm(request.POST, request.FILES, instance=user,request=request)
+            form = EditPupilForm(request.POST, request.FILES, instance=user, request=request)
             if form.is_valid():
                 name = form.cleaned_data['name']
                 name = get_name(name)
@@ -365,11 +367,11 @@ def pupil_edit(request, id):
                 user.set_password(request.POST['turbo'])
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
-                form = EditPupilForm(instance=user,request=request)
+                form = EditPupilForm(instance=user, request=request)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
-            form = EditPupilForm(instance=user,request=request)
+            form = EditPupilForm(instance=user, request=request)
         context = {
             'form': form,
             'user': user,
@@ -407,7 +409,8 @@ def search(request):
     count = 0
     if query:
         try:
-            teachers = User.objects.filter(role=3, name__contains=query, school=request.user.school, is_active=True).order_by('name')
+            teachers = User.objects.filter(role=3, name__contains=query, school=request.user.school,
+                                           is_active=True).order_by('name')
             context.update(teachers=teachers)
             results.append(teachers)
             count += teachers.count()
@@ -415,7 +418,8 @@ def search(request):
             pass
 
         try:
-            pupils = User.objects.filter(role=2, name__contains=query, school=request.user.school, is_active=True).order_by('name')
+            pupils = User.objects.filter(role=2, name__contains=query, school=request.user.school,
+                                         is_active=True).order_by('name')
             context.update(pupils=pupils)
             results.append(pupils)
             count += pupils.count()
@@ -449,9 +453,6 @@ def search(request):
     return render(request, 'user/search_result.html', context)
 
 
-
-
-
 def pupil_delete(request, id):
     if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
@@ -465,7 +466,9 @@ def pupil_delete(request, id):
 @login_required
 def workers_list(request):
     if request.user.role == '2':
-        workers = User.objects.filter(Q(school=request.user.school,role=5, is_active=True) | Q(school=request.user.school,role=3, is_active=True)).order_by('name')
+        workers = User.objects.filter(
+            Q(school=request.user.school, role=5, is_active=True) | Q(school=request.user.school, role=3,
+                                                                      is_active=True)).order_by('name')
         if not workers.exists():
             messages.error(request, "Xodimlar ro'yhatga olinmagan !")
         context = {
@@ -635,6 +638,7 @@ def upload_file(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def add_bugalter(request):
     if request.user.role == '2':
@@ -672,7 +676,6 @@ def add_bugalter(request):
         return render(request, 'user/bugalter/add_bugalter.html')
     else:
         return render(request, 'inc/404.html')
-
 
 
 @login_required
@@ -775,25 +778,48 @@ def history_view_video_all(request):
             'groups': groups,
         }
         if request.POST:
-            startdate = request.POST['startdate']
-            stopdate = request.POST['stopdate']
+            if request.POST['startdate']:
+                startdate = request.POST['startdate']
+                # strokadan time formatga o'tkazish
+                # filtrlash uchun soat min secund qo'shish
+                startdate = dt.strptime(startdate, '%Y-%m-%d')
+                startdate = datetime.datetime.combine(startdate, datetime.time.min)
+            else:
+                startdate = '2020-06-01'
+
+            context.update(startdate=request.POST['startdate'])
+
+            if request.POST['stopdate']:
+                stopdate = request.POST['stopdate']
+                # 2020-07-03 23:59:59.999999
+                # <class 'datetime.datetime'>
+                stopdate = dt.strptime(stopdate, '%Y-%m-%d')
+                stopdate = datetime.datetime.combine(stopdate, datetime.time.max)
+            else:
+                stopdate = datetime.date.today()
+                stopdate = datetime.datetime.combine(stopdate, datetime.time.max)
+
+            context.update(stopdate=request.POST['stopdate'])
+
             if request.POST['group'] != 'False':
                 group = get_object_or_404(Group, id=request.POST['group'])
                 pupils = User.objects.filter(group=group)
-                views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(time__range=[startdate, stopdate])).order_by('-time')
+                views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(
+                    time__range=[startdate, stopdate])).order_by('-time')
                 if not views.exists():
                     messages.error(request, "Ko'rishlar mavjud emas !")
                 context.update(views=views, guruh=group)
             else:
-                views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4) & Q(time__range=[startdate, stopdate])).order_by('-time')
+                views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4) & Q(
+                    time__range=[startdate, stopdate])).order_by('-time')
                 if not views.exists():
                     messages.error(request, "Ko'rishlar mavjud emas !")
                 context.update(views=views)
-            context.update(startdate=startdate, stopdate=stopdate)
+
             return render(request, 'user/view_video_history_all.html', context)
         else:
-            views = ViewComplete.objects.filter(Q(user__school=request.user.school,) & Q(user__role=4)).order_by('-time')
-            print(views)
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4)).order_by(
+                '-time')
             if not views.exists():
                 messages.error(request, "Ko'rishlar mavjud emas !")
             context.update(views=views)
@@ -801,27 +827,57 @@ def history_view_video_all(request):
 
     elif request.user.role == '3':
         teacher = get_object_or_404(User, id=request.user.id)
-        groups = Group.objects.filter(teacher=teacher)
+        groups = Group.objects.filter(teacher=teacher).order_by('sort')
         pupils = User.objects.filter(group__in=groups)
+        context = {
+            'groups': groups
+        }
         if request.POST:
-            startdate = request.POST['startdate']
-            stopdate = request.POST['stopdate']
-            context = {
-                'startdate': startdate,
-                'stopdate': stopdate
-            }
-            views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(time__range=[startdate, stopdate])).order_by('-time')
+            if request.POST['startdate']:
+                startdate = request.POST['startdate']
+                # strokadan time formatga o'tkazish
+                # filtrlash uchun soat min secund qo'shish
+                startdate = dt.strptime(startdate, '%Y-%m-%d')
+                startdate = datetime.datetime.combine(startdate, datetime.time.min)
+            else:
+                startdate = '2020-06-01'
+
+            context.update(startdate=request.POST['startdate'])
+
+            if request.POST['stopdate']:
+                stopdate = request.POST['stopdate']
+                # 2020-07-03 23:59:59.999999
+                # <class 'datetime.datetime'>
+                stopdate = dt.strptime(stopdate, '%Y-%m-%d')
+                stopdate = datetime.datetime.combine(stopdate, datetime.time.max)
+            else:
+                stopdate = datetime.date.today()
+                stopdate = datetime.datetime.combine(stopdate, datetime.time.max)
+
+            context.update(stopdate=request.POST['stopdate'])
+
+            if request.POST['group'] != 'False':
+                group = get_object_or_404(Group, id=request.POST['group'])
+                pupils = User.objects.filter(group=group)
+                views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(
+                    time__range=[startdate, stopdate])).order_by('-time')
+                if not views.exists():
+                    messages.error(request, "Ko'rishlar mavjud emas !")
+                context.update(views=views)
+                return render(request, 'user/view_video_history_all.html', context)
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(
+                time__range=[startdate, stopdate])).order_by('-time')
             if not views.exists():
                 messages.error(request, "Ko'rishlar mavjud emas !")
             context.update(views=views)
             return render(request, 'user/view_video_history_all.html', context)
-        views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils)).order_by('-time')
-        if not views.exists():
-            messages.error(request, "Ko'rishlar mavjud emas !")
-        context = {
-            'views': views,
-        }
-        return render(request, 'user/view_video_history_all.html', context)
+        else:
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils)).order_by(
+                '-time')
+            if not views.exists():
+                messages.error(request, "Ko'rishlar mavjud emas !")
+            context.update(views=views)
+            return render(request, 'user/view_video_history_all.html', context)
     else:
         return render(request, 'inc/404.html')
 
@@ -853,6 +909,7 @@ def get_district(request):
     else:
         return False
 
+
 @login_required
 def school_groups(request, id):
     school = get_object_or_404(School, id=id)
@@ -861,6 +918,7 @@ def school_groups(request, id):
         'groups': groups
     }
     return render(request, 'user/inspection/school_groups.html', context)
+
 
 @login_required
 def school_group_detail(request, id):
@@ -872,7 +930,7 @@ def school_group_detail(request, id):
     }
     return render(request, 'user/inspection/school_group_detail.html', context)
 
+
 @login_required
 def support(request):
     return render(request, 'user/messeges.html')
-

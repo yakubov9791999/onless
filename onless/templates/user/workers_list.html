@@ -51,7 +51,7 @@
                                             <a href="{% url 'user:worker_edit' worker.id %}"><i class="fa fa-edit"
                                             ></i></a>
 
-                                            &nbsp;&nbsp;<a href="{% url 'user:worker_delete' worker.id %}"><i
+                                            &nbsp;&nbsp;<a href="#" onclick="delete_worker({{ worker.id }},`{{ worker.name }}`)"><i
                                                 class="fa fa-trash"
                                         ></i></a>
 
@@ -69,4 +69,43 @@
             </div>
         </div>
     </div>
+
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+        function delete_worker(worker_id, worker_name) {
+            var workerId = worker_id;
+            var workerName = worker_name
+
+            swal({
+                title: "Xodimni o'chirmoqchimisiz ?",
+                text: workerName + "ni o'chirmoqchimisiz ?",
+                icon: "warning",
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: workerName + " muvaffaqiyatli o'chirildi !",
+                        icon: 'success'
+                    }).then(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/user/worker-delete/' + workerId,
+                        });
+                        location.reload(true);
+                    });
+                } else {
+                    swal("Bekor qilindi", workerName + " ro'yhatda turibti !", "error");
+                }
+            });
+        }
+
+    </script>
 {% endblock content %}

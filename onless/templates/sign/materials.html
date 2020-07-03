@@ -18,13 +18,13 @@
                             <thead>
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 3%">№</th>
-                                <th >Manba nomi</th>
-                                <th >Video nomi</th>
+                                <th>Manba nomi</th>
+                                <th>Video nomi</th>
                                 <th style="width: 13%">Qo'shilgan vaqti</th>
                                 <th style="width: 15%">Muallif</th>
                                 <th style="width: 7%">Hajmi</th>
 
-                                    <th style="width: 5%">Yuklash</th>
+                                <th style="width: 5%">Yuklash</th>
 
                             </tr>
                             </thead>
@@ -41,14 +41,14 @@
                                     <td>{{ material.pub_date|date:'SHORT_DATETIME_FORMAT' }}</td>
 
                                     <td>{% if material.author %}{{ material.author }}{% endif %}</td>
-                                      <td>{{ material.file.size|filesizeformat }}</td>
-                                        {% get_file_url material.id as url %}
-                                        <td>&nbsp;
-                                                <a href="{{ url }}"><i class="fas fa-download"></i></a>
-                                            {% if material.author == request.user %}
-                                                <a href="{% url 'sign:delete_material' material.id %}"><i class="fas fa-trash ml-2"></i></a>
-                                            {% endif %}
-                                        </td>
+                                    <td>{{ material.file.size|filesizeformat }}</td>
+                                    {% get_file_url material.id as url %}
+                                    <td>&nbsp;
+                                        <a href="{{ url }}"><i class="fas fa-download"></i></a>
+                                        {% if material.author == request.user %}
+                                            <a href="#" onclick="delete_material({{ material.id }},`{{ material.title }}`)"><i class="fas fa-trash ml-2"></i></a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
 
                             {% endfor %}
@@ -62,4 +62,43 @@
             </div>
         </div>
     </div>
+
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+        function delete_material(material_id, material_name) {
+            var materialId = material_id;
+            var materialName = material_name
+
+            swal({
+                title: "Materialni o'chirmoqchimisiz ?",
+                text: materialName + "ni o'chirmoqchimisiz ?",
+                icon: "warning",
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: materialName + " muvaffaqiyatli o'chirildi !",
+                        icon: 'success'
+                    }).then(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/sign/delete-material/' + materialId,
+                        });
+                        location.reload(true);
+                    });
+                } else {
+                    swal("Bekor qilindi", materialName + " ro'yhatda turibti !", "error");
+                }
+            });
+        }
+
+    </script>
 {% endblock content %}

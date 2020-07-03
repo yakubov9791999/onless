@@ -268,8 +268,6 @@ def group_delete(request, id):
             group.save()
         else:
             group.delete()
-            messages.success(request, f"{group.category}-{group.number}-{group.year} muvaffaqiyatli o'chirildi")
-        return redirect(reverse_lazy('user:groups_list'))
     else:
         return render(request, 'inc/404.html')
 
@@ -456,9 +454,8 @@ def search(request):
 def pupil_delete(request, id):
     if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
-        pupil.delete()
-        next = request.META.get('HTTP_REFERER')
-        return HttpResponseRedirect(next)
+        pupil.is_active = False
+        pupil.save()
     else:
         return render(request, 'inc/404.html')
 
@@ -512,10 +509,8 @@ def worker_edit(request, id):
 def worker_delete(request, id):
     if request.user.role == '2':
         worker = get_object_or_404(User, id=id)
-        worker.delete()
-        next = request.META.get('HTTP_REFERER')
-        messages.success(request, "Xodim muvaffaqiyatli o'chirildi !")
-        return HttpResponseRedirect(next)
+        worker.is_active = False
+        worker.save()
     else:
         return render(request, 'inc/404.html')
 

@@ -19,7 +19,7 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="category">Bo'lim</label>
-                            <select name="category" id="category" class="form-control">
+                            <select name="category" id="category" style="cursor: pointer" class="form-control">
                                 {% for category in categories %}
                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                 {% endfor %}
@@ -28,19 +28,19 @@
 
                         <div class="form-group">
                             <label for="video">Video</label>
-                            <select name="video" id="video" class="form-control">
+                            <select name="video" id="video" style="cursor: pointer" class="form-control">
                                 <option value="False">-- Bo'limni tanlang --</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label class="label_required" for="title">Material nomi</label>
-                            <input type="text" class="form-control" id="title" name="title">
+                            <input type="text" class="form-control" required="required" id="title" name="title">
                         </div>
 
                         <div class="form-group">
                             <label class="label_required" for="file">Fayl nomi</label>
-                            <input type="file" class="form-control" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png, .xlsx, .xls, .txt" name="file">
+                            <input type="file" required="required" class="form-control" style="cursor: pointer" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png, .xlsx, .xls, .txt" name="file">
                             <small class="text-muted">Qabul qilinadigan fayl turlari: pdf, doc, docx, jpg, jpeg, png, xlsx, xls, txt</small>
 
                         </div>

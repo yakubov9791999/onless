@@ -54,3 +54,9 @@ def get_view(user_id, video_id):
     views = ViewComplete.objects.filter(user=pupil, video=video)
     for view in views:
         return view
+
+@register.simple_tag()
+def get_fullname_group(group_id):
+    group = get_object_or_404(Group, id=group_id)
+    group_name = str(f'{group.category}-{group.number} {group.year}')
+    return group_name

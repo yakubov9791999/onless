@@ -22,7 +22,7 @@ def makename(name):
                 '!', '').replace('~', '').replace('@', '').replace('#', '').replace('№', '').replace('$', '').replace(
                 '%', '').replace('^', '').replace(':', '').replace('&', '').replace('?', '').replace('(', '').replace(
                 ')', '').replace('-', '').replace('+', '').replace('=', '').replace('/', '').replace('<', '').replace(
-                '>', '').replace('|', '').replace('€', '')
+                '>', '').replace('|', '').replace('€', '').replace('`',"'")
 
             i += 1
             if i != 4:

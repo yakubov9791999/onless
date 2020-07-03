@@ -168,7 +168,5 @@ def delete_material(request, id):
     if material.author == request.user:
         material.is_active = False
         material.save()
-        next = request.META['HTTP_REFERER']
-        return HttpResponseRedirect(next)
     else:
         return render(request, 'inc/404.html')

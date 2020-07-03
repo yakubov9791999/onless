@@ -77,7 +77,7 @@
                             {% for material in materials %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ material.title }}</td>
+                                    <td><a href="{{ url }}">{{ material.title }}</a></td>
                                     <td>{{ material.author }}</td>
                                     <td>{{ material.file.size|filesizeformat }}</td>
 

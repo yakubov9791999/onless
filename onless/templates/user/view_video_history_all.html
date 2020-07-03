@@ -21,14 +21,14 @@
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-3">
-                                <label class="text-dark" for="date">Boshlanish</label>
+                                <label class="text-dark" for="date">Boshlanish:</label>
                                 <input type="date" id="date"
                                        style="border-radius: 4px; cursor: pointer; color:#495057;background-color:#fff;border-color:#bdbdbd;outline:0;box-shadow:0 0 0 .1rem rgba(238,238,238,0.25)"
                                        name="startdate"
                                        {% if startdate %}value="{{ startdate }}"{% endif %}>
                             </div>
                             <div class="col-md-3">
-                                <label class="text-dark" for="date">Tugash</label>
+                                <label class="text-dark" for="date">Tugash:</label>
                                 <input type="date" id="date"
                                        style="border-radius: 4px; cursor: pointer; color:#495057;background-color:#fff;border-color:#bdbdbd;outline:0;box-shadow:0 0 0 .1rem rgba(238,238,238,0.25)"
                                        name="stopdate"
@@ -38,7 +38,7 @@
 
 
                             <div class="col-md-3">
-                                <label class="text-dark" for="date">Guruh</label>
+                                <label class="text-dark" for="date">Guruh:</label>
                                 <select name="group"
                                         style="cursor: pointer; border-radius: 3px; height: 2rem; color:#495057;background-color:#fff;border-color:#7b7b7b;outline:0;box-shadow:0 0 0 .1rem rgba(165,165,165,0.25)">
                                     <option value="False">barcha guruhlar</option>

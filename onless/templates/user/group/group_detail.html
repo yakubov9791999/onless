@@ -105,7 +105,7 @@
                                         ></i></a>
                                             {% if request.user.role == '2' %}
                                                 &nbsp;&nbsp;
-                                                <a href="{% url 'user:pupil_delete' pupil.id %}"><i class="fa fa-trash"
+                                                <a href="#" onclick='delete_pupil({{ pupil.id }},`{{ pupil.name }}`)'><i class="fa fa-trash"
                                                 ></i></a>
                                             {% endif %}
 
@@ -129,6 +129,44 @@
             alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
             document.getElementById('button_add_pupil').style.display = 'none';
             document.getElementById('export_excel_form').style.display = 'block';
+        }
+
+    </script>
+        <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+        function delete_pupil(pupil_id,pupil_name) {
+            var pupilId = pupil_id;
+            var pupilName = pupil_name;
+            console.log(pupilId)
+            swal({
+                title: "O'quvchini o'chirmoqchimisiz ?",
+                text: pupilName + "ni o'chirmoqchimisiz ?",
+                icon: "warning",
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: pupilName + " muvaffaqiyatli o'chirildi !",
+                        icon: 'success'
+                    }).then(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/user/pupil-delete/' + pupilId,
+                        });
+                        location.reload(true);
+                    });
+                } else {
+                    swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
+                }
+            });
         }
 
     </script>

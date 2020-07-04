@@ -40,8 +40,11 @@ def add_result(request):
 
 @login_required
 def tests_list(request):
-    questions = Question.objects.all()
-    context = {
-        'questions': questions
-    }
-    return render(request, 'quiz/tests_list.html', context)
+    if request.user.role == '1' or request.user.role == '2' or request.user.role == '3' or request.user.role == '4' or request.user.role == '5':
+        questions = Question.objects.filter(is_active=True,is_test=False)
+        context = {
+            'questions': questions
+        }
+        return render(request, 'quiz/tests_list.html', context)
+    else:
+        return render(request, 'inc/404.html')

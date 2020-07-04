@@ -30,7 +30,7 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         username = get_pasport(username)
-        password = request.POST['password']
+        password = request.POST['password'].replace(' ','')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:

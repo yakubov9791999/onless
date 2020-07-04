@@ -21,7 +21,6 @@ def sign_up(request):
     }
 
     if request.POST:
-        print(request.POST)
         form = SignUpSchoolForm(request.POST)
         viloyat = Region.objects.get(id=request.POST.get('viloyat'))
         print(form.errors)

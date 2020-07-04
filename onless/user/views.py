@@ -879,9 +879,9 @@ def history_view_video_all(request):
 
 @login_required
 def history_pupil_view_video(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
         pupil = get_object_or_404(User, id=id)
-        videos = Video.objects.filter(is_active=True).order_by('-id')
+        videos = Video.objects.filter(is_active=True).order_by('id')
         if not videos.exists():
             messages.error(request, "Ko'rishlar mavjud emas !")
         context = {

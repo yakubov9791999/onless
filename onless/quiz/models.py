@@ -5,7 +5,7 @@ from video.models import Video
 
 class Answer(models.Model):
     text = models.CharField(max_length=600)
-    questions = models.ForeignKey('Question', on_delete=models.CASCADE, related_name='answers', null=True)
+    questions = models.ForeignKey('Question', on_delete=models.SET_NULL, related_name='answers', null=True)
     is_true = models.BooleanField(default=False)
 
     def __str__(self):
@@ -24,8 +24,8 @@ class Question(models.Model):
 
 
 class ResultQuiz(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='result_questions', null=True)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='result_answer', null=True)
+    question = models.ForeignKey(Question, on_delete=models.SET_NULL, related_name='result_questions', null=True)
+    answer = models.ForeignKey(Answer, on_delete=models.SET_NULL, related_name='result_answer', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user', blank=True, null=True)
 
     def __str__(self):

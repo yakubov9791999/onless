@@ -1,4 +1,5 @@
 from django import template
+from django.shortcuts import get_object_or_404
 
 from quiz.models import *
 from user.models import *
@@ -27,3 +28,15 @@ def get_answer(user_id, question_id):
     question = Question.objects.get(id=question_id)
     result_quiz = ResultQuiz.objects.filter(user=user, question=question)
     return result_quiz
+
+@register.simple_tag()
+def get_views_count(user_id):
+    user = get_object_or_404(User, id=user_id)
+    videos_count = Video.objects.all().count()
+    views_count = ViewComplete.objects.filter(user=user).distinct().count()
+    not_view = videos_count - views_count
+    return {
+       'views_count': views_count,
+        'not_view': not_view,
+        'videos_count': videos_count
+    }

@@ -12,6 +12,7 @@ def pupil_result(id):
     answer_count = ResultQuiz.objects.filter(user=pupil).count()
     question_total_count = Question.objects.filter(is_active=True).count()
     answer_true = ResultQuiz.objects.filter(user=pupil, answer__is_true=True).count()
+    answer_false = question_total_count - answer_true
     try:
         res = int(answer_true * 100 / answer_count)
     except ZeroDivisionError:
@@ -27,6 +28,7 @@ def pupil_result(id):
         'answer_true': answer_true,
         'res': res,
         'question_total_count': question_total_count,
-        'total_res': total_res
+        'total_res': total_res,
+        'answer_false': answer_false
     }
 

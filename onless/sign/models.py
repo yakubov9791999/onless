@@ -28,7 +28,7 @@ class SignCategory(models.Model):
 
 
 class Sign(models.Model):
-    category = models.ForeignKey(SignCategory, on_delete=models.PROTECT, related_name='sign_cateogories')
+    category = models.ForeignKey(SignCategory, on_delete=models.SET_NULL, related_name='sign_cateogories', null=True)
     title = models.CharField(max_length=255)
     text = models.CharField(max_length=5000, blank=True)
     photo = models.ImageField(upload_to="sign/")
@@ -52,9 +52,9 @@ class Subject(models.Model):
 
 class Schedule(models.Model):
     title = models.CharField(max_length=900)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_schedule', null=True)
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
     pub_date = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_schedule', null=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
     sort = models.IntegerField(default=1)
 
     def __str__(self):

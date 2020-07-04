@@ -33,4 +33,4 @@ class SignUpSchoolAdmin(admin.ModelAdmin):
     list_display_links = ['name']
     list_filter = ['is_active','select','viloyat','region', 'district', 'tuman', 'phone', 'text', ]
     save_on_top = True
-    search_fields = ['name','text','viloyat__title','region', 'district', 'tuman__title' ]
+    search_fields = ['name','text','viloyat__title','region', 'district', 'tuman__title', 'phone',  ]

@@ -384,8 +384,11 @@ def contact(request):
     if request.POST or None:
         form = AddContactForm(request.POST or None, request.FILES or None)
         if form.is_valid():
+            text = form.cleaned_data['text']
             photo = request.POST['photo']
             form = form.save(commit=False)
+            form.text = text
+            form.user = request.user
             form.photo = photo
             form.save()
             messages.success(request, "Muvaffaqiyatli jo'natildi !")
@@ -879,9 +882,9 @@ def history_view_video_all(request):
 
 @login_required
 def history_pupil_view_video(request, id):
-    if request.user.role == '2' or request.user.role == '3':
+    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
         pupil = get_object_or_404(User, id=id)
-        videos = Video.objects.filter(is_active=True).order_by('-id')
+        videos = Video.objects.filter(is_active=True).order_by('id')
         if not videos.exists():
             messages.error(request, "Ko'rishlar mavjud emas !")
         context = {
@@ -933,6 +936,8 @@ def support(request):
 
 @login_required
 def pupil_result(request, id):
-    today = datetime.date.today()
-
-    return render(request, 'user/pupil_result.html')
+    pupil = get_object_or_404(User, id=id)
+    if request.user == pupil:
+        return render(request, 'user/pupil_result.html')
+    else:
+        return render(request, 'inc/404.html')

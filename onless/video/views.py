@@ -46,7 +46,7 @@ def home(request):
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(reverse_lazy('user:edit_profil'))
         else:
-            return redirect(reverse_lazy("video:categories_list"))
+            return redirect(reverse_lazy("user:history_pupil_view_video", kwargs={'id': request.user.id}))
 
     elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':

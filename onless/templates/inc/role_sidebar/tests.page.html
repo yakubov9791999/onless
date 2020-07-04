@@ -1,8 +1,8 @@
 <li class="nav-item has-treeview">
-    <a href="{% url 'user:pupil_result' request.user.id %}" class="nav-link {% if request.resolver_match.url_name == 'pupil_result' %}active{% endif %}">
-        &nbsp;<i class="fab fa-artstation"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'quiz:tests_list' %}" class="nav-link {% if request.resolver_match.url_name == 'tests_list' %}active{% endif %}">
+        &nbsp;<i class="fas fa-hospital-symbol"></i>&nbsp;&nbsp;&nbsp;&nbsp;
         <p>
-            Test savollari
+            HiTest savollari
         </p>
     </a>
 </li>

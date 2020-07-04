@@ -171,5 +171,5 @@ class EditSchoolForm(ModelForm):
 class AddContactForm(ModelForm):
     class Meta:
         model = Contact
-        fields = ('name', 'text')
-        exclude = ('photo',)
+        fields = ( 'text',)
+        exclude = ('user','photo',)

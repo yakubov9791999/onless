@@ -384,8 +384,11 @@ def contact(request):
     if request.POST or None:
         form = AddContactForm(request.POST or None, request.FILES or None)
         if form.is_valid():
+            text = form.cleaned_data['text']
             photo = request.POST['photo']
             form = form.save(commit=False)
+            form.text = text
+            form.user = request.user
             form.photo = photo
             form.save()
             messages.success(request, "Muvaffaqiyatli jo'natildi !")
@@ -933,6 +936,8 @@ def support(request):
 
 @login_required
 def pupil_result(request, id):
-    today = datetime.date.today()
-
-    return render(request, 'user/pupil_result.html')
+    pupil = get_object_or_404(User, id=id)
+    if request.user == pupil:
+        return render(request, 'user/pupil_result.html')
+    else:
+        return render(request, 'inc/404.html')

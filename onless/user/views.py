@@ -929,3 +929,10 @@ def school_group_detail(request, id):
 @login_required
 def support(request):
     return render(request, 'user/messeges.html')
+
+
+@login_required
+def pupil_result(request, id):
+    today = datetime.date.today()
+
+    return render(request, 'user/pupil_result.html')

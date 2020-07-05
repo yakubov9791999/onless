@@ -1,5 +1,6 @@
 from allauth.account.forms import SetPasswordField, PasswordField
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms import ModelForm
 from user.models import *
@@ -28,10 +29,19 @@ class AddPupilForm(ModelForm):
 
 
 class AddGroupForm(ModelForm):
+    def clean(self):
+        start = self.cleaned_data['start']
+        stop = self.cleaned_data['stop']
+
+        if stop < start:
+            raise ValidationError("Guruh boshlanish vaqti tugash vaqtidan oldin bo'lishi mumkin emas")
+
     class Meta:
         model = Group
         fields = ('number', 'teacher', 'start', 'stop', 'category',)
         exclude = ('school', 'price')
+
+
 
 
 class AddTeacherGroupForm(ModelForm):
@@ -61,6 +71,12 @@ class GroupUpdateForm(ModelForm):
     price = forms.IntegerField(label="O'qish summasi", widget=forms.NumberInput(attrs={'class': 'form-control'}))
     sort = forms.IntegerField(label='Tartibi', widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
+    def clean(self):
+        start = self.cleaned_data['start']
+        stop = self.cleaned_data['stop']
+
+        if stop < start:
+            raise ValidationError("Guruh boshlanish vaqti tugash vaqtidan oldin bo'lishi mumkin emas")
 
     class Meta:
         model = Group

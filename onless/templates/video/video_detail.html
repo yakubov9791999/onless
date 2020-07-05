@@ -96,7 +96,9 @@
             </div>
         {% endif %}
         <p id="append"></p>
-        <div class="col-12 " id="video_bottom_question">
+
+        <div class="col-md-12 " id="video_bottom_question">
+        {% if questions %}
             {% for question in questions %}
                 <div class="privew" id="question{{ question.id }}">
                     <form action="{% url 'quiz:add_result' %}" method="POST">
@@ -156,7 +158,9 @@
                     </form>
                 </div>
             {% endfor %}
-
+        {% else %}
+            <div class="alert alert-info text-center"><b>Ushbu videoda test mavjud emas !</b></div>
+        {% endif %}
         </div>
         <p class="pb-5"></p>
     </div>

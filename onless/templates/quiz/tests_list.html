@@ -1,67 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row ml-5">
+    <div class="row ml-3 mr-3">
         <!-- left column -->
         <div class="col-md-12" style=" margin-bottom: 50px">
+                        <p id="append"></p>
+                        <div class="col-12 " id="video_bottom_question">
+                            {% for question in questions %}
+                                <div class="privew">
+                                    <form action="{% url 'quiz:add_result' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="questionsBox">
+                                            <div class="questions">{{ question.title }}
+                                            </div>
 
 
-            <p id="append"></p>
-            <div class="col-12 " id="video_bottom_question">
-                {% for question in questions %}
-                    <div class="privew">
-                        <form action="{% url 'quiz:add_result' %}" method="POST">
-                            {% csrf_token %}
-                            <div class="questionsBox">
-                                <div class="questions">{{ question.title }}
+                                            <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt=""
+                                                         width="auto"
+                                                         height="300px;"
+                                                         style="margin: 0 auto"></center>
+                                            <ul class="answerList">
+                                                {% for answer in question.answers.all %}
+                                                    <li>
+                                                        <label>
+
+
+                                                            <input type="radio" name="answer"
+                                                                   {% for result in results %}{% if  answer.result_answer.exists %}checked
+                                                                   disabled {% else %}{% endif %}    {% endfor %}
+                                                                   value="{{ answer.id }}"
+                                                                   id="id_answer{{ forloop.counter }}">&nbsp;
+                                                            {% if question.result_questions.exists %}
+                                                                {% if answer.is_true == False %}
+                                                                    <span class="text-danger">{{ answer.text }}</span>
+                                                                {% else %}
+                                                                    <span class="text-success"> {{ answer.text }}</span>
+
+                                                                {% endif %}
+
+                                                            {% else %}
+                                                                {{ answer.text }}
+                                                            {% endif %}
+
+
+                                                        </label>
+                                                    </li>
+                                                {% endfor %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                <input type="hidden" name="question" value="{{ question.id }}">
+                                            </ul>
+                                            <div class="questionsRow">
+                                                <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
+                            {% endfor %}
 
-
-                                <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt=""
-                                             width="auto"
-                                             height="300px;"
-                                             style="margin: 0 auto"></center>
-                                <ul class="answerList">
-                                    {% for answer in question.answers.all %}
-                                        <li>
-                                            <label>
-
-
-                                                <input type="radio" name="answer"
-                                                       {% for result in results %}{% if  answer.result_answer.exists %}checked
-                                                       disabled {% else %}{% endif %}    {% endfor %}
-                                                       value="{{ answer.id }}"
-                                                       id="id_answer{{ forloop.counter }}">&nbsp;
-                                                {% if question.result_questions.exists %}
-                                                    {% if answer.is_true == False %}
-                                                        <span class="text-danger">{{ answer.text }}</span>
-                                                    {% else %}
-                                                        <span class="text-success"> {{ answer.text }}</span>
-
-                                                    {% endif %}
-
-                                                {% else %}
-                                                    {{ answer.text }}
-                                                {% endif %}
-
-
-                                            </label>
-                                        </li>
-                                    {% endfor %}
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="hidden" name="question" value="{{ question.id }}">
-                                </ul>
-                                <div class="questionsRow">
-                                    <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                {% endfor %}
-
-            </div>
-            <p class="pb-5"></p>
+                        </div>
+                        <p class="pb-5"></p>
 
         </div>
     </div>

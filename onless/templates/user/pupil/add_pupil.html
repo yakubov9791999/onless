@@ -45,7 +45,8 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">+998</div>
                                 </div>
-                                <input type="number" class="form-control" id="phone" required="required" min="100000000" max="999999999"
+                                <input type="number" class="form-control" id="phone" required="required" min="100000000"
+                                       max="999999999"
                                        name="phone"
                                        placeholder="Telefon raqamini kiriting. Masalan: 901234567" autocomplete="off">
                             </div>
@@ -84,6 +85,22 @@
             alert("Faqat lotin harflari va raqamlar kiriting")
 
             return false;
+        });
+
+        $('#phone').keyup(function () {
+            var test = $('#phone').val();
+            var pattern = /^\d{9}$/;
+            if (test.match(pattern)) {
+                $('#phone').css("border", "1px solid green");
+                $('#phone').css("border-radius", "7px");
+                $('#phone').css("background", "#f4fef3");
+
+            } else {
+                $('#phone').css("border", "1px solid red");
+                $('#phone').css("border-radius", "4px");
+                $('#phone').css("background", "#fef8f8");
+
+            }
         });
 
     </script>

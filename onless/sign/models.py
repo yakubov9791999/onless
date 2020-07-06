@@ -70,7 +70,8 @@ def path_and_rename(instance, filename):
     ext = filename.split('.')[-1]
     # filetitle = filename.rsplit(',', 1)
     # get filename
-    filename = get_slug(instance.title)
+    title = os.path.splitext(instance.title)[0]
+    filename = get_slug(title)
     # set filename as random string
     filename = '{}.{}'.format(filename, ext)
         # filename = '{}.{}'.format(uuid4().hex, ext)

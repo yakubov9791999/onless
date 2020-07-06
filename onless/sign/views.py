@@ -128,6 +128,7 @@ def add_material(request):
                 title = get_title(title)
                 file = request.FILES['file']
                 ext = os.path.splitext(file.name)[1]
+                title = os.path.splitext(title)[0]
                 if file.size < 5242880:
                     form = form.save(commit=False)
                     form.title = '{}{}'.format(title, ext)

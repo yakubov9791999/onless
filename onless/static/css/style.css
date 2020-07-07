@@ -1,8 +1,8 @@
 
 .label_required:after {
-            content: "*";
-            color: red;
-        }
+    content: "*";
+    color: red;
+}
 
 .video_content_title {
     font-size: 20px;
@@ -360,3 +360,55 @@ a:active {
     height: auto;
     margin: 0 auto;
 }
+
+.sign-photo img {
+    width: 170px;
+    height: 150px;
+    display: block;
+
+}
+
+
+/* Tooltip container */
+.tooltip-sign {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+
+}
+
+/* Tooltip text */
+.tooltip-sign .tooltip-sign-text {
+    visibility: hidden;
+    width: 15rem;
+    background-color: #494949;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip-sign:hover .tooltip-sign-text {
+    visibility: visible;
+}
+
+#collapse-title {
+    transition: 1s;
+}
+
+#collapse-title:hover {
+    padding-left: 20px;
+    transition: 1s;
+
+}
+
+.card #heading {
+    background-color: red;
+}
+
+

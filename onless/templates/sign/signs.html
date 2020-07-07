@@ -1,16 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% for sign in signs %}
-        <div class="row">
-            <div class="col-12"><h2 class="text-center">{{ sign.title }}</h2></div>
-            <div class="col-12">
-                <div class="row" style="">
-                    <div class="col-2 text-center">
-                        <img src="{{ sign.photo.url }}" alt="" width="100px">
-                        <p></p>
+    {% for category in categories %}
+        <div id="accordion{{ category.id }}">
+            <div class="card">
+                <div class="card-header" id="heading{{ category.id }}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link"  data-toggle="collapse" data-target="#collapse{{ category.id }}"
+                                aria-expanded="true" aria-controls="collapse{{ category.id }}" id="collapse-title">
+                            <i class="fas fa-angle-double-right"></i> {{ category.title }}
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapse{{ category.id }}" class="collapse hide" aria-labelledby="heading{{ category.id }}"
+                     data-parent="#accordion{{ category.id }}">
+                    <div class="card-body">
+                        <div class="row">
+                            {% for sign in category.sign_cateogories.all %}
+                                <div class="col-md-2">
+                                    <div class="sign-photo">
+                                        <div class="tooltip-sign">
+                                            <img src="{{ sign.photo.url }}" alt="">
+                                            <span class="tooltip-sign-text">{{ sign.text }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="tooltip-sign">{{ sign.title }}
+                                        <span class="tooltip-sign-text">{{ sign.text }}</span>
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     {% endfor %}
+
 {% endblock content %}

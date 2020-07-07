@@ -13,9 +13,12 @@ from video.models import Category
 
 @login_required
 def sign(request):
+    categories = SignCategory.objects.all()
+    print(categories)
     signs = Sign.objects.all()
     return render(request, 'sign/signs.html', {
         'signs': signs,
+        'categories': categories,
     })
 
 

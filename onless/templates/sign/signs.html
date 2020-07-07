@@ -4,7 +4,7 @@
         <div id="accordion{{ category.id }}">
             <div class="card">
                 <div class="card-header" id="heading{{ category.id }}">
-                    <h5 class="mb-0">
+                    <h5 class="mb-1 mt-1">
                         <button class="btn btn-link"  data-toggle="collapse" data-target="#collapse{{ category.id }}"
                                 aria-expanded="true" aria-controls="collapse{{ category.id }}" id="collapse-title">
                             <i class="fas fa-angle-double-right"></i> {{ category.title }}
@@ -21,7 +21,7 @@
                                     <div class="sign-photo">
                                         <div class="tooltip-sign">
                                             <img src="{{ sign.photo.url }}" alt="">
-                                            <span class="tooltip-sign-text">{{ sign.text }}</span>
+                                            <span class="tooltip-sign-text text-center">{{ sign.text }}</span>
                                         </div>
                                     </div>
                                     <div class="tooltip-sign">{{ sign.title }}

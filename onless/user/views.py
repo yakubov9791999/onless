@@ -33,9 +33,12 @@ def user_login(request):
         password = request.POST['password'].replace(' ','')
         user = authenticate(username=username, password=password)
         if user is not None:
-            if user.is_active:
+            if user.is_active and user.school.is_block == False:
                 login(request, user)
                 return redirect(reverse_lazy('video:home'))
+            else:
+                messages.error(request, 'Siz bloklangansiz !')
+                return HttpResponseRedirect('/accounts/login/')
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
             return HttpResponseRedirect('/accounts/login/')

@@ -43,11 +43,12 @@ def sign_up(request):
 
 @login_required
 def home(request):
-    if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
+    if request.user.role == "4" and request.user.school.is_block:  # agarda role o'quvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(reverse_lazy('user:edit_profil'))
         else:
             return redirect(reverse_lazy("user:history_pupil_view_video", kwargs={'id': request.user.id}))
+
 
     elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
@@ -76,7 +77,8 @@ def home(request):
             return redirect(profil_edit)
         else:
             return redirect(reverse_lazy('user:bugalter_groups_list'))
-
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def add_duration(request):

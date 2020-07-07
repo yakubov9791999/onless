@@ -95,6 +95,7 @@ class School(models.Model):
     reg_date = models.DateTimeField(auto_now_add=True)
     is_amet = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
+    is_block = models.BooleanField(default=False)
     sms_login = models.CharField(max_length=255, blank=True)
     sms_token = models.CharField(max_length=255, blank=True)
     sms_password = models.CharField(max_length=255, blank=True)

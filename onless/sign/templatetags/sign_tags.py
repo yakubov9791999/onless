@@ -25,6 +25,6 @@ def count_materials(school_id):
     materials = Material.objects.filter(is_active=True,school=school).count()
     return materials
 
-@register.simple_tag()
+@register.filter
 def view_sign(queryset):
-    return queryset.objects.all().order_by('sort')
+    return queryset.order_by('sort')

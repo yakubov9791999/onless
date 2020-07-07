@@ -43,7 +43,7 @@ def sign_up(request):
 
 @login_required
 def home(request):
-    if request.user.role == "4":  # agarda role o'quvchi  bo'lsa
+    if request.user.role == "4" and request.user.school.is_block == False:  # agarda role o'quvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(reverse_lazy('user:edit_profil'))
         else:
@@ -59,25 +59,26 @@ def home(request):
                 'schools': schools,
             })
 
-    elif request.user.role == "3":  # agarda role o'qituvchi  bo'lsa
+    elif request.user.role == "3" and request.user.school.is_block == False:  # agarda role o'qituvchi  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(reverse_lazy('user:edit_profil'))
         else:
             return redirect(reverse_lazy('user:groups_list'))
 
 
-    elif request.user.role == "2":  # agarda role Direktor  bo'lsa
+    elif request.user.role == "2" and request.user.school.is_block == False:  # agarda role Direktor  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(profil_edit)
         else:
             return redirect(reverse_lazy('user:workers_list'))
 
-    elif request.user.role == "5":  # agarda role Bugalter  bo'lsa
+    elif request.user.role == "5" and request.user.school.is_block == False:  # agarda role Bugalter  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
             return redirect(profil_edit)
         else:
             return redirect(reverse_lazy('user:bugalter_groups_list'))
-
+    else:
+        return render(request, 'inc/block.html')
 
 @login_required
 def add_duration(request):

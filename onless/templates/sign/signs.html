@@ -18,15 +18,15 @@
                     <div class="card-body">
                         <div class="row">
 
-                            {% for sign in category.sign_cateogories.all %}
-                                <div class="col-md-2 mt-1 mb-1">
+                            {% for sign in category.sign_cateogories.all|view_sign %}
+                                <div class="col-md-2 mt-3 mb-5">
                                     <div class="sign-photo">
                                         <div class="tooltip-sign">
-                                            <img src="{{ sign.photo.url }}" alt="{{ sign.title }}">
+                                            <img style="margin: 0 auto" src="{{ sign.photo.url }}" alt="{{ sign.title }}">
                                             <span class="tooltip-sign-text">{{ sign.text }}</span>
                                         </div>
                                     </div>
-                                    <div class="tooltip-sign">{{ sign.title }}
+                                    <div class="tooltip-sign text-center">{{ sign.title }}
                                         <span class="tooltip-sign-text">{{ sign.text }}</span>
                                     </div>
 

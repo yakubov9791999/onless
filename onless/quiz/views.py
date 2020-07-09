@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 
 from user.models import User
 from .forms import *
@@ -43,10 +42,21 @@ def add_result(request):
 @login_required
 def tests_list(request):
     if request.user.role == '1' or request.user.role == '2' or request.user.role == '3' or request.user.role == '4' or request.user.role == '5':
-        questions = Question.objects.filter(is_active=True,is_test=False)
+        savollar = Savol.objects.filter(is_active=True)
+
         context = {
-            'questions': questions
+            'savollar': savollar
         }
+
+        if request.is_ajax():
+            javob = get_object_or_404(Javob, id=request.GET['javob'])
+            if javob.is_true == True:
+                return HttpResponse('#89e790')
+            else:
+                return HttpResponse('#ef6565')
+        else:
+            print('no')
+
         return render(request, 'quiz/tests_list.html', context)
     else:
         return render(request, 'inc/404.html')

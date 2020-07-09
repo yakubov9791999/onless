@@ -61,6 +61,7 @@ class Savol(models.Model):
     title_kr = models.CharField(max_length=1000, blank=True)
     title_ru = models.CharField(max_length=1000, blank=True)
     photo = models.ImageField(upload_to='quiz/img/', blank=True, default='')
+    is_photo = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     comment = models.TextField(blank=True)
 

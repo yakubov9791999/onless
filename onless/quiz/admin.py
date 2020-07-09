@@ -67,7 +67,7 @@ class Choiceinline(admin.StackedInline):
 
 class SavolAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['bilet','bilet_savol','video','title_uz','title_kr','title_ru',  'photo','is_active']}),
+        (None,               {'fields': ['bilet','bilet_savol','video','title_uz','title_kr','title_ru', 'is_photo', 'photo','is_active']}),
     ]
     inlines = [Choiceinline]
 

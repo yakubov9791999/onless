@@ -1,15 +1,3 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.urls import resolve, reverse_lazy
-from functools import wraps
-from urllib.parse import urlparse
-from django.conf import settings
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import resolve_url
-
-from user.views import *
-
 
 def makename(name):
     def wrapped(self):

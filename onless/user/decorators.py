@@ -54,6 +54,7 @@ def makepasport(pasport):
         pasport = pasport.replace('А', 'A').replace('В', 'B').replace('С', 'C').replace('Т', 'T').replace('О',
                                                                                                           'O').replace(
             'М', 'M').replace('Р', 'P').replace(' ','')
+        print(pasport)
         return pasport
 
     return wrapped

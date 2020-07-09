@@ -180,32 +180,32 @@
         {% if not view_video_complete.exists %}
             $("#video_bottom_question").hide();
         {% endif %}
-        var vid = document.getElementById("my-video");
 
 
 
-        vid.onloadedmetadata = function () {
-            vid.ontimeupdate = function () {
-                if (vid.duration == vid.currentTime) {
-                    $("#video_bottom_question").fadeIn();
-                    $(document).ready(function () {
-                        $.ajax({
-                            type: "GET",
-                            url: "{% url 'video:add_duration' %}",
-                            data: {
-                                'video': {{ video.id }}, // from form
-                            },
-                            success: function (message) {
-                                var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');
-                                $('#append').append(e);
-                                e.attr('id', 'myid');
-                            }
-                        });
+        var video = videojs('my-video').ready(function () {
+            var player = this;
+
+            player.on('ended', function () {
+                $("#video_bottom_question").fadeIn();
+                $(document).ready(function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'video:add_duration' %}",
+                        data: {
+                            'video': {{ video.id }}, // from form
+                        },
+                        success: function (message) {
+                            var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');
+                            $('#append').append(e);
+                            e.attr('id', 'myid');
+                        }
 
                     });
-                }
-            };
-        };
+
+                });
+            });
+        });
 
     </script>
 {% endblock bottom %}

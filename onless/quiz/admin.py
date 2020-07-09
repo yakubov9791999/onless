@@ -58,6 +58,8 @@ class ResultQuizAdmin(admin.ModelAdmin):
 
 
 
+admin.site.register(Bilet)
+
 class Choiceinline(admin.StackedInline):
     model = Javob
     extra = 3
@@ -65,8 +67,13 @@ class Choiceinline(admin.StackedInline):
 
 class SavolAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['video','title_uz','title_kr','title_ru', 'photo','is_active']}),
+        (None,               {'fields': ['bilet','bilet_savol','video','title_uz','title_kr','title_ru',  'photo','is_active']}),
     ]
     inlines = [Choiceinline]
 
+    list_display = ['bilet','bilet_savol','title_uz','title_kr','title_ru','is_active']
+    search_fields = ['bilet','title_uz','title_kr','title_ru',]
+    list_filter = ['is_active','bilet', 'video',]
+    save_on_top = True
+    save_as_continue = True
 admin.site.register(Savol, SavolAdmin)

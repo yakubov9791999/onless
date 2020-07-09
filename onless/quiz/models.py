@@ -40,7 +40,7 @@ class ResultQuiz(models.Model):
 class Bilet(models.Model):
     number = models.IntegerField(blank=True)
 
-BILET_SORT = (
+BILET_SAVOL = (
     ('1','1'),
     ('2','2'),
     ('3','3'),
@@ -56,7 +56,7 @@ BILET_SORT = (
 class Savol(models.Model):
     video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True, blank=True)
     bilet = models.ForeignKey(Bilet, on_delete=models.SET_NULL, null=True)
-    bilet_sort = models.CharField(max_length=2, choices=BILET_SORT)
+    bilet_savol = models.CharField(max_length=2, choices=BILET_SAVOL)
     title_uz = models.CharField(max_length=1000, blank=True)
     title_kr = models.CharField(max_length=1000, blank=True)
     title_ru = models.CharField(max_length=1000, blank=True)

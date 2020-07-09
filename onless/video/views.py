@@ -1,11 +1,12 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from quiz.models import *
-from user.models import School
+from user.models import *
 from user.views import *
-from user.views import profil_edit
+from user.views import *
 from video.models import *
 from video.forms import *
 
@@ -79,6 +80,7 @@ def home(request):
             return redirect(reverse_lazy('user:bugalter_groups_list'))
     else:
         return render(request, 'inc/block.html')
+
 
 @login_required
 def add_duration(request):

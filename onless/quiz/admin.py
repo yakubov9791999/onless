@@ -55,3 +55,18 @@ admin.site.register(Question, QuestionAdmin)
 @admin.register(ResultQuiz)
 class ResultQuizAdmin(admin.ModelAdmin):
     list_filter = ['user','answer', 'question',]
+
+
+
+class Choiceinline(admin.StackedInline):
+    model = Javob
+    extra = 3
+
+
+class SavolAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['video','title_uz','title_kr','title_ru', 'photo','is_active']}),
+    ]
+    inlines = [Choiceinline]
+
+admin.site.register(Savol, SavolAdmin)

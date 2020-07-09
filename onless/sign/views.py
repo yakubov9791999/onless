@@ -14,7 +14,6 @@ from video.models import Category
 @login_required
 def sign(request):
     categories = SignCategory.objects.all()
-    print(categories)
     signs = Sign.objects.all()
     return render(request, 'sign/signs.html', {
         'signs': signs,
@@ -72,9 +71,11 @@ def delete_schedule(request, id):
     schedule.delete()
     return render(request, 'sign/schedules_list.html',)
 
+
 @login_required
 def schedules_list(request):
     return render(request, 'sign/schedules_list.html')
+
 
 @login_required
 def get_subject(request):
@@ -86,6 +87,7 @@ def get_subject(request):
         return HttpResponse(options)
     else:
         return False
+
 
 @login_required
 def get_schedule(request):

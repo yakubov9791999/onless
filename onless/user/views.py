@@ -456,7 +456,7 @@ def search(request):
         context.update(results=results)
     return render(request, 'user/search_result.html', context)
 
-
+@login_required
 def pupil_delete(request, id):
     if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
@@ -520,7 +520,7 @@ def worker_delete(request, id):
     else:
         return render(request, 'inc/404.html')
 
-
+@login_required
 def upload_file(request):
     if request.user.role == '2' or request.user.role == '3':
         if request.POST and request.FILES:
@@ -771,7 +771,7 @@ def pay_history(request, user_id, group_id):
         return render(request, 'inc/404.html')
 
 
-@login_required()
+@login_required
 def history_view_video_all(request):
     if request.user.role == '2':
         groups = Group.objects.filter(school=request.user.school)
@@ -881,7 +881,6 @@ def history_view_video_all(request):
             return render(request, 'user/view_video_history_all.html', context)
     else:
         return render(request, 'inc/404.html')
-
 
 @login_required
 def history_pupil_view_video(request, id):

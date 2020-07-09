@@ -98,69 +98,69 @@
         <p id="append"></p>
 
         <div class="col-md-12 " id="video_bottom_question">
-        {% if questions %}
-            {% for question in questions %}
-                <div class="privew" id="question{{ question.id }}">
-                    <form action="{% url 'quiz:add_result' %}" method="POST">
-                        {% csrf_token %}
-                        <div class="questionsBox">
-                            <div class="questions">{{ question.title }}
-                            </div>
+            {% if questions %}
+                {% for question in questions %}
+                    <div class="privew" id="question{{ question.id }}">
+                        <form action="{% url 'quiz:add_result' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="questionsBox">
+                                <div class="questions">{{ question.title }}
+                                </div>
 
 
-                            <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt=""
-                                         width="300px"
+                                <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}" alt=""
+                                             width="300px"
 
-                                         style="margin: 0 auto;"></center>
-                            <ul class="answerList">
-                                {% for answer in question.answers.all %}
-                                    <li>
-                                        <label>
-                                            {% get_results request.user.id question.id answer.id as result_question %}
-                                            {% get_answer request.user.id question.id as result_answer %}
+                                             style="margin: 0 auto;"></center>
+                                <ul class="answerList">
+                                    {% for answer in question.answers.all %}
+                                        <li>
+                                            <label>
+                                                {% get_results request.user.id question.id answer.id as result_question %}
+                                                {% get_answer request.user.id question.id as result_answer %}
 
-                                            <input type="radio" name="answer"
-                                                   {% if result_question.exists %}checked disabled{% endif %}
-                                                   value="{{ answer.id }}"
-                                                   id="id_answer{{ forloop.counter }}">
-                                            {% if result_question.exists %}
-                                                {% if answer.is_true == False %}
-                                                    <span class="text-danger">{{ answer.text }}</span>
-                                                {% elif answer.is_true == True %}
-                                                    <span class="text-success"> {{ answer.text }}</span>
-                                                {% else %}
-                                                    {{ answer.text }}
-                                                {% endif %}
-                                            {% else %}
-                                                {% if result_answer.exists %}
-                                                    {% if answer.is_true == True %}
-                                                        <span class="text-success">  {{ answer.text }}</span>
+                                                <input type="radio" name="answer"
+                                                       {% if result_question.exists %}checked disabled{% endif %}
+                                                       value="{{ answer.id }}"
+                                                       id="id_answer{{ forloop.counter }}">
+                                                {% if result_question.exists %}
+                                                    {% if answer.is_true == False %}
+                                                        <span class="text-danger">{{ answer.text }}</span>
+                                                    {% elif answer.is_true == True %}
+                                                        <span class="text-success"> {{ answer.text }}</span>
                                                     {% else %}
-                                                        <span class="text-danger">  {{ answer.text }}</span>
+                                                        {{ answer.text }}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if result_answer.exists %}
+                                                        {% if answer.is_true == True %}
+                                                            <span class="text-success">  {{ answer.text }}</span>
+                                                        {% else %}
+                                                            <span class="text-danger">  {{ answer.text }}</span>
+                                                        {% endif %}
+
+                                                    {% else %}
+                                                        {{ answer.text }}
                                                     {% endif %}
 
-                                                {% else %}
-                                                    {{ answer.text }}
                                                 {% endif %}
-
-                                            {% endif %}
-                                        </label>
-                                    </li>
-                                {% endfor %}
-                                <input type="hidden" name="next" value="{{ request.path }}">
-                                <input type="hidden" name="question" value="{{ question.id }}">
-                            </ul>
-                            <div class="questionsRow">
-                                <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish
-                                </button>
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="question" value="{{ question.id }}">
+                                </ul>
+                                <div class="questionsRow">
+                                    <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="alert alert-info text-center"><b>Ushbu videoda test mavjud emas !</b></div>
-        {% endif %}
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info text-center"><b>Ushbu videoda test mavjud emas !</b></div>
+            {% endif %}
         </div>
         <p class="pb-5"></p>
     </div>
@@ -179,29 +179,28 @@
         {% if not view_video_complete.exists %}
             $("#video_bottom_question").hide();
         {% endif %}
-        var vid = document.getElementById("my-video");
-        vid.onloadedmetadata = function () {
-            vid.ontimeupdate = function () {
-                if (vid.duration == vid.currentTime) {
-                    $("#video_bottom_question").fadeIn();
-                    $(document).ready(function () {
-                        $.ajax({
-                            type: "GET",
-                            url: "{% url 'video:add_duration' %}",
-                            data: {
-                                'video': {{ video.id }}, // from form
-                            },
-                            success: function (message) {
-                                var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');
-                                $('#append').append(e);
-                                e.attr('id', 'myid');
-                            }
-                        });
+        var video = videojs('my-video').ready(function () {
+            var player = this;
 
+            player.on('ended', function () {
+                $("#video_bottom_question").fadeIn();
+                $(document).ready(function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'video:add_duration' %}",
+                        data: {
+                            'video': {{ video.id }}, // from form
+                        },
+                        success: function (message) {
+                            var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');
+                            $('#append').append(e);
+                            e.attr('id', 'myid');
+                        }
                     });
-                }
-            };
-        };
+
+                });
+            });
+        });
 
     </script>
 {% endblock bottom %}

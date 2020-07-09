@@ -76,4 +76,5 @@ class SavolAdmin(admin.ModelAdmin):
     list_filter = ['is_active','bilet', 'video',]
     save_on_top = True
     save_as_continue = True
+    list_display_links = ['title_uz','title_kr','title_ru',]
 admin.site.register(Savol, SavolAdmin)

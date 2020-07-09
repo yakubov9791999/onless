@@ -15,7 +15,7 @@ from django.views.generic import UpdateView
 
 from onless.settings import BASE_DIR
 from quiz.models import *
-from .decorators import *
+from user.decorators import *
 
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
@@ -356,11 +356,12 @@ def pupil_edit(request, id):
         form = EditPupilForm(instance=user, request=request)
         if request.POST:
             pasport = request.POST['pasport']
-            pasport = get_pasport(pasport)
+            print(pasport)
+            # pasport = get_pasport(pasport)
             form = EditPupilForm(request.POST, request.FILES, instance=user, request=request)
             if form.is_valid():
                 name = form.cleaned_data['name']
-                name = get_name(name)
+                # name = get_name(name)
                 form = form.save(commit=False)
                 form.name = name
                 form.pasport = pasport

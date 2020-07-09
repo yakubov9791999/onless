@@ -174,11 +174,15 @@
 
 {% block bottom %}
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
+
     <script>
         {% get_view_video request.user.id video.id as view_video_complete %}
         {% if not view_video_complete.exists %}
             $("#video_bottom_question").hide();
         {% endif %}
+
+
+
         var video = videojs('my-video').ready(function () {
             var player = this;
 
@@ -196,6 +200,7 @@
                             $('#append').append(e);
                             e.attr('id', 'myid');
                         }
+
                     });
 
                 });

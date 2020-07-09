@@ -32,3 +32,47 @@ def pupil_result(id):
         'answer_false': answer_false
     }
 
+@register.simple_tag()
+def get_true_javob(savol_id):
+    savol = get_object_or_404(Savol, id=savol_id)
+    javoblar = Javob.objects.filter(savol=savol)
+    context = {}
+    try:
+        context.update(javob_1=javoblar[0])
+    except IndexError:
+        pass
+
+    try:
+        context.update(javob_2=javoblar[1])
+    except IndexError:
+        pass
+
+    try:
+        context.update(javob_3=javoblar[2])
+    except IndexError:
+        pass
+
+    try:
+        context.update(javob_4=javoblar[3])
+    except IndexError:
+        pass
+
+    try:
+        context.update(javob_5=javoblar[4])
+    except IndexError:
+        pass
+
+    try:
+        context.update(javob_6=javoblar[5])
+    except IndexError:
+        pass
+    return context
+
+
+@register.simple_tag()
+def get_true_javob_color(javob_id):
+    javob = get_object_or_404(Javob, id=javob_id)
+    if javob.is_true == True:
+        return 'green'
+    else:
+        return 'red'

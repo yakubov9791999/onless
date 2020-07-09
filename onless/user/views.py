@@ -357,11 +357,11 @@ def pupil_edit(request, id):
         if request.POST:
             pasport = request.POST['pasport']
             print(pasport)
-            # pasport = get_pasport(pasport)
+            pasport = get_pasport(pasport)
             form = EditPupilForm(request.POST, request.FILES, instance=user, request=request)
             if form.is_valid():
                 name = form.cleaned_data['name']
-                # name = get_name(name)
+                name = get_name(name)
                 form = form.save(commit=False)
                 form.name = name
                 form.pasport = pasport

@@ -32,9 +32,6 @@ class ResultQuiz(models.Model):
     def __str__(self):
         return f"{self.user}"
 
-    class Meta:
-        verbose_name = 'Test javobi'
-        verbose_name_plural = 'Test javoblari'
 
 
 class Bilet(models.Model):

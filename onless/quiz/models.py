@@ -40,6 +40,9 @@ class ResultQuiz(models.Model):
 class Bilet(models.Model):
     number = models.IntegerField(blank=True)
 
+    def __str__(self):
+        return f"{self.number}"
+
 BILET_SAVOL = (
     ('1','1'),
     ('2','2'),

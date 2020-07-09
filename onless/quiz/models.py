@@ -35,3 +35,52 @@ class ResultQuiz(models.Model):
     class Meta:
         verbose_name = 'Test javobi'
         verbose_name_plural = 'Test javoblari'
+
+
+class Bilet(models.Model):
+    number = models.IntegerField(blank=True)
+
+BILET_SORT = (
+    ('1','1'),
+    ('2','2'),
+    ('3','3'),
+    ('4','4'),
+    ('5','5'),
+    ('6','6'),
+    ('7','7'),
+    ('8','8'),
+    ('9','9'),
+    ('10','10'),
+)
+
+class Savol(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True, blank=True)
+    bilet = models.ForeignKey(Bilet, on_delete=models.SET_NULL, null=True)
+    bilet_sort = models.CharField(max_length=2, choices=BILET_SORT)
+    title_uz = models.CharField(max_length=1000, blank=True)
+    title_kr = models.CharField(max_length=1000, blank=True)
+    title_ru = models.CharField(max_length=1000, blank=True)
+    photo = models.ImageField(upload_to='quiz/img/', blank=True, default='')
+    is_active = models.BooleanField(default=True)
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.title_uz}"
+
+    class Meta:
+        verbose_name = 'Test savoli'
+        verbose_name_plural = 'Test savollari'
+
+class Javob(models.Model):
+    text_uz = models.CharField(max_length=1000, blank=True)
+    text_kr = models.CharField(max_length=1000, blank=True)
+    text_ru = models.CharField(max_length=1000, blank=True)
+    savol = models.ForeignKey(Savol, on_delete=models.SET_NULL,null=True)
+    is_true = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.text_uz}"
+
+    class Meta:
+        verbose_name = 'Test javobi'
+        verbose_name_plural = 'Test javoblari'

@@ -7,6 +7,7 @@ from .models import *
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
+
     list_display = ['id', 'role', 'name', 'username', 'phone', 'email', 'turbo', 'birthday', 'is_active',
                     'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
@@ -15,6 +16,11 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ['name', 'username', 'phone', 'role', 'pasport']
     save_on_top = True
 
+    def save_model(self, request, obj, form, change):
+        obj.set_password(obj.turbo)
+        obj.username = obj.pasport
+        obj.save()
+        return super().save_model(request, obj, form, change)
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):

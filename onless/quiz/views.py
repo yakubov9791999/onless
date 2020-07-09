@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+
+
 from user.models import User
 from .forms import *
 from django.utils.datastructures import MultiValueDictKeyError

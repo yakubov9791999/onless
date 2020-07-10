@@ -36,6 +36,7 @@ class ResultQuiz(models.Model):
 
 class Bilet(models.Model):
     number = models.IntegerField(blank=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.number}"

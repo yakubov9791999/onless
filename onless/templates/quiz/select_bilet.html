@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            {% for bilet in bilets %}
+
+                <div class="col-4 col-lg-2 col-md-2 col-sm-3 col-xs-3 mt-3">
+
+                    <div class=" text-center">
+                        <a href="{% url 'quiz:tests_list' %}?lang={{ lang }}&bilet={{ bilet.id }}" class="btn btn-outline-dark bilet_q" >
+                                {{ bilet }}
+                        </a>
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock content %}
+
+
+

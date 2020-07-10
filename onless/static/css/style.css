@@ -410,4 +410,50 @@ a:active {
     background-color: red;
 }
 
+.javob {
+    border: 1px solid black;
+    font-size: 0.8rem;
+    background-color: #cbcbcb;
+    width: 100%
+}
 
+.javob:hover {
+    background-color: #a3a3a3;
+
+}
+
+.box {
+    padding: 20px 0;
+}
+
+.box-part {
+    border-radius: 7px;
+    padding: 5% 5% 5% 5%;
+}
+
+.img-lang {
+    width: 15%
+}
+
+.bilet-box {
+    background-color: #bde5fa;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.bilet-box:hover {
+    background-color: #a6ddfa;
+    border: 1px solid #5e9be5;
+}
+
+.bilet-box h4 {
+    color: #6d6d6d
+}
+
+.bilet_q {
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 0 30% 0 30% !important;
+    font-size: 1.5rem;
+
+}

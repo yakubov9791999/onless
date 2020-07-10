@@ -41,22 +41,39 @@ def add_result(request):
 
 @login_required
 def tests_list(request):
-    if request.user.role == '1' or request.user.role == '2' or request.user.role == '3' or request.user.role == '4' or request.user.role == '5':
-        savollar = Savol.objects.filter(is_active=True)
-
+    if request.GET:
+        bilet = get_object_or_404(Bilet, id=request.GET['bilet'])
+        lang = request.GET['lang']
+        savollar = Savol.objects.filter(is_active=True, bilet=bilet)
         context = {
-            'savollar': savollar
+            'savollar': savollar,
+            'lang': lang
         }
-
-        if request.is_ajax():
-            javob = get_object_or_404(Javob, id=request.GET['javob'])
-            if javob.is_true == True:
-                return HttpResponse('#89e790')
-            else:
-                return HttpResponse('#ef6565')
-        else:
-            print('no')
-
         return render(request, 'quiz/tests_list.html', context)
+
+
+
+def get_true_answer(request):
+    if request.is_ajax():
+        javob = get_object_or_404(Javob, id=request.GET['javob'])
+        if javob.is_true == True:
+            return HttpResponse(True)
+        else:
+            return HttpResponse(False)
+
+
+@login_required
+def select_lang(request):
+    if request.GET:
+        lang = request.GET['lang']
+        bilets = Bilet.objects.all()
+        context = {
+            'bilets': bilets,
+            'lang': lang
+        }
+        return render(request, 'quiz/select_bilet.html', context)
     else:
-        return render(request, 'inc/404.html')
+        return render(request, 'quiz/select_lang.html')
+
+
+

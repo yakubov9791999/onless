@@ -76,7 +76,7 @@ class Javob(models.Model):
     text_uz = models.CharField(max_length=1000, blank=True)
     text_kr = models.CharField(max_length=1000, blank=True)
     text_ru = models.CharField(max_length=1000, blank=True)
-    savol = models.ForeignKey(Savol, on_delete=models.SET_NULL,null=True)
+    savol = models.ForeignKey(Savol, on_delete=models.SET_NULL,null=True, related_name='questions')
     is_true = models.BooleanField(default=False)
 
     def __str__(self):

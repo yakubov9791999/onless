@@ -179,6 +179,14 @@
         {% if not view_video_complete.exists %}
             $("#video_bottom_question").hide();
         {% endif %}
+
+        
+        videojs("my-video", {
+            controlBar: {
+                fullscreenToggle: false
+            }
+        });
+
         var video = videojs('my-video').ready(function () {
             var player = this;
 

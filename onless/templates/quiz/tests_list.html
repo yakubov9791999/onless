@@ -11,52 +11,85 @@
 
                         {% csrf_token %}
                         <div class="questionsBox">
-                            <div class="questions">{{ savol.title_uz }}
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5" id="javob">
+                            {% if lang == 'uz' %}
+                                <div class="questions">{{ savol.title_uz }}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <center>
+                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
+                                                 width="100%"
+                                                 height="auto"
+                                                 style="margin: 0 auto">
+                                        </center>
+                                    </div>
+                                    <div class="col-md-5" id="javob">
 
-                                    {% get_true_javob savol.id as javoblar %}
 
-                                    {% if javoblar.javob_1 %}
-                                        <input type="submit" value="1. {{ javoblar.javob_1.text_uz }}" id="javob{{ javoblar.javob_1.id }}"
-                                               data-id="{{ javoblar.javob_1.id }}" style="font-size: 0.8rem;"
-                                               class="mt-3 btn text-left">
-                                    {% endif %}
-                                    <br>
+                                        {% for javob in savol.questions.all %}
+                                            <div id="javob{{ javob.id }}"
+                                                 data-id="{{ javob.id }}"
+                                                 class=" mt-3 btn text-left javob">
+                                                {{ forloop.counter }}. {{ javob.text_uz }}
+                                            </div>
+                                        {% endfor %}
 
-                                    {% if javoblar.javob_2 %}
-
-                                        <input type="submit" value="2. {{ javoblar.javob_2.text_uz }}" id="javob{{ javoblar.javob_2.id }}"
-                                               data-id="{{ javoblar.javob_2.id }}" style="font-size: 0.8rem;"
-                                               class="mt-3 btn text-left">
-                                    {% endif %}
-                                    <br>
-                                    {% if javoblar.javob_3 %}
-
-                                        <input type="submit" value="3. {{ javoblar.javob_3.text_uz }}" id="javob{{ javoblar.javob_3.id }}"
-                                               data-id="{{ javoblar.javob_3.id }}" style="font-size: 0.8rem;"
-                                               class="mt-3 btn text-left">
-                                    {% endif %}
-                                    <br>
-                                    {% if javoblar.javob_4 %}
-
-                                        <input type="submit" value="4. {{ javoblar.javob_4.text_uz }}" id="javob{{ javoblar.javob_4.id }}"
-                                               data-id="{{ javoblar.javob_4.id }}" style="font-size: 0.8rem; "
-                                               class="mt-3 btn text-left">
-
-                                    {% endif %}
+                                    </div>
 
                                 </div>
-                                <div class="col-md-7">
-                                    <center>
-                                        <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
-                                             width="auto"
-                                             height="300px;"
-                                             style="margin: 0 auto">
-                                    </center>
+                            {% elif lang == 'kr' %}
+                                <div class="questions">{{ savol.title_kr }}
                                 </div>
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <center>
+                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
+                                                 width="100%"
+                                                 height="auto"
+                                                 style="margin: 0 auto">
+                                        </center>
+                                    </div>
+                                    <div class="col-md-5" id="javob">
+
+
+                                        {% for javob in savol.questions.all %}
+                                            <div id="javob{{ javob.id }}"
+                                                 data-id="{{ javob.id }}"
+                                                 class=" mt-3 btn text-left javob">
+                                                {{ forloop.counter }}. {{ javob.text_kr }}
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+                            {% elif lang == 'ru' %}
+                                <div class="questions">{{ savol.title_ru }}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <center>
+                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
+                                                 width="100%"
+                                                 height="auto"
+                                                 style="margin: 0 auto">
+                                        </center>
+                                    </div>
+                                    <div class="col-md-5" id="javob">
+
+
+                                        {% for javob in savol.questions.all %}
+                                            <div id="javob{{ javob.id }}"
+                                                 data-id="{{ javob.id }}"
+                                                 class=" mt-3 btn text-left javob">
+                                                {{ forloop.counter }}. {{ javob.text_ru }}
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+                            {% endif %}
                         </div>
 
 
@@ -74,24 +107,33 @@
     <script>
 
         $(document).ready(function (event) {
-            $('#javob input').on('click', function () {
+
+            $('#javob div').on('click', function (event) {
                 event.preventDefault;
                 var id = $(this).data("id");
 
 
-            $.ajax({
-                method: "GET",
-                url: "{% url 'quiz:tests_list' %}",
-                data: {
-                    'javob': id, // from form
-                },
-                success: function (message) {
-                 $('#javob' + id).css({"background-color": message,});
-                },
-                error: function () {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'quiz:get_true_answer' %}",
+                    data: {
+                        'javob': id, // from form
+                    },
+                    success: function (message) {
 
-                },
-            });
+                        if (message == "True") {
+                            $('#javob' + id).css({"background-color": "#89e790",});
+                        } else {
+                            $('#javob' + id).css({"background-color": "#ef6565",});
+                        }
+
+                    },
+                    error: function (message) {
+                        console.log(message)
+                    },
+                });
+
+
             });
 
         });

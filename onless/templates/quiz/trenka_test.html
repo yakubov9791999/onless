@@ -19,7 +19,7 @@
                         {% csrf_token %}
                         <div class="questionsBox">
                             {% if lang == 'uz' %}
-                                <div class="questions" >№{{ forloop.counter }} {{ savol.title_uz }}
+                                <div class="questions">№{{ forloop.counter }} {{ savol.title_uz }}
                                 </div>
                                 <div class="row">
                                     <div class="col-md-7">
@@ -102,37 +102,6 @@
 
             </div>
 
-            <div class="col-11 result-box">
-                <div class="result-header text-center">
-                    Test topshirilgan
-                </div>
-                <div class="result-center">
-                    <div class="progress result-progress">
-                        {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
-                            <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
-                                 role="progressbar"
-                                 aria-valuenow="40" aria-valuemin="2"
-
-                                 aria-valuemax="6" style="width:{{ pupil_res.res }}%">
-                                <b>{{ pupil_res.res }}%</b>
-                            </div>
-                        {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
-                            <div style="width: 100%; margin-left: 45%">0%</div>
-                        {% else %}
-                            <div style="margin-left: 10%"></div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="result-footer">
-
-                    {% for savol in savollar %}
-
-                            <button id="result-btn" class="result-answers col-1">{{ forloop.counter }}</button>
-
-                    {% endfor %}
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -161,14 +130,11 @@
 
                         if (message == "True") {
                             $('#javob' + javobId).css({"background-color": colorGreen,});
-                            $('#result-btn').attr('id', 'btn-'+javobId);
 
 
 
                         } else {
                             $('#javob' + javobId).css({"background-color": colorRed,});
-                            $('#result-btn').attr('id', 'btn-'+javobId);
-                            {#$('#btn-' + id).css({"background-color": colorRed,})#}
                         }
 
                     },

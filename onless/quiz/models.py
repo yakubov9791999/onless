@@ -86,3 +86,17 @@ class Javob(models.Model):
     class Meta:
         verbose_name = 'Test javobi'
         verbose_name_plural = 'Test javoblari'
+
+class ResultJavob(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='resultjavob_user', null=True)
+    bilet = models.ForeignKey(Bilet, on_delete=models.SET_NULL, related_name='resultjavob_bilet', null=True)
+    j_1 = models.BooleanField(default=False)
+    j_2 = models.BooleanField(default=False)
+    j_3 = models.BooleanField(default=False)
+    j_4 = models.BooleanField(default=False)
+    j_5 = models.BooleanField(default=False)
+    j_6 = models.BooleanField(default=False)
+    j_7 = models.BooleanField(default=False)
+    j_8 = models.BooleanField(default=False)
+    j_9 = models.BooleanField(default=False)
+    j_10 = models.BooleanField(default=False)

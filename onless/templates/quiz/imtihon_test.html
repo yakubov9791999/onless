@@ -2,8 +2,9 @@
 {% load quiz_tags %}
 {% load static %}
 {% block content %}
-    <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Bilet{% elif lang == 'kr' %}
-        Билет{% elif lang == 'ru' %}Билеть{% endif %} № {{ bilet }}</b></div>
+    <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon. To'g'ri javoblar:
+        <span id="span_true"></span>{% elif lang == 'kr' %}
+        Имтихон{% elif lang == 'ru' %}Экзамен{% endif %}</b></div>
     <div class="row ml-3 mr-3">
 
 
@@ -14,12 +15,12 @@
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
                 {% for savol in savollar %}
-                    <div class="privew" data-id="{{ savol.id }}">
+                    <div class="privew" data-id="{{ savol.id }}" data-btn="{{ forloop.counter }}">
 
                         {% csrf_token %}
                         <div class="questionsBox">
                             {% if lang == 'uz' %}
-                                <div class="questions" >№{{ forloop.counter }} {{ savol.title_uz }}
+                                <div class="questions">№{{ forloop.counter }} {{ savol.title_uz }}
                                 </div>
                                 <div class="row">
                                     <div class="col-md-7">
@@ -127,7 +128,8 @@
 
                     {% for savol in savollar %}
 
-                            <button id="result-btn" class="result-answers col-1">{{ forloop.counter }}</button>
+                        <button id="btn-{{ forloop.counter }}"
+                                class="result-answers col-1">{{ forloop.counter }}</button>
 
                     {% endfor %}
                 </div>
@@ -138,38 +140,76 @@
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
     <script>
 
         $(document).ready(function (event) {
+            var answerTrue = 0;
+            var answerFalse = 0;
 
             $('#javob div').on('click', function (event) {
                 event.preventDefault;
                 var javobId = $(this).data("id");
                 var savolId = $(this).parents('.privew').data('id');
+                var foorlopCounter = $(this).parents('.privew').data('btn');
                 var colorRed = '#ef6565'
                 var colorGreen = '#89e790'
 
+
                 $.ajax({
+
                     method: "GET",
                     url: "{% url 'quiz:get_true_answer' %}",
                     data: {
                         'javob': javobId,
                         'savol': savolId,
-                        // from form
+
                     },
+
+
                     success: function (message) {
 
                         if (message == "True") {
-                            $('#javob' + javobId).css({"background-color": colorGreen,});
-                            $('#result-btn').attr('id', 'btn-'+javobId);
+                            answerTrue = answerTrue + 1;
 
 
+                            $('#javob' + javobId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
+
+                            if ('#btn-' + foorlopCounter) {
+                                $('#result-btn').attr('id', 'btn-' + javobId);
+                                $('#btn-' + foorlopCounter).css('background-color', colorGreen)
+                            } else {
+
+                                console.log('topilmadi')
+                            }
 
                         } else {
-                            $('#javob' + javobId).css({"background-color": colorRed,});
-                            $('#result-btn').attr('id', 'btn-'+javobId);
-                            {#$('#btn-' + id).css({"background-color": colorRed,})#}
+                            answerFalse = answerFalse + 1;
+
+                            $('#javob' + javobId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
+                            if ('#btn-' + foorlopCounter) {
+                                $('#result-btn').attr('id', 'btn-' + javobId);
+                                $('#btn-' + foorlopCounter).css('background-color', colorRed)
+                            } else {
+                                console.log('topilmadi')
+                            }
                         }
+                        if (answerFalse > 1) {
+                            //imtihondan o'ta olmadi
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                                footer: '<a href>Why do I have this issue?</a>'
+                            })
+                        } else {
+                            //imtihondan o'tdi
+
+
+                        }
+
 
                     },
                     error: function (message) {

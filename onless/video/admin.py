@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
+from django.contrib.admin import SimpleListFilter
 from django.utils.safestring import mark_safe
 
 from video.models import *
@@ -13,11 +14,23 @@ class VideoAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
+
+
+
+
+
+
 @admin.register(ViewComplete)
 class ViewCompleteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'video', 'time']
+    list_display = ['id', 'video', 'user', 'get_school_name','time']
     list_display_links = ['video']
     save_on_top = True
+    list_filter = ['video',]
+    search_fields = ['user__phone','user__name','user__username', 'video', ]
+
+    def get_school_name(self, obj):
+        return obj.user.school
+
 
 
 @admin.register(Category)

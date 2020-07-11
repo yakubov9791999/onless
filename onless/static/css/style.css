@@ -413,12 +413,12 @@ a:active {
 .javob {
     border: 1px solid black;
     font-size: 0.8rem;
-    background-color: #cbcbcb;
+    background-color: #e3e3e3;
     width: 100%
 }
 
 .javob:hover {
-    background-color: #a3a3a3;
+    background-color: #d0d0d0;
 
 }
 
@@ -456,4 +456,81 @@ a:active {
     border-radius: 0 30% 0 30% !important;
     font-size: 1.5rem;
 
+}
+
+.result-box {
+    margin-top: 5%;
+    margin-left: 4%;
+    margin-right: 3%;
+    border: 1px solid black;
+    height: 200px;
+    padding: 3% 3% 3% 3%;
+}
+
+.result-header {
+    font-size: x-large;
+    margin-bottom: 1%;
+}
+
+
+.result-progress {
+    height: 2rem !important;
+    margin-bottom: 2%;
+}
+
+.result-answers {
+    margin-left: 1px;
+    font-size: small;
+}
+
+.result-footer {
+    padding-left: 2%;
+}
+
+/*.type-btn {*/
+/*    width: 100%;*/
+/*}*/
+
+
+
+.box-type1 {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    height: 150px;
+    background-image: url("https://ak.picdn.net/shutterstock/videos/16547275/thumb/1.jpg");
+    background-repeat: repeat;
+    background-position: center;
+    border-radius: 5px;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.box-type2 {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    height: 150px;
+    background-image: url("https://image.freepik.com/free-vector/_36402-430.jpg");
+    background-repeat: repeat;
+    background-position: center;
+    border-radius: 5px;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.box-type1 .text-center{
+    color: #c6d2e0;
+    margin-top: 90px;
+    font-size: xx-large;
+
+}
+
+.box-type2 .text-center{
+    color: #c6d2e0;
+    margin-top: 90px;
+    font-size: xx-large;
+
+}
+
+.disableddiv {
+    pointer-events: none;
 }

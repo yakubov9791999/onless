@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="box">
+        <div class="container">
+            <div class="row justify-content-center">
+                <a class="col-lg-5 col-md-5 col-sm-5 col-xs-12 box-type1" href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=T">
+
+                    <div class="text-center">
+                        {% if lang == 'uz' %}Trenirovkani boshlash{% elif lang == 'kr' %}Тренировкани бошлаш{% elif lang == 'ru' %}Начать тренировку{% endif %}
+                    </div>
+                </a>
+            <a class="col-lg-5 col-md-5 col-sm-5 col-xs-12 box-type2" href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=I">
+
+                    <div class="text-center">
+                        {% if lang == 'uz' %}Imtihonni boshlash{% elif lang == 'kr' %}Имтиҳонни бошлаш{% elif lang == 'ru' %}Начать экзамен{% endif %}
+                    </div>
+            </a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+

@@ -2,11 +2,11 @@
 {% load quiz_tags %}
 {% load static %}
 {% block content %}
-    <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon. To'g'ri javoblar:
+    <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon
         <span id="span_true"></span>{% elif lang == 'kr' %}
-        Имтихон{% elif lang == 'ru' %}Экзамен <span id='countDown'>
+        Имтихон{% elif lang == 'ru' %}Экзамен {% endif %}<span id='countDown'>
 
-</span>{% endif %}</b></div>
+</span></b></div>
     <div class="row ml-3 mr-3">
 
 
@@ -167,8 +167,9 @@
                 }else if (result <= 35){
                     classTitle = 'bg-danger progress-bar-striped'
                 }
-                $('#progress_css').css('width', `${result}%`).addClass(classTitle);
-                $('#progress_data').empty().append(`${result}%`);
+
+                $('#progress_css').css('width', `${answerTrue * 10}%`).addClass(classTitle);
+                $('#progress_data').empty().append(`${answerTrue * 10}%`);
 
 
                 $.ajax({

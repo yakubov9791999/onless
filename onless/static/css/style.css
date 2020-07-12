@@ -458,14 +458,7 @@ a:active {
 
 }
 
-.result-box {
-    margin-top: 5%;
-    margin-left: 4%;
-    margin-right: 3%;
-    border: 1px solid black;
-    height: 200px;
-    padding: 3% 3% 3% 3%;
-}
+
 
 .result-header {
     font-size: x-large;
@@ -474,17 +467,23 @@ a:active {
 
 
 .result-progress {
-    height: 2rem !important;
-    margin-bottom: 2%;
+    height: 1rem !important;
+    margin-bottom: 4%;
 }
 
 .result-answers {
-    margin-left: 1px;
-    font-size: small;
+    font-size: medium;
+    padding: 7px 10px 7px 10px;
+    border-radius: 4px 4px 4px 4px;
+    border: 1px solid black;
+}
+.result-answers:active {
+    border: none;
 }
 
 .result-footer {
     padding-left: 2%;
+    display: none;
 }
 
 /*.type-btn {*/

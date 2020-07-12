@@ -2,9 +2,8 @@
 {% load quiz_tags %}
 {% load static %}
 {% block content %}
-    <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon
-        <span id="span_true"></span>{% elif lang == 'kr' %}
-        Имтихон{% elif lang == 'ru' %}Экзамен {% endif %}<span id='countDown'>
+    <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon {% elif lang == 'kr' %}
+        Имтихон {% elif lang == 'ru' %}Экзамен {% endif %}<span id='countDown'>
 
 </span></b></div>
     <div class="row ml-3 mr-3">
@@ -143,9 +142,27 @@
         $(document).ready(function (event) {
             var answerTrue = 0;
             var answerFalse = 0;
-            var TrueTitle = '<h3 style="color: #89e790" class="title">Imtihon topshirildi !</h3>'
-            var FalseTitle = '<h3 style="color: red" class="title">Imtihon topshirilmadi !</h3>'
-
+            var TrueTitle;
+            var FalseTitle;
+            var swalButtonTitle;
+            var swalText;
+            var lang = '{{ lang }}';
+            if (lang == 'uz'){
+                TrueTitle = '<h3 style="color: #89e790" class="title">Imtihon topshirildi !</h3>'
+                FalseTitle = '<h3 style="color: red" class="title">Imtihon topshirilmadi !</h3>'
+                swalButtonTitle = 'Qayta topshirish'
+                swalText = 'Qaytadan topshirmoqchimisiz ?'
+            }else if (lang == 'kr') {
+                TrueTitle = '<h3 style="color: #89e790" class="title">Имтихон топширилди !</h3>'
+                FalseTitle = '<h3 style="color: red" class="title">Имтихон топширилмади !</h3>'
+                swalButtonTitle = 'Қайта топшириш'
+                swalText = 'Қайтадан топширмоқчимисиз ?'
+            }else if (lang == 'ru'){
+                TrueTitle = '<h3 style="color: #89e790" class="title">Экзамен cдал !</h3>'
+                FalseTitle = '<h3 style="color: red" class="title">Экзамен не cдал !</h3>'
+                swalButtonTitle = 'Повторение'
+                swalText = 'Хотите повторить ?'
+            }
 
             {#$("#countdown").after(progressBar);#}
 
@@ -158,7 +175,7 @@
                 var foorlopCounter = $(this).parents('.privew').data('btn');
                 var colorRed = '#ef6565'
                 var colorGreen = '#89e790'
-                var result = answerTrue * 100 / 10
+                var result = parseInt(answerTrue) * 100 / 10
                 var classTitle
                 if (result >= 75){
                     classTitle = 'bg-success progress-bar-striped'
@@ -167,9 +184,9 @@
                 }else if (result <= 35){
                     classTitle = 'bg-danger progress-bar-striped'
                 }
-
-                $('#progress_css').css('width', `${answerTrue * 10}%`).addClass(classTitle);
-                $('#progress_data').empty().append(`${answerTrue * 10}%`);
+                console.log(result)
+                $('#progress_css').css('width', `${result}%`).addClass(classTitle);
+                $('#progress_data').empty().append(`${result}%`);
 
 
                 $.ajax({
@@ -219,11 +236,11 @@
                                 {#icon: 'error',#}
                                 title: FalseTitle,
                                 {#background: '#ffecec',#}
-                                text: 'Qaytadan topshirmoqchimisiz ?',
+                                text: swalText,
                                 html: html,
                                 {#timer: 2000,#}
                                 showConfirmButton: true,
-                                confirmButtonText: 'Qayta topshirish',
+                                confirmButtonText: swalButtonTitle,
                                 {#confirmButtonColor: '#a5c7f6',#}
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
@@ -238,11 +255,11 @@
                                 {#icon: 'error',#}
                                 title: TrueTitle,
                                 {#background: '#ffecec',#}
-                                text: 'Qaytadan topshirmoqchimisiz ?',
+                                text: swalText,
                                 html: html,
                                 {#timer: 2000,#}
                                 showConfirmButton: true,
-                                confirmButtonText: 'Qayta topshirish',
+                                confirmButtonText: swalButtonTitle,
                                 {#confirmButtonColor: '#a5c7f6',#}
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
@@ -289,11 +306,11 @@
                         {#icon: 'error',#}
                         title: FalseTitle,
                         {#background: '#ffecec',#}
-                        text: 'Qaytadan topshirmoqchimisiz ?',
+                        text: swalText,
                         html: html,
                         {#timer: 2000,#}
                         showConfirmButton: true,
-                        confirmButtonText: 'Qayta topshirish',
+                        confirmButtonText: swalButtonTitle,
                         {#confirmButtonColor: '#a5c7f6',#}
                         {#footer: footerMsg,#}
                     }).then(function (isConfirm) {

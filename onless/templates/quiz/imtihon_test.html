@@ -4,7 +4,9 @@
 {% block content %}
     <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon. To'g'ri javoblar:
         <span id="span_true"></span>{% elif lang == 'kr' %}
-        Имтихон{% elif lang == 'ru' %}Экзамен{% endif %}</b></div>
+        Имтихон{% elif lang == 'ru' %}Экзамен <span id='countDown'>
+
+</span>{% endif %}</b></div>
     <div class="row ml-3 mr-3">
 
 
@@ -103,37 +105,28 @@
 
             </div>
 
-            <div class="col-11 result-box">
-                <div class="result-header text-center">
-                    Test topshirilgan
-                </div>
-                <div class="result-center">
-                    <div class="progress result-progress">
-                        {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
-                            <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
+
+
+                <div class="result-footer" >
+                <p id="countdown"></p>
+                    <div class="progress result-progress mb-2">
+
+                            <div class="progress-bar bg-success progress-bar-striped"
                                  role="progressbar"
                                  aria-valuenow="40" aria-valuemin="2"
-
-                                 aria-valuemax="6" style="width:{{ pupil_res.res }}%">
-                                <b>{{ pupil_res.res }}%</b>
+                                 aria-valuemax="6" style="width:50%">
+                                <b>20%</b>
                             </div>
-                        {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
-                            <div style="width: 100%; margin-left: 45%">0%</div>
-                        {% else %}
-                            <div style="margin-left: 10%"></div>
-                        {% endif %}
+
                     </div>
-                </div>
-                <div class="result-footer">
-
                     {% for savol in savollar %}
-
                         <button id="btn-{{ forloop.counter }}"
-                                class="result-answers col-1">{{ forloop.counter }}</button>
-
+                                class="result-answers ml-2">{{ forloop.counter }}</button>
                     {% endfor %}
+
                 </div>
-            </div>
+
+
 
         </div>
     </div>
@@ -146,10 +139,15 @@
 
         $(document).ready(function (event) {
             var answerTrue = 0;
+
             var answerFalse = 0;
+            var html = $('.result-footer').children()
+            var TrueTitle = '<h2 style="color: #89e790" class="title">Imtihon topshirildi !</h2>'
+            var FalseTitle = '<h2 style="color: red" class="title">Imtihon topshirilmadi !</h2>'
+
 
             $('#javob div').on('click', function (event) {
-                event.preventDefault;
+                event.preventDefault();
                 var javobId = $(this).data("id");
                 var savolId = $(this).parents('.privew').data('id');
                 var foorlopCounter = $(this).parents('.privew').data('btn');
@@ -175,7 +173,7 @@
 
 
                             $('#javob' + javobId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
-
+                            $('#javob' + javobId).addClass('disableddiv')
                             if ('#btn-' + foorlopCounter) {
                                 $('#result-btn').attr('id', 'btn-' + javobId);
                                 $('#btn-' + foorlopCounter).css('background-color', colorGreen)
@@ -188,6 +186,7 @@
                             answerFalse = answerFalse + 1;
 
                             $('#javob' + javobId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
+                            $('#javob' + javobId).addClass('disableddiv')
                             if ('#btn-' + foorlopCounter) {
                                 $('#result-btn').attr('id', 'btn-' + javobId);
                                 $('#btn-' + foorlopCounter).css('background-color', colorRed)
@@ -195,34 +194,110 @@
                                 console.log('topilmadi')
                             }
                         }
-                        if (answerFalse > 1) {
+                        if (answerFalse >= 2) {
                             //imtihondan o'ta olmadi
-
+                            clearInterval(interval)
                             Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                                footer: '<a href>Why do I have this issue?</a>'
+                                {#icon: 'error',#}
+                                title: FalseTitle,
+                                {#background: '#ffecec',#}
+                                text: 'Qaytadan topshirmoqchimisiz ?',
+                                html: html,
+                                {#timer: 2000,#}
+                                showConfirmButton: true,
+                                confirmButtonText: 'Qayta topshirish',
+                                confirmButtonColor: '#a5c7f6',
+                                {#footer: footerMsg,#}
+                            }).then(function (isConfirm) {
+                                if (isConfirm) {
+                                    location.reload()
+                                }
                             })
-                        } else {
+                        } else if (answerTrue >= 9){
                             //imtihondan o'tdi
-
-
+                            clearInterval(interval)
+                             Swal.fire({
+                                {#icon: 'error',#}
+                                title: TrueTitle,
+                                {#background: '#ffecec',#}
+                                text: 'Qaytadan topshirmoqchimisiz ?',
+                                html: html,
+                                {#timer: 2000,#}
+                                showConfirmButton: true,
+                                confirmButtonText: 'Qayta topshirish',
+                                confirmButtonColor: '#a5c7f6',
+                                {#footer: footerMsg,#}
+                            }).then(function (isConfirm) {
+                                if (isConfirm) {
+                                    location.reload()
+                                }
+                            })
                         }
-
-
                     },
                     error: function (message) {
                         console.log(message)
                     },
                 });
-
-
             });
 
+            let time = 900;
+            let p = document.getElementById('countDown')
+            let p2 = document.getElementById('countdown')
+            let finishMinutes = 0
+            let finishSeconds = 0
+            let interval = setInterval(updateCountDown, 1000)
+
+            function updateCountDown() {
+                let minutes = Math.floor(time / 60)
+                let seconds = time % 60
+                seconds = seconds < 10 ? '0' + seconds : seconds
+                minutes = minutes < 10 ? '0' + minutes : minutes
+                finishSeconds = 60 - seconds;
+                finishMinutes = 14 - minutes;
+                finishSeconds = finishSeconds < 10 ? '0' + finishSeconds : finishSeconds
+                finishMinutes = finishMinutes < 10 ? '0' + finishMinutes : finishMinutes
+                p.innerHTML = `${minutes}:${seconds}`
+                p2.innerHTML = `${finishMinutes}:${finishSeconds}`
+
+
+
+
+                time--;
+
+                if(time < 0){
+                    clearInterval(interval)
+
+                        Swal.fire({
+                                {#icon: 'error',#}
+                                title: FalseTitle,
+                                {#background: '#ffecec',#}
+                                text: 'Qaytadan topshirmoqchimisiz ?',
+                                html: html,
+                                {#timer: 2000,#}
+                                showConfirmButton: true,
+                                confirmButtonText: 'Qayta topshirish',
+                                confirmButtonColor: '#a5c7f6',
+                                {#footer: footerMsg,#}
+                            }).then(function (isConfirm) {
+                                if (isConfirm) {
+                                    window.location.reload()
+                                }
+                            })
+
+
+
+                }
+
+            }
         });
 
     </script>
+
+
+    <script>
+
+    </script>
+
 {% endblock content %}
 
 

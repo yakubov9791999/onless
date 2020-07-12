@@ -121,7 +121,7 @@
                     </div>
                     {% for savol in savollar %}
                         <button id="btn-{{ forloop.counter }}"
-                                class="result-answers ml-2">{{ forloop.counter }}</button>
+                                class="result-answers col-1 ml-2">{{ forloop.counter }}</button>
                     {% endfor %}
 
                 </div>
@@ -142,8 +142,8 @@
 
             var answerFalse = 0;
             var html = $('.result-footer').children()
-            var TrueTitle = '<h2 style="color: #89e790" class="title">Imtihon topshirildi !</h2>'
-            var FalseTitle = '<h2 style="color: red" class="title">Imtihon topshirilmadi !</h2>'
+            var TrueTitle = '<h3 style="color: #89e790" class="title">Imtihon topshirildi !</h3>'
+            var FalseTitle = '<h3 style="color: red" class="title">Imtihon topshirilmadi !</h3>'
 
 
             $('#javob div').on('click', function (event) {
@@ -206,7 +206,7 @@
                                 {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: 'Qayta topshirish',
-                                confirmButtonColor: '#a5c7f6',
+                                {#confirmButtonColor: '#a5c7f6',#}
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
@@ -225,7 +225,7 @@
                                 {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: 'Qayta topshirish',
-                                confirmButtonColor: '#a5c7f6',
+                                {#confirmButtonColor: '#a5c7f6',#}
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
@@ -276,7 +276,7 @@
                                 {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: 'Qayta topshirish',
-                                confirmButtonColor: '#a5c7f6',
+                                {#confirmButtonColor: '#a5c7f6',#}
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {

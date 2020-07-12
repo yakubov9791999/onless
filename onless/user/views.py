@@ -579,7 +579,7 @@ def upload_file(request):
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                             response = requests.get(url)
-                            messages.success(request, f"{i} ta o'quvchi muvaffaqiyatli qo'shildi !")
+                            messages.success(request, f"Muvaffaqiyatli qo'shildi !")
 
 
                         except IntegrityError:
@@ -616,7 +616,7 @@ def upload_file(request):
                             user.username = pasport
                             user.email = ''
                             user.save()
-                            messages.success(request, f"{i} ta o'quvchi muvaffaqiyatli qo'shildi !")
+                            messages.success(request, f"Muvaffaqiyatli qo'shildi !")
                             # messages.error(request, f"Excel fayldagi {row + 1}-ustunda xatolik ! ")
                             # next = request.META['HTTP_REFERER']
                             # return HttpResponseRedirect(next)

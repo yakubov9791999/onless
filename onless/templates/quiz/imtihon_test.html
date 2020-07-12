@@ -106,26 +106,20 @@
             </div>
 
 
-
-                <div class="result-footer" >
+            <div class="result-footer">
                 <p id="countdown"></p>
-                    <div class="progress result-progress mb-2">
-
-                            <div class="progress-bar bg-success progress-bar-striped"
-                                 role="progressbar"
-                                 aria-valuenow="40" aria-valuemin="2"
-                                 aria-valuemax="6" style="width:50%">
-                                <b>20%</b>
-                            </div>
-
+                <div class="progress result-progress mb-2">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40"
+                         aria-valuemin="2"
+                         aria-valuemax="10" id="progress_css"><b id="progress_data"></b>
                     </div>
-                    {% for savol in savollar %}
-                        <button id="btn-{{ forloop.counter }}"
-                                class="result-answers col-1 mr-1 mt-2">{{ forloop.counter }}</button>
-                    {% endfor %}
-
                 </div>
+                {% for savol in savollar %}
+                    <button id="btn-{{ forloop.counter }}"
+                            class="result-answers col-1 mr-1 mt-2">{{ forloop.counter }}</button>
+                {% endfor %}
 
+            </div>
 
 
         </div>
@@ -137,14 +131,25 @@
 
     <script>
 
+        {#var progressBar = '<div class="progress result-progress mb-2">\n' +#}
+        {#    '                            <div class="progress-bar bg-success progress-bar-striped"\n' +#}
+        {#    '                                 role="progressbar"\n' +#}
+        {#    '                                 aria-valuenow="40" aria-valuemin="2"\n' +#}
+        {#    '                                 aria-valuemax="6" style="width:10%">\n' +#}
+        {#    '                                <b>20%</b>\n' +#}
+        {#    '                            </div>\n' +#}
+        {#    '                    </div>'#}
+
         $(document).ready(function (event) {
             var answerTrue = 0;
-
             var answerFalse = 0;
-            var html = $('.result-footer').children()
             var TrueTitle = '<h3 style="color: #89e790" class="title">Imtihon topshirildi !</h3>'
             var FalseTitle = '<h3 style="color: red" class="title">Imtihon topshirilmadi !</h3>'
 
+
+            {#$("#countdown").after(progressBar);#}
+
+            var html = $('.result-footer').children()
 
             $('#javob div').on('click', function (event) {
                 event.preventDefault();
@@ -153,6 +158,17 @@
                 var foorlopCounter = $(this).parents('.privew').data('btn');
                 var colorRed = '#ef6565'
                 var colorGreen = '#89e790'
+                var result = answerTrue * 100 / 10
+                var classTitle
+                if (result >= 75){
+                    classTitle = 'bg-success progress-bar-striped'
+                }else if (result < 75 && result > 35){
+                    classTitle = 'bg-warning progress-bar-striped'
+                }else if (result <= 35){
+                    classTitle = 'bg-danger progress-bar-striped'
+                }
+                $('#progress_css').css('width', `${result}%`).addClass(classTitle);
+                $('#progress_data').empty().append(`${result}%`);
 
 
                 $.ajax({
@@ -194,6 +210,7 @@
                                 console.log('topilmadi')
                             }
                         }
+
                         if (answerFalse >= 2) {
                             //imtihondan o'ta olmadi
                             clearInterval(interval)
@@ -213,10 +230,10 @@
                                     location.reload()
                                 }
                             })
-                        } else if (answerTrue >= 9){
+                        } else if (answerTrue >= 9) {
                             //imtihondan o'tdi
                             clearInterval(interval)
-                             Swal.fire({
+                            Swal.fire({
                                 {#icon: 'error',#}
                                 title: TrueTitle,
                                 {#background: '#ffecec',#}
@@ -238,6 +255,8 @@
                         console.log(message)
                     },
                 });
+
+
             });
 
             let time = 900;
@@ -260,30 +279,27 @@
                 p2.innerHTML = `${finishMinutes}:${finishSeconds}`
 
 
-
-
                 time--;
 
-                if(time < 0){
+                if (time < 0) {
                     clearInterval(interval)
 
-                        Swal.fire({
-                                {#icon: 'error',#}
-                                title: FalseTitle,
-                                {#background: '#ffecec',#}
-                                text: 'Qaytadan topshirmoqchimisiz ?',
-                                html: html,
-                                {#timer: 2000,#}
-                                showConfirmButton: true,
-                                confirmButtonText: 'Qayta topshirish',
-                                {#confirmButtonColor: '#a5c7f6',#}
-                                {#footer: footerMsg,#}
-                            }).then(function (isConfirm) {
-                                if (isConfirm) {
-                                    window.location.reload()
-                                }
-                            })
-
+                    Swal.fire({
+                        {#icon: 'error',#}
+                        title: FalseTitle,
+                        {#background: '#ffecec',#}
+                        text: 'Qaytadan topshirmoqchimisiz ?',
+                        html: html,
+                        {#timer: 2000,#}
+                        showConfirmButton: true,
+                        confirmButtonText: 'Qayta topshirish',
+                        {#confirmButtonColor: '#a5c7f6',#}
+                        {#footer: footerMsg,#}
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.reload()
+                        }
+                    })
 
 
                 }

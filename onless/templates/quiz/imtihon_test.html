@@ -173,19 +173,22 @@
                 var javobId = $(this).data("id");
                 var savolId = $(this).parents('.privew').data('id');
                 var foorlopCounter = $(this).parents('.privew').data('btn');
-                var colorRed = '#ef6565'
-                var colorGreen = '#89e790'
-                var result = parseInt(answerTrue) * 100 / 10
-                var classTitle
-                if (result >= 75){
-                    classTitle = 'bg-success progress-bar-striped'
+                var colorRed = '#ef6565';
+                var colorGreen = '#89e790';
+                var result = parseInt(answerTrue) * 100 / 10;
+
+                if (result > 76){
+                    $('#progress_css').addClass('bg-success progress-bar-striped');
                 }else if (result < 75 && result > 35){
-                    classTitle = 'bg-warning progress-bar-striped'
-                }else if (result <= 35){
-                    classTitle = 'bg-danger progress-bar-striped'
+                    $('#progress_css').addClass('bg-warning progress-bar-striped');
+                }else if (result < 34){
+                    $('#progress_css').addClass('bg-danger progress-bar-striped');
+                }else {
+                    console.log('class mavjud emas')
                 }
-                console.log(result)
-                $('#progress_css').css('width', `${result}%`).addClass(classTitle);
+                
+                $('#progress_css').css('width', `${result}%`);
+
                 $('#progress_data').empty().append(`${result}%`);
 
 

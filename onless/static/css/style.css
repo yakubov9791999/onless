@@ -361,7 +361,8 @@ a:active {
     margin: 0 auto;
 }
 
-.sign-photo img {
+
+.tooltip-sign img {
     width: 170px;
     display: block;
 
@@ -371,7 +372,7 @@ a:active {
 /* Tooltip container */
 .tooltip-sign {
     position: relative;
-    display: inline-block;
+    display: block;
     cursor: pointer;
 
 }
@@ -459,7 +460,6 @@ a:active {
 }
 
 
-
 .result-header {
     font-size: x-large;
     margin-bottom: 1%;
@@ -477,6 +477,7 @@ a:active {
     border-radius: 4px 4px 4px 4px;
     border: 1px solid black;
 }
+
 .result-answers:active {
     border: none;
 }
@@ -489,7 +490,6 @@ a:active {
 /*.type-btn {*/
 /*    width: 100%;*/
 /*}*/
-
 
 
 .box-type1 {
@@ -516,14 +516,14 @@ a:active {
     margin-right: 2%;
 }
 
-.box-type1 .text-center{
+.box-type1 .text-center {
     color: #c6d2e0;
     margin-top: 90px;
     font-size: xx-large;
 
 }
 
-.box-type2 .text-center{
+.box-type2 .text-center {
     color: #c6d2e0;
     margin-top: 90px;
     font-size: xx-large;

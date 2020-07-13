@@ -110,7 +110,7 @@
                 <div class="progress result-progress mb-2">
                     <div role="progressbar" aria-valuenow="40"
                          aria-valuemin="2"
-                         aria-valuemax="10" id="progress_css"><b id="progress_data"></b>
+                         aria-valuemax="10"  id="progress_css"><b id="progress_data"></b>
                     </div>
                 </div>
                 {% for savol in savollar %}
@@ -176,18 +176,21 @@
                 var colorRed = '#ef6565';
                 var colorGreen = '#89e790';
                 var result = parseInt(answerTrue) * 100 / 10;
-
+                var progressClass;
                 if (result > 80){
-                    $('#progress_css').addClass('progress-bar bg-success progress-bar-striped');
+                    progressClass = 'progress-bar progress-bar-striped bg-success'
                 }else if (result < 71 && result > 39){
-                    $('#progress_css').addClass('progress-bar bg-warning progress-bar-striped');
+                    progressClass = 'progress-bar progress-bar-striped bg-warning'
                 }else if (result < 31){
-                    $('#progress_css').addClass('progress-bar bg-danger progress-bar-striped');
+                    progressClass = 'progress-bar progress-bar-striped bg-danger'
                 }else {
                     console.log('class mavjud emas')
                 }
-                
+
+
                 $('#progress_css').css('width', `${result}%`);
+
+                $('#progress_css').attr('class','').attr('class', progressClass);
 
                 $('#progress_data').empty().append(`${result}%`);
 

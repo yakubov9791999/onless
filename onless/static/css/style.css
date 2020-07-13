@@ -373,6 +373,7 @@ a:active {
 .tooltip-sign {
     position: relative;
     display: block;
+    width: 100%;
     cursor: pointer;
 
 }

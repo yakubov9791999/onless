@@ -108,7 +108,7 @@
             <div class="result-footer">
                 <p id="countdown"></p>
                 <div class="progress result-progress mb-2">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="40"
+                    <div role="progressbar" aria-valuenow="40"
                          aria-valuemin="2"
                          aria-valuemax="10" id="progress_css"><b id="progress_data"></b>
                     </div>
@@ -177,12 +177,12 @@
                 var colorGreen = '#89e790';
                 var result = parseInt(answerTrue) * 100 / 10;
 
-                if (result > 76){
-                    $('#progress_css').addClass('bg-success progress-bar-striped');
-                }else if (result < 75 && result > 35){
-                    $('#progress_css').addClass('bg-warning progress-bar-striped');
-                }else if (result < 34){
-                    $('#progress_css').addClass('bg-danger progress-bar-striped');
+                if (result > 80){
+                    $('#progress_css').addClass('progress-bar bg-success progress-bar-striped');
+                }else if (result < 71 && result > 39){
+                    $('#progress_css').addClass('progress-bar bg-warning progress-bar-striped');
+                }else if (result < 31){
+                    $('#progress_css').addClass('progress-bar bg-danger progress-bar-striped');
                 }else {
                     console.log('class mavjud emas')
                 }
@@ -248,7 +248,9 @@
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
-                                    location.reload()
+                                    {#history.go(0);#}
+                                    window.location.href = window.location.href;
+
                                 }
                             })
                         } else if (answerTrue >= 9) {
@@ -267,7 +269,7 @@
                                 {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
-                                    location.reload()
+                                    window.location.href = window.location.href;
                                 }
                             })
                         }
@@ -318,7 +320,7 @@
                         {#footer: footerMsg,#}
                     }).then(function (isConfirm) {
                         if (isConfirm) {
-                            window.location.reload()
+                            window.location.href = window.location.href;
                         }
                     })
 

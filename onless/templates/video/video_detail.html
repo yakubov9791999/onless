@@ -77,13 +77,13 @@
                             {% for material in materials %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href="{{ url }}">{{ material.title }}</a></td>
+                                    <td><a href="{{ url }}" target="_blank" download="on">{{ material.title }}</a></td>
                                     <td>{{ material.author }}</td>
                                     <td>{{ material.file.size|filesizeformat }}</td>
 
                                     {% get_file_url material.id as url %}
                                     <td>&nbsp;
-                                        <a href="{{ url }}"><i class="fas fa-download"></i></a>
+                                        <a href="{{ url }}" target="_blank" download="on"><i class="fas fa-download"></i></a>
                                     </td>
 
                                 </tr>

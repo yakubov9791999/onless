@@ -110,7 +110,7 @@ def get_schedule(request):
 
 @login_required
 def materials(request):
-    materials = Material.objects.filter(is_active=True).order_by('sort')
+    materials = Material.objects.filter(is_active=True).order_by('-id')
 
     context = {
         'materials': materials

@@ -35,7 +35,7 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>
                                         {% get_file_url material.id as url %}
-                                        <a href="{{ url }}" target="_blank">{{ material.title }}</a>
+                                        <a href="{{ url }}" download="on" target="_blank">{{ material.title }}</a>
                                     </td>
                                     <td>{% if material.video %}{{ material.video }}{% endif %}</td>
                                     <td>{{ material.pub_date|date:'SHORT_DATETIME_FORMAT' }}</td>
@@ -44,7 +44,7 @@
                                     <td>{{ material.file.size|filesizeformat }}</td>
                                     {% get_file_url material.id as url %}
                                     <td>&nbsp;
-                                        <a target="_blank" href="{{ url }}"><i class="fas fa-download"></i></a>
+                                        <a target="_blank" download="on" href="{{ url }}"><i class="fas fa-download"></i></a>
                                         {% if material.author == request.user %}
                                             <a href="#" onclick="delete_material({{ material.id }},`{{ material.title }}`)"><i class="fas fa-trash ml-2"></i></a>
                                         {% endif %}

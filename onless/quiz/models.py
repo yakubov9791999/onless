@@ -36,6 +36,7 @@ class ResultQuiz(models.Model):
 
 class Bilet(models.Model):
     number = models.IntegerField(blank=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.number}"
@@ -76,7 +77,7 @@ class Javob(models.Model):
     text_uz = models.CharField(max_length=1000, blank=True)
     text_kr = models.CharField(max_length=1000, blank=True)
     text_ru = models.CharField(max_length=1000, blank=True)
-    savol = models.ForeignKey(Savol, on_delete=models.SET_NULL,null=True)
+    savol = models.ForeignKey(Savol, on_delete=models.SET_NULL,null=True, related_name='questions')
     is_true = models.BooleanField(default=False)
 
     def __str__(self):
@@ -85,3 +86,17 @@ class Javob(models.Model):
     class Meta:
         verbose_name = 'Test javobi'
         verbose_name_plural = 'Test javoblari'
+
+class ResultJavob(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='resultjavob_user', null=True)
+    bilet = models.ForeignKey(Bilet, on_delete=models.SET_NULL, related_name='resultjavob_bilet', null=True)
+    j_1 = models.BooleanField(default=False)
+    j_2 = models.BooleanField(default=False)
+    j_3 = models.BooleanField(default=False)
+    j_4 = models.BooleanField(default=False)
+    j_5 = models.BooleanField(default=False)
+    j_6 = models.BooleanField(default=False)
+    j_7 = models.BooleanField(default=False)
+    j_8 = models.BooleanField(default=False)
+    j_9 = models.BooleanField(default=False)
+    j_10 = models.BooleanField(default=False)

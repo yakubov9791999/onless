@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header" id="heading{{ category.id }}">
                     <h5 class="mb-1 mt-1">
-                        <button class="btn btn-link"  data-toggle="collapse" data-target="#collapse{{ category.id }}"
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ category.id }}"
                                 aria-expanded="true" aria-controls="collapse{{ category.id }}" id="collapse-title">
                             <i class="fas fa-angle-double-right"></i> {{ category.title }}
                         </button>
@@ -19,16 +19,19 @@
                         <div class="row">
 
                             {% for sign in category.sign_cateogories.all|view_sign %}
-                                <div class="col-md-2 mt-3 mb-5">
-                                    <div class="sign-photo">
+                                <div class="col-md-2 col-lg-2 col-xl-2 col-sm-12 mb-3">
+                                    <div class="sign-photo text-center">
                                         <div class="tooltip-sign">
-                                            <img style="margin: 0 auto" src="{{ sign.photo.url }}" alt="{{ sign.title }}">
-                                            <span class="tooltip-sign-text">{{ sign.text }}</span>
+                                            <img style="margin: 0 auto" src="{{ sign.photo.url }}"
+                                                 alt="{{ sign.title }}">
+                                            {#                                            <span class="tooltip-sign-text">{{ sign.text }}</span>#}
+                                        </div>
+
+                                        <div class="tooltip-sign">{{ sign.title }}
+                                            {#                                        <span class="tooltip-sign-text">{{ sign.text }}</span>#}
                                         </div>
                                     </div>
-                                    <div class="tooltip-sign text-center">{{ sign.title }}
-                                        <span class="tooltip-sign-text">{{ sign.text }}</span>
-                                    </div>
+
 
                                 </div>
                             {% endfor %}

@@ -19,9 +19,10 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 3%">№</th>
                                 <th>Manba nomi</th>
-                                <th>Video nomi</th>
-                                <th style="width: 13%">Qo'shilgan vaqti</th>
+                                <th>Avtomaktab nomi</th>
                                 <th style="width: 15%">Muallif</th>
+                                <th style="width: 13%">Qo'shilgan vaqti</th>
+
                                 <th style="width: 7%">Hajmi</th>
 
                                 <th style="width: 5%">Yuklash</th>
@@ -35,18 +36,21 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>
                                         {% get_file_url material.id as url %}
-                                        <a href="{{ url }}" target="_blank">{{ material.title }}</a>
+                                        <a href="{{ url }}" download="on" target="_blank">{{ material.title }}</a>
                                     </td>
-                                    <td>{% if material.video %}{{ material.video }}{% endif %}</td>
+                                    <td>{% if material.author %}{{ material.author.school.title }}{% endif %}</td>
+                                    <td>{% if material.author %}{{ material.author }}{% endif %}</td>
                                     <td>{{ material.pub_date|date:'SHORT_DATETIME_FORMAT' }}</td>
 
-                                    <td>{% if material.author %}{{ material.author }}{% endif %}</td>
                                     <td>{{ material.file.size|filesizeformat }}</td>
                                     {% get_file_url material.id as url %}
                                     <td>&nbsp;
-                                        <a href="{{ url }}"><i class="fas fa-download"></i></a>
+                                        <a target="_blank" download="on" href="{{ url }}"><i
+                                                class="fas fa-download"></i></a>
                                         {% if material.author == request.user %}
-                                            <a href="#" onclick="delete_material({{ material.id }},`{{ material.title }}`)"><i class="fas fa-trash ml-2"></i></a>
+                                            <a href="#"
+                                               onclick="delete_material({{ material.id }},`{{ material.title }}`)"><i
+                                                    class="fas fa-trash ml-2"></i></a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -54,9 +58,9 @@
                             {% endfor %}
                             </tbody>
                             <tfoot>
-
                             </tfoot>
                         </table>
+                    <p class="h6 text-red">Eslatib o'tamiz! Ushbu materiallar uchun <a href="https://onless.uz/sign/materials/">onless.uz</a> ma'muriyati javobgar emas.</p>
                     </div>
                 </div>
             </div>
@@ -101,4 +105,30 @@
         }
 
     </script>
+
+
 {% endblock content %}
+
+{% block bottom %}
+    <script src="{% static "plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-responsive/js/dataTables.responsive.min.js" %}"></script>
+    <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock bottom %}

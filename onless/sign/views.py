@@ -110,7 +110,7 @@ def get_schedule(request):
 
 @login_required
 def materials(request):
-    materials = Material.objects.filter(is_active=True).order_by('sort')
+    materials = Material.objects.filter(is_active=True).order_by('-id')
 
     context = {
         'materials': materials
@@ -134,7 +134,7 @@ def add_material(request):
                 file = request.FILES['file']
                 ext = os.path.splitext(file.name)[1]
                 title = os.path.splitext(title)[0]
-                if file.size < 5242880:
+                if file.size < 25242880:
                     form = form.save(commit=False)
                     form.title = '{}{}'.format(title, ext)
                     form.school = request.user.school
@@ -145,7 +145,7 @@ def add_material(request):
                     form.save()
                     messages.success(request, "Muvaffaqiyatli qo'shildi !")
                 else:
-                    messages.error(request, "Fayl hajmi 5 mb dan ortiq bo'lmasligi kerak !")
+                    messages.error(request, "Fayl hajmi 25 mb dan ortiq bo'lmasligi kerak !")
         else:
             form = AddMaterialFrom()
         context.update(form=form)

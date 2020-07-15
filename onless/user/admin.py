@@ -12,8 +12,8 @@ class UserAdmin(admin.ModelAdmin):
                     'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
     list_display_links = ['username', 'role']
-    list_filter = ['role', 'school']
-    search_fields = ['name', 'username', 'phone', 'role', 'pasport']
+    list_filter = ['role','is_active', 'school', ]
+    search_fields = ['name', 'username', 'phone', 'pasport','turbo',]
     save_on_top = True
 
     def save_model(self, request, obj, form, change):

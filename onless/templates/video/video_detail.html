@@ -63,7 +63,7 @@
                 <!-- /.card-header -->
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-sm">
+                        <table class="table table-sm table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th style="width: 10px">№</th>
@@ -77,13 +77,16 @@
                             {% for material in materials %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href="{{ url }}">{{ material.title }}</a></td>
+                                    {% get_file_url material.id as url %}
+                                    <td>
+                                        <a href="{{ url }}" target="_blank" download="on">{{ material.title }}</a>
+                                    </td>
                                     <td>{{ material.author }}</td>
                                     <td>{{ material.file.size|filesizeformat }}</td>
 
                                     {% get_file_url material.id as url %}
                                     <td>&nbsp;
-                                        <a href="{{ url }}"><i class="fas fa-download"></i></a>
+                                        <a href="{{ url }}" target="_blank" download="on"><i class="fas fa-download"></i></a>
                                     </td>
 
                                 </tr>
@@ -174,18 +177,20 @@
 
 {% block bottom %}
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
+
     <script>
         {% get_view_video request.user.id video.id as view_video_complete %}
         {% if not view_video_complete.exists %}
             $("#video_bottom_question").hide();
         {% endif %}
 
-        
+
         videojs("my-video", {
             controlBar: {
                 fullscreenToggle: false
             }
         });
+
 
         var video = videojs('my-video').ready(function () {
             var player = this;
@@ -204,6 +209,7 @@
                             $('#append').append(e);
                             e.attr('id', 'myid');
                         }
+
                     });
 
                 });

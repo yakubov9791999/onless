@@ -24,7 +24,7 @@
                                 <div class="row">
                                     <div class="col-md-7">
                                         <center>
-                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
+                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% else %}/media/no-image.jpg{% endif %}" alt=""
                                                  width="100%"
                                                  height="auto"
                                                  style="margin: 0 auto">

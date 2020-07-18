@@ -11,7 +11,14 @@
 
         <!-- left column -->
         <div class="col-md-12" style=" margin-bottom: 50px">
-
+            <div class="alert alert-danger text-center"><b>
+                {% if lang == 'uz' %}
+                    Sizga taqdim etilayotgan imtihon savollari mashg'ulot rejimida mavjud biletlar asosida shakllantirilgan
+                {% elif lang == 'kr' %}
+                    Сизга тақдим етилаётган имтиҳон саволлари машғулот режимида мавжуд билетлар асосида шакллантирилган
+                {% elif lang == 'ru' %}
+                    Экзаменационные вопросы, предлагаемые вам, сформированы на основе имеющихся билетов в режиме обучения
+                {% endif %}</b></div>
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
                 {% for savol in savollar %}
@@ -45,7 +52,7 @@
                                             <div id="javob{{ javob.id }}"
                                                  data-id="{{ javob.id }}"
                                                  class="mt-3 btn text-left javob">
-                                                {{ forloop.counter }}. {{ javob.text_uz }}
+                                                {{ forloop.counter }}). {{ javob.text_uz }}
                                             </div>
                                         {% endfor %}
 
@@ -79,7 +86,7 @@
                                             <div id="javob{{ javob.id }}"
                                                  data-id="{{ javob.id }}"
                                                  class=" mt-3 btn text-left javob">
-                                                {{ forloop.counter }}. {{ javob.text_kr }}
+                                                {{ forloop.counter }}). {{ javob.text_kr }}
                                             </div>
                                         {% endfor %}
 
@@ -111,7 +118,7 @@
                                             <div id="javob{{ javob.id }}"
                                                  data-id="{{ javob.id }}"
                                                  class=" mt-3 btn text-left javob">
-                                                {{ forloop.counter }}. {{ javob.text_ru }}
+                                                {{ forloop.counter }}). {{ javob.text_ru }}
                                             </div>
                                         {% endfor %}
 

@@ -416,7 +416,8 @@ a:active {
     border: 1px solid black;
     font-size: 0.8rem;
     background-color: #e3e3e3;
-    width: 100%
+    width: 100%;
+    text-transform: none;
 }
 
 .javob:hover {
@@ -496,38 +497,44 @@ a:active {
 .box-type1 {
     margin-top: 1%;
     margin-bottom: 1%;
-    height: 150px;
-    background-image: url("https://ak.picdn.net/shutterstock/videos/16547275/thumb/1.jpg");
-    background-repeat: repeat;
+    width: 100%;
+    background-image: url("/static/online/trenirofka.jpg");
+    background-repeat: no-repeat;
     background-position: center;
     border-radius: 5px;
-    margin-left: 2%;
-    margin-right: 2%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-size: 100%;
 }
 
 .box-type2 {
     margin-top: 1%;
     margin-bottom: 1%;
-    height: 150px;
-    background-image: url("https://image.freepik.com/free-vector/_36402-430.jpg");
-    background-repeat: repeat;
+    width: 100%;
+    background-image: url("/static/online/imtihon.jpg");
+    background-repeat: no-repeat;
     background-position: center;
     border-radius: 5px;
-    margin-left: 2%;
-    margin-right: 2%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-size: 100%;
 }
 
 .box-type1 .text-center {
     color: #c6d2e0;
     margin-top: 90px;
-    font-size: xx-large;
+    font-size: 3rem;
+    top: auto;
+    bottom: auto;
+    font-family: 'Rowdies', cursive;
 
 }
 
 .box-type2 .text-center {
     color: #c6d2e0;
     margin-top: 90px;
-    font-size: xx-large;
+    font-size: 3rem;
+    font-family: 'Rowdies', cursive;
 
 }
 

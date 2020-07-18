@@ -209,11 +209,11 @@
                 }
 
 
-                $('#progress_css').css('width', `${result}%`);
+                $('#progress_css').css('width', `${answerTrue * 10}%`);
 
                 $('#progress_css').attr('class', '').attr('class', progressClass);
 
-                $('#progress_data').empty().append(`${result}%`);
+                $('#progress_data').empty().append(`${answerTrue * 10}%`);
 
 
                 $.ajax({

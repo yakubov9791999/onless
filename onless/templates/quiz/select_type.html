@@ -1,23 +1,32 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block top %}
+<link href="https://fonts.googleapis.com/css2?family=Rowdies&display=swap" rel="stylesheet">
+{% endblock %}
 {% block content %}
 
-        <div class="container">
-            <div class="row justify-content-center">
-                <a class="col-lg-5 col-md-5 col-sm-5 col-xs-12 box-type1" href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=T">
+    <div class="container">
+        <div class="row justify-content-center">
+            <a class="col-5 box-type1"
+               href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=T">
 
-                    <div class="text-center">
-                        {% if lang == 'uz' %}Trenirovkani boshlash{% elif lang == 'kr' %}Тренировкани бошлаш{% elif lang == 'ru' %}Начать тренировку{% endif %}
-                    </div>
-                </a>
-            <a class="col-lg-5 col-md-5 col-sm-5 col-xs-12 box-type2" href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=I">
-
-                    <div class="text-center">
-                        {% if lang == 'uz' %}Imtihonni boshlash{% elif lang == 'kr' %}Имтиҳонни бошлаш{% elif lang == 'ru' %}Начать экзамен{% endif %}
-                    </div>
+                <div class="text-center text-light">
+                    {% if lang == 'uz' %}Mashg'ulot{% elif lang == 'kr' %}Машғулот{% elif lang == 'ru' %}
+                        Тренировка{% endif %}
+                </div>
             </a>
-            </div>
+            <div class="col-1"></div>
+            <a class="col-5 box-type2"
+               href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=I">
+
+                <div class="text-center text-light">
+                    {% if lang == 'uz' %}Imtihon{% elif lang == 'kr' %}Имтиҳон{% elif lang == 'ru' %}Экзамен{% endif %}
+                </div>
+            </a>
+
         </div>
+
+    </div>
 
 {% endblock content %}
 

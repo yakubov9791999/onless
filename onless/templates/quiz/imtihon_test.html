@@ -12,7 +12,6 @@
         <!-- left column -->
         <div class="col-md-12" style=" margin-bottom: 50px">
 
-
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
                 {% for savol in savollar %}
@@ -26,10 +25,18 @@
                                 <div class="row">
                                     <div class="col-md-7">
                                         <center>
-                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
-                                                 width="100%"
-                                                 height="auto"
-                                                 style="margin: 0 auto">
+                                            {% if savol.photo %}
+                                                <img src="{{ savol.photo.url }}" alt=""
+                                                     width="100%"
+                                                     height="auto"
+                                                     style="margin: 0 auto">
+                                            {% else %}
+                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
+                                                     alt=""
+                                                     width="100%"
+                                                     height="auto"
+                                                     style="margin: 0 auto">
+                                            {% endif %}
                                         </center>
                                     </div>
                                     <div class="col-md-5" id="javob">
@@ -51,10 +58,18 @@
                                 <div class="row">
                                     <div class="col-md-7">
                                         <center>
-                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
-                                                 width="100%"
-                                                 height="auto"
-                                                 style="margin: 0 auto">
+                                            {% if savol.photo %}
+                                                <img src="{{ savol.photo.url }}" alt=""
+                                                     width="100%"
+                                                     height="auto"
+                                                     style="margin: 0 auto">
+                                            {% else %}
+                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
+                                                     alt=""
+                                                     width="100%"
+                                                     height="auto"
+                                                     style="margin: 0 auto">
+                                            {% endif %}
                                         </center>
                                     </div>
                                     <div class="col-md-5" id="javob">
@@ -77,10 +92,18 @@
                                 <div class="row">
                                     <div class="col-md-7">
                                         <center>
-                                            <img src="{% if savol.photo %}{{ savol.photo.url }}{% endif %}" alt=""
-                                                 width="100%"
-                                                 height="auto"
-                                                 style="margin: 0 auto">
+                                            {% if savol.photo %}
+                                                <img src="{{ savol.photo.url }}" alt=""
+                                                     width="100%"
+                                                     height="auto"
+                                                     style="margin: 0 auto">
+                                            {% else %}
+                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
+                                                     alt=""
+                                                     width="100%"
+                                                     height="auto"
+                                                     style="margin: 0 auto">
+                                            {% endif %}
                                         </center>
                                     </div>
                                     <div class="col-md-5" id="javob">
@@ -110,7 +133,7 @@
                 <div class="progress result-progress mb-2">
                     <div role="progressbar" aria-valuenow="40"
                          aria-valuemin="2"
-                         aria-valuemax="10"  id="progress_css"><b id="progress_data"></b>
+                         aria-valuemax="10" id="progress_css"><b id="progress_data"></b>
                     </div>
                 </div>
                 {% for savol in savollar %}
@@ -130,15 +153,6 @@
 
     <script>
 
-        {#var progressBar = '<div class="progress result-progress mb-2">\n' +#}
-        {#    '                            <div class="progress-bar bg-success progress-bar-striped"\n' +#}
-        {#    '                                 role="progressbar"\n' +#}
-        {#    '                                 aria-valuenow="40" aria-valuemin="2"\n' +#}
-        {#    '                                 aria-valuemax="6" style="width:10%">\n' +#}
-        {#    '                                <b>20%</b>\n' +#}
-        {#    '                            </div>\n' +#}
-        {#    '                    </div>'#}
-
         $(document).ready(function (event) {
             var answerTrue = 0;
             var answerFalse = 0;
@@ -147,24 +161,23 @@
             var swalButtonTitle;
             var swalText;
             var lang = '{{ lang }}';
-            if (lang == 'uz'){
+            if (lang == 'uz') {
                 TrueTitle = '<h3 style="color: #89e790" class="title">Imtihon topshirildi !</h3>'
                 FalseTitle = '<h3 style="color: red" class="title">Imtihon topshirilmadi !</h3>'
                 swalButtonTitle = 'Qayta topshirish'
                 swalText = 'Qaytadan topshirmoqchimisiz ?'
-            }else if (lang == 'kr') {
+            } else if (lang == 'kr') {
                 TrueTitle = '<h3 style="color: #89e790" class="title">Имтихон топширилди !</h3>'
                 FalseTitle = '<h3 style="color: red" class="title">Имтихон топширилмади !</h3>'
                 swalButtonTitle = 'Қайта топшириш'
                 swalText = 'Қайтадан топширмоқчимисиз ?'
-            }else if (lang == 'ru'){
+            } else if (lang == 'ru') {
                 TrueTitle = '<h3 style="color: #89e790" class="title">Экзамен cдал !</h3>'
                 FalseTitle = '<h3 style="color: red" class="title">Экзамен не cдал !</h3>'
                 swalButtonTitle = 'Повторение'
                 swalText = 'Хотите повторить ?'
             }
 
-            {#$("#countdown").after(progressBar);#}
 
             var html = $('.result-footer').children()
 
@@ -177,20 +190,20 @@
                 var colorGreen = '#89e790';
                 var result = parseInt(answerTrue) * 100 / 10;
                 var progressClass;
-                if (result > 80){
+                if (result > 80) {
                     progressClass = 'progress-bar progress-bar-striped bg-success'
-                }else if (result < 71 && result > 39){
+                } else if (result < 71 && result > 39) {
                     progressClass = 'progress-bar progress-bar-striped bg-warning'
-                }else if (result < 31){
+                } else if (result < 31) {
                     progressClass = 'progress-bar progress-bar-striped bg-danger'
-                }else {
+                } else {
                     console.log('class mavjud emas')
                 }
 
 
                 $('#progress_css').css('width', `${result}%`);
 
-                $('#progress_css').attr('class','').attr('class', progressClass);
+                $('#progress_css').attr('class', '').attr('class', progressClass);
 
                 $('#progress_data').empty().append(`${result}%`);
 
@@ -285,29 +298,33 @@
 
             });
 
-            let time = 900;
+            let countdowntime = 900;
+            let Time = 0
             let p = document.getElementById('countDown')
             let p2 = document.getElementById('countdown')
-            let finishMinutes = 0
-            let finishSeconds = 0
+
             let interval = setInterval(updateCountDown, 1000)
 
             function updateCountDown() {
-                let minutes = Math.floor(time / 60)
-                let seconds = time % 60
+                let minutes = Math.floor(countdowntime / 60)
+                let seconds = countdowntime % 60
+
+                let finishMinutes = Math.floor(Time / 60)
+                let finishSeconds = Time % 60
+
                 seconds = seconds < 10 ? '0' + seconds : seconds
                 minutes = minutes < 10 ? '0' + minutes : minutes
-                finishSeconds = 60 - seconds;
-                finishMinutes = 14 - minutes;
+
                 finishSeconds = finishSeconds < 10 ? '0' + finishSeconds : finishSeconds
                 finishMinutes = finishMinutes < 10 ? '0' + finishMinutes : finishMinutes
                 p.innerHTML = `${minutes}:${seconds}`
                 p2.innerHTML = `${finishMinutes}:${finishSeconds}`
 
 
-                time--;
+                countdowntime--;
+                Time++;
 
-                if (time < 0) {
+                if (countdowntime < 0) {
                     clearInterval(interval)
 
                     Swal.fire({

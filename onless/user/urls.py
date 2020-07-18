@@ -36,8 +36,6 @@ urlpatterns = [
     path('school-group/<int:id>/', school_group_detail, name='school_group_detail'),
     path('support/', support, name='support'),
     path('pupil-result/<int:id>/', pupil_result, name='pupil_result'),
-
-
+    path('xabarlar/', messeges, name='messeges'),
 
 ]
-

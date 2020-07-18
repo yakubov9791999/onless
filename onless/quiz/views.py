@@ -87,7 +87,7 @@ def select_type(request):
         }
         if type == 'I':
             #get random 10 questions
-            queryset = tuple(Savol.objects.filter(is_active=True).values_list('id', flat=True))
+            queryset = tuple(Savol.objects.filter(is_active=True, bilet__is_active=True).values_list('id', flat=True))
             random_queryset = random.sample(queryset, 10)
             savollar = Savol.objects.filter(id__in=random_queryset)
             context.update(savollar=savollar)

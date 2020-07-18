@@ -944,3 +944,8 @@ def pupil_result(request, id):
         return render(request, 'user/pupil_result.html')
     else:
         return render(request, 'inc/404.html')
+
+
+@login_required
+def messeges(request):
+    return render(request, 'user/messeges.html')

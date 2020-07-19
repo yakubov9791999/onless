@@ -6,6 +6,9 @@
 {% block content %}
 
     <div class="container">
+     <div class="card-header bg-primary">
+                <h3 class="card-title">{% if lang == 'ru' %}Выберите нужный вариант:{% elif lang == 'kr' %}Керакли танловни танланг:{% else %}Kerakli tanlovni tanlang:{% endif %}</h3>
+            </div>
         <div class="row justify-content-center">
             <a class="col-5 box-type img-1"
                href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=T">

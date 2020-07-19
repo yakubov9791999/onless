@@ -1,0 +1,18 @@
+
+<div class="questions">№{{ forloop.counter }} {{ savol.title_uz }}
+</div>
+<div class="row">
+    {% include 'quiz/inc/question_img.html' %}
+    <div class="col-md-5" id="javob">
+
+        {% for javob in savol.questions.all %}
+            <div id="javob{{ javob.id }}"
+                 data-id="{{ javob.id }}"
+                 class="mt-3 btn text-left javob">
+                {{ forloop.counter }}). {{ javob.text_uz }}
+            </div>
+        {% endfor %}
+
+    </div>
+
+</div>

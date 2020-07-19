@@ -19,107 +19,13 @@
                         {% csrf_token %}
                         <div class="questionsBox">
                             {% if lang == 'uz' %}
-                                <div class="questions">№{{ forloop.counter }} {{ savol.title_uz }}
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <center>
-                                            {% if savol.photo %}
-                                                <img src="{{ savol.photo.url }}" alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% else %}
-                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
-                                                     alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% endif %}
-                                        </center>
-                                    </div>
-                                    <div class="col-md-5" id="javob">
-
-                                        {% for javob in savol.questions.all %}
-                                            <div id="javob{{ javob.id }}"
-                                                 data-id="{{ javob.id }}"
-                                                 class="mt-3 btn text-left javob">
-                                                {{ forloop.counter }}). {{ javob.text_uz }}
-                                            </div>
-                                        {% endfor %}
-
-                                    </div>
-
-                                </div>
+                                {% include 'quiz/inc/question_lang_uz.html' %}
                             {% elif lang == 'kr' %}
-                                <div class="questions">№{{ forloop.counter }} {{ savol.title_kr }}
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <center>
-                                            {% if savol.photo %}
-                                                <img src="{{ savol.photo.url }}" alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% else %}
-                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
-                                                     alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% endif %}
-                                        </center>
-                                    </div>
-                                    <div class="col-md-5" id="javob">
-
-
-                                        {% for javob in savol.questions.all %}
-                                            <div id="javob{{ javob.id }}"
-                                                 data-id="{{ javob.id }}"
-                                                 class=" mt-3 btn text-left javob">
-                                                {{ forloop.counter }}). {{ javob.text_kr }}
-                                            </div>
-                                        {% endfor %}
-
-                                    </div>
-
-                                </div>
+                              {% include 'quiz/inc/question_lang_kr.html' %}
                             {% elif lang == 'ru' %}
-                                <div class="questions">№{{ forloop.counter }} {{ savol.title_ru }}
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <center>
-                                            {% if savol.photo %}
-                                                <img src="{{ savol.photo.url }}" alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% else %}
-                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
-                                                     alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% endif %}
-                                        </center>
-                                    </div>
-                                    <div class="col-md-5" id="javob">
-                                        {% for javob in savol.questions.all %}
-                                            <div id="javob{{ javob.id }}"
-                                                 data-id="{{ javob.id }}"
-                                                 class=" mt-3 btn text-left javob">
-                                                {{ forloop.counter }}). {{ javob.text_ru }}
-                                            </div>
-                                        {% endfor %}
-
-                                    </div>
-
-                                </div>
+                               {% include 'quiz/inc/question_lang_ru.html' %}
                             {% endif %}
                         </div>
-
 
                     </div>
                 {% endfor %}

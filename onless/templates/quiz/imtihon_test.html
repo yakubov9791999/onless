@@ -164,6 +164,7 @@
             var answerTrue = 0;
             var answerFalse = 0;
             var answers = 0;
+
             var TrueTitle;
             var FalseTitle;
             var swalButtonTitle;
@@ -209,11 +210,11 @@
                 }
 
 
-                {#$('#progress_css').css('width', `${answerTrue * 10}%`);#}
 
-                {#$('#progress_css').attr('class', '').attr('class', progressClass);#}
 
-                {#$('#progress_data').empty().append(`${answerTrue * 10}%`);#}
+                $('#progress_css').attr('class', '').attr('class', progressClass);
+
+
 
 
                 $.ajax({
@@ -233,6 +234,8 @@
                             answerTrue = answerTrue + 1;
                             answers = answers +1;
 
+                            $('#progress_data').empty().append(`${answerTrue * 10}%`);
+                            $('#progress_css').css('width', `${answerTrue * 10}%`);
 
                             $('#javob' + javobId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
                             $('#javob' + javobId).addClass('disableddiv')

@@ -86,3 +86,4 @@ onless/media/category/
 onless/media/school/
 onless/media/excel/
 onless/sign/migrations/
+onless/onless/local_settings.py

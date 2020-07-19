@@ -43,7 +43,7 @@ def select_bilet(request):
     if request.GET:
         if request.GET['lang'] == 'uz' or request.GET['lang'] == 'kr' or request.GET['lang'] == 'ru':
             try:
-                bilet = Bilet.objects.get(number=request.GET['bilet'], is_active=True)
+                bilet = Bilet.objects.get(number=request.GET['bilet'])
                 lang = request.GET['lang']
                 savollar = Savol.objects.filter(is_active=True, bilet=bilet)
 

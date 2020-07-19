@@ -16,7 +16,7 @@ SECRET_KEY = '(kbqdmc#xti0zu85h=u8!^qcoqf)u_yg67oj1bdi2_1f6=qlxe'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
 
-ALLOWED_HOSTS = ['onless.uz', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 DATABASES = {
     'default': {

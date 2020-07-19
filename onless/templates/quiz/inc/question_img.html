@@ -1,0 +1,17 @@
+{% load static %}
+<div class="col-md-7">
+    <center>
+        {% if savol.photo %}
+            <img src="{{ savol.photo.url }}" alt=""
+                 width="100%"
+                 height="auto"
+                 style="margin: 0 auto">
+        {% else %}
+            <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
+                 alt=""
+                 width="100%"
+                 height="auto"
+                 style="margin: 0 auto">
+        {% endif %}
+    </center>
+</div>

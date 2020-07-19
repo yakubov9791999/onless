@@ -11,13 +11,15 @@
 
         <!-- left column -->
         <div class="col-md-12" style=" margin-bottom: 50px">
-            <div class="alert alert-danger text-center"><b>
+            <div class="alert alert-info text-center"><b>
                 {% if lang == 'uz' %}
-                    Sizga taqdim etilayotgan imtihon savollari mashg'ulot rejimida mavjud biletlar asosida shakllantirilgan
+                    Sizga taqdim etilayotgan imtihon savollari mashg'ulot rejimida mavjud biletlar asosida
+                    shakllantirilgan
                 {% elif lang == 'kr' %}
                     Сизга тақдим етилаётган имтиҳон саволлари машғулот режимида мавжуд билетлар асосида шакллантирилган
                 {% elif lang == 'ru' %}
-                    Экзаменационные вопросы, предлагаемые вам, сформированы на основе имеющихся билетов в режиме обучения
+                    Экзаменационные вопросы, предлагаемые вам, сформированы на основе имеющихся билетов в режиме
+                    обучения
                 {% endif %}</b></div>
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
@@ -27,104 +29,11 @@
                         {% csrf_token %}
                         <div class="questionsBox">
                             {% if lang == 'uz' %}
-                                <div class="questions">№{{ forloop.counter }} {{ savol.title_uz }}
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <center>
-                                            {% if savol.photo %}
-                                                <img src="{{ savol.photo.url }}" alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% else %}
-                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
-                                                     alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% endif %}
-                                        </center>
-                                    </div>
-                                    <div class="col-md-5" id="javob">
-
-                                        {% for javob in savol.questions.all %}
-                                            <div id="javob{{ javob.id }}"
-                                                 data-id="{{ javob.id }}"
-                                                 class="mt-3 btn text-left javob">
-                                                {{ forloop.counter }}). {{ javob.text_uz }}
-                                            </div>
-                                        {% endfor %}
-
-                                    </div>
-
-                                </div>
+                                {% include 'quiz/inc/question_lang_uz.html' %}
                             {% elif lang == 'kr' %}
-                                <div class="questions">№{{ forloop.counter }} {{ savol.title_kr }}
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <center>
-                                            {% if savol.photo %}
-                                                <img src="{{ savol.photo.url }}" alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% else %}
-                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
-                                                     alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% endif %}
-                                        </center>
-                                    </div>
-                                    <div class="col-md-5" id="javob">
-
-
-                                        {% for javob in savol.questions.all %}
-                                            <div id="javob{{ javob.id }}"
-                                                 data-id="{{ javob.id }}"
-                                                 class=" mt-3 btn text-left javob">
-                                                {{ forloop.counter }}). {{ javob.text_kr }}
-                                            </div>
-                                        {% endfor %}
-
-                                    </div>
-
-                                </div>
+                              {% include 'quiz/inc/question_lang_kr.html' %}
                             {% elif lang == 'ru' %}
-                                <div class="questions">№{{ forloop.counter }} {{ savol.title_ru }}
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <center>
-                                            {% if savol.photo %}
-                                                <img src="{{ savol.photo.url }}" alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% else %}
-                                                <img src="{% static 'online/no-image.jpg' %}" class="d-none d-lg-block"
-                                                     alt=""
-                                                     width="100%"
-                                                     height="auto"
-                                                     style="margin: 0 auto">
-                                            {% endif %}
-                                        </center>
-                                    </div>
-                                    <div class="col-md-5" id="javob">
-                                        {% for javob in savol.questions.all %}
-                                            <div id="javob{{ javob.id }}"
-                                                 data-id="{{ javob.id }}"
-                                                 class=" mt-3 btn text-left javob">
-                                                {{ forloop.counter }}). {{ javob.text_ru }}
-                                            </div>
-                                        {% endfor %}
-
-                                    </div>
-
-                                </div>
+                               {% include 'quiz/inc/question_lang_ru.html' %}
                             {% endif %}
                         </div>
 
@@ -157,9 +66,9 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="{% static 'js/countDownTimer.js' %}"></script>
 
     <script>
-
         $(document).ready(function (event) {
             var answerTrue = 0;
             var answerFalse = 0;
@@ -169,20 +78,20 @@
             var FalseTitle;
             var swalButtonTitle;
             var swalText;
-            var lang = '{{ lang }}';
+            var lang = '{{ lang }}'
             if (lang == 'uz') {
-                TrueTitle = '<h3 style="color: #89e790" class="title">Imtihon topshirildi !</h3>'
-                FalseTitle = '<h3 style="color: red" class="title">Imtihon topshirilmadi !</h3>'
+                TrueTitle = '<h4 style="color: #89e790" class="title">Imtihon topshirildi !</h4>'
+                FalseTitle = '<h4 style="color: red" class="title">Imtihon topshirilmadi !</h4>'
                 swalButtonTitle = 'Qayta topshirish'
                 swalText = 'Qaytadan topshirmoqchimisiz ?'
             } else if (lang == 'kr') {
-                TrueTitle = '<h3 style="color: #89e790" class="title">Имтихон топширилди !</h3>'
-                FalseTitle = '<h3 style="color: red" class="title">Имтихон топширилмади !</h3>'
+                TrueTitle = '<h4 style="color: #89e790" class="title">Имтихон топширилди !</h4>'
+                FalseTitle = '<h4 style="color: red" class="title">Имтихон топширилмади !</h4>'
                 swalButtonTitle = 'Қайта топшириш'
                 swalText = 'Қайтадан топширмоқчимисиз ?'
             } else if (lang == 'ru') {
-                TrueTitle = '<h3 style="color: #89e790" class="title">Экзамен cдал !</h3>'
-                FalseTitle = '<h3 style="color: red" class="title">Экзамен не cдал !</h3>'
+                TrueTitle = '<h4 style="color: #89e790" class="title">Экзамен cдал !</h4>'
+                FalseTitle = '<h4 style="color: red" class="title">Экзамен не cдал !</h4>'
                 swalButtonTitle = 'Повторение'
                 swalText = 'Хотите повторить ?'
             }
@@ -210,11 +119,7 @@
                 }
 
 
-
-
                 $('#progress_css').attr('class', '').attr('class', progressClass);
-
-
 
 
                 $.ajax({
@@ -232,7 +137,7 @@
 
                         if (message == "True") {
                             answerTrue = answerTrue + 1;
-                            answers = answers +1;
+                            answers = answers + 1;
 
                             $('#progress_data').empty().append(`${answerTrue * 10}%`);
                             $('#progress_css').css('width', `${answerTrue * 10}%`);
@@ -249,7 +154,7 @@
 
                         } else {
                             answerFalse = answerFalse + 1;
-                            answers = answers +1;
+                            answers = answers + 1;
                             $('#javob' + javobId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
                             $('#javob' + javobId).addClass('disableddiv')
                             if ('#btn-' + foorlopCounter) {
@@ -264,19 +169,19 @@
                             //imtihondan o'ta olmadi
                             clearInterval(interval)
                             Swal.fire({
-                                {#icon: 'error',#}
+                                // {#icon: 'error',#}
                                 title: FalseTitle,
-                                {#background: '#ffecec',#}
+                                // {#background: '#ffecec',#}
                                 text: swalText,
                                 html: html,
-                                {#timer: 2000,#}
+                                // {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: swalButtonTitle,
-                                {#confirmButtonColor: '#a5c7f6',#}
-                                {#footer: footerMsg,#}
+                                // {#confirmButtonColor: '#a5c7f6',#}
+                                // {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
-                                    {#history.go(0);#}
+                                    // {#history.go(0);#}
                                     window.location.href = window.location.href;
 
                                 }
@@ -286,16 +191,16 @@
                             //imtihondan o'tdi
                             clearInterval(interval)
                             Swal.fire({
-                                {#icon: 'error',#}
+                                // {#icon: 'error',#}
                                 title: TrueTitle,
-                                {#background: '#ffecec',#}
+                                // {#background: '#ffecec',#}
                                 text: swalText,
                                 html: html,
-                                {#timer: 2000,#}
+                                // {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: swalButtonTitle,
-                                {#confirmButtonColor: '#a5c7f6',#}
-                                {#footer: footerMsg,#}
+                                // {#confirmButtonColor: '#a5c7f6',#}
+                                // {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
                                     window.location.href = window.location.href;
@@ -311,62 +216,7 @@
 
             });
 
-            let countdowntime = 900;
-            let Time = 0
-            let p = document.getElementById('countDown')
-            let p2 = document.getElementById('countdown')
-
-            let interval = setInterval(updateCountDown, 1000)
-
-            function updateCountDown() {
-                let minutes = Math.floor(countdowntime / 60)
-                let seconds = countdowntime % 60
-
-                let finishMinutes = Math.floor(Time / 60)
-                let finishSeconds = Time % 60
-
-                seconds = seconds < 10 ? '0' + seconds : seconds
-                minutes = minutes < 10 ? '0' + minutes : minutes
-
-                finishSeconds = finishSeconds < 10 ? '0' + finishSeconds : finishSeconds
-                finishMinutes = finishMinutes < 10 ? '0' + finishMinutes : finishMinutes
-                p.innerHTML = `${minutes}:${seconds}`
-                p2.innerHTML = `${finishMinutes}:${finishSeconds}`
-
-
-                countdowntime--;
-                Time++;
-
-                if (countdowntime < 0) {
-                    clearInterval(interval)
-
-                    Swal.fire({
-                        {#icon: 'error',#}
-                        title: FalseTitle,
-                        {#background: '#ffecec',#}
-                        text: swalText,
-                        html: html,
-                        {#timer: 2000,#}
-                        showConfirmButton: true,
-                        confirmButtonText: swalButtonTitle,
-                        {#confirmButtonColor: '#a5c7f6',#}
-                        {#footer: footerMsg,#}
-                    }).then(function (isConfirm) {
-                        if (isConfirm) {
-                            window.location.href = window.location.href;
-                        }
-                    })
-
-
-                }
-
-            }
         });
-
-    </script>
-
-
-    <script>
 
     </script>
 

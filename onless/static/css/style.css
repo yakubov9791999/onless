@@ -475,7 +475,7 @@ a:active {
 
 .result-answers {
     font-size: x-small;
-    padding: 5px 5px 5px 5px;
+    padding: 4px 4px 4px 4px;
     border-radius: 4px 4px 4px 4px;
     border: 1px solid black;
 }
@@ -518,7 +518,7 @@ a:active {
 .box-type .text-center {
     color: #c6d2e0;
     margin-top: 90px;
-    font-size: 180%;
+    font-size: 160%;
     top: auto;
     bottom: auto;
     font-family: 'Rowdies', cursive;

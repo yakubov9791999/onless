@@ -7,6 +7,7 @@ from user.models import User
 from .forms import *
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 
 @login_required
 def add_result(request):
@@ -43,17 +44,26 @@ def select_bilet(request):
     if request.GET:
         if request.GET['lang'] == 'uz' or request.GET['lang'] == 'kr' or request.GET['lang'] == 'ru':
             try:
-                bilet = Bilet.objects.get(number=request.GET['bilet'])
+                bilet = Bilet.objects.get(number=request.GET.get('bilet'))
                 lang = request.GET['lang']
                 savollar = Savol.objects.filter(is_active=True, bilet=bilet)
 
+                # paginator = Paginator(savollar, 2)
+                # page = paginator.get_page(1)
+                # print(page)
                 context = {
-                            'savollar': savollar,
-                            'lang': lang,
-                            'bilet': bilet
-                        }
+                    'savollar': savollar,
+                    'lang': lang,
+                    'bilet': bilet,
+                }
+                if Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id:
+                    last_active_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
+
+                    context.update(last_active_bilet=last_active_bilet-1)
                 return render(request, 'quiz/trenka_test.html', context)
+
             except ObjectDoesNotExist:
+
                 messages.error(request, 'Bunday bilet mavjud emas !')
                 return render(request, 'quiz/select_lang.html')
         else:

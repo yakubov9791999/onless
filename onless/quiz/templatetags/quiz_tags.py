@@ -33,5 +33,17 @@ def pupil_result(id):
     }
 
 
+@register.simple_tag()
+def get_bilets():
+    bilets = Bilet.objects.all()
+    return bilets
 
 
+@register.filter
+def get_previous_number(bilet_id):
+    return Bilet.objects.filter(id__lt=bilet_id).order_by("-id")[0:1].get().id
+
+
+@register.filter
+def get_next_number(bilet_id):
+    return Bilet.objects.filter(id__gt=bilet_id).order_by("id")[0:1].get().id

@@ -44,7 +44,7 @@ def select_bilet(request):
     if request.GET:
         if request.GET['lang'] == 'uz' or request.GET['lang'] == 'kr' or request.GET['lang'] == 'ru':
             try:
-                bilet = Bilet.objects.get(number=request.GET.get('bilet'))
+                bilet = Bilet.objects.get(number=request.GET.get('bilet'), is_active=True)
                 lang = request.GET['lang']
                 savollar = Savol.objects.filter(is_active=True, bilet=bilet)
 
@@ -56,9 +56,9 @@ def select_bilet(request):
                     'lang': lang,
                     'bilet': bilet,
                 }
+
                 if Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id:
                     last_active_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
-
                     context.update(last_active_bilet=last_active_bilet-1)
                 return render(request, 'quiz/trenka_test.html', context)
 

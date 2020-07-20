@@ -38,10 +38,8 @@
                             {% endif %}
                         </div>
                         <div class="col-6">
-
                             {% if bilet.number is not last_active_bilet %}
                                 <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-primary btn-block text-capitalize"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>
-
                             {% endif %}
                         </div>
                     </div>

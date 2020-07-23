@@ -49,7 +49,7 @@ class QuestionAdmin(admin.ModelAdmin):
         (None,               {'fields': ['video','title', 'img','is_active']}),
     ]
     inlines = [ChoiceInline]
-    search_fields = ['title', 'video']
+    search_fields = ['title', 'video__title']
     list_filter = ['is_active', 'title']
 
 admin.site.register(Question, QuestionAdmin)

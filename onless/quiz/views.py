@@ -45,15 +45,34 @@ def select_bilet(request):
         if request.GET['lang'] == 'uz' or request.GET['lang'] == 'kr' or request.GET['lang'] == 'ru':
             try:
                 bilet = Bilet.objects.get(number=request.GET.get('bilet'), is_active=True)
-                lang = request.GET['lang']
-                savollar = Savol.objects.filter(is_active=True, bilet=bilet)
+                if int(str(bilet)) == 1:
+                    prev_bilet = 2
+                else:
+                    prev_bilet = int(str(bilet)) - 1
+                context = {}
+                if CheckTestColor.objects.filter(user=request.user, bilet=prev_bilet).exists():
 
+                    lang = request.GET['lang']
+                    savollar = Savol.objects.filter(is_active=True, bilet=bilet)
 
-                context = {
-                    'savollar': savollar,
-                    'lang': lang,
-                    'bilet': bilet,
-                }
+                    context.update(savollar=savollar,lang=lang,bilet=bilet)
+                else:
+                    lang = request.GET['lang']
+                    bilets = Bilet.objects.filter(is_active=True)
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+                    if check_last:
+                        check_last = int(str(check_last)) + 1
+                        context.update(check_last=check_last)
+                    context.update(lang=lang,bilets=bilets)
+                    prev_bilet = int(request.GET['bilet']) - 1
+                    if lang == 'ru':
+                        msg = f"Чтобы перейти на этот билет, вам нужно освоить билет {prev_bilet}"
+                    elif lang == 'kr':
+                        msg = f"Ушбу билетга ўтиш учун {prev_bilet}-билетни ўзлаштиришингиз керак"
+                    else:
+                        msg = f"Ushbu biletga o'tish uchun {prev_bilet}-biletni o'zlashtirishingiz kerak"
+                    messages.error(request, msg)
+                    return render(request, 'quiz/select_bilet.html', context)
 
                 if Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id:
                     last_active_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
@@ -131,7 +150,7 @@ def select_type(request):
                     if check_last:
                         check_last = int(str(check_last)) + 1
                         context.update(check_last=check_last)
-                        print(check_last)
+
                     return render(request, 'quiz/select_bilet.html', context)
             else:
                 messages.error(request, "Bunday mashg'ulot rejimi mavjud emas !")

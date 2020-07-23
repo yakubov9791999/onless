@@ -43,11 +43,23 @@
 
             $('.bilet_q').click(function (event) {
                 var biletId = $(this).parent('.text-center').data('id')
-                var prevBilet =  parseInt(biletId) - 1;
-                var Title = 'Ruxsat berilmagan!';
-                var swalText = 'swalText';
-                var swalButtonTitle = 'Oynani yopish';
-                var html = "Siz ushbu biletga kirish uchun " + prevBilet  + "-biletni o'zlashtirishingiz talab etiladi";
+                var prevBilet = parseInt(biletId) - 1;
+                lang = '{{ lang }}'
+
+                if (lang == 'uz') {
+                    var Title = 'Ruxsat berilmagan!';
+                    var swalButtonTitle = 'Oynani yopish';
+                    var html = "Siz ushbu biletga kirish uchun " + prevBilet + "-biletni o'zlashtirishingiz talab etiladi";
+                } else if (lang == 'kr') {
+                    var Title = 'Рухсат берилмаган!';
+                    var swalButtonTitle = 'Ойнани ёпиш';
+                    var html = "Сиз ушбу билетга кириш учун " + prevBilet + "-билетни ўзлаштиришингиз талаб етилади";
+                } else if (lang == 'ru') {
+                    var Title = 'Доступ запрещен!';
+                    var swalButtonTitle = 'Закрыть';
+                    var html = "Вам нужно будет освоить билет "+ prevBilet +", чтобы войти в этот билет";
+                }
+
 
                 if ($(this).hasClass('open_bilet')) {
 
@@ -57,7 +69,7 @@
                         icon: 'warning',
                         title: Title,
                         // {#background: '#ffecec',#}
-                        text: swalText,
+                        {#text: swalText,#}
                         html: html,
                         // {#timer: 2000,#}
                         showConfirmButton: true,

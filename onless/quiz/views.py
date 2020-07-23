@@ -140,9 +140,9 @@ def select_type(request):
 @login_required
 def get_bilet_color(request):
     if request.is_ajax():
-        bilet = get_object_or_404(Bilet, id=request.GET['bilet'])
+        bilet = get_object_or_404(Bilet, number=request.GET['bilet'])
         user = get_object_or_404(User, id=request.user.id)
-        print(bilet)
+
         check_color = CheckTestColor.objects.filter(user=user, bilet=bilet).count()
         if check_color < 5:
             color = CheckTestColor.objects.create(bilet=bilet,user=user)

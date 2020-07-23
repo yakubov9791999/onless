@@ -29,21 +29,28 @@
 
                     </div>
                 {% endfor %}
-{#                                <div class="container-fluid">#}
-{#                                    <div class="row">#}
-{#                                        <div class="col-6">#}
-{#                                            {% if bilet.number is not 1 %}#}
-{#                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}" class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet <span aria-hidden="true">&laquo;&laquo;</span></a>#}
-{##}
-{#                                            {% endif %}#}
-{#                                        </div>#}
-{#                                        <div class="col-6">#}
-{#                                            {% if bilet.number is not last_active_bilet %}#}
-{#                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-primary btn-block text-capitalize"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>#}
-{#                                            {% endif %}#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            {% if bilet.number is not 1 %}
+                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}" class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet <span aria-hidden="true">&laquo;&laquo;</span></a>
+
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-6">
+                                        {% get_bilet_color bilet.id user.id as color %}
+                                            {% if color %}
+                                            {% if bilet.number is not last_active_bilet %}
+                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-primary btn-block text-capitalize"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>
+                                            {% endif %}
+                                            {% else %}
+                                                 {% if bilet.number is not last_active_bilet %}
+                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-danger btn-block text-capitalize bilet-btn"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>
+                                            {% endif %}
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
 
 
             </div>
@@ -53,6 +60,7 @@
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
 
         $(document).ready(function (event) {
@@ -64,7 +72,7 @@
                 event.preventDefault;
                 var javobId = $(this).data("id");
                 var savolId = $(this).parents('.privew').data('id');
-                var biletId = '{{ bilet }}'
+                var bilet = '{{ bilet }}'
                 var colorRed = '#ef6565'
                 var colorGreen = '#89e790'
 
@@ -92,7 +100,7 @@
                                         method: "GET",
                                         url: "{% url 'quiz:get_bilet_color' %}",
                                         data: {
-                                          'bilet': biletId,
+                                          'bilet': bilet,
                                         },
                                         success: function (message) {
                                             console.log(message)
@@ -134,9 +142,64 @@
 
             });
 
+            $('.bilet-btn').click(function (event) {
+
+                var lang = '{{ lang }}'
+                var next_bilet = {{ bilet.number|add:1 }}
+                if (lang == 'uz') {
+                    var Title = 'Ruxsat berilmagan!';
+                    var swalButtonTitle = 'Oynani yopish';
+                    var html = "Siz " + next_bilet + "-biletga o'tish uchun ushbu savolarni to'liq o'zlashtirishingiz talab etiladi";
+                } else if (lang == 'kr') {
+                    var Title = 'Рухсат берилмаган!';
+                    var swalButtonTitle = 'Ойнани ёпиш';
+                    var html = "Сиз " + next_bilet + "-билетга ўтиш учун ушбу саволарни тўлиқ ўзлаштиришингиз талаб етилади";
+                } else if (lang == 'ru') {
+                    var Title = 'Доступ запрещен!';
+                    var swalButtonTitle = 'Закрыть';
+                    var html = "Вы должны полностью освоить эти вопросы, чтобы перейти на " + next_bilet + "-й билет";
+                }
+
+
+                if ($(this).hasClass('open_bilet')) {
+
+                } else {
+                    event.preventDefault()
+                    Swal.fire({
+                        icon: 'warning',
+                        title: Title,
+                        // {#background: '#ffecec',#}
+                        {#text: swalText,#}
+                        html: html,
+                        // {#timer: 2000,#}
+                        showConfirmButton: true,
+                        confirmButtonText: swalButtonTitle,
+                        confirmButtonColor: '#d42a2a',
+                        // {#footer: footerMsg,#}
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+
+                            {#window.location.href = window.location.href;#}
+
+                        }
+                    })
+                }
+
+
+            });
+
         });
 
+
+
+
+
+
+
+
     </script>
+
+
 {% endblock content %}
 
 

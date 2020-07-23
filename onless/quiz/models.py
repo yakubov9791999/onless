@@ -100,3 +100,12 @@ class ResultJavob(models.Model):
     j_8 = models.BooleanField(default=False)
     j_9 = models.BooleanField(default=False)
     j_10 = models.BooleanField(default=False)
+
+
+class CheckTestColor(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    bilet = models.ForeignKey(Bilet, on_delete=models.CASCADE,)
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.bilet}"

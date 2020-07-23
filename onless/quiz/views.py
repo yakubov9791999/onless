@@ -48,9 +48,7 @@ def select_bilet(request):
                 lang = request.GET['lang']
                 savollar = Savol.objects.filter(is_active=True, bilet=bilet)
 
-                # paginator = Paginator(savollar, 2)
-                # page = paginator.get_page(1)
-                # print(page)
+
                 context = {
                     'savollar': savollar,
                     'lang': lang,
@@ -75,7 +73,7 @@ def select_bilet(request):
         return render(request, 'quiz/select_bilet.html')
 
 
-
+@login_required
 def get_true_answer(request):
     if request.is_ajax():
         javob = get_object_or_404(Javob, id=request.GET['javob'])
@@ -87,7 +85,7 @@ def get_true_answer(request):
             return HttpResponse(False)
 
 
-
+@login_required
 def select_lang(request):
     if request.GET:
         if request.GET['lang'] == 'uz' or request.GET['lang'] == 'kr' or request.GET['lang'] == 'ru':
@@ -101,13 +99,14 @@ def select_lang(request):
     else:
         return render(request, 'quiz/select_lang.html')
 
-
+@login_required
 def select_type(request):
     if request.GET:
         if request.GET['lang'] == 'uz' or request.GET['lang'] == 'kr' or request.GET['lang'] == 'ru':
             if request.GET['type'] == 'I' or request.GET['type'] == 'T':
                 lang = request.GET['lang']
                 type = request.GET['type']
+
                 context = {
                     'lang': lang
                 }
@@ -121,6 +120,12 @@ def select_type(request):
                 elif type == 'T':
                     bilets = Bilet.objects.filter(is_active=True)
                     context.update(bilets=bilets)
+
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+                    if check_last:
+                        check_last = int(str(check_last)) + 1
+                        context.update(check_last=check_last)
+
                     return render(request, 'quiz/select_bilet.html', context)
             else:
                 messages.error(request, "Bunday mashg'ulot rejimi mavjud emas !")
@@ -131,3 +136,17 @@ def select_type(request):
     else:
         return render(request, 'quiz/select_type.html')
 
+
+@login_required
+def get_bilet_color(request):
+    if request.is_ajax():
+        bilet = get_object_or_404(Bilet, id=request.GET['bilet'])
+        user = get_object_or_404(User, id=request.user.id)
+
+        check_color = CheckTestColor.objects.filter(user=user, bilet=bilet).count()
+        if check_color < 5:
+            color = CheckTestColor.objects.create(bilet=bilet,user=user)
+        else:
+            return False
+
+    return HttpResponse()

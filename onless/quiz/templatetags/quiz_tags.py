@@ -33,3 +33,12 @@ def pupil_result(id):
     }
 
 
+@register.simple_tag
+def get_bilet_color(bilet_id, user_id):
+    bilet = get_object_or_404(Bilet, id=bilet_id)
+    user = get_object_or_404(User, id=user_id)
+    check_color = CheckTestColor.objects.filter(user=user, bilet=bilet)
+    if check_color:
+        return True
+    else:
+        return False

@@ -14,7 +14,7 @@
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
                 {% for savol in savollar %}
-                    <div class="privew" data-id="{{ savol.id }}">
+                    <div class="privew" data-id="{{ savol.id }}" data-bool="False">
 
                         {% csrf_token %}
                         <div class="questionsBox">
@@ -29,21 +29,21 @@
 
                     </div>
                 {% endfor %}
-{#                <div class="container-fluid">#}
-{#                    <div class="row">#}
-{#                        <div class="col-6">#}
-{#                            {% if bilet.number is not 1 %}#}
-{#                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}" class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet <span aria-hidden="true">&laquo;&laquo;</span></a>#}
-{##}
-{#                            {% endif %}#}
-{#                        </div>#}
-{#                        <div class="col-6">#}
-{#                            {% if bilet.number is not last_active_bilet %}#}
-{#                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-primary btn-block text-capitalize"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>#}
-{#                            {% endif %}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
+                {#                <div class="container-fluid">#}
+                {#                    <div class="row">#}
+                {#                        <div class="col-6">#}
+                {#                            {% if bilet.number is not 1 %}#}
+                {#                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}" class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet <span aria-hidden="true">&laquo;&laquo;</span></a>#}
+                {##}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                        <div class="col-6">#}
+                {#                            {% if bilet.number is not last_active_bilet %}#}
+                {#                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-primary btn-block text-capitalize"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                </div>#}
 
 
             </div>
@@ -56,13 +56,18 @@
     <script>
 
         $(document).ready(function (event) {
+            var answerTrue = 0;
+            var answerFalse = 0;
+            var answers = 0;
 
             $('#javob div').on('click', function (event) {
                 event.preventDefault;
                 var javobId = $(this).data("id");
                 var savolId = $(this).parents('.privew').data('id');
+                var biletId = '{{ bilet }}'
                 var colorRed = '#ef6565'
                 var colorGreen = '#89e790'
+
 
                 $.ajax({
                     method: "GET",
@@ -77,9 +82,47 @@
                         if (message == "True") {
                             $('#javob' + javobId).css({"background-color": colorGreen,});
 
+                            if ($('#javob' + javobId).parents('.privew').data('bool') == 'False') {
+                                $('#javob' + javobId).parents('.privew').data('bool', 'True')
+                                answerTrue = answerTrue + 1
+                                answers = answers + 1
+
+                                if (answerTrue === 10) {
+                                    $.ajax({
+                                        method: "GET",
+                                        url: "{% url 'quiz:get_bilet_color' %}",
+                                        data: {
+                                          'bilet': biletId
+                                        },
+                                        success: function (message) {
+                                            console.log(message)
+                                        },
+                                        error: function (message) {
+
+                                        }
+                                    })
+                                }
+
+                            } else {
+
+                            }
+
+                            {#console.log($('#javob').data('bool'))#}
+
 
                         } else {
                             $('#javob' + javobId).css({"background-color": colorRed,});
+
+                            if ($('#javob' + javobId).parents('.privew').data('bool') == 'False') {
+                                $('#javob' + javobId).parents('.privew').data('bool', 'True')
+                                answerFalse = answerFalse + 1
+                                answers = answers + 1
+                            } else {
+
+                            }
+                            {#console.log($('#javob').data('bool'))#}
+
+
                         }
 
                     },

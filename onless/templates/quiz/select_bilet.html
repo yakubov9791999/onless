@@ -1,20 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load quiz_tags %}
 {% block content %}
 
     <div class="container-fluid">
-    <div class="card-header bg-primary">
-                <h3 class="card-title">{% if lang == 'ru' %}Выберите билет:{% elif lang == 'kr' %}Билетни танланг:{% else %}Biletni tanlang:{% endif %}</h3>
-            </div>
+        <div class="card-header bg-primary">
+            <h3 class="card-title">{% if lang == 'ru' %}Выберите билет:{% elif lang == 'kr' %}Билетни танланг:{% else %}
+                Biletni tanlang:{% endif %}</h3>
+        </div>
 
         <div class="row">
             {% for bilet in bilets %}
 
                 <div class="col-4 col-lg-2 col-md-2 col-sm-3 col-xs-3 mt-3">
 
-                    <div class=" text-center">
-                        <a href="{% url 'quiz:select_bilet' %}?lang={{ lang }}&bilet={{ bilet }}" class="btn btn-outline-dark bilet_q" >
-                                {{ bilet }}
+                    <div class=" text-center" data-id="{{ bilet }}">
+                        {% get_bilet_color bilet.id user.id as color %}
+                        <a href="{% url 'quiz:select_bilet' %}?lang={{ lang }}&bilet={{ bilet }}"
+                                {% if color or bilet.number == 1 or bilet.number == check_last %}
+                           class="btn btn-outline-success bilet_q open_bilet"
+                                {% else %}
+                           class="btn btn-outline-danger bilet_q close_bilet"
+                                {% endif %}
+                        >
+                            {{ bilet }}
                         </a>
 
                     </div>
@@ -25,6 +34,52 @@
         </div>
     </div>
 {% endblock content %}
+{% block bottom %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+        $(document).ready(function (event) {
+
+            $('.bilet_q').click(function (event) {
+                var biletId = $(this).parent('.text-center').data('id')
+                var prevBilet =  parseInt(biletId) - 1;
+                var Title = 'Ruxsat berilmagan!';
+                var swalText = 'swalText';
+                var swalButtonTitle = 'Oynani yopish';
+                var html = "Siz ushbu biletga kirish uchun " + prevBilet  + "-biletni o'zlashtirishingiz talab etiladi";
+
+                if ($(this).hasClass('open_bilet')) {
+
+                } else {
+                    event.preventDefault()
+                    Swal.fire({
+                        icon: 'warning',
+                        title: Title,
+                        // {#background: '#ffecec',#}
+                        text: swalText,
+                        html: html,
+                        // {#timer: 2000,#}
+                        showConfirmButton: true,
+                        confirmButtonText: swalButtonTitle,
+                        confirmButtonColor: '#d42a2a',
+                        // {#footer: footerMsg,#}
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+
+                            {#window.location.href = window.location.href;#}
+
+                        }
+                    })
+                }
+
+
+            });
+
+        });
+
+    </script>
+{% endblock %}
 
 
 

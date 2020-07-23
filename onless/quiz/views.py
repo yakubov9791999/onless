@@ -46,11 +46,12 @@ def select_bilet(request):
             try:
                 bilet = Bilet.objects.get(number=request.GET.get('bilet'), is_active=True)
                 if int(str(bilet)) == 1:
-                    prev_bilet = 2
+                    prev_bilet = 1
                 else:
                     prev_bilet = int(str(bilet)) - 1
+                print(prev_bilet)
                 context = {}
-                if CheckTestColor.objects.filter(user=request.user, bilet=prev_bilet).exists():
+                if CheckTestColor.objects.filter(user=request.user, bilet__number=prev_bilet).exists():
 
                     lang = request.GET['lang']
                     savollar = Savol.objects.filter(is_active=True, bilet=bilet)
@@ -60,9 +61,11 @@ def select_bilet(request):
                     lang = request.GET['lang']
                     bilets = Bilet.objects.filter(is_active=True)
                     check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+
                     if check_last:
                         check_last = int(str(check_last)) + 1
                         context.update(check_last=check_last)
+
                     context.update(lang=lang,bilets=bilets)
                     prev_bilet = int(request.GET['bilet']) - 1
                     if lang == 'ru':

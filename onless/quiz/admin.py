@@ -58,9 +58,12 @@ admin.site.register(Question, QuestionAdmin)
 class ResultQuizAdmin(admin.ModelAdmin):
     list_filter = ['user','answer', 'question',]
 
+@admin.register(Bilet)
+class BiletAdmin(admin.ModelAdmin):
+    list_display = ['id', 'number',]
+   
 
 
-admin.site.register(Bilet)
 
 class Choiceinline(admin.StackedInline):
     model = Javob

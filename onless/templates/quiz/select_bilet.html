@@ -8,7 +8,7 @@
             <h3 class="card-title">{% if lang == 'ru' %}Выберите билет:{% elif lang == 'kr' %}Билетни танланг:{% else %}
                 Biletni tanlang:{% endif %}</h3>
         </div>
-
+        {% include 'inc/messages.html' %}
         <div class="row">
             {% for bilet in bilets %}
 

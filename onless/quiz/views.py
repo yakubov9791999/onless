@@ -46,7 +46,7 @@ def select_bilet(request):
             try:
                 bilet = Bilet.objects.get(number=request.GET.get('bilet'), is_active=True)
                 if int(str(bilet)) == 1:
-                    prev_bilet = 1
+                    prev_bilet = 2
                 else:
                     prev_bilet = int(str(bilet)) - 1
                 print(prev_bilet)

@@ -61,7 +61,7 @@ class ResultQuizAdmin(admin.ModelAdmin):
 @admin.register(Bilet)
 class BiletAdmin(admin.ModelAdmin):
     list_display = ['id', 'number',]
-   
+
 
 
 

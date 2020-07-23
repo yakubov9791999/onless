@@ -78,3 +78,8 @@ class SavolAdmin(admin.ModelAdmin):
     save_as_continue = True
     list_display_links = ['title_uz','title_kr','title_ru',]
 admin.site.register(Savol, SavolAdmin)
+
+
+@admin.register(CheckTestColor)
+class CheckTestColorAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'bilet']

@@ -136,14 +136,7 @@
                     success: function (message) {
 
                         if (message == "True") {
-                            answerTrue = answerTrue + 1;
-                            answers = answers + 1;
 
-                            $('#progress_data').empty().append(`${answerTrue * 10}%`);
-                            $('#progress_css').css('width', `${answerTrue * 10}%`);
-
-                            $('#javob' + javobId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
-                            $('#javob' + javobId).addClass('disableddiv')
                             if ('#btn-' + foorlopCounter) {
                                 $('#result-btn').attr('id', 'btn-' + javobId);
                                 $('#btn-' + foorlopCounter).css('background-color', colorGreen)
@@ -151,18 +144,31 @@
 
                                 console.log('topilmadi')
                             }
+                            $('#javob' + javobId).addClass('disableddiv')
+                            answerTrue = answerTrue + 1;
+                            answers = answers + 1;
+
+                            $('#progress_data').empty().append(`${answerTrue * 10}%`);
+                            $('#progress_css').css('width', `${answerTrue * 10}%`);
+
+                            $('#javob' + javobId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
+
 
                         } else {
-                            answerFalse = answerFalse + 1;
-                            answers = answers + 1;
-                            $('#javob' + javobId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
-                            $('#javob' + javobId).addClass('disableddiv')
-                            if ('#btn-' + foorlopCounter) {
+
+
+                             if ('#btn-' + foorlopCounter) {
                                 $('#result-btn').attr('id', 'btn-' + javobId);
                                 $('#btn-' + foorlopCounter).css('background-color', colorRed)
                             } else {
                                 console.log('topilmadi')
                             }
+
+                             $('#javob' + javobId).addClass('disableddiv')
+
+                            answerFalse = answerFalse + 1;
+                            answers = answers + 1;
+                            $('#javob' + javobId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
                         }
 
                         if (answerFalse >= 2) {

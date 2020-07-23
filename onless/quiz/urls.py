@@ -9,6 +9,7 @@ urlpatterns = [
     path('select-lang/', select_lang, name='select_lang'),
     path('select-type/', select_type, name='select_type'),
     path('select-bilet/', select_bilet, name='select_bilet'),
+    path('get_bilet_color/', get_bilet_color, name='get_bilet_color'),
 
 
 ]

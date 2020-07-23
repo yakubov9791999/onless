@@ -58,6 +58,12 @@ def select_bilet(request):
                 if Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id:
                     last_active_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
                     context.update(last_active_bilet=last_active_bilet-1)
+
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+                    if check_last:
+                        check_last = int(str(check_last)) + 1
+                        context.update(check_last=check_last)
+
                 return render(request, 'quiz/trenka_test.html', context)
 
             except ObjectDoesNotExist:
@@ -125,7 +131,7 @@ def select_type(request):
                     if check_last:
                         check_last = int(str(check_last)) + 1
                         context.update(check_last=check_last)
-
+                        print(check_last)
                     return render(request, 'quiz/select_bilet.html', context)
             else:
                 messages.error(request, "Bunday mashg'ulot rejimi mavjud emas !")
@@ -144,7 +150,7 @@ def get_bilet_color(request):
         user = get_object_or_404(User, id=request.user.id)
 
         check_color = CheckTestColor.objects.filter(user=user, bilet=bilet).count()
-        if check_color < 5:
+        if check_color < 2:
             color = CheckTestColor.objects.create(bilet=bilet,user=user)
         else:
             return False

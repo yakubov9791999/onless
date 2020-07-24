@@ -45,7 +45,7 @@
                     {% include 'inc/role_sidebar/signs_page.html' %}
                     {% include 'inc/role_sidebar/materials_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
-                    {% include 'inc/role_sidebar/support.html' %}
+{#                    {% include 'inc/role_sidebar/support.html' %}#}
                 {% elif user.is_authenticated and request.user.role == '2' %}
 {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
                     {% include 'inc/role_sidebar/videos_page.html' %}
@@ -59,7 +59,7 @@
                     {#                    {% include 'inc/role_sidebar/schedule_page.html' %}#}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
-                    {% include 'inc/role_sidebar/support.html' %}
+{#                    {% include 'inc/role_sidebar/support.html' %}#}
 
                 {% elif user.is_authenticated and request.user.role == '3' %}
                     {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
@@ -73,7 +73,7 @@
                     {#                    {% include 'inc/role_sidebar/schedule_page.html' %}#}
                     {% include 'inc/role_sidebar/add_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
-                    {% include 'inc/role_sidebar/support.html' %}
+{#                    {% include 'inc/role_sidebar/support.html' %}#}
 
                 {% elif user.is_authenticated and request.user.role == '4' %}
                     {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
@@ -86,7 +86,7 @@
                     {% include 'inc/role_sidebar/signs_page.html' %}
                     {% include 'inc/role_sidebar/materials_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
-                    {% include 'inc/role_sidebar/support.html' %}
+{#                    {% include 'inc/role_sidebar/support.html' %}#}
 
                 {% elif user.is_authenticated and request.user.role == '5' %}
                     {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
@@ -96,7 +96,7 @@
                     {% include 'inc/role_sidebar/signs_page.html' %}
                     {% include 'inc/role_sidebar/materials_page.html' %}
                     {% include 'inc/role_sidebar/settings_page.html' %}
-                    {% include 'inc/role_sidebar/support.html' %}
+{#                    {% include 'inc/role_sidebar/support.html' %}#}
 
                 {% endif %}
             </ul>

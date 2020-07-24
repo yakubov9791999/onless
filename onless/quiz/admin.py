@@ -87,4 +87,7 @@ admin.site.register(Savol, SavolAdmin)
 
 @admin.register(CheckTestColor)
 class CheckTestColorAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'bilet']
+    list_display = ['id', 'user', 'bilet','pub_date']
+    list_filter = ['bilet','pub_date']
+    list_display_links = ['user']
+    search_fields = ['user__name', 'bilet__number', ]

@@ -168,8 +168,7 @@ class EditSchoolForm(ModelForm):
     #         self.fields['district'].queryset = self.fields['district'].queryset.filter(region=user.school.region)
 
     title = forms.CharField(label="Nomi", widget=forms.TextInput(attrs={'class': 'form-control'}))
-    director = forms.ModelChoiceField(label="Rahbar nomi", queryset=User.objects.filter(role=2),
-                                      widget=forms.Select(attrs={'class': 'form-control'}))
+
     phone = forms.CharField(label="Tel raqam", widget=forms.TextInput(attrs={'class': 'form-control'}))
     logo = forms.ImageField(label="Rasm", widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
     region = forms.ModelChoiceField(label="Viloyat", queryset=Region.objects.all(),
@@ -179,9 +178,11 @@ class EditSchoolForm(ModelForm):
                                       widget=forms.Select(
                                           attrs={'class': 'form-control', 'id': 'district', 'required': 'required'}))
 
+
+
     class Meta:
         model = School
-        fields = ('title', 'director', 'phone', 'logo', 'region', 'district')
+        fields = ('title', 'phone', 'logo', 'region', 'district')
 
 
 class AddContactForm(ModelForm):

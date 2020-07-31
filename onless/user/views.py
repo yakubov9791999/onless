@@ -26,6 +26,9 @@ from django.db import IntegrityError
 
 
 #
+
+
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -820,7 +823,7 @@ def history_view_video_all(request):
 
             return render(request, 'user/view_video_history_all.html', context)
         else:
-            views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4)).order_by(
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4) & Q(user__is_active=True)).order_by(
                 '-time')
             if not views.exists():
                 messages.error(request, "Ko'rishlar mavjud emas !")

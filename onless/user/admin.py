@@ -8,7 +8,7 @@ from .models import *
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
 
-    list_display = ['id', 'role', 'name', 'username', 'phone', 'email', 'turbo', 'birthday', 'is_active',
+    list_display = ['id', 'role', 'name', 'username', 'phone', 'group', 'turbo', 'birthday', 'is_active',
                     'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
     list_display_links = ['username', 'role']

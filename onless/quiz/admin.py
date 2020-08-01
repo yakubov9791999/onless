@@ -60,7 +60,8 @@ class ResultQuizAdmin(admin.ModelAdmin):
 
 @admin.register(Bilet)
 class BiletAdmin(admin.ModelAdmin):
-    list_display = ['id', 'number',]
+    list_display = ['number',]
+    list_display_links = ['number']
 
 
 
@@ -77,7 +78,7 @@ class SavolAdmin(admin.ModelAdmin):
     inlines = [Choiceinline]
 
     list_display = ['bilet','bilet_savol','title_uz','title_kr','title_ru','is_active']
-    search_fields = ['bilet','title_uz','title_kr','title_ru',]
+    search_fields = ['bilet__number','title_uz','title_kr','title_ru',]
     list_filter = ['is_active','bilet', 'video',]
     save_on_top = True
     save_as_continue = True

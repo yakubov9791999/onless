@@ -820,7 +820,7 @@ def history_view_video_all(request):
                 if not views.exists():
                     messages.error(request, "Ko'rishlar mavjud emas !")
                 context.update(views=views)
-
+                print('ok')
             return render(request, 'user/view_video_history_all.html', context)
         else:
             views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4) & Q(user__is_active=True)).order_by(

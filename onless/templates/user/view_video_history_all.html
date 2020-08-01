@@ -74,7 +74,7 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ view.user }}</td>
                                     <td>{{ view.user.group }}</td>
-                                    <td><a href="{% url 'video:video_detail' view.video.id %}">{{ view.video }}</a></td>
+                                    <td>{{ view.video }}</td>
                                     <td>{{ view.time|date:'SHORT_DATETIME_FORMAT' }}</td>
                                 </tr>
                             {% endfor %}

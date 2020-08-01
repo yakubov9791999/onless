@@ -126,7 +126,7 @@ def videos_list(request, id):
 
 @login_required
 def video_detail(request, id):
-    video = Video.objects.get(id=id)
+    video = get_object_or_404(Video, id=id)
     questions = Question.objects.filter(video=video, is_active=True)
     results = ResultQuiz.objects.filter(question__in=questions, question__video=video, user=request.user)
     return render(request, 'video/video_detail.html', {

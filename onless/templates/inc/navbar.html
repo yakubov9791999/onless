@@ -119,4 +119,3 @@
 <div class="alert alert-dark text-center"><b>DIQQAT! Tizim test rejimida ishlamoqda! Tizim bo'yicha savollar bo'lganda
     <a href="https://t.me/onless_support" style="color: #60c4f5; text-decoration: none"><i class="fab fa-telegram"></i>Telegram guruh</a>ga yozing</b></div>
 
-{% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}{% if request.user.school.notification == True %}<div class="alert alert-danger text-center"><b>{{ request.user.school.notification_text }}</b></div>{% endif %}{% endif %}

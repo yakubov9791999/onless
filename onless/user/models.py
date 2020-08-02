@@ -99,7 +99,8 @@ class School(models.Model):
     sms_login = models.CharField(max_length=255, blank=True)
     sms_token = models.CharField(max_length=255, blank=True)
     sms_password = models.CharField(max_length=255, blank=True)
-    kredit = models.IntegerField(null=True, blank=True)
+    notification = models.BooleanField(default=False)
+    notification_text = models.TextField(blank=True)
 
     def __str__(self):
         return self.title

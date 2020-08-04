@@ -14,8 +14,9 @@
 
 
                 <a id="button_add_pupil" onclick="add_pupil()"
-                    style="color: whitesmoke; margin-top: 1%;"
-                   href="/media/online/namuna2.xlsx" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Excel orqali qo'shish</a>
+                   style="color: whitesmoke; margin-top: 1%;"
+                   href="/media/online/namuna2.xlsx" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Excel
+                    orqali qo'shish</a>
 
                 <form id="export_excel_form" style="display: none" class="form-group mt-3 ml-3"
                       action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">
@@ -55,7 +56,9 @@
                             {% for pupil in pupils %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b><a href="{% url 'user:history_pupil_view_video' pupil.id %}">{{ pupil.name }}</a></b></td>
+                                    <td><b><a
+                                            href="{% url 'user:history_pupil_view_video' pupil.id %}">{{ pupil.name }}</a></b>
+                                    </td>
                                     <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
                                     <td>{% if pupil.district %}{{ pupil.district }}{% endif %}</td>
                                     <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
@@ -105,7 +108,8 @@
                                         ></i></a>
                                             {% if request.user.role == '2' %}
                                                 &nbsp;&nbsp;
-                                                <a href="#" onclick='delete_pupil({{ pupil.id }},`{{ pupil.name }}`)'><i class="fa fa-trash"
+                                                <a href="#" onclick='delete_pupil({{ pupil.id }},`{{ pupil.name }}`)'><i
+                                                        class="fa fa-trash"
                                                 ></i></a>
                                             {% endif %}
 
@@ -132,12 +136,12 @@
         }
 
     </script>
-        <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
 
-        function delete_pupil(pupil_id,pupil_name) {
+        function delete_pupil(pupil_id, pupil_name) {
             var pupilId = pupil_id;
             var pupilName = pupil_name;
 
@@ -161,15 +165,14 @@
                             type: 'GET',
                             url: '/user/pupil-delete/' + pupilId,
                         });
-
+                        {#window.location.href = window.location.href;#}
+                        {#location.reload()#}
+                        history.go(0)
+                        {#location.href = location.href#}
+                        {#location.href = location.pathname#}
+                        {#location.replace(location.pathname)#}
+                        {#location.reload(false)#}
                     });
-                    {#window.location.href = window.location.href;#}
-                    {#location.reload()#}
-                    history.go(0)
-                    {#location.href = location.href#}
-                    {#location.href = location.pathname#}
-                    {#location.replace(location.pathname)#}
-                    {#location.reload(false)#}
                 } else {
                     swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
                 }

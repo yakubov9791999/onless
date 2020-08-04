@@ -161,7 +161,7 @@
                             type: 'GET',
                             url: '/user/pupil-delete/' + pupilId,
                         });
-                        window.location.href = window.location.href;
+                        location.reload();
                     });
                 } else {
                     swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");

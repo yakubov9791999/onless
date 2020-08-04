@@ -21,7 +21,7 @@ from django.conf import settings
 from django.views.static import serve
 
 urlpatterns = [
-    path('boshqaruv-panel/', admin.site.urls),
+    path('bugun/', admin.site.urls),
     path('', include('video.urls')),
     path('sign/', include('sign.urls')),
     path('user/', include('user.urls')),

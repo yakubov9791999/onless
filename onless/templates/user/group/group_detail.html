@@ -163,7 +163,13 @@
                         });
 
                     });
-                    window.location.href = window.location.href;
+                    {#window.location.href = window.location.href;#}
+                    {#location.reload()#}
+                    history.go(0)
+                    {#location.href = location.href#}
+                    {#location.href = location.pathname#}
+                    {#location.replace(location.pathname)#}
+                    {#location.reload(false)#}
                 } else {
                     swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
                 }

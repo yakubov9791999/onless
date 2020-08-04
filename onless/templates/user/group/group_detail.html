@@ -140,7 +140,7 @@
         function delete_pupil(pupil_id,pupil_name) {
             var pupilId = pupil_id;
             var pupilName = pupil_name;
-            console.log(pupilId)
+
             swal({
                 title: "O'quvchini o'chirmoqchimisiz ?",
                 text: pupilName + "ni o'chirmoqchimisiz ?",
@@ -164,13 +164,13 @@
 
                     });
 
-                    window.location.href = window.location.href;
-
                 } else {
                     swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
                 }
             });
+            window.location.href = window.location.href;
         }
+
 
     </script>
 {% endblock content %}

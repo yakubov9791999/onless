@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import UpdateView
 
+from onless import settings
 from onless.settings import BASE_DIR
 from quiz.models import *
 from user.decorators import *
@@ -530,8 +531,10 @@ def upload_file(request):
         if request.POST and request.FILES:
             file = request.FILES['file']
             file = File.objects.create(file=file)
-            # file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
-            file_path = os.path.join(f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
+            if settings.DEBUG:
+                file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
+            else:
+                file_path = os.path.join(f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
             group = get_object_or_404(Group, id=request.POST['group'])
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)

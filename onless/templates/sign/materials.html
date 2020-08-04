@@ -96,7 +96,7 @@
                             type: 'GET',
                             url: '/sign/delete-material/' + materialId,
                         });
-                        location.reload(true);
+                        window.location.href = window.location.href;
                     });
                 } else {
                     swal("Bekor qilindi", materialName + " ro'yhatda turibti !", "error");

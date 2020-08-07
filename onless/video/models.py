@@ -110,10 +110,10 @@ class Nabor(models.Model):
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
     phone = models.CharField(max_length=100)
-    phone2 = models.CharField(max_length=100)
+    phone2 = models.CharField(max_length=100, blank=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Avtomaktab')
     pub_date = models.DateTimeField(default=timezone.now, blank=True)
-    passport = models.FileField(upload_to='document/%Y-%m-%d/')
+    passport = models.FileField(upload_to='document/%Y-%m-%d/', blank=True)
     is_start = models.BooleanField(default=False)
 
     class Meta:

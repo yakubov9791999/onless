@@ -11,6 +11,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db.models import ProtectedError, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import get_template
 from django.views.generic import UpdateView
 
 from onless import settings
@@ -27,7 +28,7 @@ from django.db import IntegrityError
 
 
 #
-
+from .utils import render_to_pdf
 
 
 def user_login(request):
@@ -256,11 +257,22 @@ def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
-
         context = {
             'group': group,
             'pupils': pupils,
         }
+
+        download = request.GET.get('download')
+        if download:
+            template_name = 'online/get_group_pupils.html'
+            pdf = render_to_pdf(template_name, context)
+            if pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                filename = f"{group.category}-{group.number} {group.year}.pdf"
+                #pdfni yuklab olish attachment
+                content = "attachment; filename=%s" % (filename)
+                response['Content-Disposition'] = content
+                return response
         return render(request, 'user/group/group_detail.html', context)
     else:
         return render(request, 'inc/404.html')

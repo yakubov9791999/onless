@@ -12,12 +12,14 @@
 
                 {% include 'inc/messages.html' %}
 
-
-                <a id="button_add_pupil" onclick="add_pupil()"
-                   style="color: whitesmoke; margin-top: 1%;"
-                   href="/media/online/namuna2.xlsx" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Excel
-                    orqali qo'shish</a>
-
+                <div class="row">
+                    <a id="button_add_pupil" onclick="add_pupil()"
+                       style="color: whitesmoke; margin-top: 1%;"
+                       href="/media/online/namuna2.xlsx" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Excel
+                        orqali qo'shish</a>
+                    <a style="color: whitesmoke; margin-top: 1%;"
+                       href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Yuklab olish</a>
+                </div>
                 <form id="export_excel_form" style="display: none" class="form-group mt-3 ml-3"
                       action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}

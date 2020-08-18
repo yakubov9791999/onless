@@ -256,7 +256,11 @@ def groups_list(request):
 def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
-        pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
+        pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
+        pupils = []
+        for pupil in pupils_list:
+            pupil.name.encode('latin-1', 'ignore')
+            pupils.append(pupil)
         context = {
             'group': group,
             'pupils': pupils,

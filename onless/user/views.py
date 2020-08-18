@@ -259,7 +259,7 @@ def group_detail(request, id):
         pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
         pupils = []
         for pupil in pupils_list:
-            pupil.name.encode('latin-1', 'replace').decode('latin-1')
+            pupil.name.extractText().encode('UTF-8')
             pupils.append(pupil)
         context = {
             'group': group,

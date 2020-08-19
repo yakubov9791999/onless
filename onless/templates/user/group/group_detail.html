@@ -25,9 +25,11 @@
                         <input type="hidden" name="group" value="{{ group.id }}">
                         <input  type="submit" class="btn btn-secondary" value="Excelni yuklash">
                     </form>
+                    {% if pupils %}
                     <a style="color: whitesmoke; margin-top: 1%;"
                        href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-info"><i
                             class="fas fa-download"></i>&nbsp&nbsp&nbspRo'yhatni yuklab olish</a>
+                    {% endif %}
                 </div>
 
                 <!-- /.card-header -->

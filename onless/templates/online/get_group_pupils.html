@@ -28,7 +28,7 @@
                 <table style="border: 1px solid #606060; text-align: center; padding: 2px 2px 2px 2px">
                     <thead>
                     <tr style="border: 2px solid black">
-                        <th>#</th>
+                        <th style="width: 20px">#</th>
                         <th>O'quvchining ism familiyasi</th>
                         <th>Telefon</th>
                         <th>Login</th>
@@ -40,7 +40,7 @@
                     {% for pupil in pupils %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td><b>{{ pupil.name }}</b>
+                            <td style="text-align: left"><b>{{ pupil.name }}</b>
                             </td>
                             <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
                             <td>{{ pupil.username }}</td>

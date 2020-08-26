@@ -53,7 +53,7 @@ def select_bilet(request):
                     if CheckTestColor.objects.filter(user=request.user, bilet__number=prev_bilet).exists():
 
                         lang = request.GET['lang']
-                        savollar = Savol.objects.filter(is_active=True, bilet=bilet)
+                        savollar = Savol.objects.filter(is_active=True, bilet=bilet).order_by('-bilet_savol')
 
                         context.update(savollar=savollar,lang=lang,bilet=bilet)
                     else:
@@ -78,7 +78,7 @@ def select_bilet(request):
                 else:
                     #agar birinchi bilet bo'lsa
                     lang = request.GET['lang']
-                    savollar = Savol.objects.filter(is_active=True, bilet=bilet)
+                    savollar = Savol.objects.filter(is_active=True, bilet=bilet).order_by('-bilet_savol')
                     context.update(savollar=savollar, lang=lang, bilet=bilet)
 
 

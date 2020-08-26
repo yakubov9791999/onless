@@ -26,7 +26,7 @@
                         <input  type="submit" class="btn btn-secondary" value="Excelni yuklash">
                     </form>
                     {% if pupils %}
-                    <a style="color: whitesmoke; margin-top: 1%;"
+                    <a id="export_pdf_form" style="color: whitesmoke; margin-top: 1%;"
                        href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-info"><i
                             class="fas fa-download"></i>&nbsp&nbsp&nbspRo'yhatni yuklab olish</a>
                     {% endif %}
@@ -139,6 +139,8 @@
             alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
             document.getElementById('button_add_pupil').style.display = 'none';
             document.getElementById('export_excel_form').style.display = 'block';
+            document.getElementById('export_pdf_form').style.display = 'none';
+
         }
 
     </script>

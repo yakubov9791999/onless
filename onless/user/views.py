@@ -284,9 +284,9 @@ def group_detail(request, id):
             trips_ws = wb.get_sheet_by_name("Sheet")
             trips_ws.column_dimensions['A'].width = 3
             trips_ws.column_dimensions['B'].width = 40
-            trips_ws.column_dimensions['C'].width = 20
-            trips_ws.column_dimensions['D'].width = 20
-            trips_ws.column_dimensions['E'].width = 20
+            trips_ws.column_dimensions['C'].width = 15
+            trips_ws.column_dimensions['D'].width = 15
+            trips_ws.column_dimensions['E'].width = 15
 
             c1 = sheet.cell(row=1, column=1)
 
@@ -321,8 +321,7 @@ def group_detail(request, id):
                     r2.value = value
                     forloop = sheet.cell(column=1, row=row_num + 1)
                     forloop.value = i
-
-
+                    i =+ 1
             wb.save(response)
 
 

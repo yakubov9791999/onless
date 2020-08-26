@@ -13,6 +13,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.views.generic import UpdateView
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
 
 from onless import settings
 from onless.settings import BASE_DIR
@@ -268,15 +271,62 @@ def group_detail(request, id):
 
         download = request.GET.get('download')
         if download:
-            template_name = 'online/get_group_pupils.html'
-            pdf = render_to_pdf(template_name, context)
-            if pdf:
-                response = HttpResponse(pdf, content_type='application/pdf')
-                filename = f"{group.category}-{group.number} {group.year}.pdf"
-                #pdfni yuklab olish attachment
-                content = "attachment; filename=%s" % (filename)
-                response['Content-Disposition'] = content
-                return response
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = f'attachment; filename="{group.category}-{group.number} {group.year}.xlsx"'
+
+            # create workbook
+            wb = Workbook()
+
+            sheet = wb.active
+
+            # stylize header row
+            # 'id','title', 'quantity','pub_date'
+            trips_ws = wb.get_sheet_by_name("Sheet")
+            trips_ws.column_dimensions['A'].width = 3
+            trips_ws.column_dimensions['B'].width = 40
+            trips_ws.column_dimensions['C'].width = 20
+            trips_ws.column_dimensions['D'].width = 20
+            trips_ws.column_dimensions['E'].width = 20
+
+            c1 = sheet.cell(row=1, column=1)
+
+            c1.value = "#"
+            c1.font = Font(bold=True)
+
+
+            c2 = sheet.cell(row=1, column=2)
+            c2.value = "F.I.O"
+            c2.font = Font(bold=True)
+
+            c3 = sheet.cell(row=1, column=3)
+            c3.value = "Tel raqam"
+            c3.font = Font(bold=True)
+
+            c4 = sheet.cell(row=1, column=4)
+            c4.value = "Login"
+            c4.font = Font(bold=True)
+
+            c5 = sheet.cell(row=1, column=5)
+            c5.value = "Parol"
+            c5.font = Font(bold=True)
+
+            #export data to Excel
+            rows = pupils_list.values_list('name', 'phone', 'username', 'turbo')
+
+            for row_num, row in enumerate(rows, 1):
+                i = 1
+                # row is just a tuple
+                for col_num, value in enumerate(row):
+                    r2 = sheet.cell(row=row_num + 1, column=col_num + 2)
+                    r2.value = value
+                    forloop = sheet.cell(column=1, row=row_num + 1)
+                    forloop.value = i
+
+
+            wb.save(response)
+
+
+            return response
         return render(request, 'user/group/group_detail.html', context)
     else:
         return render(request, 'inc/404.html')

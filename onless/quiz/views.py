@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import random
@@ -8,6 +9,7 @@ from .forms import *
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
+
 
 @login_required
 def add_result(request):
@@ -46,26 +48,42 @@ def select_bilet(request):
             try:
                 bilet = Bilet.objects.get(number=request.GET.get('bilet'), is_active=True)
                 context = {}
-                if int(str(bilet.number)) != 1:
-                    #1 dan boshqa biletlar uchun
+                if int(str(bilet.number)) == 1:
+                    # agar birinchi bilet bo'lsa
+                    lang = request.GET['lang']
+                    savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(
+                        select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
+                    context.update(savollar=savollar, lang=lang, bilet=bilet)
+
+                elif int(str(bilet.number)) == 70:
+                    # agar oxirgi bilet bo'lsa
+                    lang = request.GET['lang']
+                    savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(
+                        select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
+                    context.update(savollar=savollar, lang=lang, bilet=bilet)
+
+                else:
+                    # 1 va 70 dan boshqa biletlar uchun
                     prev_bilet = int(str(bilet.number)) - 1
-
                     if CheckTestColor.objects.filter(user=request.user, bilet__number=prev_bilet).exists():
-
+                        #bitta oldingi bilet yechilgan bo'lsa
                         lang = request.GET['lang']
-                        savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by = ['bilet_savol'])
+                        savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(
+                            select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
 
-                        context.update(savollar=savollar,lang=lang,bilet=bilet)
+                        context.update(savollar=savollar, lang=lang, bilet=bilet)
                     else:
+                        #bitta oldingi bilet yechilmagan bo'lsa
                         lang = request.GET['lang']
                         bilets = Bilet.objects.filter(is_active=True)
-                        check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+                        check_last = CheckTestColor.objects.filter(user=request.user).order_by(
+                            'bilet').distinct().last()
 
                         if check_last:
                             check_last = int(str(check_last)) + 1
                             context.update(check_last=check_last)
 
-                        context.update(lang=lang,bilets=bilets)
+                        context.update(lang=lang, bilets=bilets)
                         prev_bilet = int(request.GET['bilet']) - 1
                         if lang == 'ru':
                             msg = f"Чтобы перейти на этот билет, вам нужно освоить билет {prev_bilet}"
@@ -75,17 +93,12 @@ def select_bilet(request):
                             msg = f"Ushbu biletga o'tish uchun {prev_bilet}-biletni o'zlashtirishingiz kerak"
                         messages.error(request, msg)
                         return render(request, 'quiz/select_bilet.html', context)
-                else:
-                    #agar birinchi bilet bo'lsa
-                    lang = request.GET['lang']
-                    savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by = ['bilet_savol'])
-                    context.update(savollar=savollar, lang=lang, bilet=bilet)
 
-
-
-                if Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id:
-                    last_active_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
-                    context.update(last_active_bilet=last_active_bilet-1)
+                if Bilet.objects.filter(Q(id__gt=bilet.id) & Q(is_active=True)).order_by("-id")[0:1].get().id:
+                    last_active_bilet = Bilet.objects.filter(Q(id__gt=bilet.id) & Q(is_active=True)).order_by("-id")[
+                                        0:1].get().id
+                    last_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
+                    context.update(last_active_bilet=last_active_bilet - 1, last_bilet=last_bilet)
 
                     check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
                     if check_last:
@@ -133,6 +146,7 @@ def select_lang(request):
     else:
         return render(request, 'quiz/select_lang.html')
 
+
 @login_required
 def select_type(request):
     if request.GET:
@@ -145,8 +159,9 @@ def select_type(request):
                     'lang': lang
                 }
                 if type == 'I':
-                    #get random 10 questions
-                    queryset = tuple(Savol.objects.filter(is_active=True, bilet__is_active=True).values_list('id', flat=True))
+                    # get random 10 questions
+                    queryset = tuple(
+                        Savol.objects.filter(is_active=True, bilet__is_active=True).values_list('id', flat=True))
                     random_queryset = random.sample(queryset, 10)
                     savollar = Savol.objects.filter(id__in=random_queryset)
                     context.update(savollar=savollar)
@@ -179,7 +194,7 @@ def get_bilet_color(request):
 
         check_color = CheckTestColor.objects.filter(user=user, bilet=bilet).count()
         if check_color < 2:
-            color = CheckTestColor.objects.create(bilet=bilet,user=user)
+            color = CheckTestColor.objects.create(bilet=bilet, user=user)
         else:
             return False
 

@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.views.generic import UpdateView
 from openpyxl import Workbook
-from openpyxl.styles import Font
+from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
 from onless import settings
@@ -278,7 +278,7 @@ def group_detail(request, id):
             wb = Workbook()
 
             sheet = wb.active
-
+            sheet.alignment = Alignment(horizontal="center", vertical="center")
             # stylize header row
             # 'id','title', 'quantity','pub_date'
             trips_ws = wb.get_sheet_by_name("Sheet")
@@ -287,6 +287,7 @@ def group_detail(request, id):
             trips_ws.column_dimensions['C'].width = 15
             trips_ws.column_dimensions['D'].width = 15
             trips_ws.column_dimensions['E'].width = 15
+
 
             c1 = sheet.cell(row=1, column=1)
 
@@ -321,7 +322,9 @@ def group_detail(request, id):
                     r2.value = value
                     forloop = sheet.cell(column=1, row=row_num + 1)
                     forloop.value = i
-                    i =+ 1
+
+
+                i =+ 1
             wb.save(response)
 
 

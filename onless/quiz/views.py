@@ -55,12 +55,12 @@ def select_bilet(request):
                         select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
                     context.update(savollar=savollar, lang=lang, bilet=bilet)
 
-                elif int(str(bilet.number)) == 70:
-                    # agar oxirgi bilet bo'lsa
-                    lang = request.GET['lang']
-                    savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
-                        select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
-                    context.update(savollar=savollar, lang=lang, bilet=bilet)
+                # elif int(str(bilet.number)) == 70:
+                #     # agar oxirgi bilet bo'lsa
+                #     lang = request.GET['lang']
+                #     savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
+                #         select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
+                #     context.update(savollar=savollar, lang=lang, bilet=bilet)
                 else:
                     # 1 va 70 dan boshqa biletlar uchun
                     prev_bilet = int(str(bilet.number)) - 1

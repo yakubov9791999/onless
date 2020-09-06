@@ -51,33 +51,32 @@ def select_bilet(request):
                 if int(str(bilet.number)) == 1:
                     # agar birinchi bilet bo'lsa
                     lang = request.GET['lang']
-                    savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(
+                    savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
                         select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
                     context.update(savollar=savollar, lang=lang, bilet=bilet)
 
                 elif int(str(bilet.number)) == 70:
                     # agar oxirgi bilet bo'lsa
                     lang = request.GET['lang']
-                    savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(
+                    savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
                         select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
                     context.update(savollar=savollar, lang=lang, bilet=bilet)
-
                 else:
                     # 1 va 70 dan boshqa biletlar uchun
                     prev_bilet = int(str(bilet.number)) - 1
+
                     if CheckTestColor.objects.filter(user=request.user, bilet__number=prev_bilet).exists():
                         #bitta oldingi bilet yechilgan bo'lsa
                         lang = request.GET['lang']
-                        savollar = Savol.objects.filter(is_active=True, bilet=bilet).extra(
+                        savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
                             select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
-
                         context.update(savollar=savollar, lang=lang, bilet=bilet)
                     else:
                         #bitta oldingi bilet yechilmagan bo'lsa
                         lang = request.GET['lang']
-                        bilets = Bilet.objects.filter(is_active=True)
+                        bilets = Bilet.objects.filter(is_active=True).order_by('number')
                         check_last = CheckTestColor.objects.filter(user=request.user).order_by(
-                            'bilet').distinct().last()
+                            'bilet__number').distinct().last()
 
                         if check_last:
                             check_last = int(str(check_last)) + 1
@@ -94,13 +93,12 @@ def select_bilet(request):
                         messages.error(request, msg)
                         return render(request, 'quiz/select_bilet.html', context)
 
-                if Bilet.objects.filter(Q(id__gt=bilet.id) & Q(is_active=True)).order_by("-id")[0:1].get().id:
-                    last_active_bilet = Bilet.objects.filter(Q(id__gt=bilet.id) & Q(is_active=True)).order_by("-id")[
-                                        0:1].get().id
-                    last_bilet = Bilet.objects.filter(id__gt=bilet.id).order_by("-id")[0:1].get().id
+                if Bilet.objects.filter(Q(number__gte=bilet.number) & Q(is_active=True)).order_by("-number")[0:1].get().number:
+                    last_active_bilet = Bilet.objects.filter(Q(number__gte=bilet.number) & Q(is_active=True)).order_by("-number")[
+                                        0:1].get().number
+                    last_bilet = Bilet.objects.filter(number__gte=bilet.number).order_by("-number")[0:1].get().number
                     context.update(last_active_bilet=last_active_bilet - 1, last_bilet=last_bilet)
-
-                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet__number').distinct().last()
                     if check_last:
                         check_last = int(str(check_last)) + 1
                         context.update(check_last=check_last)
@@ -167,10 +165,11 @@ def select_type(request):
                     context.update(savollar=savollar)
                     return render(request, 'quiz/imtihon_test.html', context)
                 elif type == 'T':
-                    bilets = Bilet.objects.filter(is_active=True)
+                    bilets = Bilet.objects.filter(is_active=True).order_by('number')
                     context.update(bilets=bilets)
 
-                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet').distinct().last()
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet__number').distinct().last()
+
                     if check_last:
                         check_last = int(str(check_last)) + 1
                         context.update(check_last=check_last)

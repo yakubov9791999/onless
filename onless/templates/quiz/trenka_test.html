@@ -42,15 +42,14 @@
                         <div class="col-6">
                             {% get_bilet_color bilet.id user.id as color %}
                             {% if color %}
-                                {% if bilet.number is not last_active_bilet %}
+                                {% if bilet.number is not last_bilet %}
                                     <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
                                        class="btn btn-outline-primary btn-block text-capitalize"><span
                                             aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet </a>
-                                {% else %}
-                                    sadasd
                                 {% endif %}
                             {% else %}
-                                {% if bilet.number is not last_active_bilet %}
+
+                                {% if bilet.number is not last_bilet %}
                                     <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
                                        class="btn btn-outline-danger btn-block text-capitalize bilet-btn"><span
                                             aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet </a>

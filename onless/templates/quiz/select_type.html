@@ -10,21 +10,12 @@
                 <h3 class="card-title">{% if lang == 'ru' %}Выберите нужный вариант:{% elif lang == 'kr' %}Керакли танловни танланг:{% else %}Kerakli tanlovni tanlang:{% endif %}</h3>
             </div>
         <div class="row justify-content-center">
-            <a class="col-5 box-type img-1"
+            <a class="col-5 box-type img-1" style="background-image:{% if lang == 'uz' %} url('/static/online/trenirofka_uz.jpg');{% elif lang == 'kr' %}url('/static/online/trenirofka_kr.jpg');{% elif lang == 'ru' %}url('/static/online/trenirofka_ru.jpg');{% endif %}"
                href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=T">
-
-                <div class="text-center text-light">
-                    {% if lang == 'uz' %}Mashg'ulot{% elif lang == 'kr' %}Машғулот{% elif lang == 'ru' %}
-                        Тренировка{% endif %}
-                </div>
             </a>
             <div class="col-1"></div>
-            <a class="col-5 box-type img-2"
+            <a class="col-5 box-type img-2" style="background-image:{% if lang == 'uz' %} url('/static/online/imtihon_uz.jpg');{% elif lang == 'kr' %}url('/static/online/imtihon_kr.jpg');{% elif lang == 'ru' %}url('/static/online/imtihon_ru.jpg');{% endif %}"
                href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=I">
-
-                <div class="text-center text-light">
-                    {% if lang == 'uz' %}Imtihon{% elif lang == 'kr' %}Имтиҳон{% elif lang == 'ru' %}Экзамен{% endif %}
-                </div>
             </a>
 
         </div>

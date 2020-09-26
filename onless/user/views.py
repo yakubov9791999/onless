@@ -11,8 +11,13 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db.models import ProtectedError, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import get_template
 from django.views.generic import UpdateView
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
+from openpyxl.utils import get_column_letter
 
+from onless import settings
 from onless.settings import BASE_DIR
 from quiz.models import *
 from user.decorators import *
@@ -26,7 +31,7 @@ from django.db import IntegrityError
 
 
 #
-
+from .utils import render_to_pdf
 
 
 def user_login(request):
@@ -254,12 +259,76 @@ def groups_list(request):
 def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
-        pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
-
+        pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
+        # pupils = []
+        # for pupil in pupils_list:
+        #     get_name(pupil.name.encode('UTF-8'))
+        #     pupils.append(pupil)
         context = {
             'group': group,
-            'pupils': pupils,
+            'pupils': pupils_list,
         }
+
+        download = request.GET.get('download')
+        if download:
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = f'attachment; filename="{group.category}-{group.number} {group.year}.xlsx"'
+
+            # create workbook
+            wb = Workbook()
+
+            sheet = wb.active
+            sheet.alignment = Alignment(horizontal="center", vertical="center")
+            # stylize header row
+            # 'id','title', 'quantity','pub_date'
+            trips_ws = wb.get_sheet_by_name("Sheet")
+            trips_ws.column_dimensions['A'].width = 3
+            trips_ws.column_dimensions['B'].width = 40
+            trips_ws.column_dimensions['C'].width = 15
+            trips_ws.column_dimensions['D'].width = 15
+            trips_ws.column_dimensions['E'].width = 15
+
+
+            c1 = sheet.cell(row=1, column=1)
+
+            c1.value = "#"
+            c1.font = Font(bold=True)
+
+
+            c2 = sheet.cell(row=1, column=2)
+            c2.value = "F.I.O"
+            c2.font = Font(bold=True)
+
+            c3 = sheet.cell(row=1, column=3)
+            c3.value = "Tel raqam"
+            c3.font = Font(bold=True)
+
+            c4 = sheet.cell(row=1, column=4)
+            c4.value = "Login"
+            c4.font = Font(bold=True)
+
+            c5 = sheet.cell(row=1, column=5)
+            c5.value = "Parol"
+            c5.font = Font(bold=True)
+
+            #export data to Excel
+            rows = pupils_list.values_list('name', 'phone', 'username', 'turbo')
+
+            for row_num, row in enumerate(rows, 1):
+                i = 1
+                # row is just a tuple
+                for col_num, value in enumerate(row):
+                    r2 = sheet.cell(row=row_num + 1, column=col_num + 2)
+                    r2.value = value
+                    forloop = sheet.cell(column=1, row=row_num + 1)
+                    forloop.value = i
+
+
+                i =+ 1
+            wb.save(response)
+
+
+            return response
         return render(request, 'user/group/group_detail.html', context)
     else:
         return render(request, 'inc/404.html')
@@ -530,8 +599,10 @@ def upload_file(request):
         if request.POST and request.FILES:
             file = request.FILES['file']
             file = File.objects.create(file=file)
-            # file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
-            file_path = os.path.join(f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
+            if settings.DEBUG:
+                file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
+            else:
+                file_path = os.path.join(f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
             group = get_object_or_404(Group, id=request.POST['group'])
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)

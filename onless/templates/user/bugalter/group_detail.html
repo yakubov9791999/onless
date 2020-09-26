@@ -23,6 +23,7 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 2%">№</th>
                                 <th>O'quvchining ism familiyasi</th>
+                                <th>Tel raqami</th>
                                 <th>Umumiy</th>
                                 <th>To'lovi</th>
                                 <th>Qarzdorligi</th>
@@ -37,6 +38,7 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><b>{{ pupil.name }}</b></td>
+                                    <td><b>{{ pupil.phone }}</b></td>
                                     {% get_payments pupil.id group.id as payment %}
                                     <td>{{ payment.total|intcomma }}</td>
                                     <td style="color: green">{{ payment.payment|intcomma }}</td>

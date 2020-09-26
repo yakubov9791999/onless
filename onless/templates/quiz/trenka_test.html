@@ -29,28 +29,35 @@
 
                     </div>
                 {% endfor %}
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            {% if bilet.number is not 1 %}
-                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}" class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet <span aria-hidden="true">&laquo;&laquo;</span></a>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6">
+                            {% if bilet.number is not 1 %}
+                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}"
+                                   class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet
+                                    <span aria-hidden="true">&laquo;&laquo;</span></a>
 
-                                            {% endif %}
-                                        </div>
-                                        <div class="col-6">
-                                        {% get_bilet_color bilet.id user.id as color %}
-                                            {% if color %}
-                                            {% if bilet.number is not last_active_bilet %}
-                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-primary btn-block text-capitalize"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>
-                                            {% endif %}
-                                            {% else %}
-                                                 {% if bilet.number is not last_active_bilet %}
-                                                <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}" class="btn btn-outline-danger btn-block text-capitalize bilet-btn"><span aria-hidden="true">&raquo;&raquo;</span>  {{ bilet.number|add:1 }}-bilet </a>
-                                            {% endif %}
-                                        {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            {% get_bilet_color bilet.id user.id as color %}
+                            {% if color %}
+                                {% if bilet.number is not last_bilet %}
+                                    <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
+                                       class="btn btn-outline-primary btn-block text-capitalize"><span
+                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet </a>
+                                {% endif %}
+                            {% else %}
+
+                                {% if bilet.number is not last_bilet %}
+                                    <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
+                                       class="btn btn-outline-danger btn-block text-capitalize bilet-btn"><span
+                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
 
             </div>
@@ -100,7 +107,7 @@
                                         method: "GET",
                                         url: "{% url 'quiz:get_bilet_color' %}",
                                         data: {
-                                          'bilet': bilet,
+                                            'bilet': bilet,
                                         },
                                         success: function (message) {
                                             console.log(message)
@@ -146,7 +153,8 @@
             $('.bilet-btn').click(function (event) {
 
                 var lang = '{{ lang }}'
-                var next_bilet = {{ bilet.number|add:1 }}
+                var next_bilet =
+                {{ bilet.number|add:1 }}
                 if (lang == 'uz') {
                     var Title = 'Ruxsat berilmagan!';
                     var swalButtonTitle = 'Oynani yopish';
@@ -190,12 +198,6 @@
             });
 
         });
-
-
-
-
-
-
 
 
     </script>

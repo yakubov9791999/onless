@@ -1,0 +1,62 @@
+{% load i18n %}
+{% block top %}
+    <style>
+        #blah {
+            width: 200px;
+        }
+        h2 {
+            font-size: 20px;
+            text-align: center;
+        }
+    </style>
+{% endblock top %}
+{% block content %}
+    <section class="py-3 mt-2 bg-info text-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <h2>{{ group.category }}-{{ group.number }} {{ group.year }}</h2>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <div >
+        <div>
+            <!-- left column -->
+            <div>
+                <table style="border: 1px solid #606060; text-align: center; padding: 2px 2px 2px 2px">
+                    <thead>
+                    <tr style="border: 2px solid black">
+                        <th style="width: 20px">#</th>
+                        <th>O'quvchining ism familiyasi</th>
+                        <th>Telefon</th>
+                        <th>Login</th>
+                        <th>Parol</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for pupil in pupils %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td style="text-align: left"><b>{{ pupil.name }}</b>
+                            </td>
+                            <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
+                            <td>{{ pupil.username }}</td>
+                            <td>{{ pupil.turbo }}</td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block bottom %}
+
+{% endblock bottom %}

@@ -320,8 +320,8 @@ def group_detail(request, id):
                 for col_num, value in enumerate(row):
                     r2 = sheet.cell(row=row_num + 1, column=col_num + 2)
                     r2.value = value
-                    forloop = sheet.cell(column=1, row=row_num + 1)
-                    forloop.value = i
+                    # forloop = sheet.cell(column=1, row=row_num + 1)
+                    # forloop.value = '#'
 
 
                 i =+ 1

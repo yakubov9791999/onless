@@ -18,7 +18,8 @@
                 <!-- form start -->
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="example1" style="font-size: 0.9rem" class="table table-bordered table-hovered table-hover">
+                        <table id="example1" style="font-size: 0.9rem"
+                               class="table table-bordered table-hovered table-hover">
                             <thead>
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 2%">№</th>
@@ -38,7 +39,7 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><b>{{ pupil.name }}</b></td>
-                                    <td><b>{{ pupil.phone }}</b></td>
+                                    <td><b>{% if pupil.phone %}{{ pupil.phone }}{% endif %}</b></td>
                                     {% get_payments pupil.id group.id as payment %}
                                     <td>{{ payment.total|intcomma }}</td>
                                     <td style="color: green">{{ payment.payment|intcomma }}</td>
@@ -47,10 +48,18 @@
                                         <td>
                                             <form action="{% url 'user:add_pay' %}" method="post">
                                                 {% csrf_token %}
-                                                <input id="number" type="number" name="pay">
+                                                <div class="row">
+                                                    <dic class="col-10">
+                                                        <input id="number" type="number" name="pay">
+                                                    </dic>
+                                                    <div class="col-2">
+                                                        <button type="submit"><i class="fas fa-plus-square"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                                 <input type="hidden" name="pupil" value="{{ pupil.id }}">
                                                 <input type="hidden" name="group" value="{{ group.id }}">
-                                                <button type="submit"><i class="fas fa-plus-square"></i></button>
+
                                             </form>
                                         </td>
                                     {% endif %}
@@ -62,6 +71,7 @@
                             </tbody>
                             <tfoot>
                             <tr style="background-color: #f1f1f1">
+                                <td></td>
                                 <td></td>
                                 <td><b>Jami:</b></td>
                                 <td><b>{{ total_pay|intcomma }}</b></td>

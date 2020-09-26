@@ -26,6 +26,9 @@ from django.db import IntegrityError
 
 
 #
+
+
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -527,7 +530,8 @@ def upload_file(request):
         if request.POST and request.FILES:
             file = request.FILES['file']
             file = File.objects.create(file=file)
-            file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
+            # file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
+            file_path = os.path.join(f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
             group = get_object_or_404(Group, id=request.POST['group'])
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)
@@ -817,10 +821,10 @@ def history_view_video_all(request):
                 if not views.exists():
                     messages.error(request, "Ko'rishlar mavjud emas !")
                 context.update(views=views)
-
+                print('ok')
             return render(request, 'user/view_video_history_all.html', context)
         else:
-            views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4)).order_by(
+            views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4) & Q(user__is_active=True)).order_by(
                 '-time')
             if not views.exists():
                 messages.error(request, "Ko'rishlar mavjud emas !")

@@ -81,6 +81,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main content -->
 
         <div class="content">
+        {% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}{% if request.user.school.notification == True %}<div class="alert alert-primary text-center"><h3>{{ request.user.school.notification_text }}. Qo'shimcha savollar bo'lsa 972800809 / 919791999 / 906366264 raqamlariga qo'ng'iroq qiling</h3></div>{% endif %}{% endif %}
             {% block content %}
 
             {% endblock content %}

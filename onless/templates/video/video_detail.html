@@ -33,7 +33,7 @@
         <h1 class="text-center">{{ video.title }}</h1>
         <div class="video-js-responsive-container vjs-hd">
 
-            <video style="margin: 0 auto" playsinline
+            <video style="margin: 0 auto" webkit-playsinline="true" playsinline="playsinline"
                    id="my-video"
                    class="video-js "
                    controls
@@ -184,6 +184,12 @@
             $("#video_bottom_question").hide();
         {% endif %}
 
+
+        videojs("my-video", {
+            controlBar: {
+                fullscreenToggle: false
+            }
+        });
 
 
         var video = videojs('my-video').ready(function () {

@@ -27,7 +27,7 @@ class Sign(models.Model):
 
 class Subject(models.Model):
     title = models.CharField(verbose_name='Nomi',max_length=600)
-    category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=3, default='A')
+    category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
 
     def __str__(self):

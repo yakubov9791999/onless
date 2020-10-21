@@ -113,11 +113,12 @@ CATEGORY_CHOICES = (
     ("C", "C"),
     ("D", "D"),
     ("E", "E"),
+    ("Malaka oshirish", "Malaka oshirish"),
 )
 
 
 class Group(models.Model):
-    category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=15, default="B")
+    category = models.CharField(choices=CATEGORY_CHOICES, verbose_name='Toifasi', max_length=20, default="B")
     number = models.IntegerField()
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
     teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,

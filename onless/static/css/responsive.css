@@ -1,6 +1,6 @@
 /* картинка на странице */
 .img-responsive {
-    width: 300px;
+    width: 100%;
     cursor: pointer;
     border: 1px solid #FFF;
     color: red;

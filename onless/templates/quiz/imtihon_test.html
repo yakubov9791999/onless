@@ -11,16 +11,6 @@
 
         <!-- left column -->
         <div class="col-md-12" style=" margin-bottom: 50px">
-            <div class="alert alert-info text-center"><b>
-                {% if lang == 'uz' %}
-                    Sizga taqdim etilayotgan imtihon savollari mashg'ulot rejimida mavjud biletlar asosida
-                    shakllantirilgan
-                {% elif lang == 'kr' %}
-                    Сизга тақдим етилаётган имтиҳон саволлари машғулот режимида мавжуд билетлар асосида шакллантирилган
-                {% elif lang == 'ru' %}
-                    Экзаменационные вопросы, предлагаемые вам, сформированы на основе имеющихся билетов в режиме
-                    обучения
-                {% endif %}</b></div>
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
                 {% for savol in savollar %}

@@ -15,7 +15,6 @@
             <div class="col-12 " id="video_bottom_question">
                 {% for savol in savollar %}
                     <div class="privew" data-id="{{ savol.id }}" data-btn="{{ forloop.counter }}">
-
                         {% csrf_token %}
                         <div class="questionsBox">
                             {% if lang == 'uz' %}

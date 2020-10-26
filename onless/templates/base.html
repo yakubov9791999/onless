@@ -19,6 +19,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{% static '/css/adminlte.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+          integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+          crossorigin="anonymous"/>
 
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
@@ -30,7 +33,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta property="og:image:type" content="image/png"/>
     <meta name="google-site-verification" content="gagH8qOwZzXNERShxKP9ST89rJPPaHMtC1TqfTGQwvU"/>
 </head>
-<body class="hold-transition sidebar-mini sidebar-open">
+<body class="hold-transition sidebar-mini">
 <div class="wrapper">
 
     {% include 'inc/navbar.html' %}
@@ -82,7 +85,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main content -->
 
         <div class="content">
-        {% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}{% if request.user.school.notification == True %}<div class="alert alert-primary text-center"><h3>{{ request.user.school.notification_text }}. Qo'shimcha savollar bo'lsa 972800809 / 919791999 / 906366264 raqamlariga qo'ng'iroq qiling</h3></div>{% endif %}{% endif %}
+            {% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}
+                {% if request.user.school.notification == True %}
+                    <div class="alert alert-primary text-center"><h3>{{ request.user.school.notification_text }}.
+                        Qo'shimcha savollar bo'lsa 972800809 / 919791999 / 906366264 raqamlariga qo'ng'iroq qiling</h3>
+                    </div>{% endif %}{% endif %}
             {% block content %}
 
             {% endblock content %}
@@ -137,12 +144,40 @@ scratch. This page gets rid of all links and provides the needed markup only.
         webvisor: true
     });
 
-
 </script>
 <noscript>
     <div><img src="https://mc.yandex.ru/watch/64861804" style="position:absolute; left:-9999px;" alt=""/></div>
 </noscript>
 <!-- /Yandex.Metrika counter -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"
+        integrity="sha512-Meww2sXqNHxI1+5Dyh/9KAtvI9RZSA4c1K2k5iL02oiPO/RH3Q30L3M1albtqMg50u4gRTYdV4EXOQqXEI336A=="
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    {#if ($('body').hasClass('sidebar-open')) {#}
+    {#    $(window).on('click', function () {#}
+    {#        $("body").removeClass('sidebar-open').addClass('sidebar-close').animate({#}
+    {#            width: "100%"#}
+    {#        }, 200)#}
+    {#    })#}
+    {##}
+
+
+    $(document).ready(function () {
+
+        $('body').addClass('sidebar-open')
+        var visited = localStorage.getItem('visited');
+        if (!visited) {
+            setTimeout(function () {
+
+                $('body').removeClass('sidebar-open').addClass('sidebar-closed sidebar-collapse');
+
+            }, 5000)
+            localStorage.setItem('visited', true);
+        }
+    })
+
+</script>
 </body>
 </html>

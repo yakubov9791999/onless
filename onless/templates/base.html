@@ -166,13 +166,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $(document).ready(function () {
 
-        $('body').addClass('sidebar-open')
+
         var visited = localStorage.getItem('visited');
         if (!visited) {
+            $('body').addClass('sidebar-open')
             setTimeout(function () {
-
                 $('body').removeClass('sidebar-open').addClass('sidebar-closed sidebar-collapse');
-
             }, 5000)
             localStorage.setItem('visited', true);
         }

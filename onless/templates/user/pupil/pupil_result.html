@@ -96,16 +96,16 @@
                     <div style="margin-left: 10%">yechilmagan</div>
                 {% endif %}
             </div>
-            {% for attempt in request.user.attempt_user.all %}
-            <p class="mt-3 text-danger" style="margin-bottom: 0">{% if attempt.allowed %}Sizga {{ attempt.allowed }} marta testlarni qayta topshirish imkoniyati
-                berilgan!{% else %}Sizga qayta topshirish imkoniyati berilmagan!{% endif %}</p>
-            <p style="margin-bottom: 0">Qayta topshirishlar: {% if attempt.solved %}{{ attempt.solved }}{% else %}0{% endif %}</p>
-            {% endfor %}
-            <br>
-            <button id="resetAnswer" class="btn btn-warning col-8 col-md-8 col-sm-8 col-lg-8 col-xl-8"
-                    style="margin-top: 0 !important;">
-                Testlarni qayta topshirish
-            </button>
+{#            {% for attempt in request.user.attempt_user.all %}#}
+{#            <p class="mt-3 text-danger" style="margin-bottom: 0">{% if attempt.allowed %}Sizga {{ attempt.allowed }} marta testlarni qayta topshirish imkoniyati#}
+{#                berilgan!{% else %}Sizga qayta topshirish imkoniyati berilmagan!{% endif %}</p>#}
+{#            <p style="margin-bottom: 0">Qayta topshirishlar: {% if attempt.solved %}{{ attempt.solved }}{% else %}0{% endif %}</p>#}
+{#            {% endfor %}#}
+{#            <br>#}
+{#            <button id="resetAnswer" class="btn btn-warning col-8 col-md-8 col-sm-8 col-lg-8 col-xl-8"#}
+{#                    style="margin-top: 0 !important;">#}
+{#                Testlarni qayta topshirish#}
+{#            </button>#}
 
         </div>
 

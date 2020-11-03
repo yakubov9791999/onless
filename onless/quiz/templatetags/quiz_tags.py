@@ -10,7 +10,7 @@ register = template.Library()
 def pupil_result(id):
     pupil = get_object_or_404(User, id=id)
     answer_count = ResultQuiz.objects.filter(user=pupil).count()
-    question_total_count = Savol.objects.filter(is_active=True, video__isnull=False).count()
+    question_total_count = Question.objects.filter(is_active=True, video__isnull=False).count()
     answer_true = ResultQuiz.objects.filter(user=pupil, answer__is_true=True).count()
     answer_false = ResultQuiz.objects.filter(user=pupil, answer__is_true=False).count()
     try:

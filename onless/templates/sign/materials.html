@@ -80,6 +80,7 @@
                 title: "Materialni o'chirmoqchimisiz ?",
                 text: materialName + "ni o'chirmoqchimisiz ?",
                 icon: "warning",
+                closeOnClickOutside: false,
                 buttons: [
                     'Yoq, Bekor qilish!',
                     'Ha, Roziman!'
@@ -96,7 +97,7 @@
                             type: 'GET',
                             url: '/sign/delete-material/' + materialId,
                         });
-                        window.location.href = window.location.href;
+                        window.location.href = '{% url "sign:materials" %}';
                     });
                 } else {
                     swal("Bekor qilindi", materialName + " ro'yhatda turibti !", "error");

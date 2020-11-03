@@ -58,13 +58,36 @@ admin.site.register(Question, QuestionAdmin)
 class ResultQuizAdmin(admin.ModelAdmin):
     list_filter = ['user','answer', 'question',]
 
+@admin.register(Attempt)
+class AttemptAdmin(admin.ModelAdmin):
+    list_filter = ['user','allowed', 'solved',]
+
 @admin.register(Bilet)
 class BiletAdmin(admin.ModelAdmin):
     list_display = ['number',]
     list_display_links = ['number']
 
 
+class VideoFilter(admin.SimpleListFilter):
 
+    title = 'video'
+
+    parameter_name = 'video'
+
+    def lookups(self, request, model_admin):
+
+        return (
+            ('yes', 'Yes'),
+            ('no',  'No'),
+        )
+
+    def queryset(self, request, queryset):
+
+        if self.value() == 'yes':
+            return queryset.filter(video__isnull=False)
+
+        if self.value() == 'no':
+            return queryset.filter(video__isnull=True)
 
 class Choiceinline(admin.StackedInline):
     model = Javob
@@ -79,7 +102,7 @@ class SavolAdmin(admin.ModelAdmin):
 
     list_display = ['bilet','bilet_savol','title_uz','title_kr','title_ru','is_active']
     search_fields = ['bilet__number','title_uz','title_kr','title_ru',]
-    list_filter = ['is_active','bilet', 'video',]
+    list_filter = ['is_active','bilet', VideoFilter]
     save_on_top = True
     save_as_continue = True
     list_display_links = ['title_uz','title_kr','title_ru',]

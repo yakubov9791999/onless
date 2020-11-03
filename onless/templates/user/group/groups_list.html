@@ -96,6 +96,7 @@
                 title: "Guruhni o'chirmoqchimisiz ?",
                 text: "Siz haqiqatdan ham " + groupName + " guruhini o'chirmoqchimisiz ?",
                 icon: "warning",
+                closeOnClickOutside: false,
                 buttons: [
                     'Yoq, Bekor qilish!',
                     'Ha, Roziman!'
@@ -112,7 +113,7 @@
                             type: 'GET',
                             url: '/user/group-delete/' + groupId,
                         });
-                        window.location.href = window.location.href;
+                        window.location.href = '{% url "user:groups_list" %}';
                     });
                 } else {
                     swal("Bekor qilindi", groupName +" guruhingiz ro'yhatda turibti !", "error");

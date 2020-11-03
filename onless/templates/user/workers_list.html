@@ -83,6 +83,7 @@
                 title: "Xodimni o'chirmoqchimisiz ?",
                 text: workerName + "ni o'chirmoqchimisiz ?",
                 icon: "warning",
+                closeOnClickOutside: false,
                 buttons: [
                     'Yoq, Bekor qilish!',
                     'Ha, Roziman!'
@@ -99,7 +100,7 @@
                             type: 'GET',
                             url: '/user/worker-delete/' + workerId,
                         });
-                        window.location.href = window.location.href;
+                        window.location.href = '{% url "user:workers_list" %}';
                     });
                 } else {
                     swal("Bekor qilindi", workerName + " ro'yhatda turibti !", "error");

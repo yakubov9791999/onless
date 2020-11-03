@@ -6,6 +6,21 @@
     <div class="row">
     {% get_count request.user.school.id as count %}
         {% if request.user.role == '2' %}
+             <div class="col-lg-6 col-md-6 col-sm-12">
+                <!-- small box -->
+                <div class="small-box bg-gradient-cyan">
+                    <div class="inner">
+                        <h3>{{ count.pupils }}</h3>
+
+                        <h5>O'quvchilarni qo'shish</h5>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
                 <div class="small-box bg-lightblue">
@@ -33,21 +48,6 @@
                         <i class="fas fa-layer-group"></i>
                     </div>
                     <a href="{% url 'user:add_group' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <!-- small box -->
-                <div class="small-box bg-gradient-cyan">
-                    <div class="inner">
-                        <h3>{{ count.pupils }}</h3>
-
-                        <h5>O'quvchilarni qo'shish</h5>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
 
@@ -82,21 +82,20 @@
                 </div>
             </div>
 
-{##}
-{#            <div class="col-lg-6 col-md-6 col-sm-12">#}
-{#                <!-- small box -->#}
-{#                <div class="small-box bg-gradient-lightblue">#}
-{#                    <div class="inner">#}
-{#                        <h3>1</h3>#}
-{##}
-{#                        <h5>Mavzu qo'shish</h5>#}
-{#                    </div>#}
-{#                    <div class="icon">#}
-{#                        <i class="fas fa-book"></i>#}
-{#                    </div>#}
-{#                    <a href="{% url 'sign:add_schedule' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>#}
-{#                </div>#}
-{#            </div>#}
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <!-- small box -->
+                <div class="small-box bg-gradient-lightblue">
+                    <div class="inner">
+                        <h3>1</h3>
+
+                        <h5>Mavzu qo'shish</h5>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <a href="{% url 'sign:add_schedule' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
         {% elif request.user.role == '3' %}
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->

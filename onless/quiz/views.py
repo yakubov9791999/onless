@@ -10,35 +10,29 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 
+from .models import *
+
 
 @login_required
 def add_result(request):
-    question = Question.objects.get(id=request.POST['question'])
-    if request.POST:
-        try:
-            form = AddResultForm(request.POST)
-            if form.is_valid():
-                answer = Answer.objects.get(id=request.POST['answer'])
+    if request.is_ajax():
+        if request.GET:
+            user = get_object_or_404(User, id=request.user.id)
+            question = get_object_or_404(Savol, id=request.GET.get('question'))
+            answer = get_object_or_404(Javob, id=request.GET.get('answer'))
+            result = ResultQuiz.objects.filter(question=question, user=user)
+            if not result.exists():
+                ResultQuiz.objects.create(question=question, user=user, answer=answer)
+                attempt = Attempt.objects.filter(user=user)
+                if not attempt:
+                    Attempt.objects.create(user=user)
+            else:
+                return HttpResponse('disabled')
 
-                user = User.objects.get(id=request.user.id)
-                result = ResultQuiz.objects.filter(question=question, user=user)
-                if not result.exists():
-                    form = form.save(commit=False)
-                    form.answer = answer
-                    form.user = user
-                    form.question = question
-                    form.save()
-
-                # if answer.is_true:
-                #     messages.success(request, "Javobingiz to'g'ri")
-                # else:
-                #     messages.error(request, "Javobingiz noto'g'ri")
-        except MultiValueDictKeyError:
-            form = AddResultForm()  # shu joyida keyingi savolga o'tishni qilish kerak
-    else:
-        form = AddResultForm()
-    next = request.POST['next'] + '#question' + str(question.id)
-    return HttpResponseRedirect(next)
+            if answer.is_true == True:
+                return HttpResponse(True)
+            else:
+                return HttpResponse(False)
 
 
 @login_required
@@ -51,9 +45,9 @@ def select_bilet(request):
                 if int(str(bilet.number)) == 1:
                     # agar birinchi bilet bo'lsa
                     lang = request.GET['lang']
-                    savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
+                    questions = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
                         select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
-                    context.update(savollar=savollar, lang=lang, bilet=bilet)
+                    context.update(questions=questions, lang=lang, bilet=bilet)
 
                 # elif int(str(bilet.number)) == 70:
                 #     # agar oxirgi bilet bo'lsa
@@ -66,13 +60,13 @@ def select_bilet(request):
                     prev_bilet = int(str(bilet.number)) - 1
 
                     if CheckTestColor.objects.filter(user=request.user, bilet__number=prev_bilet).exists():
-                        #bitta oldingi bilet yechilgan bo'lsa
+                        # bitta oldingi bilet yechilgan bo'lsa
                         lang = request.GET['lang']
-                        savollar = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
+                        questions = Savol.objects.filter(is_active=True, bilet=bilet.id).extra(
                             select={'bilet_savol': 'CAST(bilet_savol AS INTEGER)'}).extra(order_by=['bilet_savol'])
-                        context.update(savollar=savollar, lang=lang, bilet=bilet)
+                        context.update(questions=questions, lang=lang, bilet=bilet)
                     else:
-                        #bitta oldingi bilet yechilmagan bo'lsa
+                        # bitta oldingi bilet yechilmagan bo'lsa
                         lang = request.GET['lang']
                         bilets = Bilet.objects.filter(is_active=True).order_by('number')
                         check_last = CheckTestColor.objects.filter(user=request.user).order_by(
@@ -93,12 +87,15 @@ def select_bilet(request):
                         messages.error(request, msg)
                         return render(request, 'quiz/select_bilet.html', context)
 
-                if Bilet.objects.filter(Q(number__gte=bilet.number) & Q(is_active=True)).order_by("-number")[0:1].get().number:
-                    last_active_bilet = Bilet.objects.filter(Q(number__gte=bilet.number) & Q(is_active=True)).order_by("-number")[
+                if Bilet.objects.filter(Q(number__gte=bilet.number) & Q(is_active=True)).order_by("-number")[
+                   0:1].get().number:
+                    last_active_bilet = Bilet.objects.filter(Q(number__gte=bilet.number) & Q(is_active=True)).order_by(
+                        "-number")[
                                         0:1].get().number
                     last_bilet = Bilet.objects.filter(number__gte=bilet.number).order_by("-number")[0:1].get().number
                     context.update(last_active_bilet=last_active_bilet - 1, last_bilet=last_bilet)
-                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet__number').distinct().last()
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by(
+                        'bilet__number').distinct().last()
                     if check_last:
                         check_last = int(str(check_last)) + 1
                         context.update(check_last=check_last)
@@ -121,10 +118,10 @@ def select_bilet(request):
 @login_required
 def get_true_answer(request):
     if request.is_ajax():
-        javob = get_object_or_404(Javob, id=request.GET['javob'])
-        savol = get_object_or_404(Savol, id=request.GET['savol'])
+        answer = get_object_or_404(Javob, id=request.GET['answer'])
+        savol = get_object_or_404(Savol, id=request.GET['question'])
 
-        if javob.is_true == True:
+        if answer.is_true == True:
             return HttpResponse(True)
         else:
             return HttpResponse(False)
@@ -161,14 +158,15 @@ def select_type(request):
                     queryset = tuple(
                         Savol.objects.filter(is_active=True, bilet__is_active=True).values_list('id', flat=True))
                     random_queryset = random.sample(queryset, 10)
-                    savollar = Savol.objects.filter(id__in=random_queryset)
-                    context.update(savollar=savollar)
+                    questions = Savol.objects.filter(id__in=random_queryset)
+                    context.update(questions=questions)
                     return render(request, 'quiz/imtihon_test.html', context)
                 elif type == 'T':
                     bilets = Bilet.objects.filter(is_active=True).order_by('number')
                     context.update(bilets=bilets)
 
-                    check_last = CheckTestColor.objects.filter(user=request.user).order_by('bilet__number').distinct().last()
+                    check_last = CheckTestColor.objects.filter(user=request.user).order_by(
+                        'bilet__number').distinct().last()
 
                     if check_last:
                         check_last = int(str(check_last)) + 1
@@ -198,3 +196,27 @@ def get_bilet_color(request):
             return False
 
     return HttpResponse()
+
+
+@login_required
+def reset_answers(request):
+    # questions_id = request.POST.getlist('arr[]', [])
+    # questions_id = [json.loads(item) for item in data]
+    user = get_object_or_404(User, id=request.user.id)
+    try:
+        attempt = Attempt.objects.get(user=user)
+        if attempt.allowed > attempt.solved:
+            attempt.solved += 1
+            attempt.save()
+
+            results = ResultQuiz.objects.filter(user=user)
+            results.delete()
+
+            messages.success(request, 'Natijalaringiz muvaffqaiyatli o\'chirildi!')
+            return render(request, 'user/pupil/pupil_result.html')
+        else:
+            messages.error(request, 'Sizda qayta topshirish imkoniyati mavjud emas!')
+            return render(request, 'user/pupil/pupil_result.html')
+    except ObjectDoesNotExist:
+        messages.warning(request, 'Sizda natijalar mavjud emas!')
+        return render(request, 'user/pupil/pupil_result.html')

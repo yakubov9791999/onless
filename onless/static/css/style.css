@@ -148,6 +148,18 @@ input[type=checkbox], input[type=radio] {
     color: #007fbe;
 }
 
+.answer {
+    border: 1px solid black;
+    font-size: 0.8rem;
+    background-color: #e3e3e3;
+    width: 100%;
+    text-transform: none;
+}
+
+.answer:hover {
+    background-color: #d0d0d0;
+
+}
 
 body {
     padding: 10px 0;
@@ -412,18 +424,6 @@ a:active {
     background-color: red;
 }
 
-.javob {
-    border: 1px solid black;
-    font-size: 0.8rem;
-    background-color: #e3e3e3;
-    width: 100%;
-    text-transform: none;
-}
-
-.javob:hover {
-    background-color: #d0d0d0;
-
-}
 
 .box {
     padding: 20px 0;
@@ -487,6 +487,7 @@ a:active {
 .result-footer {
     padding-left: 2%;
     display: none;
+    border: 2px solid red;
 }
 
 /*.type-btn {*/
@@ -521,6 +522,15 @@ a:active {
 
 .disableddiv {
     pointer-events: none;
+}
+
+.not_copy {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 /*@media screen and (max-width: 768px) {*/

@@ -21,7 +21,7 @@
                                 <div class="overlay-exists"></div>
                                 <div class="caption">
                                     <div class="tag"><a
-                                            href="">{{ category.categories.title }} </a>
+                                            href="">{% if category.categories %}{{ category.categories.title }}{% else %}{{ category.title }}{% endif %}</a>
                                     </div>
                                     <div class="title"><a
                                             href="{% url 'video:videos_list' category.id %}">{{ category.title }} </a>
@@ -37,7 +37,7 @@
                                 <div class="overlay-exists"></div>
                                 <div class="caption">
                                     <div class="tag"><a
-                                            href="">{% if category.categories %}{{ category.categories.title }}{% else %}{{ category.title }}{% endif %} </a>
+                                            href="">{% if category.categories %}{{ category.categories.title }}{% else %}{{ category.title }}{% endif %}</a>
                                     </div>
                                     <div class="title"><a
                                             href="{% url 'video:category_detail' category.id %}">{{ category.title }} </a>

@@ -10,6 +10,7 @@ urlpatterns = [
     path('select-type/', select_type, name='select_type'),
     path('select-bilet/', select_bilet, name='select_bilet'),
     path('get_bilet_color/', get_bilet_color, name='get_bilet_color'),
+    path('reset-answers/', reset_answers, name='reset_answers'),
 
 
 ]

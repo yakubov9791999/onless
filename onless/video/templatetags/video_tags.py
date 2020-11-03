@@ -32,7 +32,7 @@ def get_answer(user_id, question_id):
 @register.simple_tag()
 def get_views_count(user_id):
     user = get_object_or_404(User, id=user_id)
-    videos_count = Video.objects.all().count()
+    videos_count = Video.objects.filter(is_active=True).count()
     views_count = ViewComplete.objects.filter(user=user).distinct().count()
     not_view = videos_count - views_count
     return {

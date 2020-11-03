@@ -132,7 +132,6 @@ def video_detail(request, id):
     parent_category = category.categories
     videos = Video.objects.filter(category=category)
     next_video = videos.filter(sort__gt=video.sort).first()
-
     questions = Savol.objects.filter(video=video, is_active=True)
     results = ResultQuiz.objects.filter(question__in=questions, question__video=video, user=request.user)
 
@@ -142,6 +141,7 @@ def video_detail(request, id):
         'results': results,
         'next_video': next_video
     }
+
     try:
         # shu kategoriya bo'yicha video bo'lmasa
         if not next_video:
@@ -151,9 +151,14 @@ def video_detail(request, id):
             context.update(next_video=next_video)
             if not next_child_category:
                 categories = Category.objects.filter(categories__isnull=True)
-                next_parent_category = categories.filter(sort__gt=parent_category.sort).first()
-                next_video = Video.objects.filter(category=next_parent_category).order_by('sort').first()
-                context.update(next_video=next_video)
+                if not parent_category:
+                    next_parent_category = categories.filter(sort__gt=category.sort).first()
+                    next_video = Video.objects.filter(category=next_parent_category).order_by('sort').first()
+                    context.update(next_video=next_video)
+                else:
+                    next_parent_category = categories.filter(sort__gt=parent_category.sort).first()
+                    next_video = Video.objects.filter(category=next_parent_category).order_by('sort').first()
+                    context.update(next_video=next_video)
     # agar keyingi video bo'lmasa
     except AttributeError:
         pass

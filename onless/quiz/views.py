@@ -18,8 +18,8 @@ def add_result(request):
     if request.is_ajax():
         if request.GET:
             user = get_object_or_404(User, id=request.user.id)
-            question = get_object_or_404(Savol, id=request.GET.get('question'))
-            answer = get_object_or_404(Javob, id=request.GET.get('answer'))
+            question = get_object_or_404(Question, id=request.GET.get('question'))
+            answer = get_object_or_404(Answer, id=request.GET.get('answer'))
             result = ResultQuiz.objects.filter(question=question, user=user)
             if not result.exists():
                 ResultQuiz.objects.create(question=question, user=user, answer=answer)
@@ -118,8 +118,8 @@ def select_bilet(request):
 @login_required
 def get_true_answer(request):
     if request.is_ajax():
-        answer = get_object_or_404(Javob, id=request.GET['answer'])
-        savol = get_object_or_404(Savol, id=request.GET['question'])
+        answer = get_object_or_404(Answer, id=request.GET['answer'])
+        savol = get_object_or_404(Question, id=request.GET['question'])
 
         if answer.is_true == True:
             return HttpResponse(True)

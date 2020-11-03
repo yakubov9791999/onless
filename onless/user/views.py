@@ -20,6 +20,7 @@ from openpyxl.utils import get_column_letter
 from onless import settings
 from onless.settings import BASE_DIR
 from quiz.models import *
+from sign.models import Material
 from user.decorators import *
 
 from .forms import *
@@ -29,7 +30,6 @@ from video.models import *
 from .models import *
 from django.db import IntegrityError
 
-
 #
 from .utils import render_to_pdf
 
@@ -38,7 +38,7 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         username = get_pasport(username)
-        password = request.POST['password'].replace(' ','')
+        password = request.POST['password'].replace(' ', '')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active and user.school.is_block == False:
@@ -259,7 +259,8 @@ def groups_list(request):
 def group_detail(request, id):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
         group = get_object_or_404(Group, id=id)
-        pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
+        pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by(
+            'name')
         # pupils = []
         # for pupil in pupils_list:
         #     get_name(pupil.name.encode('UTF-8'))
@@ -272,7 +273,8 @@ def group_detail(request, id):
         download = request.GET.get('download')
         if download:
             response = HttpResponse(content_type='application/vnd.ms-excel')
-            response['Content-Disposition'] = f'attachment; filename="{group.category}-{group.number} {group.year}.xlsx"'
+            response[
+                'Content-Disposition'] = f'attachment; filename="{group.category}-{group.number} {group.year}.xlsx"'
 
             # create workbook
             wb = Workbook()
@@ -288,12 +290,10 @@ def group_detail(request, id):
             trips_ws.column_dimensions['D'].width = 15
             trips_ws.column_dimensions['E'].width = 15
 
-
             c1 = sheet.cell(row=1, column=1)
 
             c1.value = "#"
             c1.font = Font(bold=True)
-
 
             c2 = sheet.cell(row=1, column=2)
             c2.value = "F.I.O"
@@ -311,7 +311,7 @@ def group_detail(request, id):
             c5.value = "Parol"
             c5.font = Font(bold=True)
 
-            #export data to Excel
+            # export data to Excel
             rows = pupils_list.values_list('name', 'phone', 'username', 'turbo')
 
             for row_num, row in enumerate(rows, 1):
@@ -323,10 +323,8 @@ def group_detail(request, id):
                     # forloop = sheet.cell(column=1, row=row_num + 1)
                     # forloop.value = '#'
 
-
-                i =+ 1
+                i = + 1
             wb.save(response)
-
 
             return response
         return render(request, 'user/group/group_detail.html', context)
@@ -477,57 +475,84 @@ def contact(request):
 
 @login_required
 def search(request):
-    query = request.GET.get('q', False).lower()
+    try:
+        query = request.GET.get('q', False).lower()
 
-    context = {
-        'q': query,
-    }
-    results = list()
-    count = 0
-    if query:
-        try:
-            teachers = User.objects.filter(role=3, name__contains=query, school=request.user.school,
-                                           is_active=True).order_by('name')
-            context.update(teachers=teachers)
-            results.append(teachers)
-            count += teachers.count()
-        except ValueError:
-            pass
+        context = {
+            'q': query,
+        }
 
-        try:
-            pupils = User.objects.filter(role=2, name__contains=query, school=request.user.school,
-                                         is_active=True).order_by('name')
-            context.update(pupils=pupils)
-            results.append(pupils)
-            count += pupils.count()
-        except ValueError:
-            pass
+        count = 0
 
-        try:
-            groups = Group.objects.filter(
-                Q(category__icontains=query) |
-                Q(number=int(query)) |
-                Q(year=int(query))
-            ).filter(school=request.user.school)
-            context.update(groups=groups)
-            results.append(groups)
-            count += groups.count()
-        except ValueError:
-            pass
+        if query:
+            try:
+                teachers = User.objects.filter(Q(pasport__icontains=query) |
+                                               Q(name__icontains=query)).filter(role=3, school=request.user.school,
+                                                                                is_active=True).order_by('name')
+                context.update(teachers=teachers)
 
-        try:
-            videos = Video.objects.filter(
-                title__contains=query, is_active=True
-            ).distinct()
-            results.append(videos)
-            context.update(videos=videos)
-            count += videos.count()
-        except ValueError:
-            pass
+                count += teachers.count()
+            except ValueError:
+                pass
 
-        context.update(count=count)
-        context.update(results=results)
-    return render(request, 'user/search_result.html', context)
+            try:
+                bugalters = User.objects.filter(Q(pasport__icontains=query) |
+                                                Q(name__icontains=query)).filter(role=5, school=request.user.school,
+                                                                                 is_active=True).order_by('name')
+                context.update(bugalters=bugalters)
+
+                count += bugalters.count()
+            except ValueError:
+                pass
+
+            try:
+                pupils = User.objects.filter(Q(pasport__icontains=query) |
+                                             Q(name__icontains=query)).filter(role=4,
+                                                                              school=request.user.school,
+                                                                              is_active=True).order_by('name')
+
+                context.update(pupils=pupils)
+
+                count += pupils.count()
+            except ValueError:
+                pass
+
+            try:
+                groups = Group.objects.filter(
+                    Q(category__icontains=query) |
+                    Q(number=int(query)) |
+                    Q(year=int(query))
+                ).filter(school=request.user.school)
+                context.update(groups=groups)
+
+                count += groups.count()
+            except ValueError:
+                pass
+
+            try:
+                videos = Video.objects.filter(
+                    title__icontains=query, is_active=True
+                ).distinct()
+
+                context.update(videos=videos)
+                count += videos.count()
+            except ValueError:
+                pass
+
+            try:
+                materials = Material.objects.filter(
+                    title__icontains=query, is_active=True
+                ).distinct()
+
+                context.update(materials=materials)
+                count += materials.count()
+            except ValueError:
+                pass
+            context.update(count=count)
+
+        return render(request, 'user/search_result.html', context)
+    except AttributeError:
+        return redirect(reverse_lazy('video:home'))
 
 @login_required
 def pupil_delete(request, id):
@@ -593,6 +618,7 @@ def worker_delete(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def upload_file(request):
     if request.user.role == '2' or request.user.role == '3':
@@ -602,7 +628,8 @@ def upload_file(request):
             if settings.DEBUG:
                 file_path = os.path.join(f'{BASE_DIR}{os.path.sep}media{os.path.sep}{file.file}')
             else:
-                file_path = os.path.join(f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
+                file_path = os.path.join(
+                    f'{os.path.sep}home{os.path.sep}users{os.path.sep}b{os.path.sep}bcloudintelekt{os.path.sep}domains{os.path.sep}onless.uz{os.path.sep}media{os.path.sep}{file.file}')
             group = get_object_or_404(Group, id=request.POST['group'])
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)
@@ -895,7 +922,8 @@ def history_view_video_all(request):
                 print('ok')
             return render(request, 'user/view_video_history_all.html', context)
         else:
-            views = ViewComplete.objects.filter(Q(user__school=request.user.school, ) & Q(user__role=4) & Q(user__is_active=True)).order_by(
+            views = ViewComplete.objects.filter(
+                Q(user__school=request.user.school, ) & Q(user__role=4) & Q(user__is_active=True)).order_by(
                 '-time')
             if not views.exists():
                 messages.error(request, "Ko'rishlar mavjud emas !")
@@ -958,6 +986,7 @@ def history_view_video_all(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def history_pupil_view_video(request, id):
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
@@ -1016,7 +1045,7 @@ def support(request):
 def pupil_result(request, id):
     pupil = get_object_or_404(User, id=id)
     if request.user == pupil:
-        return render(request, 'user/pupil_result.html')
+        return render(request, 'user/pupil/pupil_result.html')
     else:
         return render(request, 'inc/404.html')
 

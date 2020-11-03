@@ -21,14 +21,14 @@
                           action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <input  type="file" name="file">
+                        <input type="file" name="file">
                         <input type="hidden" name="group" value="{{ group.id }}">
-                        <input  type="submit" class="btn btn-secondary" value="Excelni yuklash">
+                        <input type="submit" class="btn btn-secondary" value="Excelni yuklash">
                     </form>
                     {% if pupils %}
-                    <a id="export_pdf_form" style="color: whitesmoke; margin-top: 1%;"
-                       href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-info"><i
-                            class="fas fa-download"></i>&nbsp&nbsp&nbspRo'yhatni yuklab olish</a>
+                        <a id="export_pdf_form" style="color: whitesmoke; margin-top: 1%;"
+                           href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-info"><i
+                                class="fas fa-download"></i>&nbsp&nbsp&nbspRo'yhatni yuklab olish</a>
                     {% endif %}
                 </div>
 
@@ -114,7 +114,8 @@
                                         ></i></a>
                                             {% if request.user.role == '2' %}
                                                 &nbsp;&nbsp;
-                                                <a href="#" onclick='delete_pupil({{ pupil.id }},`{{ pupil.name }}`)'><i
+                                                <a href="#"
+                                                   onclick='delete_pupil({{ group.id }},{{ pupil.id }},`{{ pupil.name }}`)'><i
                                                         class="fa fa-trash"
                                                 ></i></a>
                                             {% endif %}
@@ -149,7 +150,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
 
-        function delete_pupil(pupil_id, pupil_name) {
+        function delete_pupil(group_id, pupil_id, pupil_name) {
             var pupilId = pupil_id;
             var pupilName = pupil_name;
 
@@ -157,29 +158,27 @@
                 title: "O'quvchini o'chirmoqchimisiz ?",
                 text: pupilName + "ni o'chirmoqchimisiz ?",
                 icon: "warning",
+                closeOnClickOutside: false,
                 buttons: [
                     'Yoq, Bekor qilish!',
                     'Ha, Roziman!'
                 ],
                 dangerMode: true,
+
             }).then(function (isConfirm) {
                 if (isConfirm) {
                     swal({
                         title: "Muvaffaqiyatli o'chirildi !",
                         text: pupilName + " muvaffaqiyatli o'chirildi !",
+                        closeOnClickOutside: false,
                         icon: 'success'
                     }).then(function () {
                         $.ajax({
                             type: 'GET',
                             url: '/user/pupil-delete/' + pupilId,
                         });
-                        {#window.location.href = window.location.href;#}
-                        {#location.reload()#}
-                        {#history.go(0)#}
-                        {#location.href = location.href#}
-                        {#location.href = location.pathname#}
-                        location.replace(location.pathname)
-                        {#location.reload(false)#}
+                        {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
+                        window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
                     });
                 } else {
                     swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");

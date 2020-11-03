@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -24,7 +25,6 @@ def sign_up(request):
     if request.POST:
         form = SignUpSchoolForm(request.POST)
         viloyat = Region.objects.get(id=request.POST.get('viloyat'))
-        print(form.errors)
         if form.is_valid():
             if request.POST['select'] == '1':
                 form = form.save(commit=False)
@@ -67,13 +67,13 @@ def home(request):
 
     elif request.user.role == "2" and request.user.school.is_block == False:  # agarda role Direktor  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(profil_edit)
+            return redirect(reverse_lazy('user:edit_profil'))
         else:
             return redirect(reverse_lazy('user:workers_list'))
 
     elif request.user.role == "5" and request.user.school.is_block == False:  # agarda role Bugalter  bo'lsa
         if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(profil_edit)
+            return redirect(reverse_lazy('user:edit_profil'))
         else:
             return redirect(reverse_lazy('user:bugalter_groups_list'))
     else:
@@ -83,6 +83,7 @@ def home(request):
 @login_required
 def add_duration(request):
     if request.is_ajax():
+
         video_id = request.GET.get('video', None)
         video = Video.objects.get(id=video_id)
 
@@ -127,13 +128,38 @@ def videos_list(request, id):
 @login_required
 def video_detail(request, id):
     video = get_object_or_404(Video, id=id)
-    questions = Question.objects.filter(video=video, is_active=True)
+    category = get_object_or_404(Category, video_category=video)
+    parent_category = category.categories
+    videos = Video.objects.filter(category=category)
+    next_video = videos.filter(sort__gt=video.sort).first()
+
+    questions = Savol.objects.filter(video=video, is_active=True)
     results = ResultQuiz.objects.filter(question__in=questions, question__video=video, user=request.user)
-    return render(request, 'video/video_detail.html', {
+
+    context = {
         'video': video,
         'questions': questions,
-        'results': results
-    })
+        'results': results,
+        'next_video': next_video
+    }
+    try:
+        # shu kategoriya bo'yicha video bo'lmasa
+        if not next_video:
+            child_categories = Category.objects.filter(categories__isnull=False)
+            next_child_category = child_categories.filter(sort__gt=category.sort).first()
+            next_video = Video.objects.filter(category=next_child_category).order_by('sort').first()
+            context.update(next_video=next_video)
+            if not next_child_category:
+                categories = Category.objects.filter(categories__isnull=True)
+                next_parent_category = categories.filter(sort__gt=parent_category.sort).first()
+                next_video = Video.objects.filter(category=next_parent_category).order_by('sort').first()
+                context.update(next_video=next_video)
+    # agar keyingi video bo'lmasa
+    except AttributeError:
+        pass
+
+    return render(request, 'video/video_detail.html', context)
+
 
 
 @login_required

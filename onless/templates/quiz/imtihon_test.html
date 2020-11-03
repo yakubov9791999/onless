@@ -13,9 +13,8 @@
         <div class="col-md-12" style=" margin-bottom: 50px">
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
-                {% for savol in savollar %}
-                    <div class="privew" data-id="{{ savol.id }}" data-btn="{{ forloop.counter }}">
-                        {% csrf_token %}
+                {% for question in questions %}
+                    <div class="privew" data-id="{{ question.id }}" data-btn="{{ forloop.counter }}">
                         <div class="questionsBox">
                             {% if lang == 'uz' %}
                                 {% include 'quiz/inc/question_lang_uz.html' %}
@@ -25,8 +24,6 @@
                                {% include 'quiz/inc/question_lang_ru.html' %}
                             {% endif %}
                         </div>
-
-
                     </div>
                 {% endfor %}
 
@@ -41,7 +38,7 @@
                          aria-valuemax="10" id="progress_css"><b id="progress_data"></b>
                     </div>
                 </div>
-                {% for savol in savollar %}
+                {% for question in questions %}
                     <button id="btn-{{ forloop.counter }}"
                             class="result-answers col-1 mr-1 mt-2">{{ forloop.counter }}</button>
                 {% endfor %}
@@ -88,10 +85,10 @@
 
             var html = $('.result-footer').children()
 
-            $('#javob div').on('click', function (event) {
+            $('#answer div').on('click', function (event) {
                 event.preventDefault();
-                var javobId = $(this).data("id");
-                var savolId = $(this).parents('.privew').data('id');
+                var answerId = $(this).data("id");
+                var questionId = $(this).parents('.privew').data('id');
                 var foorlopCounter = $(this).parents('.privew').data('btn');
                 var colorRed = '#ef6565';
                 var colorGreen = '#89e790';
@@ -116,8 +113,8 @@
                     method: "GET",
                     url: "{% url 'quiz:get_true_answer' %}",
                     data: {
-                        'javob': javobId,
-                        'savol': savolId,
+                        'answer': answerId,
+                        'question': questionId,
 
                     },
 
@@ -127,37 +124,37 @@
                         if (message == "True") {
 
                             if ('#btn-' + foorlopCounter) {
-                                $('#result-btn').attr('id', 'btn-' + javobId);
+                                $('#result-btn').attr('id', 'btn-' + answerId);
                                 $('#btn-' + foorlopCounter).css('background-color', colorGreen)
                             } else {
 
                                 console.log('topilmadi')
                             }
-                            $('#javob' + javobId).addClass('disableddiv')
+                            $('#answer' + answerId).addClass('disableddiv')
                             answerTrue = answerTrue + 1;
                             answers = answers + 1;
 
                             $('#progress_data').empty().append(`${answerTrue * 10}%`);
                             $('#progress_css').css('width', `${answerTrue * 10}%`);
 
-                            $('#javob' + javobId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
+                            $('#answer' + answerId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
 
 
                         } else {
 
 
                              if ('#btn-' + foorlopCounter) {
-                                $('#result-btn').attr('id', 'btn-' + javobId);
+                                $('#result-btn').attr('id', 'btn-' + answerId);
                                 $('#btn-' + foorlopCounter).css('background-color', colorRed)
                             } else {
                                 console.log('topilmadi')
                             }
 
-                             $('#javob' + javobId).addClass('disableddiv')
+                             $('#answer' + answerId).addClass('disableddiv')
 
                             answerFalse = answerFalse + 1;
                             answers = answers + 1;
-                            $('#javob' + javobId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
+                            $('#answer' + answerId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
                         }
 
                         if (answerFalse >= 2) {
@@ -172,6 +169,7 @@
                                 // {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: swalButtonTitle,
+                                allowOutsideClick: false,
                                 // {#confirmButtonColor: '#a5c7f6',#}
                                 // {#footer: footerMsg,#}
                             }).then(function (isConfirm) {
@@ -181,7 +179,7 @@
 
                                 }
                             })
-                        } else if (answers == 10) {
+                        } else if (answers === 10 && answerTrue >= 9) {
 
                             //imtihondan o'tdi
                             clearInterval(interval)
@@ -194,6 +192,7 @@
                                 // {#timer: 2000,#}
                                 showConfirmButton: true,
                                 confirmButtonText: swalButtonTitle,
+                                allowOutsideClick: false,
                                 // {#confirmButtonColor: '#a5c7f6',#}
                                 // {#footer: footerMsg,#}
                             }).then(function (isConfirm) {

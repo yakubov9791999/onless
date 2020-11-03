@@ -13,10 +13,8 @@
 
             <p id="append"></p>
             <div class="col-12 " id="video_bottom_question">
-                {% for savol in savollar %}
-                    <div class="privew" data-id="{{ savol.id }}" data-bool="False">
-
-                        {% csrf_token %}
+                {% for question in questions %}
+                    <div class="privew" data-id="{{ question.id }}" data-bool="False">
                         <div class="questionsBox">
                             {% if lang == 'uz' %}
                                 {% include 'quiz/inc/question_lang_uz.html' %}
@@ -34,8 +32,8 @@
                         <div class="col-6">
                             {% if bilet.number is not 1 %}
                                 <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}"
-                                   class="btn btn-outline-primary btn-block text-capitalize">{{ bilet.number|add:-1 }}-bilet
-                                    <span aria-hidden="true">&laquo;&laquo;</span></a>
+                                   class="btn btn-outline-primary btn-block text-capitalize"><i class="fas fa-angle-double-left"></i> {{ bilet.number|add:-1 }}-bilet
+                                    <span aria-hidden="true"></span></a>
                             {% endif %}
                         </div>
                         <div class="col-6">
@@ -44,14 +42,14 @@
                                 {% if bilet.number is not last_bilet %}
                                     <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
                                        class="btn btn-outline-primary btn-block text-capitalize"><span
-                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet </a>
+                                            aria-hidden="true"></span> {{ bilet.number|add:1 }}-bilet <i class="fas fa-angle-double-right"></i></a>
                                 {% endif %}
                             {% else %}
 
                                 {% if bilet.number is not last_bilet %}
                                     <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
                                        class="btn btn-outline-danger btn-block text-capitalize bilet-btn"><span
-                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet </a>
+                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet <i class="fas fa-angle-double-right"></i></a>
                                 {% endif %}
                             {% endif %}
                         </div>
@@ -74,10 +72,10 @@
             var answerFalse = 0;
             var answers = 0;
 
-            $('#javob div').on('click', function (event) {
+            $('#answer div').on('click', function (event) {
                 event.preventDefault;
-                var javobId = $(this).data("id");
-                var savolId = $(this).parents('.privew').data('id');
+                var answerId = $(this).data("id");
+                var questionId = $(this).parents('.privew').data('id');
                 var bilet = '{{ bilet }}'
                 var colorRed = '#ef6565'
                 var colorGreen = '#89e790'
@@ -87,17 +85,17 @@
                     method: "GET",
                     url: "{% url 'quiz:get_true_answer' %}",
                     data: {
-                        'javob': javobId,
-                        'savol': savolId,
+                        'answer': answerId,
+                        'question': questionId,
                         // from form
                     },
                     success: function (message) {
 
                         if (message == "True") {
-                            $('#javob' + javobId).css({"background-color": colorGreen,});
+                            $('#answer' + answerId).css({"background-color": colorGreen,});
 
-                            if ($('#javob' + javobId).parents('.privew').data('bool') == 'False') {
-                                $('#javob' + javobId).parents('.privew').data('bool', 'True')
+                            if ($('#answer' + answerId).parents('.privew').data('bool') == 'False') {
+                                $('#answer' + answerId).parents('.privew').data('bool', 'True')
                                 answerTrue = answerTrue + 1
                                 answers = answers + 1
 
@@ -126,10 +124,10 @@
 
 
                         } else {
-                            $('#javob' + javobId).css({"background-color": colorRed,});
+                            $('#answer' + answerId).css({"background-color": colorRed,});
 
-                            if ($('#javob' + javobId).parents('.privew').data('bool') == 'False') {
-                                $('#javob' + javobId).parents('.privew').data('bool', 'True')
+                            if ($('#answer' + answerId).parents('.privew').data('bool') == 'False') {
+                                $('#answer' + answerId).parents('.privew').data('bool', 'True')
                                 answerFalse = answerFalse + 1
                                 answers = answers + 1
                             } else {

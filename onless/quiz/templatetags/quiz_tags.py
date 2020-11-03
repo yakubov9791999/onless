@@ -10,7 +10,7 @@ register = template.Library()
 def pupil_result(id):
     pupil = get_object_or_404(User, id=id)
     answer_count = ResultQuiz.objects.filter(user=pupil).count()
-    question_total_count = Question.objects.filter(is_active=True).count()
+    question_total_count = Savol.objects.filter(is_active=True, video__isnull=False).count()
     answer_true = ResultQuiz.objects.filter(user=pupil, answer__is_true=True).count()
     answer_false = ResultQuiz.objects.filter(user=pupil, answer__is_true=False).count()
     try:
@@ -42,3 +42,16 @@ def get_bilet_color(bilet_id, user_id):
         return True
     else:
         return False
+
+@register.simple_tag
+def get_true_answer(user_id, question_id, answer_id):
+    user = get_object_or_404(User, id=user_id)
+    question = get_object_or_404(Savol, id=question_id)
+    answer = get_object_or_404(Javob, id=answer_id)
+    result = ResultQuiz.objects.filter(user=user,question=question, answer=answer).last()
+
+    if result:
+        if result.answer.is_true:
+            return True
+        else:
+            return False

@@ -2,6 +2,7 @@
 {% load static %}
 {% load video_tags %}
 {% load sign_tags %}
+{% load quiz_tags %}
 {% block content %}
 
     <style>
@@ -86,7 +87,8 @@
 
                                     {% get_file_url material.id as url %}
                                     <td>&nbsp;
-                                        <a href="{{ url }}" target="_blank" download="on"><i class="fas fa-download"></i></a>
+                                        <a href="{{ url }}" target="_blank" download="on"><i
+                                                class="fas fa-download"></i></a>
                                     </td>
 
                                 </tr>
@@ -99,78 +101,31 @@
             </div>
         {% endif %}
         <p id="append"></p>
-
-        <div class="col-md-12 " id="video_bottom_question">
+        <div class="col-12" id="video_bottom_question">
             {% if questions %}
                 {% for question in questions %}
-                    <div class="privew" id="question{{ question.id }}">
-                        <form action="{% url 'quiz:add_result' %}" method="POST">
-                            {% csrf_token %}
-                            <div class="questionsBox">
-                                <div class="questions">{{ question.title }}
-                                </div>
-
-
-                                <center><img src="{% if question.img %}{{ question.img.url }}{% endif %}"
-                                             width="300px"
-
-                                             style="margin: 0 auto;"></center>
-                                <ul class="answerList">
-                                    {% for answer in question.answers.all %}
-                                        <li>
-                                            <label>
-                                                {% get_results request.user.id question.id answer.id as result_question %}
-                                                {% get_answer request.user.id question.id as result_answer %}
-
-                                                <input type="radio" name="answer"
-                                                       {% if result_question.exists %}checked disabled{% endif %}
-                                                       value="{{ answer.id }}"
-                                                       id="id_answer{{ forloop.counter }}">
-                                                {% if result_question.exists %}
-                                                    {% if answer.is_true == False %}
-                                                        <span class="text-danger">{{ answer.text }}</span>
-                                                    {% elif answer.is_true == True %}
-                                                        <span class="text-success"> {{ answer.text }}</span>
-                                                    {% else %}
-                                                        {{ answer.text }}
-                                                    {% endif %}
-                                                {% else %}
-                                                    {% if result_answer.exists %}
-                                                        {% if answer.is_true == True %}
-                                                            <span class="text-success">  {{ answer.text }}</span>
-                                                        {% else %}
-                                                            <span class="text-danger">  {{ answer.text }}</span>
-                                                        {% endif %}
-
-                                                    {% else %}
-                                                        {{ answer.text }}
-                                                    {% endif %}
-
-                                                {% endif %}
-                                            </label>
-                                        </li>
-                                    {% endfor %}
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="hidden" name="question" value="{{ question.id }}">
-                                </ul>
-                                <div class="questionsRow">
-                                    <button class="btn btn-primary" type="submit" id="nextquestions">Javobni kiritish
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="privew" data-id="{{ question.id }}" data-btn="{{ forloop.counter }}">
+                        <div class="questionsBox">
+                            {% include 'quiz/inc/question_lang_uz.html' %}
+                        </div>
                     </div>
                 {% endfor %}
             {% else %}
                 <div class="alert alert-info text-center"><b>Ushbu videoda test mavjud emas !</b></div>
             {% endif %}
         </div>
-        <p class="pb-5"></p>
+
+        {% if next_video %}
+            <div class="text-right p-3 m-3">
+                <a href="/video/detail/{{ next_video.id }}" class="btn btn-info col-8 col-md-6 col-sm-7 col-lg-5 col-xl-4 m-2">
+                    Keyingi videoga o'tish <i class="fas fa-angle-double-right"></i>
+                </a>
+            </div>
+        {% endif %}
     </div>
 {% endblock content %}
 {% block top %}
     <link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
     <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
 {% endblock top %}
@@ -179,25 +134,26 @@
     <script src="https://vjs.zencdn.net/7.8.2/video.js"></script>
 
     <script>
-        {% get_view_video request.user.id video.id as view_video_complete %}
-        {% if not view_video_complete.exists %}
-            $("#video_bottom_question").hide();
-        {% endif %}
+        $(document).ready(function () {
+            {% get_view_video request.user.id video.id as view_video_complete %}
+            {% if not view_video_complete.exists %}
+                $("#video_bottom_question").hide();
+            {% endif %}
 
 
-        videojs("my-video", {
-            controlBar: {
-                fullscreenToggle: false
-            }
-        });
+            videojs("my-video", {
+                controlBar: {
+                    fullscreenToggle: false
+                }
+            });
 
 
-        var video = videojs('my-video').ready(function () {
-            var player = this;
+            var video = videojs('my-video').ready(function () {
+                var player = this;
 
-            player.on('ended', function () {
-                $("#video_bottom_question").fadeIn();
-                $(document).ready(function () {
+                player.on('ended', function () {
+                    $("#video_bottom_question").fadeIn();
+
                     $.ajax({
                         type: "GET",
                         url: "{% url 'video:add_duration' %}",
@@ -208,12 +164,71 @@
                             var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');
                             $('#append').append(e);
                             e.attr('id', 'myid');
-                        }
+                        },
+                        error: function () {
+                            console.log('error')
+                        },
 
                     });
 
+
                 });
             });
+
+            $('#answer div').on('click', function (event) {
+                event.preventDefault();
+                var answerId = $(this).data("id");
+                var questionId = $(this).parents('.privew').data('id');
+                var foorlopCounter = $(this).parents('.privew').data('btn');
+                var colorRed = '#ef6565';
+                var colorGreen = '#89e790';
+
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'quiz:add_result' %}",
+                    data: {
+                        'answer': answerId,
+                        'question': questionId,
+
+                    },
+
+                    success: function (message) {
+
+                        if (message == "True") {
+
+                            if ('#btn-' + foorlopCounter) {
+                                $('#result-btn').attr('id', 'btn-' + answerId);
+                                $('#btn-' + foorlopCounter).css('background-color', colorGreen)
+                            } else {
+
+                                console.log('topilmadi')
+                            }
+                            $('#answer' + answerId).addClass('disableddiv')
+
+                            $('#answer' + answerId).css({"background-color": colorGreen,}).siblings().addClass('disableddiv');
+
+
+                        } else if (message == 'False') {
+
+
+                            if ('#btn-' + foorlopCounter) {
+                                $('#result-btn').attr('id', 'btn-' + answerId);
+                                $('#btn-' + foorlopCounter).css('background-color', colorRed)
+                            } else {
+                                console.log('topilmadi')
+                            }
+
+                            $('#answer' + answerId).addClass('disableddiv')
+
+                            $('#answer' + answerId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
+                        } else if (message == 'disabled') {
+                            $('#answer' + answerId).addClass('disableddiv')
+                        }
+                    }
+                })
+
+            })
+
         });
 
     </script>

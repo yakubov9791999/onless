@@ -46,8 +46,8 @@ def get_bilet_color(bilet_id, user_id):
 @register.simple_tag
 def get_true_answer(user_id, question_id, answer_id):
     user = get_object_or_404(User, id=user_id)
-    question = get_object_or_404(Savol, id=question_id)
-    answer = get_object_or_404(Javob, id=answer_id)
+    question = get_object_or_404(Question, id=question_id)
+    answer = get_object_or_404(Answer, id=answer_id)
     result = ResultQuiz.objects.filter(user=user,question=question, answer=answer).last()
 
     if result:

@@ -22,7 +22,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'bcloudintelekt_onless',
+        'NAME': 'bcloudintelekt_avtomaktab',
         'USER': 'bcloudintelekt',
         'PASSWORD': 'sierus2971',
         'HOST': 'localhost',

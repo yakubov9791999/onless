@@ -1,14 +1,12 @@
-{% load quiz_tags %}
 <div class="questions">№{{ forloop.counter }} {{ question.title_uz }}
 </div>
 <div class="row">
     {% include 'quiz/inc/question_img.html' %}
     <div class="col-md-5" id="answer" >
         {% for answer in question.answers.all %}
-            {% get_true_answer request.user.id question.id answer.id as correct_answer %}
-            <div id="answer{{ answer.id }}" {% if correct_answer %}disabled{% endif %}
+            <div id="answer{{ answer.id }}"
                  data-id="{{ answer.id }}"
-                 class="mt-3 btn text-left answer" style="background-color: {% if correct_answer == True %}#89e790{% elif correct_answer == False %}#ef6565{% endif %}">
+                 class="mt-3 btn text-left answer">
                 {{ forloop.counter }}). {{ answer.text_uz }}
             </div>
         {% endfor %}

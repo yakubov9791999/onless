@@ -58,9 +58,9 @@ admin.site.register(Question, QuestionAdmin)
 class ResultQuizAdmin(admin.ModelAdmin):
     list_filter = ['user','answer', 'question',]
 
-# @admin.register(Attempt)
-# class AttemptAdmin(admin.ModelAdmin):
-#     list_filter = ['user','allowed', 'solved',]
+@admin.register(Attempt)
+class AttemptAdmin(admin.ModelAdmin):
+    list_filter = ['user','allowed', 'solved',]
 
 @admin.register(Bilet)
 class BiletAdmin(admin.ModelAdmin):

@@ -56,8 +56,8 @@ admin.site.register(Question, QuestionAdmin)
 
 @admin.register(ResultQuiz)
 class ResultQuizAdmin(admin.ModelAdmin):
-    list_filter = ['id','user','answer', 'question',]
-    search_fields = ['question__title_uz', 'user__name']
+    list_display = ['id', 'user','question','answer']
+    search_fields = ['question__title_uz', 'user__name', 'answer']
 
 @admin.register(Attempt)
 class AttemptAdmin(admin.ModelAdmin):

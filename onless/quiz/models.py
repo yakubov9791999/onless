@@ -81,7 +81,7 @@ class ResultQuiz(models.Model):
     question = models.ForeignKey(Savol, on_delete=models.CASCADE, related_name='result_question', null=True)
     answer = models.ForeignKey(Javob, on_delete=models.SET_NULL, related_name='result_answer', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user', blank=True, null=True)
-    new_test = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"{self.user}"

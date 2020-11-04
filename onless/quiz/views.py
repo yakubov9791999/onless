@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -20,20 +21,23 @@ def add_result(request):
             user = get_object_or_404(User, id=request.user.id)
             question = get_object_or_404(Savol, id=request.GET.get('question'))
             answer = get_object_or_404(Javob, id=request.GET.get('answer'))
-            result = ResultQuiz.objects.filter(question=question, user=user)
-            result.delete()
-            if not result.exists():
-                ResultQuiz.objects.create(question=question, user=user, answer=answer,is_last=True)
-                attempt = Attempt.objects.filter(user=user)
-                if not attempt:
-                    Attempt.objects.create(user=user)
-            else:
-                return HttpResponse('disabled')
+            try:
+                result = ResultQuiz.objects.filter(question=question, user=user)
+                result.delete()
+                if not result.exists():
+                    ResultQuiz.objects.create(question=question, user=user, answer=answer,is_last=True)
+                    attempt = Attempt.objects.filter(user=user)
+                    if not attempt:
+                        Attempt.objects.create(user=user)
+                else:
+                    return HttpResponse('disabled')
 
-            if answer.is_true == True:
-                return HttpResponse(True)
-            else:
-                return HttpResponse(False)
+                if answer.is_true == True:
+                    return HttpResponse(True)
+                else:
+                    return HttpResponse(False)
+            except IntegrityError:
+                return HttpResponse("alert")
 
 
 @login_required

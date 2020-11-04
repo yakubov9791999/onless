@@ -14,13 +14,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '(kbqdmc#xti0zu85$^%$%^$^f)u_yg67oj1bdi2_1f6=qlxe'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG=False
+DEBUG = False
 
-ALLOWED_HOSTS = ['onless.uz',]
+ALLOWED_HOSTS = ['onless.uz', ]
 
 DATABASES = {
+
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': 'bcloudintelekt_avtomaktab',
         'USER': 'bcloudintelekt',
@@ -32,10 +34,10 @@ DATABASES = {
 }
 
 STATICFILES_DIRS = [
-# '/home/users/b/bcloudintelekt/domains/onless.uz/static',
+    # '/home/users/b/bcloudintelekt/domains/onless.uz/static',
     os.path.join(BASE_DIR, 'static',
 
-     )
+                 )
 ]
 
 MEDIA_URL = '/media/'

@@ -240,6 +240,8 @@
                             $('#answer' + answerId).css({"background-color": colorRed,}).siblings().addClass('disableddiv');
                         } else if (message == 'disabled') {
                             $('#answer' + answerId).addClass('disableddiv')
+                        } else if (message == 'alert') {
+                            alert('alert')
                         }
                     }
                 })

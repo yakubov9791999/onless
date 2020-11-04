@@ -3,8 +3,6 @@
 <div class="row">
     {% include 'quiz/inc/question_img.html' %}
     <div class="col-md-5" id="answer">
-
-
         {% for answer in question.answers.all %}
             <div id="answer{{ answer.id }}"
                  data-id="{{ answer.id }}"

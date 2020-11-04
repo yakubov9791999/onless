@@ -100,17 +100,17 @@ class ResultQuiz(models.Model):
         verbose_name = 'Test natijasi'
         verbose_name_plural = 'Test natijalari'
 
-class Attempt(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attempt_user', null=True)
-    allowed = fields.IntegerRangeField(verbose_name='Ruxsat berilgan urinishlar',default=2, max_value=3)
-    solved = fields.IntegerRangeField(verbose_name='Bajarilgan urinishlar',default=0)
-
-    def __str__(self):
-        return f"{self.user}: {self.allowed}"
-
-    class Meta:
-        verbose_name = 'Urinish'
-        verbose_name_plural = 'Urinishlar'
+# class Attempt(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attempt_user', null=True)
+#     allowed = fields.IntegerRangeField(verbose_name='Ruxsat berilgan urinishlar',default=2, max_value=3)
+#     solved = fields.IntegerRangeField(verbose_name='Bajarilgan urinishlar',default=0)
+#
+#     def __str__(self):
+#         return f"{self.user}: {self.allowed}"
+# 
+#     class Meta:
+#         verbose_name = 'Urinish'
+#         verbose_name_plural = 'Urinishlar'
 
 class ResultJavob(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='resultjavob_user', null=True)

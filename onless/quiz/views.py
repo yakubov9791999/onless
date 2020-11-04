@@ -37,7 +37,7 @@ def add_result(request):
                 else:
                     return HttpResponse(False)
             except IntegrityError:
-                return HttpResponse(question, answer, user)
+                return HttpResponse(question)
 
 
 @login_required

@@ -56,7 +56,8 @@ admin.site.register(Question, QuestionAdmin)
 
 @admin.register(ResultQuiz)
 class ResultQuizAdmin(admin.ModelAdmin):
-    list_filter = ['user','answer', 'question',]
+    list_filter = ['id','user','answer', 'question',]
+    search_fields = ['question__title_uz', 'user__name']
 
 @admin.register(Attempt)
 class AttemptAdmin(admin.ModelAdmin):
@@ -100,7 +101,7 @@ class SavolAdmin(admin.ModelAdmin):
     ]
     inlines = [Choiceinline]
 
-    list_display = ['bilet','bilet_savol','title_uz','title_kr','title_ru','is_active']
+    list_display = ['bilet','bilet_savol','title_uz','title_kr','title_ru','is_active', 'id']
     search_fields = ['bilet__number','title_uz','title_kr','title_ru',]
     list_filter = ['is_active','bilet', VideoFilter]
     save_on_top = True

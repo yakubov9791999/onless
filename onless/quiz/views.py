@@ -23,7 +23,7 @@ def add_result(request):
             result = ResultQuiz.objects.filter(question=question, user=user)
             result.delete()
             if not result.exists():
-                ResultQuiz.objects.create(question=question, user=user, answer=answer)
+                ResultQuiz.objects.create(question=question, user=user, answer=answer,is_last=True)
                 attempt = Attempt.objects.filter(user=user)
                 if not attempt:
                     Attempt.objects.create(user=user)

@@ -107,7 +107,7 @@ class ResultQuiz(models.Model):
 #
 #     def __str__(self):
 #         return f"{self.user}: {self.allowed}"
-# 
+#
 #     class Meta:
 #         verbose_name = 'Urinish'
 #         verbose_name_plural = 'Urinishlar'

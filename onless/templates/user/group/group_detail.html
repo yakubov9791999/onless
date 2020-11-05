@@ -62,8 +62,8 @@
                             {% for pupil in pupils %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b><a
-                                            href="{% url 'user:history_pupil_view_video' pupil.id %}">{{ pupil.name }}</a></b>
+                                    <td ><b><a
+                                        id="{{ pupil.name }}"    href="{% url 'user:history_pupil_view_video' pupil.id %}">{{ pupil.name }}</a></b>
                                     </td>
                                     <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>
                                     <td>{% if pupil.district %}{{ pupil.district }}{% endif %}</td>

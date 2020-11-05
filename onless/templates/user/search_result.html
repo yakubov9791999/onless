@@ -17,7 +17,7 @@
 
                     <h5>
                         {% for group in groups %}
-                            <a href="{% url 'user:group_detail' group.id %}"> {{ group }}</a>
+                            <a href="{% url 'user:group_detail' group.id %}">{{ group }}</a>
                         {% endfor %}
                     </h5>
                 </div>
@@ -25,10 +25,9 @@
             {% if teachers %}
                 <h4 class="h4 mt-2 ml-2">O'qituvchilar:</h4>
                 <div class="card-body ml-5">
-
                     <h5>
                         {% for teacher in teachers %}
-                             <p>{{ teacher }}</p>
+                            <a href="{% url 'user:workers_list' %}#{{ teacher.name }}"><p>{{ teacher.name }}</p></a>
                         {% endfor %}
                     </h5>
                 </div>
@@ -36,10 +35,9 @@
             {% if bugalters %}
                 <h4 class="h4 mt-2 ml-2">Hisobchilar:</h4>
                 <div class="card-body ml-5">
-
                     <h5>
                         {% for bugalter in bugalters %}
-                             <p>{{ bugalter }}</p>
+                             <a href="{% url 'user:workers_list' %}#{{ bugalter.name }}"><p>{{ bugalter }}</p></a>
                         {% endfor %}
                     </h5>
                 </div>
@@ -47,10 +45,9 @@
              {% if pupils %}
                 <h4 class="h4 mt-2 ml-2">O'quvchilar:</h4>
                 <div class="card-body ml-5">
-
                     <h5>
                         {% for pupil in pupils %}
-                             <a href="#">{{ pupil }}</a>
+                             <a style="" href="{% url 'user:group_detail' pupil.group.id %}#{{ pupil.name }}"><p>{{ pupil.name }}</p></a>
                         {% endfor %}
                     </h5>
                 </div>
@@ -72,7 +69,7 @@
 
                     <h5>
                         {% for material in materials %}
-                            <a href="{% url 'sign:materials' %}"><p>{{ material }}</p></a>
+                            <a href="{% url 'sign:materials' %}#{{ material.title }}"><p>{{ material.title }}</p></a>
                         {% endfor %}
                     </h5>
                 </div>

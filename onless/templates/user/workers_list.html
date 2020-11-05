@@ -36,7 +36,7 @@
                             {% for worker in workers %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b>{{ worker.name }}</b></td>
+                                    <td ><b id="{{ worker.name }}">{{ worker.name }}</b></td>
                                     <td><b>{% if worker.role == '5' %}Hisobchi{% elif worker.role == '3' %}
                                         O'qituvchi{% endif %}</b></td>
                                     <td>{{ worker.birthday|date:'SHORT_DATE_FORMAT' }}</td>

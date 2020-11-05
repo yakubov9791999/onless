@@ -59,11 +59,11 @@ class ResultQuizAdmin(admin.ModelAdmin):
     list_display = ['id', 'user','question','answer']
     search_fields = ['question', 'user', 'answer']
 
-@admin.register(Result)
-class ResultQuizAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user','question','answer', 'created_date']
-    list_filter = ['created_date']
-    search_fields = ['question', 'user', 'answer']
+# @admin.register(Result)
+# class ResultQuizAdmin(admin.ModelAdmin):
+#     list_display = ['id', 'user','question','answer', 'created_date']
+#     list_filter = ['created_date']
+#     search_fields = ['question', 'user', 'answer']
 
 @admin.register(Attempt)
 class AttemptAdmin(admin.ModelAdmin):

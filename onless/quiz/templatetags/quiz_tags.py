@@ -58,13 +58,10 @@ def get_true_answer(user_id, question_id, answer_id):
     user = get_object_or_404(User, id=user_id)
     question = get_object_or_404(Savol, id=question_id)
     answer = get_object_or_404(Javob, id=answer_id)
-    result = ResultQuiz.objects.filter(user=user,question=question, answer=answer).last()
+    result = Result.objects.filter(user=user,question=question, answer=answer).last()
 
-    try:
-        if result.is_last:
-            if result.answer.is_true:
-                return True
-            else:
-                return False
-    except AttributeError:
-        pass
+    if result.is_last:
+        if result.answer.is_true:
+            return True
+        else:
+            return False

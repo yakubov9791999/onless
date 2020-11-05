@@ -9,10 +9,20 @@ register = template.Library()
 @register.simple_tag()
 def pupil_result(id):
     pupil = get_object_or_404(User, id=id)
-    answer_count = ResultQuiz.objects.filter(user=pupil).count()
+    old_answer_count = ResultQuiz.objects.filter(user=pupil).count()
+    new_answer_count = Result.objects.filter(user=pupil).count()
+
     question_total_count = Savol.objects.filter(is_active=True, video__isnull=False).count()
-    answer_true = ResultQuiz.objects.filter(user=pupil, answer__is_true=True).count()
-    answer_false = ResultQuiz.objects.filter(user=pupil, answer__is_true=False).count()
+
+    old_answer_true = ResultQuiz.objects.filter(user=pupil, answer__is_true=True).count()
+    new_answer_true = Result.objects.filter(user=pupil, answer__is_true=True).count()
+
+    old_answer_false = ResultQuiz.objects.filter(user=pupil, answer__is_true=False).count()
+    new_answer_false = Result.objects.filter(user=pupil, answer__is_true=False).count()
+
+    answer_true = int(old_answer_true) + int(new_answer_true)
+    answer_false = int(old_answer_false) + int(new_answer_false)
+    answer_count = int(old_answer_count) + int(new_answer_count)
     try:
         res = int(answer_true * 100 / answer_count)
     except ZeroDivisionError:

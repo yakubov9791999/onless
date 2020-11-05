@@ -77,11 +77,11 @@ class Javob(models.Model):
         verbose_name_plural = 'Test javoblari'
 
 
-class ResultQuiz(models.Model):
+class Result(models.Model):
     question = models.ForeignKey(Savol, on_delete=models.CASCADE, related_name='result_question', null=True)
     answer = models.ForeignKey(Javob, on_delete=models.SET_NULL, related_name='result_answer', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user', blank=True, null=True)
-    is_last = models.BooleanField(default=False)
+    created_date = models.DateTimeField(editable=False)
 
     def __str__(self):
         return f"{self.user}"
@@ -89,6 +89,19 @@ class ResultQuiz(models.Model):
     class Meta:
         verbose_name = 'Test natijasi'
         verbose_name_plural = 'Test natijalari'
+
+class ResultQuiz(models.Model):
+    question = models.ForeignKey(Savol, on_delete=models.CASCADE, related_name='old_result_question', null=True)
+    answer = models.ForeignKey(Javob, on_delete=models.SET_NULL, related_name='old_result_answer', null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='old_result_user', blank=True, null=True)
+    is_last = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user}"
+
+    class Meta:
+        verbose_name = 'Eski natija'
+        verbose_name_plural = 'Eski natijalar'
 
 class Attempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attempt_user', null=True)

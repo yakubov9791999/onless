@@ -97,7 +97,8 @@
                             type: 'GET',
                             url: '/sign/delete-material/' + materialId,
                         });
-                        window.location.href = '{% url "sign:materials" %}';
+                        {#window.location.href = '{% url "sign:materials" %}';#}
+                        location.reload();
                     });
                 } else {
                     swal("Bekor qilindi", materialName + " ro'yhatda turibti !", "error");

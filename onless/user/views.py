@@ -507,7 +507,8 @@ def search(request):
 
             try:
                 pupils = User.objects.filter(Q(pasport__icontains=query) |
-                                             Q(name__icontains=query)).filter(role=4,
+                                             Q(name__icontains=query) |
+                                             Q(group__isnull=False)).filter(role=4,
                                                                               school=request.user.school,
                                                                               is_active=True).order_by('name')
 

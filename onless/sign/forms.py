@@ -16,16 +16,21 @@ class AddScheduleFrom(forms.ModelForm):
 
 class UpdateScheduleForm(forms.ModelForm):
     subject = forms.ModelChoiceField(label="Fan nomi", queryset=Subject.objects.all(),
-                                     widget=forms.Select(attrs={'class': 'form-control', 'id': 'subject'}))
+                                     widget=forms.Select(attrs={'class': 'form-control', 'id': 'subject', 'disabled': 'disabled'}))
     title = forms.CharField(label='Mavzu nomi', widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Masalan: Ogohlantiruvchi belgilar'}))
     sort = forms.IntegerField(label='Tartibi',
                               widget=forms.NumberInput(
                                   attrs={'class': 'form-control', 'max': '999', 'placeholder': 'Masalan: 1'}))
-
     class Meta:
         model = Schedule
         fields = ('subject', 'title', 'sort')
+
+        labels = {
+            'class': "label_required",
+        }
+
+
 
 class AddMaterialFrom(forms.ModelForm):
     class Meta:

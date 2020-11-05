@@ -23,7 +23,6 @@ def sign(request):
 
 @login_required
 def add_schedule(request):
-    form = AddScheduleFrom()
     if request.POST:
         form = AddScheduleFrom(request.POST)
         author = User.objects.get(id=request.user.id)
@@ -37,12 +36,7 @@ def add_schedule(request):
         else:
             messages.error(request, "Formani to'ldirishda xatolik !")
             form = AddScheduleFrom()
-    else:
-        form = AddScheduleFrom()
-
-    return render(request, 'sign/add_schedule.html', {
-        'form': form
-    })
+    return render(request, 'sign/add_schedule.html')
 
 
 @login_required

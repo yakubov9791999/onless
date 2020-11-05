@@ -13,10 +13,10 @@
                 <!-- /.card-header -->
                 <!-- form start -->
 
-                <form role="form" method="POST" action="{% url 'sign:add_schedule' %}">
+                <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">
                     {% csrf_token %}
                     <div class="card-body">
-                        <label for="exampleInputname">Toifani tanlang:</label>
+                        <label class="label_required" for="exampleInputname">Toifani tanlang</label>
                         <select name="category" id="category" class="form-control">
                             <option value="A">A</option>
                             <option value="B">B</option>
@@ -26,10 +26,17 @@
                             <option value="E">E</option>
                             <option value="Malaka oshirish">Malaka oshirish</option>
                         </select>
-                        {{ form }}
+                        <label for="subject" class="label_required">Fan nomi</label>
+                        <select id="subject" name="subject" class="form-control">
+                            <option value="">--Toifani tanlang--</option>
+                        </select>
+                        <label for="title" class="label_required">Mavzu nomi</label>
+                        <input type="text" id="title" class="form-control" placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
+                        <label for="sort" class="label_required">Tartibi</label>
+                        <input type="text" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button id="submit" class="btn btn-success">Saqlash</button>
                         <button type="reset" class="btn btn-danger">Tozalash</button>
                     </div>
                 </form>
@@ -50,13 +57,42 @@
                     },
                     success: function (message) {
                         $('#subject').empty().append(message)
+                        $('#subject').css('border-color', '#007bff')
+                        setTimeout(function () {
+                            $('#subject').css('border-color', '#ced4da')
+                        }, 2000)
 
-                        {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
-                        {#$('#append').append(e);#}
-                        {#e.attr('id', 'myid');#}
                     }
                 });
             });
+
+            $('#subject').on('change', function () {
+                if (isNaN($('#subject').val())) {
+                    $('#subject').css('border-color', 'red')
+                } else {
+                    $('#subject').css('border-color', 'green')
+                }
+            })
+
+            $('#title').on('keypress', function () {
+                if ($('#title').val() == '') {
+                    $('#title').css('border-color', 'red')
+                } else {
+                    $('#title').css('border-color', 'green')
+                }
+            })
+
+            $('#submit').on('click', function (e) {
+                e.preventDefault()
+                alert(isNaN($('#subject').val()))
+                if (!isNaN($('#subject').val())) {
+
+                    $('#subject').css('border-color', 'red')
+                } else if ($('#title').val() == ''){
+                    $('#title').css('border-color', 'red')
+                }
+
+            })
 
 
         });

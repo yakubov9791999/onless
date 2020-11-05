@@ -1042,10 +1042,10 @@ def support(request):
 
 
 @login_required
-def pupil_result(request, id):
-    pupil = get_object_or_404(User, id=id)
-    if request.user == pupil:
-        return render(request, 'user/pupil/pupil_result.html')
+def result(request, id):
+    user = get_object_or_404(User, id=id)
+    if request.user == user:
+        return render(request, 'user/result.html')
     else:
         return render(request, 'inc/404.html')
 

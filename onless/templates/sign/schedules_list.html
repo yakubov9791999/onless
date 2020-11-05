@@ -20,6 +20,7 @@
                         <option value="BC">BC</option>
                         <option value="D">D</option>
                         <option value="E">E</option>
+                        <option value="Malaka oshirish">Malaka oshirish</option>
                     </select>
                     <label for="exampleInputname">Fanni tanlang:</label>
                     <select name="subject" id="subject" class="form-control">
@@ -73,16 +74,18 @@
                     success: function (message) {
                         $('#subject').empty().append(message)
 
+                        $('#subject').css('border-color', '#007bff')
+                        setTimeout(function () {
+                            $('#subject').css('border-color', '#ced4da')
+                        }, 2000)
+
+
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
                         {#e.attr('id', 'myid');#}
                     }
                 });
             });
-
-
-        });
-        $(document).ready(function () {
 
             $("#subject").change(function () {
 
@@ -95,6 +98,7 @@
                         'subject': selectedSubject, // from form
                     },
                     success: function (schedule) {
+                        alert('ok')
                         $('#schedule').empty().append(schedule)
                         $('#title_subject').empty().append(title_subject)
 
@@ -104,7 +108,10 @@
                     }
                 });
             });
+
+
         });
+
 
     </script>
 {% endblock content %}

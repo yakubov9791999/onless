@@ -500,20 +500,18 @@ def search(request):
                                                 Q(name__icontains=query)).filter(role=5, school=request.user.school,
                                                                                  is_active=True).order_by('name')
                 context.update(bugalters=bugalters)
-
                 count += bugalters.count()
             except ValueError:
                 pass
 
             try:
                 pupils = User.objects.filter(Q(pasport__icontains=query) |
-                                             Q(name__icontains=query) |
+                                             Q(name__icontains=query) &
                                              Q(group__isnull=False)).filter(role=4,
-                                                                              school=request.user.school,
-                                                                              is_active=True).order_by('name')
+                                                                            school=request.user.school,
+                                                                            is_active=True).order_by('name')
 
                 context.update(pupils=pupils)
-
                 count += pupils.count()
             except ValueError:
                 pass
@@ -554,6 +552,7 @@ def search(request):
         return render(request, 'user/search_result.html', context)
     except AttributeError:
         return redirect(reverse_lazy('video:home'))
+
 
 @login_required
 def pupil_delete(request, id):

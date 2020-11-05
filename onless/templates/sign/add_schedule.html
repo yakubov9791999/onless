@@ -16,7 +16,7 @@
                 <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">
                     {% csrf_token %}
                     <div class="card-body">
-                        <label class="label_required" for="exampleInputname">Toifani tanlang</label>
+                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Toifani tanlang</label>
                         <select name="category" id="category" class="form-control">
                             <option value="A">A</option>
                             <option value="B">B</option>
@@ -26,17 +26,18 @@
                             <option value="E">E</option>
                             <option value="Malaka oshirish">Malaka oshirish</option>
                         </select>
-                        <label for="subject" class="label_required">Fan nomi</label>
+                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan nomi</label>
                         <select id="subject" name="subject" class="form-control">
                             <option value="">--Toifani tanlang--</option>
                         </select>
-                        <label for="title" class="label_required">Mavzu nomi</label>
-                        <input type="text" id="title" class="form-control" placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
-                        <label for="sort" class="label_required">Tartibi</label>
-                        <input type="text" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
+                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu nomi</label>
+                        <input type="text" id="title" class="form-control"
+                               placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
+                        <label for="sort" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
+                        <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
                     </div>
                     <div class="card-footer">
-                        <button id="submit" class="btn btn-success">Saqlash</button>
+                        <button type="submit" class="btn btn-success">Saqlash</button>
                         <button type="reset" class="btn btn-danger">Tozalash</button>
                     </div>
                 </form>
@@ -67,7 +68,7 @@
             });
 
             $('#subject').on('change', function () {
-                if (isNaN($('#subject').val())) {
+                if (!$.isNumeric($("#subject").children("option:selected").val())) {
                     $('#subject').css('border-color', 'red')
                 } else {
                     $('#subject').css('border-color', 'green')
@@ -82,17 +83,31 @@
                 }
             })
 
-            $('#submit').on('click', function (e) {
-                e.preventDefault()
-                alert(isNaN($('#subject').val()))
-                if (!isNaN($('#subject').val())) {
+             $('#sort').on('keypress', function () {
+                if ($('#sort').val() < 0) {
+                    $('#sort').css('border-color', 'red')
+                } else {
+                    $('#sort').css('border-color', 'green')
+                }
+            })
 
+            $('#schedule_form').submit(function (e) {
+
+                if (!$.isNumeric($("#subject").children("option:selected").val())) {
                     $('#subject').css('border-color', 'red')
-                } else if ($('#title').val() == ''){
+                    return false;
+                } else if ($('#title').val() == '') {
                     $('#title').css('border-color', 'red')
+                    return false;
+                } else if ($('#sort').val() == '') {
+                    $('#sort').css('border-color', 'red')
+                    return false;
+                }else {
+                    return true;
                 }
 
             })
+
 
 
         });

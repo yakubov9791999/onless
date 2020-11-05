@@ -22,8 +22,10 @@ def add_result(request):
             question = get_object_or_404(Savol, id=request.GET.get('question'))
             answer = get_object_or_404(Javob, id=request.GET.get('answer'))
 
-            result = ResultQuiz.objects.filter(question=question, user=user)
-            result.delete()
+            old_result = ResultQuiz.objects.filter(question=question, user=user)
+            old_result.delete()
+
+            result = Result.objects.filter(question=question, user=user)
             if not result.exists():
                 Result.objects.create(question=question, user=user, answer=answer, created_date=datetime.now())
                 attempt = Attempt.objects.filter(user=user)

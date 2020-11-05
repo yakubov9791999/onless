@@ -12,7 +12,7 @@
                 {% include 'inc/messages.html' %}
                 <div class="card-body">
 
-                    <label for="exampleInputname">Toifani tanlang:</label>
+                    <label for="exampleInputname" class="label_required">Toifani tanlang</label>
                     <select name="category" id="category" class="form-control">
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -22,25 +22,24 @@
                         <option value="E">E</option>
                         <option value="Malaka oshirish">Malaka oshirish</option>
                     </select>
-                    <label for="exampleInputname">Fanni tanlang:</label>
+                    <label for="exampleInputname" class="label_required">Fanni tanlang</label>
                     <select name="subject" id="subject" class="form-control">
-                        <option value="">-- -- --</option>
-
+                        <option>-- Toifani tanlang --</option>
                     </select>
 
                 </div>
             </div>
-            <div class="card-header">
+            <div class="card-header" style="border-bottom: 2px solid burlywood">
                 <h2 class="card-title" id="title_subject"
-                    style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem">
-
+                    style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem; ">
                 </h2>
+
             </div>
             <div class="table-responsive">
                 <table id="example1" class="table table-bordered table-hovered table-hover">
                     <thead>
                     <tr style="background-color: #ecebeb">
-                        <th style="width: 5%">№</th>
+                        <th style="width: 8%">№</th>
                         <th>Mavzu</th>
                         <th style="width: 5%">Tahrirlash</th>
                     </tr>
@@ -98,9 +97,8 @@
                         'subject': selectedSubject, // from form
                     },
                     success: function (schedule) {
-                        alert('ok')
                         $('#schedule').empty().append(schedule)
-                        $('#title_subject').empty().append(title_subject)
+                        $('#title_subject').empty().append(`Fan: ${title_subject}`)
 
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}

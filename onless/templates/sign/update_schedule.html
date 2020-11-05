@@ -13,10 +13,27 @@
                 <!-- /.card-header -->
                 <!-- form start -->
 
-                <form role="form" method="POST" action="{% url 'sign:update_schedule' schedule.id %}">
+                <form role="form" id="schedule_form" method="POST"
+                      action="{% url 'sign:update_schedule' schedule.id %}">
                     {% csrf_token %}
                     <div class="card-body">
-                        {{ form }}
+                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Toifa</label>
+                        <input type="text" class="form-control" readonly="readonly"
+                               value="{{ schedule.subject.category }}"/>
+
+                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan
+                            nomi</label>
+                        <input type="text" class="form-control" readonly="readonly" value="{{ schedule.subject }}"/>
+
+
+                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu
+                            nomi</label>
+                        <input type="text" id="title" value="{{ schedule.title }}" class="form-control"
+                               placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
+                        <label for="sort" class="label_required"
+                               style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
+                        <input type="number" id="sort" class="form-control" value="{{ schedule.sort }}"
+                               placeholder="Masalan: 1" name="sort">
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-success">Saqlash</button>
@@ -27,3 +44,37 @@
         </div>
     </div>
 {% endblock content %}
+{% block bottom %}
+    <script type="text/javascript">
+
+        $('#title').on('keypress', function () {
+            if ($('#title').val() == '') {
+                $('#title').css('border-color', 'red')
+            } else {
+                $('#title').css('border-color', 'green')
+            }
+        })
+
+        $('#sort').on('keypress', function () {
+            if ($('#sort').val() < 0) {
+                $('#sort').css('border-color', 'red')
+            } else {
+                $('#sort').css('border-color', 'green')
+            }
+        })
+
+        $('#schedule_form').submit(function (e) {
+            if ($('#title').val() == '') {
+                $('#title').css('border-color', 'red')
+                return false;
+            } else if ($('#sort').val() == '') {
+                $('#sort').css('border-color', 'red')
+                return false;
+            } else {
+                return true;
+            }
+
+        })
+
+    </script>
+{% endblock bottom %}

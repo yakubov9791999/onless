@@ -5,7 +5,8 @@
     <div class="row">
         <div class="col-12">
             {% include 'inc/messages.html' %}
-            <div class="alert alert-danger text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan natijalarda xatoliklar yuzaga kelishi mumkin!</b></div>
+            <div class="alert alert-danger text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan
+                natijalarda xatoliklar yuzaga kelishi mumkin!</b></div>
             <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">O'zlashtirish
                 darajasi {% now "SHORT_DATE_FORMAT" %} holatida</p>
         </div>
@@ -54,20 +55,11 @@
                 </table>
 
             </div>
-            <hr style="margin-bottom: 0 !important;">
-            <a href="{% url 'video:categories_list' %}" class="btn btn-info col-5 col-md-5 col-sm-5 col-lg-5 col-xl-5 m-3">
-                Videodarslar
-            </a>
-            <a href="{% url 'quiz:select_lang' %}" class="btn btn-info col-5 col-md-5 col-sm-5 col-lg-5 col-xl-5 m-3">
-                700 TEST
-            </a>
         </div>
 
-        <div class="col-md-6 col-sm-12 p-3">
-
-
+        <div class="col-md-6 col-sm-12 pl-3">
+            <hr style="margin-top: 0!important;margin-bottom: 0.5em!important">
             <p class="lead">Berilgan javobga nisbatan o'zlashtirish:</p>
-
             {% pupil_result request.user.id as pupil_res %}
             <p class="text-muted" style="margin-bottom: 0">Javoblar/To'g'ri javoblar:
                 <b>{{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}</b></p>
@@ -106,6 +98,7 @@
                     <div style="margin-left: 10%">yechilmagan</div>
                 {% endif %}
             </div>
+            <hr>
             {% for attempt in request.user.attempt_user.all %}
                 <p class="mt-3 text-danger" style="margin-bottom: 0">{% if attempt.allowed %}Sizga {{ attempt.allowed }}
                     marta testlarni qayta topshirish imkoniyati
@@ -120,7 +113,19 @@
             {% endfor %}
 
         </div>
-
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr style="margin-bottom: 0 !important;">
+            <a href="{% url 'video:categories_list' %}"
+               class="btn btn-info col-5 col-md-5 col-sm-5 col-lg-5 col-xl-5 m-3">
+                Videodarslar
+            </a>
+            <a href="{% url 'quiz:select_lang' %}"
+               class="btn btn-info col-5 col-md-5 col-sm-5 col-lg-5 col-xl-5 m-3">
+                700 TEST
+            </a>
+        </div>
     </div>
 
 {% endblock content %}

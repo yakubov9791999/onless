@@ -42,21 +42,22 @@ def add_schedule(request):
 @login_required
 def update_schedule(request, id):
     schedule = Schedule.objects.get(id=id)
-    form = UpdateScheduleForm(instance=schedule)
+    context = {
+        'schedule': schedule
+    }
     if request.POST:
         form = UpdateScheduleForm(request.POST, instance=schedule)
         if form.is_valid():
+            form = form.save(commit=False)
+            form.subject = schedule.subject
             form.save()
             messages.success(request, "Muvaffaqiyatli tahrirlandi !")
+            return render(request, 'sign/schedules_list.html', context)
         else:
-            form = UpdateScheduleForm(instance=schedule)
             messages.error(request, "Formani to'ldirishda xatolik !")
     else:
-        form = UpdateScheduleForm(instance=schedule)
-    return render(request, 'sign/update_schedule.html', {
-        'form': form,
-        'schedule':schedule
-    })
+        return render(request, 'sign/update_schedule.html', context)
+    return render(request, 'sign/update_schedule.html', context)
 
 
 @login_required

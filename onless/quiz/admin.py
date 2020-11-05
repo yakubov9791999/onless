@@ -57,17 +57,19 @@ admin.site.register(Question, QuestionAdmin)
 @admin.register(ResultQuiz)
 class ResultQuizAdmin(admin.ModelAdmin):
     list_display = ['id', 'user','question','answer']
-    search_fields = ['question', 'user', 'answer']
+    search_fields = ['question__title_uz', 'user__name', 'answer__text_uz']
 
 @admin.register(Result)
-class ResultQuizAdmin(admin.ModelAdmin):
+class ResultAdmin(admin.ModelAdmin):
     list_display = ['id', 'user','question','answer', 'created_date']
     list_filter = ['created_date']
-    search_fields = ['question', 'user', 'answer']
+    search_fields = ['question__title_uz', 'user__name', 'answer__text_uz']
 
 @admin.register(Attempt)
 class AttemptAdmin(admin.ModelAdmin):
-    list_filter = ['user','allowed', 'solved',]
+    list_display = ['id', 'user', 'allowed', 'solved']
+    search_fields = ['user__name',]
+    list_filter = ['allowed', 'solved',]
 
 @admin.register(Bilet)
 class BiletAdmin(admin.ModelAdmin):

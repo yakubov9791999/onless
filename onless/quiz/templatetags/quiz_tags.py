@@ -60,7 +60,7 @@ def get_true_answer(user_id, question_id, answer_id):
     answer = get_object_or_404(Javob, id=answer_id)
     result = Result.objects.filter(user=user,question=question, answer=answer).last()
 
-    if result.is_last:
+    if result:
         if result.answer.is_true:
             return True
         else:

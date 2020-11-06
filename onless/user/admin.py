@@ -71,3 +71,20 @@ class PayAdmin(admin.ModelAdmin):
     list_display_links = ['pupil', ]
     list_filter = ['pupil', 'pay_date']
     save_on_top = True
+
+
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ['id','subject', 'pupil', 'teacher', 'created_date']
+    list_display_links = ['subject']
+    list_filter = ['created_date']
+    search_fields = ['subject', 'pupil', 'teacher',]
+    save_on_top = True
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ['id','subject','score', 'pupil', 'teacher', 'created_date']
+    list_display_links = ['subject']
+    list_filter = ['score','created_date']
+    search_fields = ['subject', 'pupil', 'teacher',]
+    save_on_top = True

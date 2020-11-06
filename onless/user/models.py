@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator, MaxLengthValidator
 
 
+
+
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
     ext = filename.split('.')[-1]
@@ -61,7 +63,7 @@ class Region(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['sort',]
+        ordering = ['sort', ]
         verbose_name = 'Viloyat'
         verbose_name_plural = 'Viloyatlar'
 
@@ -82,14 +84,17 @@ class District(models.Model):
 
 class School(models.Model):
     title = models.CharField(verbose_name='Nomi', max_length=255)
-    director = models.ForeignKey('User',on_delete=models.SET_NULL, null=True, verbose_name='Rahbar nomi', related_name='school_director', max_length=100, blank=True)
-    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999),MinValueValidator(100000000)])
-    logo = models.ImageField('Rasm', upload_to='school/', blank=True,)
+    director = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, verbose_name='Rahbar nomi',
+                                 related_name='school_director', max_length=100, blank=True)
+    phone = models.IntegerField(null=True, blank=True,
+                                validators=[MaxValueValidator(999999999), MinValueValidator(100000000)])
+    logo = models.ImageField('Rasm', upload_to='school/', blank=True, )
     region = models.ForeignKey(Region, verbose_name='Viloyat', on_delete=models.SET_NULL, related_name='school_region',
                                null=True)
     district = models.ForeignKey(District, verbose_name='Tuman', on_delete=models.SET_NULL,
-                                 related_name='school_district',blank=True, null=True)
-    schet = models.CharField(null=True, max_length=255, validators=[MaxValueValidator(99999999999999999999)], blank=True)
+                                 related_name='school_district', blank=True, null=True)
+    schet = models.CharField(null=True, max_length=255, validators=[MaxValueValidator(99999999999999999999)],
+                             blank=True)
     mfo = models.CharField(null=True, validators=[MaxValueValidator(99999)], blank=True, max_length=5)
     bank = models.CharField(null=True, blank=True, max_length=50)
     reg_date = models.DateTimeField(auto_now_add=True)
@@ -123,7 +128,8 @@ class Group(models.Model):
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
     teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
                                 related_name='group_teacher', null=True)
-    school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups', null=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups',
+                               null=True)
     start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
     stop = models.DateField(verbose_name="O'qish tugashi", auto_now=False)
     is_active = models.BooleanField(default=True)
@@ -161,16 +167,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to='user/', default='', blank=True)
     birthday = models.DateField(blank=True, null=True, default=datetime.date.today)
     username = models.CharField(max_length=30, unique=True, blank=True)
-    phone = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(999999999),MinValueValidator(100000000)])
+    phone = models.IntegerField(null=True, blank=True,
+                                validators=[MaxValueValidator(999999999), MinValueValidator(100000000)])
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, related_name='group_user', blank=True, null=True)
-    pasport = models.CharField(max_length=9, null=True, unique=True,validators=[MaxLengthValidator(9)])
+    pasport = models.CharField(max_length=9, null=True, unique=True, validators=[MaxLengthValidator(9)])
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, blank=True)
     is_active = models.BooleanField(default=True, blank=True)
     last_login = models.DateTimeField(null=True, auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=5,default='M')
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=5, default='M')
     turbo = models.CharField(max_length=200, blank=True, null=True, validators=[MinLengthValidator(7)])
+    is_offline = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -193,9 +201,9 @@ class Contact(models.Model):
     def __str__(self):
         return f"{self.user}"
 
-class File(models.Model):
-    file = models.FileField(upload_to='excel/',)
 
+class File(models.Model):
+    file = models.FileField(upload_to='excel/', )
 
 
 class Pay(models.Model):
@@ -205,3 +213,42 @@ class Pay(models.Model):
 
     def __str__(self):
         return f"{self.pupil}"
+
+from sign.models import Subject
+class Attendance(models.Model):
+    pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_attendance', null=True)
+    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_attendance')
+    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',
+                                null=True)
+    created_date = models.DateTimeField(verbose_name='Vaqti')
+
+    def __str__(self):
+        return str(self.subject.title)
+
+    class Meta:
+        verbose_name = 'Davomat'
+        verbose_name_plural = 'Davomatlar'
+
+SCORE_CHOICES = (
+    ('2', '2'),
+    ('3', '3'),
+    ('4', '4'),
+    ('5', '5'),
+)
+
+
+class Rating(models.Model):
+    pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_rating', null=True)
+    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_rating')
+    score = models.CharField(verbose_name='Olgan bahosi',choices=SCORE_CHOICES, max_length=12, blank=True, null=True)
+    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_rating',
+                                null=True)
+    created_date = models.DateTimeField(verbose_name='Yaratilgan vaqt', editable=False)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqt', blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.pupil.name}: {self.score}'
+
+    class Meta:
+        verbose_name = 'Baho'
+        verbose_name_plural = 'Baholar'

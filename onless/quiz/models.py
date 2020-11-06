@@ -131,7 +131,7 @@ class ResultJavob(models.Model):
 
 
 class CheckTestColor(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='check_bilet_user')
     bilet = models.ForeignKey(Bilet, on_delete=models.CASCADE,)
     pub_date = models.DateTimeField(auto_now_add=True)
 

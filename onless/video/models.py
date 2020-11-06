@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from user.models import *
-from quiz.models import User
+
 
 
 class Category(models.Model):

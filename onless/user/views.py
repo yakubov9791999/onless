@@ -1043,9 +1043,20 @@ def support(request):
 
 @login_required
 def result(request, id):
-    user = get_object_or_404(User, id=id)
-    if request.user == user:
-        return render(request, 'user/result.html')
+    pupil = get_object_or_404(User, id=id)
+    bilets = Bilet.objects.all().count()
+    context = {
+        'bilets': bilets
+    }
+    last_check_bilet = CheckTestColor.objects.filter(user=pupil).last()
+    if last_check_bilet:
+        context.update(last_check_bilet=last_check_bilet.bilet)
+
+    if request.user == pupil:
+        return render(request, 'user/result.html', context)
+    elif request.user == pupil.group.teacher or request.user == pupil.school.director:
+        context.update(pupil=pupil)
+        return render(request, 'user/result.html', context)
     else:
         return render(request, 'inc/404.html')
 

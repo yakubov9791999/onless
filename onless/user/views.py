@@ -1051,12 +1051,14 @@ def result(request, id):
     last_check_bilet = CheckTestColor.objects.filter(user=pupil).last()
     if last_check_bilet:
         context.update(last_check_bilet=last_check_bilet.bilet)
+    director = User.objects.filter(school=pupil.school, role=2).first()
+
     if request.user == pupil:
         return render(request, 'user/result.html', context)
     elif request.user == pupil.group.teacher:
         context.update(pupil=pupil)
         return render(request, 'user/result.html', context)
-    elif request.user == pupil.school.director:
+    elif request.user == director:
         context.update(pupil=pupil)
         return render(request, 'user/result.html', context)
     else:

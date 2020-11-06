@@ -533,6 +533,20 @@ a:active {
     user-select: none;
 }
 
+@media screen and (min-width: 768px) {
+    .vl {
+        border-left: 6px solid #5f5d5d;
+        /*height: 500px;*/
+        /*position: fixed;*/
+        /*left: 50%;*/
+        /*margin-left: -3px;*/
+        /*top: 0;*/
+
+    }
+}
+
+
+
 /*@media screen and (max-width: 768px) {*/
 /*          !*.side-collapse-container{*!*/
 /*          !*    width:100%;*!*/

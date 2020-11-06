@@ -209,6 +209,10 @@ def reset_answers(request):
     # questions_id = request.POST.getlist('arr[]', [])
     # questions_id = [json.loads(item) for item in data]
     user = get_object_or_404(User, id=request.user.id)
+    bilets = Bilet.objects.all().count()
+    context = {
+        'bilets': bilets
+    }
     try:
         attempt = Attempt.objects.get(user=user)
         if attempt.allowed > attempt.solved:
@@ -221,11 +225,11 @@ def reset_answers(request):
             results = Result.objects.filter(user=user)
             results.delete()
 
-            messages.success(request, 'Natijalaringiz muvaffqaiyatli o\'chirildi!')
-            return render(request, 'user/pupil/pupil_result.html')
+            messages.success(request, 'Natijalaringiz muvaffaqiyatli o\'chirildi!')
+            return render(request, 'user/result.html', context)
         else:
             messages.error(request, 'Sizda qayta topshirish imkoniyati mavjud emas!')
-            return render(request, 'user/pupil/pupil_result.html')
+            return render(request, 'user/result.html', context)
     except ObjectDoesNotExist:
         messages.warning(request, 'Sizda natijalar mavjud emas!')
-        return render(request, 'user/pupil/pupil_result.html')
+        return render(request, 'user/result.html', context)

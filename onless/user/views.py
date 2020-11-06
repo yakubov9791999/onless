@@ -1051,16 +1051,17 @@ def result(request, id):
     last_check_bilet = CheckTestColor.objects.filter(user=pupil).last()
     if last_check_bilet:
         context.update(last_check_bilet=last_check_bilet.bilet)
-    if request.user == pupil:
-        return render(request, 'user/result.html', context)
-    elif request.user == pupil.group.teacher:
-        context.update(pupil=pupil)
-        return render(request, 'user/result.html', context)
-    elif request.user == pupil.school.director:
-        context.update(pupil=pupil)
-        return render(request, 'user/result.html', context)
-    else:
-        return render(request, 'inc/404.html')
+    return render(request, 'user/result.html', context)
+    # if request.user == pupil:
+    #     return render(request, 'user/result.html', context)
+    # elif request.user == pupil.group.teacher:
+    #     context.update(pupil=pupil)
+    #     return render(request, 'user/result.html', context)
+    # elif request.user == pupil.school.director:
+    #     context.update(pupil=pupil)
+    #     return render(request, 'user/result.html', context)
+    # else:
+    #     return render(request, 'inc/404.html')
 
 
 @login_required

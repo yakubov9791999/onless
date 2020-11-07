@@ -7,7 +7,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">O'quvchilar ro'yhati</h3>
+                    <h3 class="card-title">{{ group.category }}-{{ group.number }} {{ group.year }} o'quvchilar ro'yhati</h3>
                 </div>
 
                 {% include 'inc/messages.html' %}
@@ -42,13 +42,13 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 2%">№</th>
                                 <th>O'quvchining ism familiyasi</th>
-{#                                <th>Tug'ilgan yili</th>#}
+                                {#                                <th>Tug'ilgan yili</th>#}
                                 <th>Manzili</th>
                                 <th>Telefon</th>
                                 <th>Login</th>
                                 <th>Parol</th>
                                 <th>O'zlashtirish</th>
-                                <th>Ananaviy ta'lim</th>
+                                <th>Offline ta'lim</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                     <th style="width: 4%">
                                         Tahrirlash
@@ -65,7 +65,7 @@
                                             id="{{ pupil.name }}"
                                             href="{% url 'user:result' pupil.id %}">{{ pupil.name }}</a></b>
                                     </td>
-{#                                    <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>#}
+                                    {#                                    <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>#}
                                     <td>{% if pupil.district %}{{ pupil.district }}{% endif %}</td>
                                     <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
                                     <td>{{ pupil.username }}</td>
@@ -89,10 +89,9 @@
                                             {% endif %}
                                         </div>
                                     </td>
-                                    <td><input type="checkbox"></td>
+                                    <td><input class="offline_checkbox" {% if pupil.is_offline %}checked{% endif %} data-id="{{ pupil.id }}" type="checkbox"></td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
-
                                             &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i
                                                 class="fa fa-edit"
                                         ></i></a>
@@ -133,43 +132,72 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
+        $(document).ready(function () {
 
-        function delete_pupil(group_id, pupil_id, pupil_name) {
-            var pupilId = pupil_id;
-            var pupilName = pupil_name;
+            function delete_pupil(group_id, pupil_id, pupil_name) {
+                var pupilId = pupil_id;
+                var pupilName = pupil_name;
 
-            swal({
-                title: "O'quvchini o'chirmoqchimisiz ?",
-                text: pupilName + "ni o'chirmoqchimisiz ?",
-                icon: "warning",
-                closeOnClickOutside: false,
-                buttons: [
-                    'Yoq, Bekor qilish!',
-                    'Ha, Roziman!'
-                ],
-                dangerMode: true,
+                swal({
+                    title: "O'quvchini o'chirmoqchimisiz ?",
+                    text: pupilName + "ni o'chirmoqchimisiz ?",
+                    icon: "warning",
+                    closeOnClickOutside: false,
+                    buttons: [
+                        'Yoq, Bekor qilish!',
+                        'Ha, Roziman!'
+                    ],
+                    dangerMode: true,
 
-            }).then(function (isConfirm) {
-                if (isConfirm) {
-                    swal({
-                        title: "Muvaffaqiyatli o'chirildi !",
-                        text: pupilName + " muvaffaqiyatli o'chirildi !",
-                        closeOnClickOutside: false,
-                        icon: 'success'
-                    }).then(function () {
-                        $.ajax({
-                            type: 'GET',
-                            url: '/user/pupil-delete/' + pupilId,
+                }).then(function (isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: "Muvaffaqiyatli o'chirildi !",
+                            text: pupilName + " muvaffaqiyatli o'chirildi !",
+                            closeOnClickOutside: false,
+                            icon: 'success'
+                        }).then(function () {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/user/pupil-delete/' + pupilId,
+                            });
+                            {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
+                            window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
                         });
-                        {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
-                        window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
-                    });
-                } else {
-                    swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
-                }
-            });
+                    } else {
+                        swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
+                    }
+                });
 
-        }
+            }
+
+            $('.offline_checkbox').on('change', function () {
+                var checkbox = false,
+                    pupilId = $(this).attr("data-id")
+                if ($(this).is(':checked')) {
+                    checkbox = true
+                } else {
+                    checkbox = false
+                }
+
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url 'user:get_learning_type' %}',
+                    data: {
+                        'checkbox': checkbox,
+                        'pupil': pupilId
+                    },
+                    success: function (response) {
+                        console.log(response)
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                })
+
+            })
+
+        });
 
 
     </script>

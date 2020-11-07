@@ -11,8 +11,8 @@ class AddScheduleFrom(forms.ModelForm):
                               widget=forms.NumberInput(attrs={'class': 'form-control', 'max': '999', 'placeholder': 'Masalan: 1'}))
     class Meta:
         model = Schedule
-        fields = ('subject', 'title', 'sort')
-        exclude = ('author',)
+        fields = ('subject', 'title',  'sort')
+        exclude = ('author','start', 'stop',)
 
 class UpdateScheduleForm(forms.ModelForm):
 

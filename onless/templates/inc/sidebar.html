@@ -41,6 +41,7 @@
                 {% if user.is_authenticated and request.user.role == '1' %}
                     {% include 'inc/role_sidebar/schools_list_page.html' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
+                    {% include 'inc/role_sidebar/results_page.html' %}
                     {% include 'inc/role_sidebar/tests.page.html' %}
                     {% include 'inc/role_sidebar/signs_page.html' %}
                     {% include 'inc/role_sidebar/materials_page.html' %}

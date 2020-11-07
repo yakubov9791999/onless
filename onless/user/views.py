@@ -1097,6 +1097,8 @@ def get_learning_type(request):
 @login_required
 def attendance_groups_list(request):
     groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+    if not groups.exists():
+        messages.error(request, 'Sizda ananaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
     context = {
         'groups': groups
     }
@@ -1105,19 +1107,27 @@ def attendance_groups_list(request):
 @login_required
 def attendance_view(request, id):
     group = get_object_or_404(Group, id=id)
-    pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
-    context = {
-        'group': group,
-        'pupils': pupils
-    }
-    return render(request, 'user/attendance/attendance_view.html', context)
+
+    if request.user.school == group.school:
+        pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+        context = {
+            'group': group,
+            'pupils': pupils
+        }
+        return render(request, 'user/attendance/attendance_view.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def attendance_set(request, id):
     group = get_object_or_404(Group, id=id)
-    pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
-    context = {
-        'group': group,
-        'pupils': pupils
-    }
-    return render(request, 'user/attendance/attendance_set.html', context)
+
+    if request.user.school == group.school:
+        pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+        context = {
+            'group': group,
+            'pupils': pupils
+        }
+        return render(request, 'user/attendance/attendance_set.html', context)
+    else:
+        return render(request, 'inc/404.html')

@@ -41,7 +41,8 @@ def user_login(request):
         password = request.POST['password'].replace(' ', '')
         user = authenticate(username=username, password=password)
         if user is not None:
-            if user.is_active and user.school.is_block == False:
+            # if user.is_active and user.school.is_block == False:
+            if user.is_active:
                 login(request, user)
                 return redirect(reverse_lazy('video:home'))
             else:
@@ -989,18 +990,27 @@ def history_view_video_all(request):
 
 @login_required
 def history_pupil_view_video(request, id):
-    if request.user.role == '2' or request.user.role == '3' or request.user.role == '4':
-        pupil = get_object_or_404(User, id=id)
-        videos = Video.objects.filter(is_active=True).order_by('id')
-        if not videos.exists():
-            messages.error(request, "Ko'rishlar mavjud emas !")
-        context = {
-            'videos': videos,
-            'pupil': pupil
-        }
+    pupil = get_object_or_404(User, id=id)
+    videos = Video.objects.filter(is_active=True).order_by('id')
+    if not videos.exists():
+        messages.error(request, "Ko'rishlar mavjud emas !")
+    context = {
+        'videos': videos,
+        'pupil': pupil
+    }
+    director = User.objects.filter(school=pupil.school, role=2).first()
+    teacher = User.objects.filter(school=pupil.school, role=3).first()
+
+    if request.user == pupil:
+        return render(request, 'user/pupil/history_pupil_view_video.html', context)
+    elif request.user == teacher:
+        return render(request, 'user/pupil/history_pupil_view_video.html', context)
+    elif request.user == director:
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
     else:
         return render(request, 'inc/404.html')
+
+
 
 
 @login_required
@@ -1052,10 +1062,11 @@ def result(request, id):
     if last_check_bilet:
         context.update(last_check_bilet=last_check_bilet.bilet)
     director = User.objects.filter(school=pupil.school, role=2).first()
+    teacher = User.objects.filter(school=pupil.school, role=3).first()
 
     if request.user == pupil:
         return render(request, 'user/result.html', context)
-    elif request.user == pupil.group.teacher:
+    elif request.user == teacher:
         context.update(pupil=pupil)
         return render(request, 'user/result.html', context)
     elif request.user == director:

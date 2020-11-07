@@ -1079,3 +1079,45 @@ def result(request, id):
 @login_required
 def messeges(request):
     return render(request, 'user/messeges.html')
+
+
+@login_required
+def get_learning_type(request):
+    pupil = get_object_or_404(User, id=request.GET.get('pupil'))
+    if request.GET.get('checkbox') == 'false':
+        pupil.is_offline = False
+    elif request.GET.get('checkbox') == 'true':
+        pupil.is_offline = True
+    else:
+        return HttpResponse(False)
+    pupil.save()
+    return HttpResponse(True)
+
+
+@login_required
+def attendance_groups_list(request):
+    groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+    context = {
+        'groups': groups
+    }
+    return render(request, 'user/attendance/attendance_groups_list.html', context)\
+
+@login_required
+def attendance_view(request, id):
+    group = get_object_or_404(Group, id=id)
+    pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+    context = {
+        'group': group,
+        'pupils': pupils
+    }
+    return render(request, 'user/attendance/attendance_view.html', context)
+
+@login_required
+def attendance_set(request, id):
+    group = get_object_or_404(Group, id=id)
+    pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+    context = {
+        'group': group,
+        'pupils': pupils
+    }
+    return render(request, 'user/attendance/attendance_set.html', context)

@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from datetime import datetime as dt
+
+from django.utils import formats
 
 from sign.decorators import *
 from user.decorators import *
@@ -27,15 +30,15 @@ def add_schedule(request):
         form = AddScheduleFrom(request.POST)
         author = User.objects.get(id=request.user.id)
         if form.is_valid():
-            print(form.cleaned_data['title'])
             form = form.save(commit=False)
             form.author = author
+            form.start = request.POST.get('start')
+            form.stop = request.POST.get('stop')
+            form.pub_date = timezone.now()
             form.save()
             messages.success(request, "Muvaffaqiyatli qo'shildi !")
-            form = AddScheduleFrom()
         else:
             messages.error(request, "Formani to'ldirishda xatolik !")
-            form = AddScheduleFrom()
     return render(request, 'sign/add_schedule.html')
 
 
@@ -93,9 +96,12 @@ def get_schedule(request):
         for schedule in schedules:
             url_update = reverse_lazy('sign:update_schedule', kwargs={'id': schedule.id})
             url_delete = reverse_lazy('sign:delete_schedule', kwargs={'id': schedule.id})
+
             td += f"<tr>" \
                   f"<td>M-{schedule.sort}</td>" \
                   f"<td>{schedule.title}</td>" \
+                  f"<td>{str(schedule.start)[0:16]}</td>" \
+                  f"<td>{str(schedule.stop)[0:16]}</td>" \
                   f"<td><a href='{url_update}'><i class='fa fa-edit'></i></a><a href='{url_delete}'><i class='fa fa-trash ml-2'></i></a></td>" \
                   f"</tr>"
         return HttpResponse(td)

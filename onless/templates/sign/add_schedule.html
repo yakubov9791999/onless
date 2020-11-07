@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
     <div class="row" style="margin: auto">
         <!-- left column -->
@@ -16,7 +16,8 @@
                 <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">
                     {% csrf_token %}
                     <div class="card-body">
-                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Toifani tanlang</label>
+                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Toifani
+                            tanlang</label>
                         <select name="category" id="category" class="form-control">
                             <option value="A">A</option>
                             <option value="B">B</option>
@@ -26,14 +27,26 @@
                             <option value="E">E</option>
                             <option value="Malaka oshirish">Malaka oshirish</option>
                         </select>
-                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan nomi</label>
+                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan
+                            nomi</label>
                         <select id="subject" name="subject" class="form-control">
                             <option value="">--Toifani tanlang--</option>
                         </select>
-                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu nomi</label>
+                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu
+                            nomi</label>
                         <input type="text" id="title" class="form-control"
                                placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
-                        <label for="sort" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
+
+                        <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish
+                            vaqti</label>
+                        <input type="datetime-local" id="start" class="form-control" name="start">
+
+                        <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash
+                            vaqti</label>
+                        <input type="datetime-local" id="stop" class="form-control" name="stop">
+
+                        <label for="sort" class="label_required"
+                               style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
                         <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
                     </div>
                     <div class="card-footer">
@@ -45,6 +58,7 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
     <script>
         $(document).ready(function () {
             $("#category").change(function () {
@@ -59,9 +73,9 @@
                     success: function (message) {
                         $('#subject').empty().append(message)
                         $('#subject').css('border-color', '#007bff')
-                        setTimeout(function () {
-                            $('#subject').css('border-color', '#ced4da')
-                        }, 2000)
+                       // setTimeout(function () {
+                       //     $('#subject').css('border-color', '#ced4da')
+                       // }, 2000)
 
                     }
                 });
@@ -75,6 +89,7 @@
                 }
             })
 
+
             $('#title').on('keypress', function () {
                 if ($('#title').val() == '') {
                     $('#title').css('border-color', 'red')
@@ -83,12 +98,29 @@
                 }
             })
 
-             $('#sort').on('keypress', function () {
+            $('#sort').on('keypress', function () {
                 if ($('#sort').val() < 0) {
                     $('#sort').css('border-color', 'red')
                 } else {
                     $('#sort').css('border-color', 'green')
                 }
+            })
+
+            $('#start').on('change', function () {
+                if (isNaN(Date.parse($(this).val())) == true)
+                    $(this).css('border-color', 'red')
+                else
+                    $(this).css('border-color', 'green')
+
+            })
+
+            $('#stop').on('change', function () {
+
+                if (isNaN(Date.parse($(this).val())) == true)
+                    $(this).css('border-color', 'red')
+                else
+                    $(this).css('border-color', 'green')
+
             })
 
             $('#schedule_form').submit(function (e) {
@@ -99,15 +131,20 @@
                 } else if ($('#title').val() == '') {
                     $('#title').css('border-color', 'red')
                     return false;
+                } else if (isNaN(Date.parse($('#start').val())) == true) {
+                    $('#start').css('border-color', 'red')
+                    return false;
+                } else if (isNaN(Date.parse($('#stop').val())) == true) {
+                    $('#stop').css('border-color', 'red')
+                    return false;
                 } else if ($('#sort').val() == '') {
                     $('#sort').css('border-color', 'red')
                     return false;
-                }else {
+                } else {
                     return true;
                 }
 
             })
-
 
 
         });

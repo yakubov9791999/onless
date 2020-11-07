@@ -34,3 +34,16 @@ $(function () {
         });
     });
 });
+
+function parseDate(value) {
+    var date = value.split("-");
+    var y = parseInt(date[0], 10),
+        m = parseInt(date[1], 10),
+        d = parseInt(date[2], 10);
+    if (y != NaN && m != NaN && d != NaN)  {
+        return y
+    }
+    // return `${d}.${m}.${y}`
+
+    // return new Date(y, m - 1, d);
+}

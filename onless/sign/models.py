@@ -40,7 +40,9 @@ class Subject(models.Model):
 class Schedule(models.Model):
     title = models.CharField(max_length=900)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
-    pub_date = models.DateTimeField(auto_now_add=True)
+    pub_date = models.DateTimeField(editable=False)
+    start = models.DateTimeField(verbose_name='Boshlanish vaqti', null=True)
+    stop = models.DateTimeField(verbose_name='Tugash vaqti', null=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
     sort = models.IntegerField(default=1)
 

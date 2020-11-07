@@ -37,5 +37,10 @@ urlpatterns = [
     path('support/', support, name='support'),
     path('result/<int:id>/', result, name='result'),
     path('xabarlar/', messeges, name='messeges'),
+    path('get-learning-type/', get_learning_type, name='get_learning_type'),
+
+    path('attendance-groups-list/', attendance_groups_list, name='attendance_groups_list'),
+    path('attendance-view/<int:id>/', attendance_view, name='attendance_view'),
+    path('attendance-set/<int:id>/', attendance_set, name='attendance_set'),
 
 ]

@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
                     'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
     list_display_links = [ 'role', 'name']
-    list_filter = ['role','is_active', 'school', ]
+    list_filter = ['role','is_active', 'is_offline', 'school', ]
     search_fields = ['name', 'username', 'phone', 'pasport','turbo',]
     save_on_top = True
 

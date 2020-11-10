@@ -43,6 +43,7 @@ class Subject(models.Model):
 class Schedule(models.Model):
     title = models.CharField(max_length=900)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_schedule', null=True)
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
     updated_date = models.DateTimeField(null=True, blank=True, auto_now=True)
     date = models.DateField(verbose_name='Kuni', null=True,blank=True)

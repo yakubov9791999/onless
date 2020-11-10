@@ -24,9 +24,9 @@
                       action="{% url 'sign:update_schedule' schedule.id %}">
                     {% csrf_token %}
                     <div class="card-body">
-                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Toifa</label>
+                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruh</label>
                         <input type="text" class="form-control" readonly="readonly"
-                               value="{{ schedule.subject.category }}"/>
+                               value="{{ schedule.group }}"/>
 
                         <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan
                             nomi</label>

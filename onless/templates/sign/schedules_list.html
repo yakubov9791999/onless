@@ -11,19 +11,16 @@
                 </div>
                 {% include 'inc/messages.html' %}
                 <div class="card-body">
-                    <label for="exampleInputname" class="label_required">Toifani tanlang</label>
-                    <select name="category" id="category" class="form-control">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="BC">BC</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
-                        <option value="Malaka oshirish">Malaka oshirish</option>
+                    <label for="exampleInputname" class="label_required">Guruhni tanlang</label>
+                    <select name="group" id="group" class="form-control">
+                        <option value="">-- -- --</option>
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                        {% endfor %}
                     </select>
                     <label for="exampleInputname" class="label_required">Fanni tanlang</label>
                     <select name="subject" id="subject" class="form-control">
-                        <option>-- Toifani tanlang --</option>
+                        <option>-- Guruhni tanlang --</option>
                     </select>
 
                 </div>
@@ -69,23 +66,29 @@
         $(document).ready(function () {
             var role = '{{ request.user.role }}'
 
-            $("#category").change(function () {
-
-                var selectedCategory = $(this).children("option:selected").val();
+            $("#group").change(function () {
+                $('#schedule').empty()
+                var selectedGroup = $(this).children("option:selected").val();
                 $.ajax({
                     type: "GET",
-                    url: "{% url 'sign:get_subject' %}",
+                    url: "{% url 'sign:group_subjects' %}",
                     data: {
-                        'category': selectedCategory, // from form
+                        'group': selectedGroup, // from form
                     },
                     success: function (message) {
-                        $('#subject').empty().append(message)
+                        if (message === 'False') {
+                            $('#schedule').empty()
+                            $('#subject').empty().append('<option>-- Ushbu guruhda jadval mavjud emas! --</option>')
+                            $('#subject').css('border-color', 'red')
+                            $('#title_subject').empty()
+                        } else {
+                            $('#subject').empty().append(message)
 
-                        $('#subject').css('border-color', '#007bff')
-                        setTimeout(function () {
-                            $('#subject').css('border-color', '#ced4da')
-                        }, 2000)
-
+                            $('#subject').css('border-color', '#007bff')
+                            setTimeout(function () {
+                                $('#subject').css('border-color', '#ced4da')
+                            }, 2000)
+                        }
 
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
@@ -141,14 +144,7 @@
 
                             }).then(function (isConfirm) {
                                 if (isConfirm) {
-                                    swal({
-                                        title: "Muvaffaqiyatli o'chirildi !",
-                                        text: scheduleTitle + " muvaffaqiyatli o'chirildi !",
-                                        closeOnClickOutside: false,
-                                        icon: 'success'
-                                    }).then(function () {
-                                        window.location.href = "{% url 'sign:delete_schedule' id=12345 %}".replace(/12345/, scheduleId.toString());
-                                    });
+                                    window.location.href = "{% url 'sign:delete_schedule' id=12345 %}".replace(/12345/, scheduleId.toString());
                                 } else {
                                     swal("Bekor qilindi", scheduleTitle + " ro'yhatda turibti !", "error");
                                 }

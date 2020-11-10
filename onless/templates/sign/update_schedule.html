@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <style>
+        #datepicker, #starttimepicker, #stoptimepicker:hover {
+            cursor: pointer;
+        }
+
+    </style>
+
     <div class="row" style="margin: auto">
         <!-- left column -->
-        <div class="col-md-6 col-sm-12" style="margin: auto">
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -30,6 +37,21 @@
                             nomi</label>
                         <input type="text" id="title" value="{{ schedule.title }}" class="form-control"
                                placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
+
+                        <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>
+                        <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date"
+                               value="{{ schedule.date|date:'SHORT_DATE_FORMAT' }}">
+
+                        <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish
+                            vaqti</label>
+                        <input type="text" id="starttimepicker" onkeydown="return false;" class="form-control"
+                               name="start" value="{{ schedule.start }}">
+
+                        <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash
+                            vaqti</label>
+                        <input type="text" id="stoptimepicker" onkeydown="return false;" class="form-control"
+                               name="stop" value="{{ schedule.stop }}">
+
                         <label for="sort" class="label_required"
                                style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
                         <input type="number" id="sort" class="form-control" value="{{ schedule.sort }}"
@@ -45,35 +67,110 @@
     </div>
 {% endblock content %}
 {% block bottom %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            var get_date = '{{ schedule.date }}',
+                get_start = '{{ schedule.start }}'
 
-        $('#title').on('keypress', function () {
-            if ($('#title').val() == '') {
-                $('#title').css('border-color', 'red')
-            } else {
-                $('#title').css('border-color', 'green')
-            }
-        })
 
-        $('#sort').on('keypress', function () {
-            if ($('#sort').val() < 0) {
-                $('#sort').css('border-color', 'red')
-            } else {
-                $('#sort').css('border-color', 'green')
-            }
-        })
 
-        $('#schedule_form').submit(function (e) {
-            if ($('#title').val() == '') {
-                $('#title').css('border-color', 'red')
-                return false;
-            } else if ($('#sort').val() == '') {
-                $('#sort').css('border-color', 'red')
-                return false;
-            } else {
-                return true;
-            }
 
+            $(function () {
+
+                $("#datepicker").datepicker({
+                    dateFormat: "dd.mm.yy",
+                    minDate: '-30d',
+                    maxDate: '+5M',
+                    // defaultDate: '01-01-1985',
+                    // value: "7/11/2011",
+                    showButtonPanel: true,
+                    numberOfMonths: 1,
+                    //startDate: "-30d",
+                    //endDate: "+30d",
+                    //currentText: 'Today',
+                    autoclose: true,
+                    changeMonth: false,
+                    changeYear: false,
+                    beforeShowDay: function (date) {
+                        var day = date.getDay();
+                        return [(day !== 0), ''];
+                    }
+                    //gotoCurrent: true,
+                    //stepMonths: 0,
+                    //duration: 'fast',
+                    // yearRange: '1920:2030',
+
+                    // beforeShow: function () {
+                    //     alert('show');
+                    //    $("#ui-datepicker-div").addClass("DatePikerEN");
+                    //},
+
+
+                })
+
+
+               // $("#datepicker").datepicker('setDate', new Date());
+
+                $("#starttimepicker").timepicker({
+                    timeFormat: 'H:mm',
+                    interval: 5,
+                    minTime: '08',
+                    maxTime: '22:00',
+                   // defaultTime: '08',
+                    startTime: '08',
+                    dynamic: true,
+                    dropdown: true,
+                    scrollbar: true,
+                });
+
+                $("#stoptimepicker").timepicker({
+                    timeFormat: 'H:mm',
+                    interval: 5,
+                    minTime: '08',
+                    maxTime: '22:00',
+                   // defaultTime: '10',
+                    startTime: '08',
+                    dynamic: true,
+                    dropdown: true,
+                    scrollbar: true,
+
+                });
+            });
+
+
+            $('#title').on('keypress', function () {
+                if ($('#title').val() == '') {
+                    $('#title').css('border-color', 'red')
+                } else {
+                    $('#title').css('border-color', 'green')
+                }
+            })
+
+            $('#sort').on('keypress', function () {
+                if ($('#sort').val() < 0) {
+                    $('#sort').css('border-color', 'red')
+                } else {
+                    $('#sort').css('border-color', 'green')
+                }
+            })
+
+            $('#schedule_form').submit(function (e) {
+                if ($('#title').val() == '') {
+                    $('#title').css('border-color', 'red')
+                    return false;
+                } else if ($('#sort').val() == '') {
+                    $('#sort').css('border-color', 'red')
+                    return false;
+                } else {
+                    return true;
+                }
+
+            })
         })
 
     </script>

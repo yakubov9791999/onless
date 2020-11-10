@@ -142,6 +142,10 @@ class Group(models.Model):
     def get_absolute_url(self):
         return reverse('group_detail_url', kwargs={'id': self.id})
 
+    class Meta:
+        ordering = ['sort', ]
+        verbose_name = 'Guruh'
+        verbose_name_plural = 'Guruhlar'
 
 ROLE_CHOICES = (
     ("1", "Inspeksiya"),
@@ -218,9 +222,10 @@ from sign.models import Subject
 class Attendance(models.Model):
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_attendance', null=True)
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_attendance')
-    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',
-                                null=True)
-    created_date = models.DateTimeField(verbose_name='Vaqti')
+    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',null=True)
+    is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan',default=False)
+    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True,)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti',editable=True, )
 
     def __str__(self):
         return str(self.subject.title)

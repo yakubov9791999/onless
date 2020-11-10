@@ -99,6 +99,8 @@ LANGUAGE_CODE = 'uz-UZ'
 
 TIME_ZONE = 'Asia/Tashkent'
 
+# SHORT_DATE_FORMAT = 'd/m/Y'
+
 USE_I18N = True
 
 USE_L10N = True

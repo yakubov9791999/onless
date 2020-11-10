@@ -1,5 +1,5 @@
 <li class="nav-item has-treeview">
-    <a href="{% url 'user:attendance_groups_list' %}" class="nav-link {% if request.resolver_match.url_name == 'attendance_groups_list' or request.resolver_match.url_name == 'attendance_view' or request.resolver_match.url_name == 'attendance_set' %}active{% endif %}">
+    <a href="{% url 'user:attendance_groups_list' %}" class="nav-link {% if request.resolver_match.url_name == 'attendance_groups_list' or request.resolver_match.url_name == 'attendance_view' or request.resolver_match.url_name == 'attendance_set_by_group' or request.resolver_match.url_name == 'attendance_set_by_subject' %}active{% endif %}">
         <i class="fas fa-users"></i>
         <p>
             &nbsp;&nbsp;&nbsp;&nbsp;Davomat

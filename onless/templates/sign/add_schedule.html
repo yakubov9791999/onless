@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+    <style>
+        #datepicker, #starttimepicker, #stoptimepicker:hover {
+            cursor: pointer;
+        }
+
+    </style>
     <div class="row" style="margin: auto">
         <!-- left column -->
-        <div class="col-md-6 col-sm-12" style="margin: auto">
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -16,38 +22,40 @@
                 <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">
                     {% csrf_token %}
                     <div class="card-body">
-                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Toifani
+                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni
                             tanlang</label>
-                        <select name="category" id="category" class="form-control">
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="BC">BC</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                            <option value="Malaka oshirish">Malaka oshirish</option>
+                        <select name="group" id="group" class="form-control">
+                            {% for group in groups %}
+                                <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                            {% endfor %}
                         </select>
                         <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan
                             nomi</label>
                         <select id="subject" name="subject" class="form-control">
-                            <option value="">--Toifani tanlang--</option>
+                            <option value="">--Guruhni tanlang--</option>
                         </select>
                         <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu
                             nomi</label>
                         <input type="text" id="title" class="form-control"
                                placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
 
+                        <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>
+                        <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date">
+
                         <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish
                             vaqti</label>
-                        <input type="datetime-local" id="start" class="form-control" name="start">
+                        <input type="text" id="starttimepicker" onkeydown="return false;" class="form-control"
+                               name="start">
 
                         <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash
                             vaqti</label>
-                        <input type="datetime-local" id="stop" class="form-control" name="stop">
+                        <input type="text" id="stoptimepicker" onkeydown="return false;" class="form-control"
+                               name="stop">
 
                         <label for="sort" class="label_required"
                                style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
                         <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
+                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun ishlatiladi! M-1</small>
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-success">Saqlash</button>
@@ -57,25 +65,96 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+{% endblock content %}
+
+{% block bottom %}
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script>
         $(document).ready(function () {
-            $("#category").change(function () {
+            $(function () {
 
-                var selectedCategory = $(this).children("option:selected").val();
+                $("#datepicker").datepicker({
+                    dateFormat: "dd.mm.yy",
+                    minDate: '-30d',
+                    maxDate: '+5M',
+                    // defaultDate: '01-01-1985',
+                    // value: "7/11/2011",
+                    showButtonPanel: true,
+                    numberOfMonths: 1,
+                    //startDate: "-30d",
+                    //endDate: "+30d",
+                    //currentText: 'Today',
+                    autoclose: true,
+                    changeMonth: false,
+                    changeYear: false,
+                    beforeShowDay: function (date) {
+                        var day = date.getDay();
+                        return [(day !== 0), ''];
+                    }
+                    //gotoCurrent: true,
+                    //stepMonths: 0,
+                    //duration: 'fast',
+                    // yearRange: '1920:2030',
+
+                    // beforeShow: function () {
+                    //     alert('show');
+                    //    $("#ui-datepicker-div").addClass("DatePikerEN");
+                    //},
+
+
+                })
+
+                $("#datepicker").datepicker('setDate', CreateNewDateExceptionSunday());
+
+                $("#starttimepicker").timepicker({
+                    timeFormat: 'H:mm',
+                    interval: 5,
+                    minTime: '08',
+                    maxTime: '22:00',
+                    defaultTime: '08',
+                    startTime: '08',
+                    dynamic: true,
+                    dropdown: true,
+                    scrollbar: true,
+                });
+
+                $("#stoptimepicker").timepicker({
+                    timeFormat: 'H:mm',
+                    interval: 5,
+                    minTime: '08',
+                    maxTime: '22:00',
+                    defaultTime: '10',
+                    startTime: '08',
+                    dynamic: true,
+                    dropdown: true,
+                    scrollbar: true,
+
+                });
+            });
+
+
+            $("#group").change(function () {
+
+                var selectedGroup = $(this).children("option:selected").val();
                 $.ajax({
                     type: "GET",
                     url: "{% url 'sign:get_subject' %}",
                     data: {
-                        'category': selectedCategory, // from form
+                        'group': selectedGroup, // from form
                     },
                     success: function (message) {
                         $('#subject').empty().append(message)
                         $('#subject').css('border-color', '#007bff')
-                       // setTimeout(function () {
-                       //     $('#subject').css('border-color', '#ced4da')
-                       // }, 2000)
+                        // setTimeout(function () {
+                        //     $('#subject').css('border-color', '#ced4da')
+                        // }, 2000)
 
                     }
                 });
@@ -106,21 +185,22 @@
                 }
             })
 
-            $('#start').on('change', function () {
-                if (isNaN(Date.parse($(this).val())) == true)
-                    $(this).css('border-color', 'red')
-                else
-                    $(this).css('border-color', 'green')
 
-            })
+            // $('#datepicker').on('change', function () {
+            //     if (isNaN(Date.parse($(this).val())) == true)
+            //          $(this).css('border-color', 'red')
+            //     else
+            //         $(this).css('border-color', 'green')
+            // })
 
-            $('#stop').on('change', function () {
 
-                if (isNaN(Date.parse($(this).val())) == true)
-                    $(this).css('border-color', 'red')
-                else
-                    $(this).css('border-color', 'green')
-
+            $(document).on('click', '#starttimepicker, #stoptimepicker, #datepicker', function (e) {
+                //if (parseDate(e.target.value)) {
+                //    $(e.target).css("border-bottom", "2px solid green")
+                // } else {
+                //     $(e.target).css("border-bottom", "2px solid red")
+                //  }
+                $(e.target).css('border-color', 'green')
             })
 
             $('#schedule_form').submit(function (e) {
@@ -130,12 +210,6 @@
                     return false;
                 } else if ($('#title').val() == '') {
                     $('#title').css('border-color', 'red')
-                    return false;
-                } else if (isNaN(Date.parse($('#start').val())) == true) {
-                    $('#start').css('border-color', 'red')
-                    return false;
-                } else if (isNaN(Date.parse($('#stop').val())) == true) {
-                    $('#stop').css('border-color', 'red')
                     return false;
                 } else if ($('#sort').val() == '') {
                     $('#sort').css('border-color', 'red')
@@ -149,4 +223,6 @@
 
         });
     </script>
-{% endblock content %}
+
+
+{% endblock bottom %}

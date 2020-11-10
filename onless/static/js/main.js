@@ -40,10 +40,19 @@ function parseDate(value) {
     var y = parseInt(date[0], 10),
         m = parseInt(date[1], 10),
         d = parseInt(date[2], 10);
-    if (y != NaN && m != NaN && d != NaN)  {
+    if (y != NaN && m != NaN && d != NaN) {
         return y
     }
     // return `${d}.${m}.${y}`
 
     // return new Date(y, m - 1, d);
+}
+
+function CreateNewDateExceptionSunday() {
+    var get_date = new Date();
+    if (get_date.getDay() === 0) {
+        return new Date(new Date().setDate(new Date().getDate() + 1));
+    } else {
+        return get_date
+    }
 }

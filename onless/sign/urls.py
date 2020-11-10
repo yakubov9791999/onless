@@ -11,6 +11,7 @@ urlpatterns = [
     path('schedules/', schedules_list, name='schedules_list'),
     path('subjects/', subjects_list, name='subjects_list'),
     path('get-subject/', get_subject, name='get_subject'),
+    path('group-subjects/', group_subjects, name='group_subjects'),
     path('get-schedule/', get_schedule, name='get_schedule'),
     path('materials/', materials, name='materials'),
     path('add_material/', add_material, name='add_material'),

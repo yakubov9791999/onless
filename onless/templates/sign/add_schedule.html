@@ -25,6 +25,7 @@
                         <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni
                             tanlang</label>
                         <select name="group" id="group" class="form-control">
+                            <option value="">-- -- --</option>
                             {% for group in groups %}
                                 <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
                             {% endfor %}
@@ -55,7 +56,8 @@
                         <label for="sort" class="label_required"
                                style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
                         <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
-                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun ishlatiladi! M-1</small>
+                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun
+                            ishlatiladi! M-1</small>
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-success">Saqlash</button>
@@ -168,6 +170,14 @@
                 }
             })
 
+            $('#group').on('change', function () {
+                if (!$.isNumeric($("#group").children("option:selected").val())) {
+                    $('#group').css('border-color', 'red')
+                } else {
+                    $('#group').css('border-color', 'green')
+                }
+            })
+
 
             $('#title').on('keypress', function () {
                 if ($('#title').val() == '') {
@@ -205,7 +215,10 @@
 
             $('#schedule_form').submit(function (e) {
 
-                if (!$.isNumeric($("#subject").children("option:selected").val())) {
+                if (!$.isNumeric($("#group").children("option:selected").val())) {
+                    $('#group').css('border-color', 'red')
+                    return false;
+                } else if (!$.isNumeric($("#subject").children("option:selected").val())) {
                     $('#subject').css('border-color', 'red')
                     return false;
                 } else if ($('#title').val() == '') {

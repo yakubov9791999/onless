@@ -27,8 +27,14 @@ def sign(request):
 
 @login_required
 def add_schedule(request):
-    groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
-    print(groups)
+    if request.user.role == '3':
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
+        if not groups.exists():
+            messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
+    else:
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+        if not groups.exists():
+            messages.error(request, 'Sizda guruhlar mavjud emas!')
     context = {
         'groups': groups
     }
@@ -42,6 +48,7 @@ def add_schedule(request):
             form.author = author
             form.date = date
             form.subject_id = request.POST.get('subject')
+            form.group_id = request.POST.get('group')
             form.start = request.POST.get('start')
             form.stop = request.POST.get('stop')
             form.save()
@@ -53,37 +60,72 @@ def add_schedule(request):
 
 @login_required
 def update_schedule(request, id):
+    if request.user.role == '3':
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
+        if not groups.exists():
+            messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
+    else:
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+        if not groups.exists():
+            messages.error(request, 'Sizda guruhlar mavjud emas!')
     schedule = Schedule.objects.get(id=id)
     context = {
-        'schedule': schedule
+        'schedule': schedule,
+        'groups': groups
     }
-    if schedule.author.school == request.user.school:
-        if request.POST:
-            get_date = request.POST.get('date').split('.')
-            date = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
-            form = UpdateScheduleForm(request.POST, instance=schedule)
-            if form.is_valid():
-                form = form.save(commit=False)
-                form.date = date
-                form.start = request.POST.get('start')
-                form.stop = request.POST.get('stop')
-                form.updated_date = timezone.now()
-                form.schedule = schedule
-                form.save()
-                messages.success(request, "Muvaffaqiyatli tahrirlandi !")
-                return render(request, 'sign/schedules_list.html', context)
-            else:
-                messages.error(request, "Formani to'ldirishda xatolik !")
+
+    if not schedule.group.school.director == request.user:
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+        context.update(groups=groups)
+        messages.error(request, 'Mavzuni tahrirlash guruh rahbari va maktab rahbariga ruxsat berilgan!')
+        return render(request, 'sign/schedules_list.html', context)
+    if not schedule.group.teacher == request.user:
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+        context.update(groups=groups)
+        messages.error(request, 'Mavzuni tahrirlash guruh rahbari va maktab rahbariga ruxsat berilgan!')
+        return render(request, 'sign/schedules_list.html', context)
+
+    if request.POST:
+        get_date = request.POST.get('date').split('.')
+        date = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
+        form = UpdateScheduleForm(request.POST, instance=schedule)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.date = date
+            form.start = request.POST.get('start')
+            form.stop = request.POST.get('stop')
+            form.updated_date = timezone.now()
+            form.schedule = schedule
+            form.save()
+            messages.success(request, "Muvaffaqiyatli tahrirlandi !")
+            return render(request, 'sign/schedules_list.html', context)
         else:
-            return render(request, 'sign/update_schedule.html', context)
-        return render(request, 'sign/update_schedule.html', context)
+            messages.error(request, "Formani to'ldirishda xatolik !")
     else:
-        return render(request, 'inc/404.html')
+        return render(request, 'sign/update_schedule.html', context)
+    return render(request, 'sign/update_schedule.html', context)
+
+
 
 
 @login_required
 def delete_schedule(request, id):
+    groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+    if not groups.exists():
+        messages.error(request, 'Sizda guruhlar mavjud emas!')
     schedule = Schedule.objects.get(id=id)
+    context = {
+        'schedule': schedule,
+        'groups': groups
+    }
+
+    if not schedule.group.school.director == request.user:
+        messages.error(request, 'Mavzuni o\'chirish guruh rahbari va maktab rahbariga ruxsat berilgan!')
+        return render(request, 'sign/schedules_list.html', context)
+    if not schedule.group.teacher == request.user:
+        messages.error(request, 'Mavzuni o\'chirish guruh rahbari va maktab rahbariga ruxsat berilgan!')
+        return render(request, 'sign/schedules_list.html', context)
+
     if schedule.author.school == request.user.school:
         schedule.delete()
         return render(request, 'sign/schedules_list.html',)
@@ -93,7 +135,11 @@ def delete_schedule(request, id):
 
 @login_required
 def schedules_list(request):
-    return render(request, 'sign/schedules_list.html')
+    groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+    context = {
+        'groups': groups
+    }
+    return render(request, 'sign/schedules_list.html', context)
 
 @login_required
 def subjects_list(request):
@@ -108,7 +154,6 @@ def get_subject(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
         subjects = Subject.objects.filter(category=group.category)
-        print(subjects)
         options = "<option>-- -- --</option>"
         for subject in subjects:
             options += f"<option value='{subject.id}'>{subject.title}</option>"
@@ -116,6 +161,21 @@ def get_subject(request):
     else:
         return False
 
+
+@login_required
+def group_subjects(request):
+    if request.is_ajax():
+        group = get_object_or_404(Group, id=request.GET.get('group'))
+        schedules = Schedule.objects.filter(group=group)
+        if schedules.exists():
+            options = "<option>-- -- --</option>"
+            for schedule in schedules:
+                options += f"<option value='{schedule.subject.id}'>{schedule.subject.title}</option>"
+            return HttpResponse(options)
+        else:
+            return HttpResponse(False)
+    else:
+        return False
 
 @login_required
 def get_schedule(request):

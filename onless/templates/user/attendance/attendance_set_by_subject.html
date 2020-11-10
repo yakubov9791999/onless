@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% load user_tags %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Guruh: &nbsp<b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Fan: <b>{{ subject.title }}</b> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        Sana: <b>{% now "SHORT_DATE_FORMAT" %}</b></h3>
+                </div>
+
+                {% include 'inc/messages.html' %}
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table style="font-size: 0.9rem" id="example1"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th style="width: 2%">№</th>
+                                <th>O'quvchining ism familiyasi</th>
+                                <th>Davomatni belgilash</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for pupil in pupils %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><b>{{ pupil.name }}</b>
+                                    </td>
+                                    <td class="parentBtn">
+                                        {% get_pupil_attendance pupil.id subject.id request.user.id as visited %}
+                                        {% if visited == True %}
+                                            <button data-id="{{ pupil.id }}" class="btn btn-danger not_visited">Kelmagan
+                                            </button>
+                                        {% else %}
+                                            <button data-id="{{ pupil.id }}"
+                                                    class="btn btn-success visited">Kelgan
+                                            </button>
+                                        {% endif %}
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var subjectId = '{{ subject.id }}'
+
+            $('.parentBtn button').on('click', function () {
+                var pupilId = $(this).data('id'),
+                    visited = false
+
+                if ($(`.parentBtn button[data-id="${pupilId}"]`).hasClass('btn-success')) {
+                    visited = true
+                } else {
+                    visited = false
+
+                }
+
+                clickBtnSetAttendance(pupilId, visited, subjectId)
+
+            })
+
+            function clickBtnSetAttendance(pupilId, visited, subjectId) {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url "user:attendance_set_visited" %}',
+                    data: {
+                        'pupil': pupilId,
+                        'subject': subjectId,
+                        'visited': visited
+                    },
+                    success: function (response) {
+                        if (response === 'True') {
+
+                            if (visited === true) {
+
+                                var $buttonDanger = $(`<button class="btn btn-danger not_visited" data-id="${pupilId}">Kelmagan</button>`);
+                                $(`button[data-id=${pupilId}]`).after($buttonDanger)
+                                $(`button.visited[data-id=${pupilId}]`).remove()
+                                $buttonDanger.on('click', function () {
+                                    clickBtnSetAttendance(pupilId, false, subjectId)
+                                });
+                            } else {
+
+                                var $buttonSuccess = $(`<button class="btn btn-success visited" data-id="${pupilId}">Kelgan</button>`);
+                                if (!$(`button[data-id=${pupilId}]`).parent('.parentBtn').children('button').hasClass('visited')) {
+                                    $(`button[data-id=${pupilId}]`).after($buttonSuccess)
+                                }
+                                $(`button.not_visited[data-id=${pupilId}]`).remove()
+                                $buttonSuccess.on('click', function () {
+                                    clickBtnSetAttendance(pupilId, true, subjectId)
+                                });
+                            }
+                        } else {
+
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                })
+            }
+
+        });
+
+
+    </script>
+{% endblock content %}

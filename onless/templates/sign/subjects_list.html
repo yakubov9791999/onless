@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Fanlar ro'yhati</h3>
+                </div>
+
+                {% include 'inc/messages.html' %}
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table style="font-size: 0.9rem" id="example1"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th style="width: 2%">№</th>
+                                <th>Fan nomi</th>
+                                <th>Toifasi</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for subject in subjects %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td ><b>{{ subject.title }}</b>
+                                    </td>
+                                    <td>{{ subject.category }}</td>
+
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

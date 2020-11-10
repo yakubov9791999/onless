@@ -41,6 +41,9 @@ urlpatterns = [
 
     path('attendance-groups-list/', attendance_groups_list, name='attendance_groups_list'),
     path('attendance-view/<int:id>/', attendance_view, name='attendance_view'),
-    path('attendance-set/<int:id>/', attendance_set, name='attendance_set'),
+    path('attendance-set-by-group/<int:id>/', attendance_set_by_group, name='attendance_set_by_group'),
+    path('attendance-set-by-subject/<int:group_id>/<int:subject_id>/', attendance_set_by_subject, name='attendance_set_by_subject'),
+    path('attendance-set-visited/', attendance_set_visited, name='attendance_set_visited'),
+
 
 ]

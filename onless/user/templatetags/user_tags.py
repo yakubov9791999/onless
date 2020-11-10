@@ -60,3 +60,19 @@ def get_fullname_group(group_id):
     group = get_object_or_404(Group, id=group_id)
     group_name = str(f'{group.category}-{group.number} {group.year}')
     return group_name
+
+@register.simple_tag()
+def get_pupil_attendance(pupil_id, subject_id, teacher_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    teacher = get_object_or_404(User, id=teacher_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+    today = timezone.now()
+
+    attendance = Attendance.objects.filter(pupil=pupil, teacher=teacher, subject=subject,created_date__day=today.day)
+    if attendance.exists():
+        for atten in attendance:
+            if atten.is_visited == True:
+                return True
+            else:
+                return False
+

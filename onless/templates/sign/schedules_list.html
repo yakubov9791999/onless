@@ -40,9 +40,12 @@
                     <tr style="background-color: #ecebeb">
                         <th style="width: 8%">№</th>
                         <th style="width: 47%">Mavzu</th>
+                        <th>Sana</th>
                         <th>Boshlanishi</th>
                         <th>Tugashi</th>
-                        <th style="width: 5%">Tahrirlash</th>
+                        {% if request.user.role == '3' %}
+                            <th style="width: 5%">Tahrirlash</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody id="schedule">
@@ -59,9 +62,13 @@
     <div id="schedule">
 
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         $(document).ready(function () {
+            var role = '{{ request.user.role }}'
+
             $("#category").change(function () {
 
                 var selectedCategory = $(this).children("option:selected").val();
@@ -98,17 +105,58 @@
                         'subject': selectedSubject, // from form
                     },
                     success: function (schedule) {
+
                         $('#schedule').empty().append(schedule)
+
+                        if (!schedule.trim().length > 0) {
+                            $('#schedule').empty().append('<tr><td></td><td class="text-danger">Mavzular mavjud emas!</td><td></td><td></td><td></td><td></td></tr>')
+                        }
+
                         $('#title_subject').empty().append(`Fan: ${title_subject}`)
 
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
                         {#e.attr('id', 'myid');#}
+                        if (role == 3) {
+                            {#$('.edit_block').html().delete()#}
+                        } else {
+                            $('.edit_block').each(function (index) {
+                                $(this).css('display', 'none')
+                            });
+                        }
+
+                        $('.deleteBtn').on('click', function () {
+                            var scheduleTitle = $(this).data('title'),
+                                scheduleId = $(this).data('id')
+                            swal({
+                                title: "Mavzuni o'chirmoqchimisiz ?",
+                                text: scheduleTitle + "ni o'chirmoqchimisiz ?",
+                                icon: "warning",
+                                closeOnClickOutside: false,
+                                buttons: [
+                                    'Yoq, Bekor qilish!',
+                                    'Ha, Roziman!'
+                                ],
+                                dangerMode: true,
+
+                            }).then(function (isConfirm) {
+                                if (isConfirm) {
+                                    swal({
+                                        title: "Muvaffaqiyatli o'chirildi !",
+                                        text: scheduleTitle + " muvaffaqiyatli o'chirildi !",
+                                        closeOnClickOutside: false,
+                                        icon: 'success'
+                                    }).then(function () {
+                                        window.location.href = "{% url 'sign:delete_schedule' id=12345 %}".replace(/12345/, scheduleId.toString());
+                                    });
+                                } else {
+                                    swal("Bekor qilindi", scheduleTitle + " ro'yhatda turibti !", "error");
+                                }
+                            });
+                        })
                     }
                 });
             });
-
-
 
 
         });

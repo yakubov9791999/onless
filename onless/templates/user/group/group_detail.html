@@ -7,7 +7,8 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">{{ group.category }}-{{ group.number }} {{ group.year }} o'quvchilar ro'yhati</h3>
+                    <h3 class="card-title">{{ group.category }}-{{ group.number }} {{ group.year }} o'quvchilar
+                        ro'yhati</h3>
                 </div>
 
                 {% include 'inc/messages.html' %}
@@ -48,7 +49,7 @@
                                 <th>Login</th>
                                 <th>Parol</th>
                                 <th>O'zlashtirish</th>
-                                <th>Ananaviy ta'lim</th>
+                                <th>An'anaviy ta'lim</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                     <th style="width: 4%">
                                         Tahrirlash
@@ -89,7 +90,8 @@
                                             {% endif %}
                                         </div>
                                     </td>
-                                    <td><input class="offline_checkbox" {% if pupil.is_offline %}checked{% endif %} data-id="{{ pupil.id }}" type="checkbox"></td>
+                                    <td><input class="offline_checkbox" {% if pupil.is_offline %}checked{% endif %}
+                                               data-id="{{ pupil.id }}" type="checkbox"></td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
                                             &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i

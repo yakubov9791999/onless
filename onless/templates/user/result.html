@@ -165,8 +165,6 @@
     {% else %}
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-danger text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan
-                    natijalarda xatoliklar yuzaga kelishi mumkin!</b></div>
                 {% include 'inc/messages.html' %}
                 {% if pupil %}
                     <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">{{ pupil.name }}ning
@@ -176,9 +174,10 @@
                     <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">O'zlashtirish
                         darajasi {% now "SHORT_DATE_FORMAT" %} holatida</p>
                 {% endif %}
-
             </div>
         </div>
+        <div class="alert-default-info text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan
+                    natijalarda xatoliklar yuzaga kelishi mumkin! Xatolikni bartaraf etish uchun natijalarni o'chirib, testlarni qayta topshiring!</b></div>
         <div class="row">
             <!-- left column -->
 

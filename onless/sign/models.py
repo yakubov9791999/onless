@@ -29,6 +29,9 @@ class Subject(models.Model):
     title = models.CharField(verbose_name='Nomi',max_length=600)
     category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True, null=True)
+    is_active = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.title
@@ -40,9 +43,11 @@ class Subject(models.Model):
 class Schedule(models.Model):
     title = models.CharField(max_length=900)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
-    pub_date = models.DateTimeField(editable=False)
-    start = models.DateTimeField(verbose_name='Boshlanish vaqti', null=True)
-    stop = models.DateTimeField(verbose_name='Tugash vaqti', null=True)
+    created_date = models.DateTimeField(editable=False, auto_now_add=True)
+    updated_date = models.DateTimeField(null=True, blank=True, auto_now=True)
+    date = models.DateField(verbose_name='Kuni', null=True,blank=True)
+    start = models.CharField(verbose_name='Boshlanish vaqti', null=True, max_length=5)
+    stop = models.CharField(verbose_name='Tugash vaqti', null=True,max_length=5)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
     sort = models.IntegerField(default=1)
 

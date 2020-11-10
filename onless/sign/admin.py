@@ -25,7 +25,9 @@ class SubjectAdmin(admin.ModelAdmin):
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'author','sort', 'pub_date')
+    list_display = ('title', 'subject', 'author','sort', 'created_date')
+    list_filter = ['subject','created_date']
+    save_on_top = True
 
 
 @admin.register(Material)

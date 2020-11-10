@@ -27,6 +27,7 @@ from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
 from video.models import *
+from sign.models import *
 from .models import *
 from django.db import IntegrityError
 
@@ -1098,7 +1099,7 @@ def get_learning_type(request):
 def attendance_groups_list(request):
     groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
     if not groups.exists():
-        messages.error(request, 'Sizda ananaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+        messages.error(request, 'Sizda an\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
     context = {
         'groups': groups
     }
@@ -1119,15 +1120,76 @@ def attendance_view(request, id):
         return render(request, 'inc/404.html')
 
 @login_required
-def attendance_set(request, id):
+def attendance_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
+    today = timezone.now()
+    # tomorrow = timezone.now() + datetime.timedelta(1)
+    schedules = Schedule.objects.filter(date=today)
 
-    if request.user.school == group.school:
-        pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+    subjects = Subject.objects.filter(Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today)).distinct()
+    if not subjects.exists():
+        messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+    if request.user == group.teacher:
+        # pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
         context = {
             'group': group,
+            'subjects': subjects
+        }
+        return render(request, 'user/attendance/attendance_set_by_group.html', context)
+    else:
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+        context = {
+            'groups': groups
+        }
+        messages.error(request, f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash faqatgina {group.teacher}ga ruxsat berilgan!')
+        return render(request, 'user/attendance/attendance_groups_list.html', context)
+
+
+@login_required
+def attendance_set_by_subject(request, group_id, subject_id):
+    group = get_object_or_404(Group, id=group_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    today = timezone.now()
+    tomorrow = timezone.now() + datetime.timedelta(1)
+
+    if request.user == group.teacher:
+        pupils = User.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+
+        if not pupils.exists():
+            messages.error(request, f'O\'quvchilar mavjud emas!')
+        context = {
+            'group': group,
+            'subject': subject,
             'pupils': pupils
         }
-        return render(request, 'user/attendance/attendance_set.html', context)
+        return render(request, 'user/attendance/attendance_set_by_subject.html', context)
     else:
         return render(request, 'inc/404.html')
+
+@login_required
+def attendance_set_visited(request):
+    if request.is_ajax():
+        if request.GET:
+            pupil = get_object_or_404(User, id=request.GET.get('pupil'))
+            subject = get_object_or_404(Subject, id=request.GET.get('subject'))
+            today = timezone.now()
+            if request.GET.get('visited') == 'true':
+                visited = True
+            else:
+                visited = False
+
+            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject, created_date__day=today.day)
+
+            if not attendance.exists():
+                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today,subject=subject,is_visited=visited)
+                return HttpResponse(True)
+            else:
+                for atten in attendance:
+                    atten.is_visited = visited
+                    atten.updated_date = today
+                    atten.save()
+                return HttpResponse(True)
+    return HttpResponse(False)

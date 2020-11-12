@@ -195,7 +195,7 @@
 
 
             $('#title').on('keypress', function () {
-                if ($(this).val().length < 1) {
+                if ($(this).val().length < 0) {
                     $('#title').css('border-color', 'red')
                 } else {
                     $('#title').css('border-color', 'green')
@@ -203,7 +203,7 @@
             })
 
             $('#sort').on('keypress', function () {
-                if ($(this).val().length < 1) {
+                if ($(this).val().length < 0) {
                     $('#sort').css('border-color', 'red')
                 } else {
                     $('#sort').css('border-color', 'green')

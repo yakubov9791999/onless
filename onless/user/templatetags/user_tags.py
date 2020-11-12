@@ -76,3 +76,8 @@ def get_pupil_attendance(pupil_id, subject_id, teacher_id):
             else:
                 return False
 
+
+@register.filter
+def get_offline_pupils(users):
+    print(users.filter(is_offline=True).count())
+    return str(users.filter(is_offline=True).count())

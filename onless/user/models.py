@@ -218,17 +218,17 @@ class Pay(models.Model):
     def __str__(self):
         return f"{self.pupil}"
 
-from sign.models import Subject
+# from sign.models import Subject
 class Attendance(models.Model):
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_attendance', null=True)
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_attendance')
-    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',null=True)
+    # subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',null=True)
     is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan',default=False)
     created_date = models.DateTimeField(verbose_name='Vaqti', editable=True,)
     updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti',editable=True, )
 
-    def __str__(self):
-        return str(self.subject.title)
+    # def __str__(self):
+    #     return str(self.subject.title)
 
     class Meta:
         verbose_name = 'Davomat'
@@ -246,8 +246,8 @@ class Rating(models.Model):
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_rating', null=True)
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_rating')
     score = models.CharField(verbose_name='Olgan bahosi',choices=SCORE_CHOICES, max_length=12, blank=True, null=True)
-    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_rating',
-                                null=True)
+    # subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_rating',
+    #                             null=True)
     created_date = models.DateTimeField(verbose_name='Yaratilgan vaqt', editable=False)
     updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqt', blank=True, null=True)
 

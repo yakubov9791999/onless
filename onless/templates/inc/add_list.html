@@ -91,27 +91,28 @@
                         <h5>Mavzu qo'shish</h5>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-clipboard-list"></i>
                     </div>
                     <a href="{% url 'sign:add_schedule' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
 
-        {% elif request.user.role == '3' %}
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
-                <div class="small-box bg-gradient-teal">
+                <div class="small-box bg-gradient-lightblue">
                     <div class="inner">
-                        <h3>{{ count.groups }}</h3>
+                        <h3>1</h3>
 
-                        <h5>Guruhlarni qo'shish</h5>
+                        <h5>Fan qo'shish</h5>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fas fa-book"></i>
                     </div>
-                    <a href="{% url 'user:add_group' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                    <a href="{% url 'sign:add_subject' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
+
+        {% elif request.user.role == '3' %}
 
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
@@ -125,6 +126,21 @@
                         <i class="fas fa-user-plus"></i>
                     </div>
                     <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <!-- small box -->
+                <div class="small-box bg-gradient-lightblue">
+                    <div class="inner">
+                        <h3>{{ count.groups }}</h3>
+
+                        <h5>Guruhlarni qo'shish</h5>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <a href="{% url 'user:add_group' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
 
@@ -153,9 +169,24 @@
                         <h5>Mavzu qo'shish</h5>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-clipboard-list"></i>
                     </div>
                     <a href="{% url 'sign:add_schedule' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+
+             <div class="col-lg-6 col-md-6 col-sm-12">
+                <!-- small box -->
+                <div class="small-box bg-gradient-lightblue">
+                    <div class="inner">
+                        <h3>1</h3>
+
+                        <h5>Fan qo'shish</h5>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <a href="{% url 'sign:add_subject' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
 

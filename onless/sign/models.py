@@ -29,7 +29,10 @@ class Subject(models.Model):
     title = models.CharField(verbose_name='Nomi',max_length=600)
     category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(auto_now_add=True, null=True)
+    created_date = models.DateTimeField(null=True,)
+    updated_date = models.DateTimeField(null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_subject', null=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='school_subject', null=True)
     is_active = models.BooleanField(default=True)
 
 

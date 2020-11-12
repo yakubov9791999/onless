@@ -59,6 +59,23 @@ def add_schedule(request):
 
 
 @login_required
+def add_subject(request):
+    if request.POST:
+        form = AddSubjectFrom(request.POST)
+        author = User.objects.get(id=request.user.id)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.author = author
+            form.created_date = timezone.now()
+            form.school_id = request.user.school.id
+            form.save()
+            messages.success(request, "Muvaffaqiyatli qo'shildi !")
+        else:
+            messages.error(request, "Formani to'ldirishda xatolik !")
+    return render(request, 'sign/add_subject.html',)
+
+
+@login_required
 def update_schedule(request, id):
     if request.user.role == '3':
         groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
@@ -136,17 +153,29 @@ def delete_schedule(request, id):
 @login_required
 def schedules_list(request):
     groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+    if not groups.exists:
+        messages.error(request, 'Guruhlar mavjud emas!')
     context = {
         'groups': groups
     }
+    if request.user.role == '4':
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(id=request.user.group.id))
+        context.update(groups=groups)
     return render(request, 'sign/schedules_list.html', context)
 
 @login_required
 def subjects_list(request):
-    subjects = Subject.objects.filter(is_active=True)
+    subjects = Subject.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+    if not subjects.exists():
+        messages.error(request, 'Fanlar mavjud emas!')
     context = {
         'subjects': subjects
     }
+    if request.user.role == '4':
+        subjects = Subject.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(category=request.user.group.category))
+        if not subjects.exists():
+            messages.error(request, 'Fanlar mavjud emas!')
+        context.update(subjects=subjects)
     return render(request, 'sign/subjects_list.html', context)
 
 @login_required

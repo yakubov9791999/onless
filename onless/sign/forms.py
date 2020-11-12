@@ -14,6 +14,13 @@ class AddScheduleFrom(forms.ModelForm):
         fields = ('title', 'start', 'stop', 'sort',)
         exclude = ['subject', 'date', ]
 
+
+class AddSubjectFrom(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['title','sort', 'category']
+        exclude = ['created_date', 'is_active', 'school', 'author']
+
 class UpdateScheduleForm(forms.ModelForm):
 
     class Meta:

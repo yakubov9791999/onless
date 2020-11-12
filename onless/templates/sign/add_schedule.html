@@ -180,7 +180,7 @@
 
 
             $('#title').on('keypress', function () {
-                if ($('#title').val() == '') {
+                if ($(this).val().length < 1) {
                     $('#title').css('border-color', 'red')
                 } else {
                     $('#title').css('border-color', 'green')
@@ -188,7 +188,7 @@
             })
 
             $('#sort').on('keypress', function () {
-                if ($('#sort').val() < 0) {
+                if ($(this).val().length < 1) {
                     $('#sort').css('border-color', 'red')
                 } else {
                     $('#sort').css('border-color', 'green')
@@ -221,10 +221,10 @@
                 } else if (!$.isNumeric($("#subject").children("option:selected").val())) {
                     $('#subject').css('border-color', 'red')
                     return false;
-                } else if ($('#title').val() == '') {
+                } else if ($('#title').val().length < 1) {
                     $('#title').css('border-color', 'red')
                     return false;
-                } else if ($('#sort').val() == '') {
+                } else if ($('#sort').val().length < 1) {
                     $('#sort').css('border-color', 'red')
                     return false;
                 } else {

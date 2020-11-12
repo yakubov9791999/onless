@@ -73,18 +73,18 @@ class PayAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-@admin.register(Attendance)
-class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['id','subject', 'pupil', 'teacher', 'created_date','updated_date']
-    list_display_links = ['subject']
-    list_filter = ['created_date','updated_date']
-    search_fields = ['subject', 'pupil', 'teacher',]
-    save_on_top = True
-
-@admin.register(Rating)
-class RatingAdmin(admin.ModelAdmin):
-    list_display = ['id','subject','score', 'pupil', 'teacher', 'created_date']
-    list_display_links = ['subject']
-    list_filter = ['score','created_date']
-    search_fields = ['subject', 'pupil', 'teacher',]
-    save_on_top = True
+# @admin.register(Attendance)
+# class AttendanceAdmin(admin.ModelAdmin):
+#     list_display = ['id','subject', 'pupil', 'teacher', 'created_date','updated_date']
+#     list_display_links = ['subject']
+#     list_filter = ['created_date','updated_date']
+#     search_fields = ['subject', 'pupil', 'teacher',]
+#     save_on_top = True
+#
+# @admin.register(Rating)
+# class RatingAdmin(admin.ModelAdmin):
+#     list_display = ['id','subject','score', 'pupil', 'teacher', 'created_date']
+#     list_display_links = ['subject']
+#     list_filter = ['score','created_date']
+#     search_fields = ['subject', 'pupil', 'teacher',]
+#     save_on_top = True

@@ -18,16 +18,16 @@ class SignAdmin(admin.ModelAdmin):
     def get_img(self, obj):
         return mark_safe(f"<img src='{obj.photo.url}' width=50px>")
 
-# @admin.register(Subject)
-# class SubjectAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'category', 'sort')
-#
-#
-# @admin.register(Schedule)
-# class ScheduleAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'subject', 'author','sort', 'created_date')
-#     list_filter = ['subject','created_date']
-#     save_on_top = True
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'sort')
+
+
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subject', 'author','sort', 'created_date')
+    list_filter = ['subject','created_date']
+    save_on_top = True
 
 
 @admin.register(Material)

@@ -45,7 +45,7 @@ class Schedule(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_schedule', null=True)
     created_date = models.DateTimeField(editable=False, null=True, blank=True)
-    updated_date = models.DateTimeField(null=True, blank=True)
+    # updated_date = models.DateTimeField(null=True, blank=True)
     date = models.DateField(verbose_name='Kuni', null=True,blank=True)
     start = models.CharField(verbose_name='Boshlanish vaqti', null=True, max_length=5)
     stop = models.CharField(verbose_name='Tugash vaqti', null=True,max_length=5)

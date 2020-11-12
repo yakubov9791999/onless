@@ -1103,7 +1103,7 @@ def attendance_groups_list(request):
     context = {
         'groups': groups
     }
-    return render(request, 'user/attendance/attendance_groups_list.html', context)\
+    return render(request, 'user/attendance/attendance_groups_list.html', context)
 
 @login_required
 def attendance_view(request, id):
@@ -1111,10 +1111,16 @@ def attendance_view(request, id):
 
     if request.user.school == group.school:
         pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+        attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__day=timezone.now().day))
         context = {
             'group': group,
-            'pupils': pupils
+            'attendances': attendances
         }
+        if not attendances.exists():
+            messages.error(request, 'Davomat belgilanmagan!')
+            return render(request, 'user/attendance/attendance_view.html', context)
+
+
         return render(request, 'user/attendance/attendance_view.html', context)
     else:
         return render(request, 'inc/404.html')
@@ -1184,7 +1190,7 @@ def attendance_set_visited(request):
             attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject, created_date__day=today.day)
 
             if not attendance.exists():
-                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today,subject=subject,is_visited=visited)
+                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today,updated_date=today, subject=subject,is_visited=visited)
                 return HttpResponse(True)
             else:
                 for atten in attendance:

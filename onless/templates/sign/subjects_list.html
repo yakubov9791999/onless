@@ -40,7 +40,7 @@
                                     <td>{{ subject.created_date|date:'SHORT_DATETIME_FORMAT' }}</td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
-                                            &nbsp;&nbsp;<a href="#"><i
+                                            &nbsp;&nbsp;<a href="{% url 'sign:update_subject' subject.id %}"><i
                                                 class="fa fa-edit"
                                         ></i></a>
                                             &nbsp;&nbsp;&nbsp;&nbsp;<a href="#"><i class="fa fa-trash"></i></a></td>

@@ -7,8 +7,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">{{ group.category }}-{{ group.number }} {{ group.year }} o'quvchilar
-                        ro'yhati</h3>
+                    <h3 class="card-title">Guruh: {{ group.category }}-{{ group.number }} {{ group.year }}&nbsp&nbsp&nbsp&nbsp Sana: {% now 'SHORT_DATE_FORMAT' %}</h3>
                 </div>
 
                 {% include 'inc/messages.html' %}
@@ -23,19 +22,21 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 2%">№</th>
                                 <th>O'quvchining ism familiyasi</th>
-                                <th>Sana</th>
+                                <th>Fan</th>
+                                <th>Belgiangan vaqt</th>
                                 <th>Davomat</th>
                             </tr>
                             </thead>
                             <tbody>
 
-                            {% for pupil in pupils %}
+                            {% for attendance in attendances %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b>{{ pupil.name }}</b>
-                                    </td>
-                                    <td>{% now "SHORT_DATE_FORMAT" %}</td>
-                                    <td>Darsga kelgan</td>
+                                    <td><b>{{ attendance.pupil.name }}</b> </td>
+                                    <td>{{ attendance.subject }}</td>
+
+                                    <td>{{ attendance.updated_date|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                    <td>{% if attendance.is_visited %}<p class="text-success">Darsga kelgan</p>{% else %}<p class="text-danger">Darsga kelmagan</p>{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

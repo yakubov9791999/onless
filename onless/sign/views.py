@@ -123,6 +123,25 @@ def update_schedule(request, id):
     return render(request, 'sign/update_schedule.html', context)
 
 
+@login_required
+def update_subject(request, id):
+    subject = get_object_or_404(Subject, id=id)
+    context = {
+        'subject': subject
+    }
+    if request.POST:
+        form = UpdateSubjectForm(request.POST, instance=subject)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.author = request.user
+            form.updated_date = timezone.now()
+            form.save()
+            messages.success(request, "Muvaffaqiyatli tahrirlandi !")
+            return render(request, 'sign/update_subject.html', context)
+        else:
+            messages.error(request, "Formani to'ldirishda xatolik !")
+            return render(request, 'sign/update_subject.html', context)
+    return render(request, 'sign/update_subject.html',context)
 
 
 @login_required

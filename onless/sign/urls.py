@@ -8,6 +8,7 @@ urlpatterns = [
     path('add-schedule/', add_schedule, name='add_schedule'),
     path('add-subject/', add_subject, name='add_subject'),
     path('update-schedule/<int:id>/', update_schedule, name='update_schedule'),
+    path('update-subject/<int:id>/', update_subject, name='update_subject'),
     path('delete-schedule/<int:id>/', delete_schedule, name='delete_schedule'),
     path('schedules/', schedules_list, name='schedules_list'),
     path('subjects/', subjects_list, name='subjects_list'),

@@ -225,7 +225,7 @@ class Attendance(models.Model):
     subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',null=True)
     is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan',default=False)
     created_date = models.DateTimeField(verbose_name='Vaqti', editable=True,)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti',editable=True, )
+    # updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti',editable=True, )
 
     def __str__(self):
         return str(self.subject.title)

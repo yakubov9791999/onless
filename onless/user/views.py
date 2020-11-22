@@ -338,8 +338,12 @@ def group_detail(request, id):
 
 @login_required
 def group_delete(request, id):
-    if request.user.role == '2':
+    director = User.objects.filter(school=request.user.school, role=2).first()
+    if request.user == director:
         group = get_object_or_404(Group, id=id)
+        pupils = User.objects.filter(school=request.user.school, group=group)
+        for pupil in pupils:
+            pupil.delete()
         group.delete()
     else:
         return render(request, 'inc/404.html')

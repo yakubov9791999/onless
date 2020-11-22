@@ -338,13 +338,13 @@ def group_detail(request, id):
 
 @login_required
 def group_delete(request, id):
-    if request.user.role == '2':
+    director = User.objects.filter(school=request.user.school, role=2).first()
+    if request.user == director:
         group = get_object_or_404(Group, id=id)
-        if group.group_user.count() > 2:
-            group.is_active = False
-            group.save()
-        else:
-            group.delete()
+        pupils = User.objects.filter(school=request.user.school, group=group)
+        for pupil in pupils:
+            pupil.delete()
+        group.delete()
     else:
         return render(request, 'inc/404.html')
 
@@ -562,8 +562,7 @@ def search(request):
 def pupil_delete(request, id):
     if request.user.role == '2':
         pupil = get_object_or_404(User, id=id)
-        pupil.is_active = False
-        pupil.save()
+        pupil.delete()
     else:
         return render(request, 'inc/404.html')
 
@@ -617,8 +616,7 @@ def worker_edit(request, id):
 def worker_delete(request, id):
     if request.user.role == '2':
         worker = get_object_or_404(User, id=id)
-        worker.is_active = False
-        worker.save()
+        worker.delete()
     else:
         return render(request, 'inc/404.html')
 

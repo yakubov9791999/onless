@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label for="birthday">Tug'ilgan yili:</label>
                             <div class="input-group">
-                                <input type="date" class="form-control" id="birthday" name="birthday">
+                                <input type="text" class="form-control" id="birthday" name="birthday">
                             </div>
                         </div>
 
@@ -71,21 +71,41 @@
     </div>
 {% endblock content %}
 {% block bottom %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $("#exampleInputPasport").keypress(function (event) {
-            var ew = event.which;
-            if (ew == 32)
-                return true;
-            if (48 <= ew && ew <= 57)
-                return true;
-            if (65 <= ew && ew <= 90)
-                return true;
-            if (97 <= ew && ew <= 122)
-                return true;
-            alert("Faqat lotin harflari va raqamlar kiriting")
+        $("#exampleInputPasport").keypress(PassportInputFilter);
 
-            return false;
-        });
+        $(function () {
+
+            $("#birthday").datepicker({
+                dateFormat: "dd.mm.yy",
+                // defaultDate: '01-01-1985',
+                // value: "7/11/2011",
+                showButtonPanel: true,
+                numberOfMonths: 2,
+                //startDate: "-30d",
+                //endDate: "+30d",
+                //currentText: 'Today',
+                autoclose: true,
+                changeMonth: false,
+                changeYear: false,
+                //gotoCurrent: true,
+                //stepMonths: 0,
+                //duration: 'fast',
+                // yearRange: '1920:2030',
+
+                // beforeShow: function () {
+                //     alert('show');
+                //    $("#ui-datepicker-div").addClass("DatePikerEN");
+                //},
+
+
+            })
+
+            $("#birthday").datepicker('setDate', new Date());
+        })
+
 
         $('#phone').keyup(function () {
             var test = $('#phone').val();
@@ -102,6 +122,8 @@
 
             }
         });
+
+
 
     </script>
 {% endblock bottom %}

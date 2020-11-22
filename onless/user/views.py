@@ -149,7 +149,9 @@ def add_pupil(request):
                     user.set_password(parol)
                     user.username = pasport
                     if request.POST['birthday']:
-                        user.birthday = request.POST['birthday']
+                        get_date = request.POST.get('birthday').split('.')
+                        birthday = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
+                        user.birthday = birthday
                     user.email = ''
                     user.save()
                     msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"

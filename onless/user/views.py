@@ -992,7 +992,8 @@ def history_view_video_all(request):
 @login_required
 def history_pupil_view_video(request, id):
     pupil = get_object_or_404(User, id=id)
-    group = get_object_or_404(Group, id=pupil.group.id)
+    if pupil.role == '4':
+        group = get_object_or_404(Group, id=pupil.group.id)
     videos = Video.objects.filter(is_active=True).order_by('id')
     if not videos.exists():
         messages.error(request, "Ko'rishlar mavjud emas !")
@@ -1055,7 +1056,8 @@ def support(request):
 @login_required
 def result(request, id):
     pupil = get_object_or_404(User, id=id)
-    group = get_object_or_404(Group, id=pupil.group.id)
+    if pupil.role == '4':
+        group = get_object_or_404(Group, id=pupil.group.id)
 
     bilets = Bilet.objects.all().count()
     context = {

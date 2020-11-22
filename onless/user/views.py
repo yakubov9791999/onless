@@ -992,6 +992,7 @@ def history_view_video_all(request):
 @login_required
 def history_pupil_view_video(request, id):
     pupil = get_object_or_404(User, id=id)
+    group = get_object_or_404(Group, id=pupil.group.id)
     videos = Video.objects.filter(is_active=True).order_by('id')
     if not videos.exists():
         messages.error(request, "Ko'rishlar mavjud emas !")
@@ -1000,11 +1001,10 @@ def history_pupil_view_video(request, id):
         'pupil': pupil
     }
     director = User.objects.filter(school=pupil.school, role=2).first()
-    teacher = User.objects.filter(school=pupil.school, role=3).first()
 
     if request.user == pupil:
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    elif request.user == teacher:
+    elif request.user == group.teacher:
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
     elif request.user == director:
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
@@ -1055,6 +1055,8 @@ def support(request):
 @login_required
 def result(request, id):
     pupil = get_object_or_404(User, id=id)
+    group = get_object_or_404(Group, id=pupil.group.id)
+
     bilets = Bilet.objects.all().count()
     context = {
         'bilets': bilets
@@ -1063,11 +1065,10 @@ def result(request, id):
     if last_check_bilet:
         context.update(last_check_bilet=last_check_bilet.bilet)
     director = User.objects.filter(school=pupil.school, role=2).first()
-    teacher = User.objects.filter(school=pupil.school, role=3).first()
 
     if request.user == pupil:
         return render(request, 'user/result.html', context)
-    elif request.user == teacher:
+    elif request.user == group.teacher:
         context.update(pupil=pupil)
         return render(request, 'user/result.html', context)
     elif request.user == director:

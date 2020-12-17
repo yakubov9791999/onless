@@ -1220,13 +1220,10 @@ def send_sms(request):
         }
         if request.method == 'POST':
             if form.is_valid():
-
-
                 text = form.cleaned_data['text']
                 group = int(request.POST['group'])
                 users = User.objects.filter(group=group)
                 sms_count = request.user.school.sms_count
-
                 if sms_count >= users.count():
                     new_sms_count = sms_count - users.count()
                     this_user = School.objects.get(school_user=request.user)
@@ -1235,8 +1232,8 @@ def send_sms(request):
                     if users.count() > 0:
                         for user in users:
                             msg = text.replace(" ", "+")
-                            # url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                            # response = requests.get(url)
+                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                            response = requests.get(url)
 
                         messages.success(request,
                                          f"Sizning SMS xabarnomangiz {users.count()} o'quvchiga muvaffaqiyatli yetkazildi")

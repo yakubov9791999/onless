@@ -101,7 +101,7 @@ class School(models.Model):
     is_block = models.BooleanField(default=False)
     sms_login = models.CharField(max_length=255, blank=True)
     sms_token = models.CharField(max_length=255, blank=True)
-    sms_count = models.IntegerField(blank=True, null=True)
+    sms_count = models.IntegerField(blank=True, null=True, default=0)
     sms_password = models.CharField(max_length=255, blank=True)
     notification = models.BooleanField(default=False)
     notification_text = models.TextField(blank=True)

@@ -1214,7 +1214,7 @@ def attendance_set_visited(request):
 def send_sms(request):
     if request.user.role == '2':
         form = SendSmsForm(data=request.POST)
-        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
+        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
         context = {
             'groups': groups,
         }

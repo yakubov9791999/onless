@@ -1234,7 +1234,6 @@ def send_sms(request):
                             msg = text.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
                             response = requests.get(url)
-
                         messages.success(request,
                                          f"Sizning SMS xabarnomangiz {users.count()} o'quvchiga muvaffaqiyatli yetkazildi")
                     else:

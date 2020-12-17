@@ -22,13 +22,17 @@
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" method="POST" action="{% url 'user:send_sms' %}">
-                <div class="alert alert-info" align="center">
-                    <h3>Ushbu xizmat sizning barcha o'quvchilaringizga bir vaqtda SMS xabarnoma  jo'natish imkoniyatini yaratadi.</h3>
-                    <br>
-                </div>
-                <div class="alert alert-danger" align="center">
-                    <h4>Hurmatli avtomaktab! Ushbu xizmatdan foydalanish uchun sizda hozirda {{ request.user.school.sms_count }}ta sms bor. SMS xarid qilish uchun 972800809 / 919791999 / 931444480 raqamlariga qo'ng'iroq qiling</h4>
-  </div>
+                  <div class="text-center pl-3 pr-4 pt-3">
+                        <h3>Ushbu xizmat sizning barcha o'quvchilaringizga bir vaqtda SMS xabarnoma jo'natish
+                            imkoniyatini yaratadi.</h3>
+                        <br>
+                    </div>
+                    <div class="text-center pl-3 pr-4">
+                        <h4>Hurmatli avtomaktab! Ushbu xizmatdan foydalanish uchun sizda
+                            hozirda {{ request.user.school.sms_count }}ta sms bor. SMS xarid qilish uchun 972800809 /
+                            919791999 / 931444480 raqamlariga qo'ng'iroq qiling.
+                            <br><b>1 sms bahosi 150 so'm</b></h4>
+                    </div>
                     {% csrf_token %}
                     <div class="card-body">
                         <div class="form-group">
@@ -48,7 +52,7 @@
                     <!-- /.card-body -->
 
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-success"> <i class="fas fa-sms"></i> SMS jo'natish</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-sms"></i> SMS jo'natish</button>
                         <button type="reset" class="btn btn-danger">Tozalash</button>
                     </div>
                 </form>

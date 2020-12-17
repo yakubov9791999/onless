@@ -190,3 +190,9 @@ class AddContactForm(ModelForm):
         model = Contact
         fields = ( 'text',)
         exclude = ('user','photo',)
+
+
+class SendSmsForm(ModelForm):
+    class Meta:
+        model = Sms
+        fields = ('text', )

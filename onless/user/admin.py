@@ -88,3 +88,10 @@ class RatingAdmin(admin.ModelAdmin):
     list_filter = ['score','created_date']
     search_fields = ['subject', 'pupil', 'teacher',]
     save_on_top = True
+
+@admin.register(Sms)
+class SmsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'school']
+    list_display_links = ['user', ]
+    list_filter = ['school']
+    save_on_top = True

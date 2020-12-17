@@ -11,8 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator, MaxLengthValidator
 
 
-
-
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
     ext = filename.split('.')[-1]
@@ -103,6 +101,7 @@ class School(models.Model):
     is_block = models.BooleanField(default=False)
     sms_login = models.CharField(max_length=255, blank=True)
     sms_token = models.CharField(max_length=255, blank=True)
+    sms_count = models.IntegerField(blank=True, null=True)
     sms_password = models.CharField(max_length=255, blank=True)
     notification = models.BooleanField(default=False)
     notification_text = models.TextField(blank=True)
@@ -147,12 +146,14 @@ class Group(models.Model):
         verbose_name = 'Guruh'
         verbose_name_plural = 'Guruhlar'
 
+
 ROLE_CHOICES = (
     ("1", "Inspeksiya"),
     ("2", "Direktor"),
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
     ("5", "Bugalter"),
+    ("6", "Instruktor"),
 )
 
 GENDER_CHOICES = (
@@ -218,14 +219,18 @@ class Pay(models.Model):
     def __str__(self):
         return f"{self.pupil}"
 
+
 from sign.models import Subject
+
+
 class Attendance(models.Model):
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_attendance', null=True)
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_attendance')
-    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_attendance',null=True)
-    is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan',default=False)
-    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True,)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti',editable=True,blank=True)
+    subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE,
+                                related_name='subject_attendance', null=True)
+    is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan', default=False)
+    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True, )
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True)
 
     def __str__(self):
         return str(self.subject.title)
@@ -233,6 +238,7 @@ class Attendance(models.Model):
     class Meta:
         verbose_name = 'Davomat'
         verbose_name_plural = 'Davomatlar'
+
 
 SCORE_CHOICES = (
     ('2', '2'),
@@ -245,7 +251,7 @@ SCORE_CHOICES = (
 class Rating(models.Model):
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_rating', null=True)
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='teacher_rating')
-    score = models.CharField(verbose_name='Olgan bahosi',choices=SCORE_CHOICES, max_length=12, blank=True, null=True)
+    score = models.CharField(verbose_name='Olgan bahosi', choices=SCORE_CHOICES, max_length=12, blank=True, null=True)
     subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_rating',
                                 null=True)
     created_date = models.DateTimeField(verbose_name='Yaratilgan vaqt', editable=False)
@@ -257,3 +263,14 @@ class Rating(models.Model):
     class Meta:
         verbose_name = 'Baho'
         verbose_name_plural = 'Baholar'
+
+
+class Sms(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sms_user')
+    created_date = models.DateTimeField(auto_now=True, verbose_name='Yaratilgan vaqt', editable=False)
+    text = models.TextField()
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='sms_school')
+
+    class Meta:
+        verbose_name = 'Sms'
+        verbose_name_plural = 'Smslar'

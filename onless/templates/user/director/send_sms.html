@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block top %}
+    <style>
+        .send-sms-form {
+            border: 2px solid #6804ef;
+        }
+    </style>
+{% endblock top %}
+{% block content %}
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h1 class="card-title">SMS jo'natish</h1>
+
+                </div>
+
+                {% include 'inc/messages.html' %}
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="POST" action="{% url 'user:send_sms' %}">
+                <div class="alert alert-info" align="center">
+                    <h3>Ushbu xizmat sizning barcha o'quvchilaringizga bir vaqtda SMS xabarnoma  jo'natish imkoniyatini yaratadi.</h3>
+                    <br>
+                </div>
+                <div class="alert alert-danger" align="center">
+                    <h4>Hurmatli avtomaktab! Ushbu xizmatdan foydalanish uchun sizda hozirda {{ request.user.school.sms_count }}ta sms bor. SMS xarid qilish uchun 972800809 / 919791999 / 931444480 raqamlariga qo'ng'iroq qiling</h4>
+  </div>
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="label_required" for="textLabel">Xabar matnini kiriting</label>
+                            <textarea name="text" id="textLabel" rows="5" class="form-control send-sms-form"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label_required" for="selectLabel">Guruhni tanlang</label>
+                            <select name="group" id="selectLabel" class="form-control">
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success"> <i class="fas fa-sms"></i> SMS jo'natish</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

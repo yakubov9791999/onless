@@ -1,0 +1,17 @@
+<li class="nav-item has-treeview">
+    {% if request.user.role == '4' %}
+        <a href="{% url 'user:pay_history' request.user.id request.user.group.id %}"
+           class="nav-link {% if request.resolver_match.url_name == 'pay_history' %}active{% endif %}">
+    {% elif request.user.role == '3' %}
+        <a href="{% url 'user:bugalter_groups_list' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'bugalter_groups_list' or request.resolver_match.url_name == 'bugalter_group_detail' or request.resolver_match.url_name == 'pay_history' %}active{% endif %}">
+    {% else %}
+        <a href="{% url 'user:bugalter_groups_list' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'bugalter_groups_list' or request.resolver_match.url_name == 'bugalter_group_detail' or request.resolver_match.url_name == 'pay_history' %}active{% endif %}">
+    {% endif %}
+    &nbsp;<i class="fas fa-coins"></i>&nbsp;&nbsp;&nbsp;
+    <p>
+            &nbsp;Amaliy mashg'ulotlar
+    </p>
+    </a>
+</li>

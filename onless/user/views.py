@@ -1013,8 +1013,6 @@ def history_pupil_view_video(request, id):
         return render(request, 'inc/404.html')
 
 
-
-
 @login_required
 def get_district(request):
     if request.is_ajax():
@@ -1100,7 +1098,8 @@ def get_learning_type(request):
 
 @login_required
 def attendance_groups_list(request):
-    groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+    groups = Group.objects.filter(
+        Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
     if not groups.exists():
         messages.error(request, 'Sizda an\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
     context = {
@@ -1108,12 +1107,14 @@ def attendance_groups_list(request):
     }
     return render(request, 'user/attendance/attendance_groups_list.html', context)
 
+
 @login_required
 def attendance_view(request, id):
     group = get_object_or_404(Group, id=id)
 
     if request.user.school == group.school:
-        pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+        pupils = User.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
         attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__day=timezone.now().day))
         context = {
             'group': group,
@@ -1123,10 +1124,10 @@ def attendance_view(request, id):
             messages.error(request, 'Davomat belgilanmagan!')
             return render(request, 'user/attendance/attendance_view.html', context)
 
-
         return render(request, 'user/attendance/attendance_view.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def attendance_set_by_group(request, id):
@@ -1135,7 +1136,8 @@ def attendance_set_by_group(request, id):
     # tomorrow = timezone.now() + datetime.timedelta(1)
     schedules = Schedule.objects.filter(date=today)
 
-    subjects = Subject.objects.filter(Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today)).distinct()
+    subjects = Subject.objects.filter(
+        Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today)).distinct()
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
     if request.user == group.teacher:
@@ -1151,7 +1153,8 @@ def attendance_set_by_group(request, id):
         context = {
             'groups': groups
         }
-        messages.error(request, f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash faqatgina {group.teacher}ga ruxsat berilgan!')
+        messages.error(request,
+                       f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash faqatgina {group.teacher}ga ruxsat berilgan!')
         return render(request, 'user/attendance/attendance_groups_list.html', context)
 
 
@@ -1178,6 +1181,7 @@ def attendance_set_by_subject(request, group_id, subject_id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def attendance_set_visited(request):
     if request.is_ajax():
@@ -1190,10 +1194,12 @@ def attendance_set_visited(request):
             else:
                 visited = False
 
-            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject, created_date__day=today.day)
+            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
+                                                   created_date__day=today.day)
 
             if not attendance.exists():
-                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today,updated_date=today, subject=subject,is_visited=visited)
+                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today, updated_date=today,
+                                          subject=subject, is_visited=visited)
                 return HttpResponse(True)
             else:
                 for atten in attendance:
@@ -1202,3 +1208,46 @@ def attendance_set_visited(request):
                     atten.save()
                 return HttpResponse(True)
     return HttpResponse(False)
+
+
+@login_required
+def send_sms(request):
+    if request.user.role == '2':
+        form = SendSmsForm(data=request.POST)
+        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
+        context = {
+            'groups': groups,
+        }
+        if request.method == 'POST':
+            if form.is_valid():
+
+
+                text = form.cleaned_data['text']
+                group = int(request.POST['group'])
+                users = User.objects.filter(group=group)
+                sms_count = request.user.school.sms_count
+
+                if sms_count >= users.count():
+                    new_sms_count = sms_count - users.count()
+                    this_user = School.objects.get(school_user=request.user)
+                    this_user.sms_count = new_sms_count
+                    this_user.save()
+                    if users.count() > 0:
+                        for user in users:
+                            msg = text.replace(" ", "+")
+                            # url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                            # response = requests.get(url)
+
+                        messages.success(request,
+                                         f"Sizning SMS xabarnomangiz {users.count()} o'quvchiga muvaffaqiyatli yetkazildi")
+                    else:
+                        messages.error(request, "Ushbu guruhda o'quvchi mavjud emas!")
+                else:
+                    messages.error(request, "Kechirasiz, SMSlar soni guruhdagi o'quvchilar sonidan kam")
+            else:
+                messages.error(request, "Xabar matni kiritilmagan yoki guruh tanlanmagan!")
+        else:
+            form = SendSmsForm(request)
+        return render(request, 'user/director/send_sms.html', context)
+    else:
+        return render(request, 'inc/404.html')

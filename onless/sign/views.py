@@ -214,11 +214,11 @@ def get_subject(request):
 def group_subjects(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
-        schedules = Schedule.objects.filter(group=group)
-        if schedules.exists():
+        subjects = Subject.objects.filter(category=group.category).distinct()
+        if subjects.exists():
             options = "<option>-- -- --</option>"
-            for schedule in schedules:
-                options += f"<option value='{schedule.subject.id}'>{schedule.subject.title}</option>"
+            for subject in subjects:
+                options += f"<option value='{subject.id}'>{subject.title}</option>"
             return HttpResponse(options)
         else:
             return HttpResponse(False)

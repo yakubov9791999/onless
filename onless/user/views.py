@@ -1215,15 +1215,22 @@ def send_sms(request):
     if request.user.role == '2':
         form = SendSmsForm(data=request.POST)
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
+        sms_count = request.user.school.sms_count
+        if sms_count == 0:
+            school_sms_count = 0
+        else:
+            school_sms_count = sms_count
+
         context = {
             'groups': groups,
+            'school_sms_count': school_sms_count
         }
         if request.method == 'POST':
             if form.is_valid():
                 text = form.cleaned_data['text']
                 group = int(request.POST['group'])
                 users = User.objects.filter(group=group)
-                sms_count = request.user.school.sms_count
+
                 if sms_count >= users.count():
                     new_sms_count = sms_count - users.count()
                     this_user = School.objects.get(school_user=request.user)

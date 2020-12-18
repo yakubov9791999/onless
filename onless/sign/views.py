@@ -201,7 +201,7 @@ def subjects_list(request):
 def get_subject(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
-        subjects = Subject.objects.filter(category=group.category)
+        subjects = Subject.objects.filter(category=group.category, school=request.user.school)
         options = "<option>-- -- --</option>"
         for subject in subjects:
             options += f"<option value='{subject.id}'>{subject.title}</option>"

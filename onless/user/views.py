@@ -1216,7 +1216,7 @@ def send_sms(request):
         form = SendSmsForm(data=request.POST)
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
         sms_count = request.user.school.sms_count
-        if sms_count == '':
+        if sms_count == None:
             school_sms_count = 0
         else:
             school_sms_count = sms_count

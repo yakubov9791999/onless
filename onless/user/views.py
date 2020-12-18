@@ -1228,19 +1228,36 @@ def send_sms(request):
         if request.method == 'POST':
             if form.is_valid():
                 text = form.cleaned_data['text']
+                text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
                 group = int(request.POST['group'])
                 users = User.objects.filter(group=group)
 
-                if sms_count >= users.count():
+                """
+                SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizi8mi
+                """
+                if len(text) > 0 and len(text) <= 159:
                     new_sms_count = sms_count - users.count()
+                elif len(text) >= 160 and len(text) <= 317:
+                    new_sms_count = sms_count - (users.count() * 2)
+                elif len(text) >= 318 and len(text) <= 477:
+                    new_sms_count = sms_count - (users.count() * 3)
+                elif len(text) >= 478 and len(text) <= 635:
+                    new_sms_count = sms_count - (users.count() * 3)
+                elif len(text) >= 636 and len(text) <= 795:
+                    new_sms_count = sms_count - (users.count() * 5)
+                else:
+                    new_sms_count = sms_count - (users.count() * 10)
+
+                if new_sms_count != 0:
+                    # Sarflangan smslarni  bazaga yozish
                     this_user = School.objects.get(school_user=request.user)
                     this_user.sms_count = new_sms_count
                     this_user.save()
                     if users.count() > 0:
                         for user in users:
                             msg = text.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                            response = requests.get(url)
+                            # url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                            # response = requests.get(url)
                         messages.success(request,
                                          f"Sizning SMS xabarnomangiz {users.count()} o'quvchiga muvaffaqiyatli yetkazildi")
                     else:

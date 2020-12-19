@@ -22,10 +22,14 @@ class SignAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'sort')
 
+@admin.register(Theme)
+class ThemeAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subject', 'sort')
+
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'author','sort', 'created_date')
+    list_display = ('theme', 'subject', 'author','sort', 'created_date')
     list_filter = ['subject','created_date']
     save_on_top = True
 

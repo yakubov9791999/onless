@@ -3,19 +3,19 @@ from django import forms
 from sign.models import *
 
 
-class AddScheduleFrom(forms.ModelForm):
+class AddScheduleForm(forms.ModelForm):
     subject = forms.ModelChoiceField(label="Fan nomi", queryset=Subject.objects.all(),
                                      widget=forms.Select(attrs={'class': 'form-control', 'id': 'subject'}))
-    title = forms.CharField(label='Mavzu nomi', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: Ogohlantiruvchi belgilar'}))
+    theme = forms.CharField(label='Mavzu nomi', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: Ogohlantiruvchi belgilar'}))
     sort = forms.IntegerField(label='Tartibi',
                               widget=forms.NumberInput(attrs={'class': 'form-control', 'max': '999', 'placeholder': 'Masalan: 1'}))
     class Meta:
         model = Schedule
-        fields = ('title', 'start', 'stop', 'sort',)
-        exclude = ['subject', 'date', ]
+        fields = ( 'start', 'stop', 'sort',)
+        exclude = ['subject','theme', 'date', ]
 
 
-class AddSubjectFrom(forms.ModelForm):
+class AddSubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
         fields = ['title','sort', 'category']
@@ -25,8 +25,8 @@ class UpdateScheduleForm(forms.ModelForm):
 
     class Meta:
         model = Schedule
-        fields = ('title','start','stop', 'sort',)
-        exclude = ['subject','date',]
+        fields = ('start','stop', 'sort',)
+        exclude = ['subject','theme','date',]
 
 
 class UpdateSubjectForm(forms.ModelForm):

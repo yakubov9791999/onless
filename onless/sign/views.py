@@ -59,21 +59,21 @@ def add_schedule(request):
     return render(request, 'sign/add_schedule.html', context)
 
 
-@login_required
-def add_subject(request):
-    if request.POST:
-        form = AddSubjectForm(request.POST)
-        author = User.objects.get(id=request.user.id)
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.author = author
-            form.created_date = timezone.now()
-            form.school_id = request.user.school.id
-            form.save()
-            messages.success(request, "Muvaffaqiyatli qo'shildi !")
-        else:
-            messages.error(request, "Formani to'ldirishda xatolik !")
-    return render(request, 'sign/add_subject.html',)
+# @login_required
+# def add_subject(request):
+#     if request.POST:
+#         form = AddSubjectForm(request.POST)
+#         author = User.objects.get(id=request.user.id)
+#         if form.is_valid():
+#             form = form.save(commit=False)
+#             form.author = author
+#             form.created_date = timezone.now()
+#             form.school_id = request.user.school.id
+#             form.save()
+#             messages.success(request, "Muvaffaqiyatli qo'shildi !")
+#         else:
+#             messages.error(request, "Formani to'ldirishda xatolik !")
+#     return render(request, 'sign/add_subject.html',)
 
 
 @login_required

@@ -39,7 +39,7 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><b>{{ pupil.name }}</b></td>
-                                    <td><b>{% if pupil.phone %}{{ pupil.phone }}{% endif %}</b></td>
+                                    <td><b>{% if pupil.phone %}+998{{ pupil.phone }}{% endif %}</b></td>
                                     {% get_payments pupil.id group.id as payment %}
                                     <td>{{ payment.total|intcomma }}</td>
                                     <td style="color: green">{{ payment.payment|intcomma }}</td>

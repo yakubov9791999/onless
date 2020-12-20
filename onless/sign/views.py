@@ -205,7 +205,7 @@ def get_subject(request):
         subjects = Subject.objects.filter(Q(is_active=True) & Q(category=group.category))
         options = "<option>-- -- --</option>"
         for subject in subjects:
-            options += f"<option value='{subject.id}'>{subject.title}</option>"
+            options += f"<option value='{subject.id}'>{subject.short_title}</option>"
         return HttpResponse(options)
     else:
         return False
@@ -231,7 +231,7 @@ def group_subjects(request):
         if subjects.exists():
             options = "<option>-- -- --</option>"
             for subject in subjects:
-                options += f"<option value='{subject.id}'>{subject.title}</option>"
+                options += f"<option value='{subject.id}'>{subject.short_title}</option>"
             return HttpResponse(options)
         else:
             return HttpResponse(False)

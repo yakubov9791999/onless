@@ -30,7 +30,7 @@ class Subject(models.Model):
     long_title = models.TextField(verbose_name='To\'liq nomi',)
     category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,default=timezone.now())
+    created_date = models.DateTimeField(null=True,default=timezone.now(), editable=False)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -46,7 +46,7 @@ class Theme(models.Model):
     title = models.TextField(verbose_name='Nomi',)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_theme', null=True)
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,default=timezone.now())
+    created_date = models.DateTimeField(null=True,default=timezone.now(), editable=False)
     is_active = models.BooleanField(default=True)
 
 

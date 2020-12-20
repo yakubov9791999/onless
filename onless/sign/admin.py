@@ -20,7 +20,7 @@ class SignAdmin(admin.ModelAdmin):
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'sort')
+    list_display = ('short_title', 'long_title','category', 'sort')
 
 @admin.register(Theme)
 class ThemeAdmin(admin.ModelAdmin):

@@ -15,11 +15,11 @@ class AddScheduleForm(forms.ModelForm):
         exclude = ['subject','theme', 'date', ]
 
 
-class AddSubjectForm(forms.ModelForm):
-    class Meta:
-        model = Subject
-        fields = ['title','sort', 'category']
-        exclude = ['created_date', 'is_active', 'school', 'author']
+# class AddSubjectForm(forms.ModelForm):
+#     class Meta:
+#         model = Subject
+#         fields = ['title','sort', 'category']
+#         exclude = ['created_date', 'is_active', 'school', 'author']
 
 class UpdateScheduleForm(forms.ModelForm):
 
@@ -29,12 +29,12 @@ class UpdateScheduleForm(forms.ModelForm):
         exclude = ['subject','theme','date',]
 
 
-class UpdateSubjectForm(forms.ModelForm):
-
-    class Meta:
-        model = Subject
-        fields = ['title', 'sort', 'category']
-        exclude = ['created_date', 'is_active', 'school', 'author',]
+# class UpdateSubjectForm(forms.ModelForm):
+#
+#     class Meta:
+#         model = Subject
+#         fields = ['title', 'sort', 'category']
+#         exclude = ['created_date', 'is_active', 'school', 'author',]
 
 
 class AddMaterialFrom(forms.ModelForm):

@@ -26,18 +26,15 @@ class Sign(models.Model):
 
 
 class Subject(models.Model):
-    title = models.CharField(verbose_name='Nomi',max_length=600)
+    short_title = models.CharField(verbose_name='Qisqa nomi',max_length=600)
+    long_title = models.TextField(verbose_name='To\'liq nomi',)
     category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,)
-    # updated_date = models.DateTimeField(null=True, blank=True)
-    # author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_subject', null=True)
-    # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='school_subject', null=True)
+    created_date = models.DateTimeField(null=True,default=timezone.now())
     is_active = models.BooleanField(default=True)
 
-
     def __str__(self):
-        return self.title
+        return self.short_title
 
     class Meta:
         verbose_name = "Fan"
@@ -45,10 +42,10 @@ class Subject(models.Model):
 
 
 class Theme(models.Model):
-    title = models.CharField(verbose_name='Nomi',max_length=1000)
+    title = models.TextField(verbose_name='Nomi',)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_theme', null=True)
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,)
+    created_date = models.DateTimeField(null=True,default=timezone.now())
     is_active = models.BooleanField(default=True)
 
 

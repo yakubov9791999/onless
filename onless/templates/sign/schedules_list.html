@@ -1,68 +1,68 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row">
-        <!-- left column -->
-        <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Dars jadvali</h3>
-                </div>
-                {% include 'inc/messages.html' %}
-                <div class="card-body">
-                    <label for="exampleInputname" class="label_required">Guruhni tanlang</label>
-                    <select name="group" id="group" class="form-control">
-                        <option value="">-- -- --</option>
-                        {% for group in groups %}
-                            <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="exampleInputname" class="label_required">Fanni tanlang</label>
-                    <select name="subject" id="subject" class="form-control">
-                        <option>-- Guruhni tanlang --</option>
-                    </select>
-
-                </div>
+<div class="row">
+    <!-- left column -->
+    <div class="col-md-12">
+        <!-- general form elements -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Dars jadvali</h3>
             </div>
-            <div class="card-header" style="border-bottom: 2px solid burlywood">
-                <h2 class="card-title" id="title_subject"
-                    style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem; ">
-                </h2>
+            {% include 'inc/messages.html' %}
+            <div class="card-body">
+                <label for="exampleInputname" class="label_required">Guruhni tanlang</label>
+                <select name="group" id="group" class="form-control">
+                    <option value="">-- -- --</option>
+                    {% for group in groups %}
+                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                    {% endfor %}
+                </select>
+                <label for="exampleInputname" class="label_required">Fanni tanlang</label>
+                <select name="subject" id="subject" class="form-control">
+                    <option>-- Guruhni tanlang --</option>
+                </select>
 
-            </div>
-            <div class="table-responsive">
-                <table id="example1" class="table table-bordered table-hovered table-hover">
-                    <thead>
-                    <tr style="background-color: #ecebeb">
-                        <th style="width: 8%">№</th>
-                        <th style="width: 47%">Mavzu</th>
-                        <th>Sana</th>
-                        <th>Boshlanishi</th>
-                        <th>Tugashi</th>
-                        {% if request.user.role == '3' %}
-                            <th style="width: 5%">Tahrirlash</th>
-                        {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody id="schedule">
-
-
-                    </tbody>
-                    <tfoot>
-
-                    </tfoot>
-                </table>
             </div>
         </div>
-    </div>
-    <div id="schedule">
+        <div class="card-header" style="border-bottom: 2px solid burlywood">
+            <h2 class="card-title" id="title_subject"
+                style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem; ">
+            </h2>
 
+        </div>
+        <div class="table-responsive">
+            <table id="example1" class="table table-bordered table-hovered table-hover">
+                <thead>
+                <tr style="background-color: #ecebeb">
+                    <th style="width: 8%">№</th>
+                    <th style="width: 45%">Mavzu</th>
+                    <th>Sana</th>
+                    <th>Boshlanishi</th>
+                    <th>Tugashi</th>
+                    {% if request.user.role == '3' or request.user.role == '2' %}
+                    <th style="width: 4%">Tahrirlash</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody id="schedule">
+
+
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+            </table>
+        </div>
     </div>
-    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
+</div>
+<div id="schedule">
+
+</div>
+<link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
         $(document).ready(function () {
             var role = '{{ request.user.role }}'
 
@@ -120,9 +120,9 @@
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
                         {#e.attr('id', 'myid');#}
-                        if (role == 3) {
-                            {#$('.edit_block').html().delete()#}
-                        } else {
+                        if (role == 3 || role == 2){
+
+                        }else {
                             $('.edit_block').each(function (index) {
                                 $(this).css('display', 'none')
                             });
@@ -158,7 +158,11 @@
         });
 
 
-    </script>
+
+
+
+
+</script>
 {% endblock content %}
 
 

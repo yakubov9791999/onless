@@ -23,10 +23,6 @@
                                 <th style="width: 2%">№</th>
                                 <th>Fan nomi</th>
                                 <th>Toifasi</th>
-                                <th>Qo'shilgan vaqti</th>
-                                {% if request.user.role == '2' or request.user.role == '3' %}
-                                <th>Tahrirlash</th>
-                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -37,15 +33,6 @@
                                     <td><b>{{ subject.title }}</b>
                                     </td>
                                     <td>{{ subject.category }}</td>
-                                    <td>{{ subject.created_date|date:'SHORT_DATETIME_FORMAT' }}</td>
-                                    {% if request.user.role == '2' or request.user.role == '3' %}
-                                        <td>
-                                            &nbsp;&nbsp;<a href="{% url 'sign:update_subject' subject.id %}"><i
-                                                class="fa fa-edit"
-                                        ></i></a>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;<a href="#"><i class="fa fa-trash"></i></a></td>
-                                        </tr>
-                                    {% endif %}
                             {% endfor %}
                             </tbody>
                             <tfoot>

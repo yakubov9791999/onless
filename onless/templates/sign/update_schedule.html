@@ -33,10 +33,10 @@
                         <input type="text" class="form-control" readonly="readonly" value="{{ schedule.subject }}"/>
 
 
-                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu
-                            nomi</label>
-                        <input type="text" id="title" value="{{ schedule.title }}" class="form-control"
-                               placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
+                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzuni tanlang</label>
+                        <select id="theme" name="theme" class="form-control">
+                            <option value="{{ schedule.id }}">{{ schedule.theme }}</option>
+                        </select>
 
                         <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>
                         <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date"
@@ -75,8 +75,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var get_date = '{{ schedule.date }}',
-                get_start = '{{ schedule.start }}'
-
+                get_start = '{{ schedule.start }}',
+                subjectId = '{{ schedule.subject.id }}'
 
 
 
@@ -142,14 +142,27 @@
                 });
             });
 
+            $.ajax({
+                type: "GET",
+                url: "{% url 'sign:get_themes' %}",
+                data: {
+                    'subject': subjectId, // from form
+                },
+                success: function (message) {
+                    $('#theme').empty().append(message)
+                    $('#theme').css('border-color', '#007bff')
 
-            $('#title').on('keypress', function () {
-                if ($('#title').val() == '') {
-                    $('#title').css('border-color', 'red')
+                }
+            });
+
+              $('#theme').on('change', function () {
+                if (!$.isNumeric($("#theme").children("option:selected").val())) {
+                    $('#theme').css('border-color', 'red')
                 } else {
-                    $('#title').css('border-color', 'green')
+                    $('#theme').css('border-color', 'green')
                 }
             })
+
 
             $('#sort').on('keypress', function () {
                 if ($('#sort').val() < 0) {
@@ -160,8 +173,8 @@
             })
 
             $('#schedule_form').submit(function (e) {
-                if ($('#title').val() == '') {
-                    $('#title').css('border-color', 'red')
+                if (!$.isNumeric($("#theme").children("option:selected").val())) {
+                    $('#theme').css('border-color', 'red')
                     return false;
                 } else if ($('#sort').val() == '') {
                     $('#sort').css('border-color', 'red')

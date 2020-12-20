@@ -1233,7 +1233,7 @@ def send_sms(request):
                 users = User.objects.filter(group=group)
 
                 """
-                SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizi8mi
+                SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizimi
                 """
                 if len(text) > 0 and len(text) <= 159:
                     new_sms_count = sms_count - users.count()

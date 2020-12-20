@@ -23,7 +23,7 @@
                                 <th style="width: 15%">O'qish boshlanishi</th>
                                 <th style="width: 15%">O'qish yakunlanishi</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
-                                    <th style="width: 11%" >Tahrirlash</th>
+                                    <th style="width: 15%" >Tahrirlash</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -43,7 +43,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{% if group.teacher %}{{ group.teacher }}{% else %}{% endif %}</td>
-                                     <td>{% if group.teacher %}+998{{ group.teacher.phone }}{% else %}{% endif %}</td>
+                                     <td>{% if group.teacher %}{% if group.teacher.phone %}+998{{ group.teacher.phone }}{% else %}-{% endif %}{% else %}{% endif %}</td>
                                     <td>{{ group.start|date:'SHORT_DATE_FORMAT' }}</td>
                                     <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}

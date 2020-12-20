@@ -211,6 +211,14 @@ def get_subject(request):
         return False
 
 @login_required
+def get_subject_long_title(request):
+    if request.is_ajax():
+        subject = get_object_or_404(Subject, id=request.GET.get('subject'))
+        return HttpResponse(subject.long_title)
+    else:
+        return False
+
+@login_required
 def get_themes(request):
     if request.is_ajax():
         subject = get_object_or_404(Subject, id=request.GET.get('subject'))
@@ -251,7 +259,7 @@ def get_schedule(request):
             td += f"<tr>" \
                   f"<td>M-{schedule.sort}</td>" \
                   f"<td class='schedule_title'>{schedule.theme}</td>" \
-                  f"<td>{schedule.date}</td>" \
+                  f"<td>{schedule.date.strftime('%d.%m.%Y')}</td>" \
                   f"<td>{str(schedule.start)[0:16]}</td>" \
                   f"<td>{str(schedule.stop)[0:16]}</td>" \
                   f"<td class='edit_block'><a href='{url_update}'><i class='fa fa-edit'></i></a><a class='deleteBtn' data-title='{schedule.theme}' data-id='{schedule.id}' href='#'><i class='fa fa-trash ml-2'></i></a></td>" \

@@ -233,7 +233,7 @@ class Attendance(models.Model):
     updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True)
 
     def __str__(self):
-        return str(self.subject.title)
+        return str(self.subject.short_title)
 
     class Meta:
         verbose_name = 'Davomat'

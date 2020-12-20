@@ -1098,15 +1098,26 @@ def get_learning_type(request):
 
 @login_required
 def attendance_groups_list(request):
-    groups = Group.objects.filter(
-        Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
-    if not groups.exists():
-        messages.error(request, 'Sizda an\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
-    context = {
-        'groups': groups
-    }
-    return render(request, 'user/attendance/attendance_groups_list.html', context)
-
+    if request.user.role == '3':
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+        if not groups.exists():
+            messages.error(request, 'Guruhlar yoki an\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/attendance/attendance_groups_list.html', context)
+    elif request.user.role == '2':
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+        if not groups.exists():
+            messages.error(request, 'Guruhlar yoki an\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/attendance/attendance_groups_list.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def attendance_view(request, id):
@@ -1138,6 +1149,7 @@ def attendance_set_by_group(request, id):
 
     subjects = Subject.objects.filter(
         Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today)).distinct()
+
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
     if request.user == group.teacher:

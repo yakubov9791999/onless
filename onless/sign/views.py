@@ -249,7 +249,9 @@ def group_subjects(request):
 @login_required
 def get_schedule(request):
     if request.is_ajax():
-        schedules = Schedule.objects.filter(subject=request.GET.get('subject'))
+        group = get_object_or_404(Group, id=request.GET.get('group'))
+        schedules = Schedule.objects.filter(subject=request.GET.get('subject'), group=group)
+
         td = ""
 
         for schedule in schedules:

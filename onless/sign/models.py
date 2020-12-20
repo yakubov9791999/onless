@@ -39,6 +39,7 @@ class Subject(models.Model):
     class Meta:
         verbose_name = "Fan"
         verbose_name_plural = "Fanlar"
+        ordering = ['sort']
 
 
 class Theme(models.Model):

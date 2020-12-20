@@ -78,7 +78,7 @@
                     success: function (message) {
                         if (message === 'False') {
                             $('#schedule').empty()
-                            $('#subject').empty().append('<option>-- Ushbu guruhda jadval mavjud emas! --</option>')
+                            $('#subject').empty().append('<option>-- Fanlar mavjud emas! --</option>')
                             $('#subject').css('border-color', 'red')
                             $('#title_subject').empty()
                         } else {
@@ -100,12 +100,13 @@
             $("#subject").change(function () {
 
                 var selectedSubject = $(this).children("option:selected").val();
-
+                var selectedGroup = $('#group').children("option:selected").val()
                 $.ajax({
                     type: "GET",
                     url: "{% url 'sign:get_schedule' %}",
                     data: {
-                        'subject': selectedSubject, // from form
+                        'subject': selectedSubject,
+                        'group': selectedGroup // from form
                     },
                     success: function (schedule) {
 

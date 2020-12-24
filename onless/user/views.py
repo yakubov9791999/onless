@@ -1220,6 +1220,7 @@ def attendance_set_visited(request):
                                                    created_date__day=today.day)
 
             if not attendance.exists():
+
                 Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today, updated_date=today,
                                           subject=subject, is_visited=visited)
                 return HttpResponse(True)

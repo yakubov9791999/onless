@@ -74,7 +74,6 @@
                     visited = true
                 } else {
                     visited = false
-
                 }
 
                 clickBtnSetAttendance(pupilId, visited, subjectId)
@@ -100,6 +99,7 @@
                                 $(`button[data-id=${pupilId}]`).after($buttonDanger)
                                 $(`button.visited[data-id=${pupilId}]`).remove()
                                 $buttonDanger.on('click', function () {
+
                                     clickBtnSetAttendance(pupilId, false, subjectId)
                                 });
                             } else {
@@ -110,6 +110,7 @@
                                 }
                                 $(`button.not_visited[data-id=${pupilId}]`).remove()
                                 $buttonSuccess.on('click', function () {
+
                                     clickBtnSetAttendance(pupilId, true, subjectId)
                                 });
                             }

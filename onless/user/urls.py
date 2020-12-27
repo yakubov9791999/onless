@@ -45,6 +45,7 @@ urlpatterns = [
     path('attendance-set-by-subject/<int:group_id>/<int:subject_id>/', attendance_set_by_subject, name='attendance_set_by_subject'),
     path('attendance-set-visited/', attendance_set_visited, name='attendance_set_visited'),
     path('send-sms/', send_sms, name='send_sms'),
+    path('referral-list/<int:id>/', referral_list, name='referral_list'),
 
 
 ]

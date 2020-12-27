@@ -1247,7 +1247,6 @@ def send_sms(request):
                     new_sms_count = sms_count - (users.count() * 5)
                 else:
                     new_sms_count = sms_count - (users.count() * 10)
-
                 if new_sms_count != 0:
                     # Sarflangan smslarni  bazaga yozish
                     this_user = School.objects.get(school_user=request.user)
@@ -1269,5 +1268,39 @@ def send_sms(request):
         else:
             form = SendSmsForm(request)
         return render(request, 'user/director/send_sms.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+
+
+@login_required
+def referral_list(request, id):
+    if request.user.role == '2' or request.user.role == '5' or request.user.role == '3':
+        user = get_object_or_404(User, id=id)
+        referrals = Referral.objects.filter(pay__pupil=user)
+        # print(referrals)
+        if not referrals.exists():
+            messages.error(request, "Bonuslar mavjud emas!")
+        total_referrals = 0
+        for referral in referrals:
+            total_referrals += referral.amount
+        # print(total_referrals)
+        pays = Pay.objects.filter(pupil=user)
+
+        learn_payment = user.group.price
+        total_payments = 0
+        for pay in pays:
+            total_payments += pay.payment
+        debt = learn_payment - (total_payments + total_referrals)
+        context = {
+            'referrals': referrals,
+            'pays': pays,
+            'total_referrals': total_referrals,
+            'total_payments': total_payments,
+            'pupil': user,
+            'learn_payment': learn_payment,
+            'debt': debt
+        }
+        return render(request, 'user/bugalter/referral_detail.html', context)
     else:
         return render(request, 'inc/404.html')

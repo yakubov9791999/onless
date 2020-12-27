@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'video.templatetags',
-    'sign'
+    'sign',
+    'practical'
 ]
 
 MIDDLEWARE = [
@@ -71,7 +72,6 @@ WSGI_APPLICATION = 'onless.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 
 
 # Password validation

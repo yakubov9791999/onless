@@ -20,12 +20,17 @@ class SignAdmin(admin.ModelAdmin):
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'sort')
+    list_display = ('short_title', 'long_title','category', 'sort')
+    save_on_top = True
 
+@admin.register(Theme)
+class ThemeAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subject', 'sort')
+    save_on_top = True
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'author','sort', 'created_date')
+    list_display = ('theme', 'subject', 'author','sort', 'created_date')
     list_filter = ['subject','created_date']
     save_on_top = True
 

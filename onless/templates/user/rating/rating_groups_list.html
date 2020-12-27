@@ -18,13 +18,8 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 3%">№</th>
                                 <th>Guruh nomi</th>
-                                <th>Guruh rahbari</th>
-                                <th style="width: 15%">Rahbar raqami</th>
-                                <th style="width: 15%">O'qish boshlanishi</th>
-                                <th style="width: 15%">O'qish yakunlanishi</th>
-                                {% if request.user.role == '2' or request.user.role == '3' %}
-                                    <th style="width: 15%" >Tahrirlash</th>
-                                {% endif %}
+                                <th>Baholarni ko'rish</th>
+                                <th>Baholarni qo'yish</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -35,40 +30,15 @@
                                     {% get_fullname_group group.id as group_name %}
                                     <td>
                                         {% if request.user.role == '2' or request.user.role == '3' %}
-                                            <a href="{% url 'user:group_detail' group.id %}">
+                                            <a href="{% url 'user:attendance_view' group.id %}">
                                                 <b id="group_name">{{ group_name }}</b>
                                             </a>
                                         {% else %}
                                             <b id="group_name">{{ group_name }}</b>
                                         {% endif %}
                                     </td>
-                                    <td>{% if group.teacher %}{{ group.teacher }}{% else %}{% endif %}</td>
-                                     <td>{% if group.teacher %}{% if group.teacher.phone %}+998{{ group.teacher.phone }}{% else %}-{% endif %}{% else %}{% endif %}</td>
-                                    <td>{{ group.start|date:'SHORT_DATE_FORMAT' }}</td>
-                                    <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>
-                                    {% if request.user.role == '2' or request.user.role == '3' %}
-                                        <td>
-
-                                            &nbsp;
-                                            <a href="{% url 'user:group_detail' group.id %}"><i class="fas fa-eye"
-                                            ></i></a>
-
-                                            &nbsp;
-
-                                            <a href="{% url 'user:group_update' group.id %}"><i class="fa fa-edit"
-                                            ></i>
-                                            </a>
-
-                                            {% if request.user.role == '2' %}
-                                                &nbsp;
-                                                {% get_fullname_group group.id as group_name %}
-                                                <a href="#"
-                                                   onclick="delete_group({{ group.id }}, `{{ group_name }}`)"><i
-                                                        class="fa fa-trash"
-                                                ></i></a>
-                                            {% endif %}
-                                        </td>
-                                    {% endif %}
+                                    <td> <a class="btn btn-warning" href="{% url 'user:attendance_view' group.id %}">Baholarni ko'rish</a></td>
+                                    <td> <a class="btn btn-info" href="{% url 'user:attendance_set_by_group' group.id %}">Baholarni qo'yish</a></td>
                                 </tr>
 
                             {% endfor %}

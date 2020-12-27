@@ -9,7 +9,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Guruh: &nbsp<b>{{ group.category }}-{{ group.number }} {{ group.year }}</b>
-                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Fan: <b>{{ subject.title }}</b> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Fan: <b>{{ subject.short_title }}</b> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                         Sana: <b>{% now "SHORT_DATE_FORMAT" %}</b></h3>
                 </div>
 
@@ -74,7 +74,6 @@
                     visited = true
                 } else {
                     visited = false
-
                 }
 
                 clickBtnSetAttendance(pupilId, visited, subjectId)
@@ -100,6 +99,7 @@
                                 $(`button[data-id=${pupilId}]`).after($buttonDanger)
                                 $(`button.visited[data-id=${pupilId}]`).remove()
                                 $buttonDanger.on('click', function () {
+
                                     clickBtnSetAttendance(pupilId, false, subjectId)
                                 });
                             } else {
@@ -110,6 +110,7 @@
                                 }
                                 $(`button.not_visited[data-id=${pupilId}]`).remove()
                                 $buttonSuccess.on('click', function () {
+
                                     clickBtnSetAttendance(pupilId, true, subjectId)
                                 });
                             }

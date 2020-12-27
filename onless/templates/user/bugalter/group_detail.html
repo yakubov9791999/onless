@@ -39,8 +39,13 @@
                             {% for pupil in pupils %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
+<<<<<<< HEAD
                                     <td><a href="{% url 'user:referral_list' pupil.id %}"><b>{{ pupil.name }}</b></a></td>
                                     <td><b>{% if pupil.phone %}{{ pupil.phone }}{% endif %}</b></td>
+=======
+                                    <td><b>{{ pupil.name }}</b></td>
+                                    <td><b>{% if pupil.phone %}+998{{ pupil.phone }}{% endif %}</b></td>
+>>>>>>> c1d772c9af880ffca0a71d869427bde0800756ef
                                     {% get_payments pupil.id group.id as payment %}
                                     <td>{{ payment.total|intcomma }}</td>
                                     <td style="color: green">{{ payment.payment|intcomma }}</td>

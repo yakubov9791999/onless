@@ -36,12 +36,12 @@
                     <thead>
                     <tr style="background-color: #ecebeb">
                         <th style="width: 8%">№</th>
-                        <th style="width: 47%">Mavzu</th>
+                        <th style="width: 45%">Mavzu</th>
                         <th>Sana</th>
                         <th>Boshlanishi</th>
                         <th>Tugashi</th>
-                        {% if request.user.role == '3' %}
-                            <th style="width: 5%">Tahrirlash</th>
+                        {% if request.user.role == '3' or request.user.role == '2' %}
+                            <th style="width: 4%">Tahrirlash</th>
                         {% endif %}
                     </tr>
                     </thead>
@@ -78,7 +78,7 @@
                     success: function (message) {
                         if (message === 'False') {
                             $('#schedule').empty()
-                            $('#subject').empty().append('<option>-- Ushbu guruhda jadval mavjud emas! --</option>')
+                            $('#subject').empty().append('<option>-- Fanlar mavjud emas! --</option>')
                             $('#subject').css('border-color', 'red')
                             $('#title_subject').empty()
                         } else {
@@ -100,12 +100,13 @@
             $("#subject").change(function () {
 
                 var selectedSubject = $(this).children("option:selected").val();
-                var title_subject = $("#subject option:selected").text()
+                var selectedGroup = $('#group').children("option:selected").val()
                 $.ajax({
                     type: "GET",
                     url: "{% url 'sign:get_schedule' %}",
                     data: {
-                        'subject': selectedSubject, // from form
+                        'subject': selectedSubject,
+                        'group': selectedGroup // from form
                     },
                     success: function (schedule) {
 
@@ -115,13 +116,23 @@
                             $('#schedule').empty().append('<tr><td></td><td class="text-danger">Mavzular mavjud emas!</td><td></td><td></td><td></td><td></td></tr>')
                         }
 
-                        $('#title_subject').empty().append(`Fan: ${title_subject}`)
+                        $.ajax({
+                            type: "GET",
+                            url: "{% url 'sign:get_subject_long_title' %}",
+                            data: {
+                                'subject': selectedSubject, // from form
+                            },
+                            success: function (response) {
+                                $('#title_subject').empty().append(`Fan: ${response}`)
+                            }
+                        })
+
 
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
                         {#e.attr('id', 'myid');#}
-                        if (role == 3) {
-                            {#$('.edit_block').html().delete()#}
+                        if (role == 3 || role == 2) {
+
                         } else {
                             $('.edit_block').each(function (index) {
                                 $(this).css('display', 'none')

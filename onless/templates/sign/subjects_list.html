@@ -21,12 +21,9 @@
                             <thead>
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 2%">№</th>
-                                <th>Fan nomi</th>
-                                <th>Toifasi</th>
-                                <th>Qo'shilgan vaqti</th>
-                                {% if request.user.role == '2' or request.user.role == '3' %}
-                                <th>Tahrirlash</th>
-                                {% endif %}
+                                <th style="width: 20%">Qisqa nomi</th>
+                                <th>To'liq nomi</th>
+                                <th style="width: 10%">Toifasi</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -34,18 +31,10 @@
                             {% for subject in subjects %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b>{{ subject.title }}</b>
+                                    <td><b>{{ subject.short_title }}</b>
+                                    <td><b>{{ subject.long_title }}</b>
                                     </td>
                                     <td>{{ subject.category }}</td>
-                                    <td>{{ subject.created_date|date:'SHORT_DATETIME_FORMAT' }}</td>
-                                    {% if request.user.role == '2' or request.user.role == '3' %}
-                                        <td>
-                                            &nbsp;&nbsp;<a href="{% url 'sign:update_subject' subject.id %}"><i
-                                                class="fa fa-edit"
-                                        ></i></a>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;<a href="#"><i class="fa fa-trash"></i></a></td>
-                                        </tr>
-                                    {% endif %}
                             {% endfor %}
                             </tbody>
                             <tfoot>

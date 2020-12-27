@@ -13,7 +13,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Mavzu qo'shish</h3>
+                    <h3 class="card-title">Dars jadvali yaratish</h3>
                 </div>
                 {% include 'inc/messages.html' %}
                 <!-- /.card-header -->
@@ -30,15 +30,15 @@
                                 <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
                             {% endfor %}
                         </select>
-                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fan
-                            nomi</label>
+                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fanni tanlang</label>
                         <select id="subject" name="subject" class="form-control">
                             <option value="">--Guruhni tanlang--</option>
                         </select>
-                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzu
-                            nomi</label>
-                        <input type="text" id="title" class="form-control"
-                               placeholder="Masalan: Ogohlantiruvchi belgilar" name="title">
+                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzuni
+                            tanlang</label>
+                        <select id="theme" name="theme" class="form-control">
+                            <option value="">--Fanni tanlang--</option>
+                        </select>
 
                         <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>
                         <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date">
@@ -161,6 +161,23 @@
                 });
             });
 
+             $("#subject").change(function () {
+
+                var selectedSubject = $(this).children("option:selected").val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'sign:get_themes' %}",
+                    data: {
+                        'subject': selectedSubject, // from form
+                    },
+                    success: function (message) {
+                        $('#theme').empty().append(message)
+                        $('#theme').css('border-color', '#007bff')
+
+                    }
+                });
+            });
+
             $('#subject').on('change', function () {
                 if (!$.isNumeric($("#subject").children("option:selected").val())) {
                     $('#subject').css('border-color', 'red')
@@ -169,7 +186,7 @@
                 }
             })
 
-            $("#title").keypress(LotinInputFilter);
+
 
             $('#group').on('change', function () {
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
@@ -179,14 +196,14 @@
                 }
             })
 
-
-            $('#title').on('keypress', function () {
-                if ($(this).val().length < 0) {
-                    $('#title').css('border-color', 'red')
+            $('#theme').on('change', function () {
+                if (!$.isNumeric($("#theme").children("option:selected").val())) {
+                    $('#theme').css('border-color', 'red')
                 } else {
-                    $('#title').css('border-color', 'green')
+                    $('#theme').css('border-color', 'green')
                 }
             })
+
 
             $('#sort').on('keypress', function () {
                 if ($(this).val().length < 0) {
@@ -222,8 +239,8 @@
                 } else if (!$.isNumeric($("#subject").children("option:selected").val())) {
                     $('#subject').css('border-color', 'red')
                     return false;
-                } else if ($('#title').val().length < 1) {
-                    $('#title').css('border-color', 'red')
+                } else if (!$.isNumeric($("#theme").children("option:selected").val())) {
+                    $('#theme').css('border-color', 'red')
                     return false;
                 } else if ($('#sort').val().length < 1) {
                     $('#sort').css('border-color', 'red')

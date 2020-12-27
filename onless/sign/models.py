@@ -26,13 +26,27 @@ class Sign(models.Model):
 
 
 class Subject(models.Model):
-    title = models.CharField(verbose_name='Nomi',max_length=600)
+    short_title = models.CharField(verbose_name='Qisqa nomi',max_length=600)
+    long_title = models.TextField(verbose_name='To\'liq nomi',)
     category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,)
-    updated_date = models.DateTimeField(null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_subject', null=True)
-    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='school_subject', null=True)
+    created_date = models.DateTimeField(null=True,default=timezone.now(), editable=False)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.short_title
+
+    class Meta:
+        verbose_name = "Fan"
+        verbose_name_plural = "Fanlar"
+        ordering = ['sort']
+
+
+class Theme(models.Model):
+    title = models.TextField(verbose_name='Nomi',)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_theme', null=True)
+    sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
+    created_date = models.DateTimeField(null=True,default=timezone.now(), editable=False)
     is_active = models.BooleanField(default=True)
 
 
@@ -40,11 +54,11 @@ class Subject(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = "Fan"
-        verbose_name_plural = "Fanlar"
+        verbose_name = "Mavzu"
+        verbose_name_plural = "Mavzular"
 
 class Schedule(models.Model):
-    title = models.CharField(max_length=900)
+    theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, related_name='theme_schedule', null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_schedule', null=True)
     created_date = models.DateTimeField(editable=False, null=True, blank=True)
@@ -53,10 +67,11 @@ class Schedule(models.Model):
     start = models.CharField(verbose_name='Boshlanish vaqti', null=True, max_length=5)
     stop = models.CharField(verbose_name='Tugash vaqti', null=True,max_length=5)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
+    is_active = models.BooleanField(default=True)
     sort = models.IntegerField(default=1)
 
     def __str__(self):
-        return self.title
+        return str(self.theme)
 
     class Meta:
         verbose_name = "Dars jadvali"

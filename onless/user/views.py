@@ -1098,15 +1098,36 @@ def get_learning_type(request):
 
 @login_required
 def attendance_groups_list(request):
-    groups = Group.objects.filter(
-        Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+    groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
     if not groups.exists():
-        messages.error(request, 'Sizda an\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
-    context = {
-        'groups': groups
-    }
-    return render(request, 'user/attendance/attendance_groups_list.html', context)
+        messages.error(request, 'Guruhlar mavjud emas!')
+        return render(request, 'user/attendance/attendance_groups_list.html')
 
+    if request.user.role == '3':
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
+        if not groups.exists():
+            messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
+            return render(request, 'user/attendance/attendance_groups_list.html')
+
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+        if not groups.exists():
+            messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/attendance/attendance_groups_list.html', context)
+    elif request.user.role == '2':
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
+        if not groups.exists():
+            messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/attendance/attendance_groups_list.html', context)
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def attendance_view(request, id):
@@ -1137,7 +1158,8 @@ def attendance_set_by_group(request, id):
     schedules = Schedule.objects.filter(date=today)
 
     subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today)).distinct()
+        Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today) & Q(subject_schedule__group=group)).distinct()
+    print(subjects)
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
     if request.user == group.teacher:
@@ -1198,6 +1220,7 @@ def attendance_set_visited(request):
                                                    created_date__day=today.day)
 
             if not attendance.exists():
+
                 Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today, updated_date=today,
                                           subject=subject, is_visited=visited)
                 return HttpResponse(True)
@@ -1233,7 +1256,7 @@ def send_sms(request):
                 users = User.objects.filter(group=group)
 
                 """
-                SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizi8mi
+                SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizimi
                 """
                 if len(text) > 0 and len(text) <= 159:
                     new_sms_count = sms_count - users.count()
@@ -1272,6 +1295,7 @@ def send_sms(request):
         return render(request, 'inc/404.html')
 
 
+<<<<<<< HEAD
 
 @login_required
 def referral_list(request, id):
@@ -1304,3 +1328,68 @@ def referral_list(request, id):
         return render(request, 'user/bugalter/referral_detail.html', context)
     else:
         return render(request, 'inc/404.html')
+=======
+@login_required
+def rating_groups_list(request):
+    groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+    if not groups.exists():
+        messages.error(request, 'Guruhlar mavjud emas!')
+        return render(request, 'user/rating/rating_groups_list.html')
+
+    today = timezone.now()
+    # attendances = Attendance.objects.filter(Q(teacher__school=request.user.school) & Q(created_date__day=today.day) & Q(is_visited=True))
+    # if not attendances.exists():
+    #     messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
+    #     return render(request, 'user/rating/rating_groups_list.html')
+
+    if request.user.role == '3':
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
+        if not groups.exists():
+            messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
+            return render(request, 'user/rating/rating_groups_list.html')
+
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+
+        if not groups.exists():
+            messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/rating/rating_groups_list.html', context)
+    elif request.user.role == '2':
+
+        groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(group_user__pupil_attendance__created_date__day=today.day)).distinct()
+        if not groups.exists():
+            messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
+        context = {
+            'groups': groups
+        }
+        return render(request, 'user/rating/rating_groups_list.html', context)
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
+def set_rating(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    today = timezone.now()
+    tomorrow = timezone.now() + datetime.timedelta(1)
+
+    if request.user == group.teacher:
+        pupils = User.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+
+        if not pupils.exists():
+            messages.error(request, f'O\'quvchilar mavjud emas!')
+        context = {
+            'group': group,
+            'subject': subject,
+            'pupils': pupils
+        }
+        return render(request, 'user/attendance/attendance_set_by_subject.html', context)
+    else:
+        return render(request, 'inc/404.html')
+>>>>>>> c1d772c9af880ffca0a71d869427bde0800756ef

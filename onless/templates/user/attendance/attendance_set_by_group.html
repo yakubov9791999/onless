@@ -22,8 +22,6 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 2%">№</th>
                                 <th>Fan nomi</th>
-                                <th>Toifasi</th>
-                                <th>Qo'shilgan vaqt</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -31,10 +29,8 @@
                             {% for subject in subjects %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b><a href="{% url 'user:attendance_set_by_subject' group.id subject.id %}">{{ subject.title }}</a></b>
+                                    <td><b><a href="{% url 'user:attendance_set_by_subject' group.id subject.id %}">{{ subject.long_title }}</a></b>
                                     </td>
-                                    <td>{{ subject.category }}</td>
-                                    <td>{{ subject.created_date|date:"SHORT_DATETIME_FORMAT" }}</td>
 
                                 </tr>
                             {% endfor %}

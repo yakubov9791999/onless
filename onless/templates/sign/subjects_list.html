@@ -34,7 +34,10 @@
                                     <td><b>{{ subject.short_title }}</b>
                                     <td><b>{{ subject.long_title }}</b>
                                     </td>
-                                    <td>{{ subject.category }}</td>
+                                    <td>{% for category in subject.categories.all %}
+                                    {{ category }},
+                                    {% endfor %}
+                                    </td>
                             {% endfor %}
                             </tbody>
                             <tfoot>

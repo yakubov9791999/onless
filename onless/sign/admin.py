@@ -20,12 +20,15 @@ class SignAdmin(admin.ModelAdmin):
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('short_title', 'long_title','category', 'sort')
+    list_display = ('short_title', 'long_title', 'get_categories', 'sort')
     save_on_top = True
+
+    def get_categories(self, obj):
+        return ",\n".join([p.title for p in obj.categories.all()])
 
 @admin.register(Theme)
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'sort')
+    list_display = ('title', 'sort')
     save_on_top = True
 
 @admin.register(Schedule)

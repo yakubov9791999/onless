@@ -109,6 +109,12 @@ class School(models.Model):
     def __str__(self):
         return self.title
 
+class EducationCategory(models.Model):
+    title = models.CharField(max_length=255)
+    sort = models.IntegerField(default=1, null=True)
+
+    def __str__(self):
+        return self.title
 
 CATEGORY_CHOICES = (
     ("A", "A"),

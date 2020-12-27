@@ -1158,7 +1158,7 @@ def attendance_set_by_group(request, id):
     schedules = Schedule.objects.filter(date=today)
 
     subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(category=group.category) & Q(subject_schedule__date=today) & Q(subject_schedule__group=group)).distinct()
+        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date=today) & Q(subject_schedule__group=group)).distinct()
     print(subjects)
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')

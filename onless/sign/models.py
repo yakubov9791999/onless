@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from multiselectfield import MultiSelectField
 
 from user.decorators import get_name
 from .decorators import get_slug
@@ -12,6 +14,7 @@ class SignCategory(models.Model):
 
     def __str__(self):
         return self.title
+
 
 
 class Sign(models.Model):
@@ -28,9 +31,9 @@ class Sign(models.Model):
 class Subject(models.Model):
     short_title = models.CharField(verbose_name='Qisqa nomi',max_length=600)
     long_title = models.TextField(verbose_name='To\'liq nomi',)
-    category = models.CharField(verbose_name='Toifasi',choices=CATEGORY_CHOICES, max_length=20, default='A')
+    categories = models.ManyToManyField(EducationCategory, verbose_name='Toifasi', max_length=20,)
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,default=timezone.now(), editable=False)
+    created_date = models.DateTimeField(null=True,default=timezone.now, editable=False)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -44,9 +47,9 @@ class Subject(models.Model):
 
 class Theme(models.Model):
     title = models.TextField(verbose_name='Nomi',)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_theme', null=True)
+    subject = models.ManyToManyField(Subject, related_name='subject_theme',)
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,default=timezone.now(), editable=False)
+    created_date = models.DateTimeField(null=True,default=timezone.now, editable=False)
     is_active = models.BooleanField(default=True)
 
 

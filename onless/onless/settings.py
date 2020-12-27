@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'video.templatetags',
     'sign',
-    'practical'
+    'practical',
+
 ]
 
 MIDDLEWARE = [

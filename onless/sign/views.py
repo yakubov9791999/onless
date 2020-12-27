@@ -192,7 +192,7 @@ def subjects_list(request):
         'subjects': subjects
     }
     if request.user.role == '4':
-        subjects = Subject.objects.filter(Q(is_active=True) & Q(category=request.user.group.category))
+        subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=request.user.group.category))
         if not subjects.exists():
             messages.error(request, 'Fanlar mavjud emas!')
         context.update(subjects=subjects)
@@ -202,7 +202,7 @@ def subjects_list(request):
 def get_subject(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
-        subjects = Subject.objects.filter(Q(is_active=True) & Q(category=group.category))
+        subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category))
         options = "<option>-- -- --</option>"
         for subject in subjects:
             options += f"<option value='{subject.id}'>{subject.short_title}</option>"
@@ -235,7 +235,8 @@ def get_themes(request):
 def group_subjects(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
-        subjects = Subject.objects.filter(Q(is_active=True) & Q(category=group.category)).distinct()
+        subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category)).distinct()
+        print(subjects)
         if subjects.exists():
             options = "<option>-- -- --</option>"
             for subject in subjects:

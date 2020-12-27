@@ -2,8 +2,13 @@ from django.contrib import admin
 from django.contrib.admin.forms import AdminPasswordChangeForm
 
 from quiz.admin import ChoiceInline
+from sign.models import *
 from .models import *
 
+@admin.register(EducationCategory)
+class EducationCategoryAdmin(admin.ModelAdmin):
+    list_display = ('title','sort')
+    save_on_top = True
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):

@@ -26,6 +26,7 @@ urlpatterns = [
     path('sign/', include('sign.urls')),
     path('user/', include('user.urls')),
     path('quiz/', include('quiz.urls')),
+    path('practical/', include('practical.urls')),
     path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

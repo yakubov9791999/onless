@@ -56,6 +56,7 @@ class UserManager(BaseUserManager):
 class Region(models.Model):
     title = models.CharField('Nomi', max_length=255)
     sort = models.IntegerField(blank=True, default=1)
+    state_number_code = models.CharField("Viloyat kodini kiriting", max_length=2, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -218,6 +219,25 @@ class Pay(models.Model):
 
     def __str__(self):
         return f"{self.pupil}"
+
+
+"""
+O'quvchi olib kelgani uchun o'quvchilar yoki o'qituvchilarga bonus dasturi 
+"""
+
+
+class Referral(models.Model):
+    pay = models.ForeignKey(Pay, on_delete=models.CASCADE, related_name='referral_for_pay')
+    amount = models.IntegerField("Bonus summasi")
+    comment = models.CharField("Izoh", max_length=255)
+    pubdate = models.DateTimeField(auto_now=True)
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
+                                related_name='referral_for_teacher')
+    pupil = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='referral_for_pupil')
+
+    class Meta:
+        verbose_name = "Referal bonus"
+        verbose_name_plural = "Referal bonuslar"
 
 
 from sign.models import Subject

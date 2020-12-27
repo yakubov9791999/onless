@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block top %}
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <style>
+        .state_number_wrapper {
+            margin: 0 auto;
+            padding-bottom: 50px;
+            font-family: 'Fjalla One', sans-serif;
+        }
+
+        .state_number {
+            border: 3.3px solid black;
+            width: 270px;
+            height: 70px;
+            border-radius: 8px;
+        }
+
+        .region_number {
+            border-right: 3px solid black;
+            width: 60px;
+            font-size: 35px;
+            float: left;
+            text-align: center;
+            height: 100%;
+            padding-top: 8px;
+
+        }
+
+        .letter_number {
+            text-align: center;
+            height: 100%;
+            padding-top: 8px;
+            font-size: 35px;
+            float: left;
+            padding-left: 20px;
+        }
+
+        .point-left {
+            float: left;
+            padding-top: 18px;
+            border-radius: 50%;
+            padding-left: 3px;
+        }
+
+        .flag_uz {
+            text-align: center;
+            float: right;
+            padding-top: 10px;
+            padding-right: 10px;
+        }
+
+        .flag-number-img {
+            width: 25px;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Avtomashina qo'shish</h3>
+                </div>
+                {% include 'inc/messages.html' %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form method="POST" action="{% url 'user:edit_profil' %}"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="exampleInputname">Model</label>
+                            <select name="mainsection" class="form-control" id="">
+                                {% for model in models %}
+                                    <option value="{{ model.id }}">{{ model.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Avtomobil ro'yxatdan o'tgan viloyat nomini tanlang:</label>
+                            <select name="mainsection" class="form-control" id="">
+                                {% for region in regions %}
+                                    <option value="{{ region.id }}">{{ region.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputname">Instruktorni tanlang:</label>
+                            <select name="mainsection" class="form-control" id="">
+                                {% for instructor in instructors %}
+                                    <option value="{{ instructor.id }}">{{ instructor.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state_number">Nomerni kiriting (viloyat kodisiz):</label>
+                            <input type="text" class="form-control" id="state_number" placeholder="Masalan: 342JBA">
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+
+                <hr>
+                <div class="state_number_wrapper">
+                    <div class="state_number">
+                        <div class="point-left">
+                            ◆
+                        </div>
+                        <div class="region_number">
+                            80
+                        </div>
+                        <div class="letter_number">
+                            342 JBA
+                        </div>
+                        <div class="flag_uz">
+                            <div class="flag-uz-img">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Uzbekistan.svg"
+                                     class="flag-number-img" alt="">
+                            </div>
+                            <div class="flag-uz-letter">
+                                UZ
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom %}
+
+{% endblock %}

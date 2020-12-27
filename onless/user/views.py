@@ -1295,7 +1295,7 @@ def send_sms(request):
         return render(request, 'inc/404.html')
 
 
-<<<<<<< HEAD
+
 
 @login_required
 def referral_list(request, id):
@@ -1328,7 +1328,7 @@ def referral_list(request, id):
         return render(request, 'user/bugalter/referral_detail.html', context)
     else:
         return render(request, 'inc/404.html')
-=======
+
 @login_required
 def rating_groups_list(request):
     groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
@@ -1392,4 +1392,4 @@ def set_rating(request, group_id):
         return render(request, 'user/attendance/attendance_set_by_subject.html', context)
     else:
         return render(request, 'inc/404.html')
->>>>>>> c1d772c9af880ffca0a71d869427bde0800756ef
+

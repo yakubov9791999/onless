@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from quiz.models import *
 from user.models import *
-from user.views import *
+
 from user.views import *
 from video.models import *
 from video.forms import *

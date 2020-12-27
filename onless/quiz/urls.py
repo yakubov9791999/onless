@@ -12,5 +12,4 @@ urlpatterns = [
     path('get_bilet_color/', get_bilet_color, name='get_bilet_color'),
     path('reset-answers/', reset_answers, name='reset_answers'),
 
-
 ]

@@ -12,13 +12,12 @@ class EducationCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-
     list_display = ['id', 'role', 'name', 'username', 'phone', 'group', 'turbo', 'birthday', 'is_active',
                     'is_superuser', 'is_staff', 'date_joined',
                     'last_login']
-    list_display_links = [ 'role', 'name']
-    list_filter = ['role','is_active', 'is_offline', 'school', ]
-    search_fields = ['name', 'username', 'phone', 'pasport','turbo',]
+    list_display_links = ['role', 'name']
+    list_filter = ['role', 'is_active', 'is_offline', 'school', ]
+    search_fields = ['name', 'username', 'phone', 'pasport', 'turbo', ]
     save_on_top = True
 
     def save_model(self, request, obj, form, change):
@@ -26,6 +25,7 @@ class UserAdmin(admin.ModelAdmin):
         obj.username = obj.pasport
         obj.save()
         return super().save_model(request, obj, form, change)
+
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
@@ -51,7 +51,7 @@ class DistrictInline(admin.StackedInline):
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['title']}),
+        (None, {'fields': ['title', 'state_number_code']}),
     ]
     inlines = [DistrictInline]
 
@@ -65,9 +65,9 @@ class ConatctAdmin(admin.ModelAdmin):
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    list_display_links = ['category',]
-    list_display = ['id', 'category', 'number', 'year',]
-    list_filter = ['is_active', 'category', 'number',]
+    list_display_links = ['category', ]
+    list_display = ['id', 'category', 'number', 'year', ]
+    list_filter = ['is_active', 'category', 'number', ]
 
 
 @admin.register(Pay)
@@ -80,23 +80,33 @@ class PayAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['id','subject', 'pupil', 'teacher', 'created_date','updated_date']
+    list_display = ['id', 'subject', 'pupil', 'teacher', 'created_date', 'updated_date']
     list_display_links = ['subject']
-    list_filter = ['created_date','updated_date']
-    search_fields = ['subject', 'pupil', 'teacher',]
+    list_filter = ['created_date', 'updated_date']
+    search_fields = ['subject', 'pupil', 'teacher', ]
     save_on_top = True
+
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ['id','subject','score', 'pupil', 'teacher', 'created_date']
+    list_display = ['id', 'subject', 'score', 'pupil', 'teacher', 'created_date']
     list_display_links = ['subject']
-    list_filter = ['score','created_date']
-    search_fields = ['subject', 'pupil', 'teacher',]
+    list_filter = ['score', 'created_date']
+    search_fields = ['subject', 'pupil', 'teacher', ]
     save_on_top = True
+
 
 @admin.register(Sms)
 class SmsAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'school']
     list_display_links = ['user', ]
     list_filter = ['school']
+    save_on_top = True
+
+
+@admin.register(Referral)
+class ReferralAdmin(admin.ModelAdmin):
+    list_display = ['id', 'pay']
+    list_display_links = ['pay', ]
+    list_filter = ['pay']
     save_on_top = True

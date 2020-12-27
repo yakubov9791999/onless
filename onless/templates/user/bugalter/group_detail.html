@@ -27,6 +27,7 @@
                                 <th>Tel raqami</th>
                                 <th>Umumiy</th>
                                 <th>To'lovi</th>
+                                <th>Bonuslari</th>
                                 <th>Qarzdorligi</th>
                                 {% if request.user.role == '5' %}
                                     <th>To'lov qo'shish</th>
@@ -38,20 +39,28 @@
                             {% for pupil in pupils %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
+<<<<<<< HEAD
+                                    <td><a href="{% url 'user:referral_list' pupil.id %}"><b>{{ pupil.name }}</b></a></td>
+                                    <td><b>{% if pupil.phone %}{{ pupil.phone }}{% endif %}</b></td>
+=======
                                     <td><b>{{ pupil.name }}</b></td>
                                     <td><b>{% if pupil.phone %}+998{{ pupil.phone }}{% endif %}</b></td>
+>>>>>>> c1d772c9af880ffca0a71d869427bde0800756ef
                                     {% get_payments pupil.id group.id as payment %}
                                     <td>{{ payment.total|intcomma }}</td>
                                     <td style="color: green">{{ payment.payment|intcomma }}</td>
+                                    <td>{{ payment.total|intcomma }}</td>
                                     <td style="color: red">{{ payment.debit|intcomma }}</td>
+
+
                                     {% if request.user.role == '5' %}
                                         <td>
                                             <form action="{% url 'user:add_pay' %}" method="post">
                                                 {% csrf_token %}
                                                 <div class="row">
-                                                    <dic class="col-10">
+                                                    <div class="col-10">
                                                         <input id="number" type="number" name="pay">
-                                                    </dic>
+                                                    </div>
                                                     <div class="col-2">
                                                         <button type="submit"><i class="fas fa-plus-square"></i>
                                                         </button>

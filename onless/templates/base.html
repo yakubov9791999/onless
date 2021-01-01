@@ -172,11 +172,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         var visited = localStorage.getItem('visited');
         if (!visited) {
             $('body').addClass('sidebar-open')
+            instruction_sweet()
             setTimeout(function () {
                 $('body').removeClass('sidebar-open').addClass('sidebar-closed sidebar-collapse');
 
             }, 5000)
-            instruction_sweet()
+
             {#$('#menu_icon').css({#}
             {#    'border': '1px solid red',#}
             {#    'border-radius': '80%',#}

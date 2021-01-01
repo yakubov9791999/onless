@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from multiselectfield import MultiSelectField
+
 
 from user.decorators import get_name
 from .decorators import get_slug

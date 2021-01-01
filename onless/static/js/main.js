@@ -143,16 +143,16 @@ function InputMaxLength() {
 
 
 function instruction_sweet() {
-    var html = `<p>Hurmatli foydalanuvchi ! <a href="onless.uz">Onless.uz</a> tizimidan foydalanish bo'yicha yo'riqnoma bilan tanishib chiqing!</p>
-<p style="text-align:left">1.<a href="{% url 'video:categories_list' %}">Videodarslar</a> bo'limidagi barcha videolar to'liq oxirigacha ko'rilishi lozim.</p>
+    var html = `<p>Hurmatli foydalanuvchi ! <a href="/">Onless.uz</a> tizimidan foydalanish bo'yicha yo'riqnoma bilan tanishib chiqing!</p>
+<p style="text-align:left">1.<a href="/video/categories/">Videodarslar</a> bo'limidagi barcha videolar to'liq oxirigacha ko'rilishi lozim.</p>
 <p style="text-align:left">2.Videodars ostida mavzuga oid testlar bo'lsa shu testlarga javob berishingiz kerak. (Eslatma: Video oxirigacha ko'rilmasa test ochilmaydi)</p>
-<p style="text-align:left">3.<a href="{% url 'quiz:select_lang' %}">Test savollari</a>  bo'limiga o'tib mashg'ulot rejimida har bir biletni yechib chiqish (Eslatma: Agar mavjud biletdagi 10 ta savolga 10 ta javob to'g'ri berilmasa keyingi bilet ochilmaydi)</p>
-<p style="text-align:left">4.Mashg'ulot rejimida barcha biletlar ko'rib chiqilgandan so'ng imtihon rejimida o'zingizni sinovdan o'tkazing!</p>
+<p style="text-align:left">3.<a href="/quiz/select-lang/">Test savollari</a>  bo'limiga o'tib <a href="/quiz/select-type/?lang=uz&type=T">mashg'ulot rejimi</a>da har bir biletni yechib chiqish (Eslatma: Agar mavjud biletdagi 10 ta savolga 10 ta javob to'g'ri berilmasa keyingi bilet ochilmaydi)</p>
+<p style="text-align:left">4.<a href="/quiz/select-type/?lang=uz&type=T">Mashg'ulot rejimi</a>da barcha biletlar ko'rib chiqilgandan so'ng <a href="/quiz/select-type/?lang=uz&type=I">imtihon rejimi</a>da o'zingizni sinovdan o'tkazing!</p>
 
 <p style="text-align:left">Sizning video ostidagi testlarga bergan javoblaringiz avtomaktab nazoratida bo'ladi.</p>
 <p style="text-align:left">Guruh rahbaringiz esa sizning o'zlashtirish darajangizga qarab sizning nazariy bilimlaringizni baholab boradi. Siz uchun tushunarsiz savol yoki mavzularga oid savollar yuzaga kelsa telegramdagi <a href="https://t.me/onless_support">yordam guruh</a>imizga yozib qoldiring.  Sizga mutahasislar yordam berishadi. Agarda tizim borasida savol va takliflaringiz bo'lsa <a href="https://t.me/Sirojiddin_Yakubov">Sirojiddin Yakubov</a>ga yozib qoldiring.</p>
 <p style="text-align:left">Agar siz mobil telefon orqali bizning tizimizdan foydalanayotgan bo'lsangiz chap tomondagi menyu yopiq holatda turadi. Menyuni ochish uchun ekranning eng yuqori chap tomonida 3 ta chiziqcha qo'yilgan. Menyuni ochib menyudagi har bir bo'lim bilan tanishib chiqing!</p>
-<p style="text-align:left">Bizning tizimdan foydalanish uchun sizga yuborilgan login va parolning logini sizning passport seriyangiz, parolni esa tizimning o'zi avtomatik holatda 7 xonali sondan iborat raqam generatsiya qilib qo'yadi. Agarda siz o'zingiz uchun esda qolarli parol yaratmoqchi bo'lsangiz. Menyuga kirib tahrirlash bo'limidan parolni o'zgartiring va saqlashga bosing.</p>`
+<p style="text-align:left">Bizning tizimdan foydalanish uchun sizga yuborilgan login va parolning logini sizning passport seriyangiz, parolni esa tizimning o'zi avtomatik holatda 7 xonali sondan iborat raqam generatsiya qilib qo'yadi. Agarda siz o'zingiz uchun esda qolarli parol yaratmoqchi bo'lsangiz. Menyuga kirib <a href="/user/settings/">tahrirlash</a> bo'limidan parolni o'zgartiring va saqlashga bosing.</p>`
     var swalButtonTitle = 'Tanishib chiqdim!'
     Swal.fire({
         title: 'Tizimdan foydalanish uchun qo\'llanma',

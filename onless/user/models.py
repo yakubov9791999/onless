@@ -106,9 +106,11 @@ class School(models.Model):
     sms_password = models.CharField(max_length=255, blank=True)
     notification = models.BooleanField(default=False)
     notification_text = models.TextField(blank=True)
+    is_access_pupil_input = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
+
 
 class EducationCategory(models.Model):
     title = models.CharField(max_length=255)
@@ -116,6 +118,7 @@ class EducationCategory(models.Model):
 
     def __str__(self):
         return self.title
+
 
 CATEGORY_CHOICES = (
     ("A", "A"),

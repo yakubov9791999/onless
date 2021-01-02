@@ -106,7 +106,9 @@ class School(models.Model):
     sms_password = models.CharField(max_length=255, blank=True)
     notification = models.BooleanField(default=False)
     notification_text = models.TextField(blank=True)
-    is_access_pupil_input = models.BooleanField(default=False)
+    # is_access_input_user = models.BooleanField(default=False)
+    # input_user_count = models.IntegerField(default=25, null=True, blank=True)
+
 
     def __str__(self):
         return self.title

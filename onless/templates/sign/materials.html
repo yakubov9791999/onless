@@ -45,12 +45,12 @@
                                     <td>{{ material.file.size|filesizeformat }}</td>
                                     {% get_file_url material.id as url %}
                                     <td>&nbsp;
-                                        <a target="_blank" download="on" href="{{ url }}"><i
-                                                class="fas fa-download"></i></a>
+                                        <a target="_blank" download="on" href="{{ url }}"><button class="btn btn-info"><i
+                                                class="fas fa-download"></i></button></a>
                                         {% if material.author == request.user %}
                                             <a href="#"
-                                               onclick="delete_material({{ material.id }},`{{ material.title }}`)"><i
-                                                    class="fas fa-trash ml-2"></i></a>
+                                               onclick="delete_material({{ material.id }},`{{ material.title }}`)"><button class="btn btn-danger"><i
+                                                    class="fas fa-trash ml-2"></i></button></a>
                                         {% endif %}
                                     </td>
                                 </tr>

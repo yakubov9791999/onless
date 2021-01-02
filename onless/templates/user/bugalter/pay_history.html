@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load user_tags %}
+{% load static %}
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -22,8 +23,9 @@
                                 <th>№</th>
                                 <th>To'lov summasi</th>
                                 <th>To'lov sanasi</th>
-
-
+                                {% if request.user.role == '5' %}
+                                    <th>O'chirish</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -31,9 +33,16 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
 
-                                    <td>{{ payment.payment|intcomma }}</td>
+                                    <td style="color: green">{{ payment.payment|intcomma }}</td>
 
                                     <td>{{ payment.pay_date|date:'SHORT_DATETIME_FORMAT' }}</td>
+                                    {% if request.user.role == '5' %}
+                                        <td>
+                                            <button class="btn btn-danger remove_pay"
+                                                    data-pay="{{ payment.id }}"><i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -45,7 +54,10 @@
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Qarzdorlik: </b><span
                                             class="text-danger">{{ result.debit|intcomma }}</span></td>
                                 <td></td>
-
+                                {% if request.user.role == '5' %}
+                                    <td>
+                                    </td>
+                                {% endif %}
                             </tr>
                             </tfoot>
                         </table>
@@ -55,3 +67,13 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block bottom %}
+    <script src="{% static 'js/bootstrap-notify.min.js' %}"></script>
+    <script type="text/javascript">
+        $('.remove_pay').on('click', function () {
+            window.location.href = "{% url 'user:remove_pay' id=12345 %}".replace(/12345/, $(this).data('pay').toString());
+        })
+    </script>
+
+{% endblock bottom %}

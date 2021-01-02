@@ -1072,15 +1072,18 @@ def history_pupil_view_video(request, id):
         'pupil': pupil
     }
     director = User.objects.filter(school=pupil.school, role=2).first()
-
-    if request.user == pupil:
+    try:
+        if request.user == pupil:
+            return render(request, 'user/pupil/history_pupil_view_video.html', context)
+        elif request.user == group.teacher:
+            return render(request, 'user/pupil/history_pupil_view_video.html', context)
+        elif request.user == director:
+            return render(request, 'user/pupil/history_pupil_view_video.html', context)
+        else:
+            return render(request, 'inc/404.html')
+    except UnboundLocalError:
+        context.update(pupil=pupil)
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    elif request.user == group.teacher:
-        return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    elif request.user == director:
-        return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    else:
-        return render(request, 'inc/404.html')
 
 
 @login_required
@@ -1135,17 +1138,20 @@ def result(request, id):
     if last_check_bilet:
         context.update(last_check_bilet=last_check_bilet.bilet)
     director = User.objects.filter(school=pupil.school, role=2).first()
-
-    if request.user == pupil:
-        return render(request, 'user/result.html', context)
-    elif request.user == group.teacher:
+    try:
+        if request.user == pupil:
+            return render(request, 'user/result.html', context)
+        elif request.user == group.teacher:
+            context.update(pupil=pupil)
+            return render(request, 'user/result.html', context)
+        elif request.user == director:
+            context.update(pupil=pupil)
+            return render(request, 'user/result.html', context)
+        else:
+            return render(request, 'inc/404.html')
+    except UnboundLocalError:
         context.update(pupil=pupil)
         return render(request, 'user/result.html', context)
-    elif request.user == director:
-        context.update(pupil=pupil)
-        return render(request, 'user/result.html', context)
-    else:
-        return render(request, 'inc/404.html')
 
 
 @login_required

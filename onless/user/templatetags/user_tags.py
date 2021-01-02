@@ -98,5 +98,4 @@ def get_group_pay(group_id):
         'payment': payment,
         'debit': debit,
         'total_pay': total_pay
-
     }

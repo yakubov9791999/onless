@@ -25,7 +25,7 @@
 
                                 <th style="width: 7%">Hajmi</th>
 
-                                <th style="width: 5%">Yuklash</th>
+                                <th style="width: 5%">Yuklash/O'chirish</th>
 
                             </tr>
                             </thead>
@@ -50,7 +50,7 @@
                                         {% if material.author == request.user %}
                                             <a href="#"
                                                onclick="delete_material({{ material.id }},`{{ material.title }}`)"><button class="btn btn-danger"><i
-                                                    class="fas fa-trash ml-2"></i></button></a>
+                                                    class="fas fa-trash"></i></button></a>
                                         {% endif %}
                                     </td>
                                 </tr>

@@ -81,3 +81,20 @@ def get_pupil_attendance(pupil_id, subject_id, teacher_id):
 def get_offline_pupils(users):
     print(users.filter(is_offline=True).count())
     return str(users.filter(is_offline=True).count())
+
+
+@register.simple_tag()
+def get_group_pay(group_id):
+    group = Group.objects.get(id=group_id)
+    pupils = User.objects.filter(role='4', group=group, is_active=True)
+    pays = Pay.objects.filter(pupil__in=pupils)
+    payment = 0
+    for pay in pays:
+        payment += int(pay.payment)
+    debit = group.price - payment
+
+    return {
+        'payment': payment,
+        'debit': debit
+
+    }

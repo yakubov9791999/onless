@@ -789,22 +789,65 @@ def add_bugalter(request):
 
 @login_required
 def bugalter_groups_list(request):
+    # total_pay = group.price * pupils.count()
+    # payments = Pay.objects.filter(pupil__in=pupils)
+    # if not payments.exists():
+    #     messages.error(request, "To'lovlar mavjud emas !")
+    # total_payments = 0
+    # for pay in payments:
+    #     total_payments += pay.payment
+    # total_debit = total_pay - total_payments
+    # context = {
+    #     'group': group,
+    #     'pupils': pupils,
+    #     'total_pay': total_pay,
+    #     'total_payments': total_payments,
+    #     'total_debit': total_debit
+    # }
+
     if request.user.role == '2' or request.user.role == '5':
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
+        total_pay = 0
+        for group in groups:
+            total_pay += group.price
+        pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
+        pays = Pay.objects.filter(pupil__in=pupils)
+        total_payments = 0
+        for pay in pays:
+            total_payments += pay.payment
+        total_debit = total_pay - total_payments
+        context = {
+            'groups': groups,
+            'total_pay': total_pay,
+            'total_payments': total_payments,
+            'total_debit': total_debit
+        }
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
-        context = {
-            'groups': groups
-        }
+
         return render(request, 'user/bugalter/groups_list.html', context)
     elif request.user.role == '3':
         teacher = get_object_or_404(User, id=request.user.id)
         groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
+        total_pay = 0
+        for group in groups:
+            total_pay += group.price
+        pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
+        pays = Pay.objects.filter(pupil__in=pupils)
+        total_payments = 0
+        for pay in pays:
+            total_payments += pay.payment
+        total_debit = total_pay - total_payments
+        context = {
+            'groups': groups,
+            'total_pay': total_pay,
+            'total_payments': total_payments,
+            'total_debit': total_debit
+        }
+
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
-        context = {
-            'groups': groups
-        }
+
         return render(request, 'user/bugalter/groups_list.html', context)
     else:
         return render(request, 'inc/404.html')

@@ -92,7 +92,7 @@ def get_group_pay(group_id):
     payment = 0
     for pay in pays:
         payment += int(pay.payment)
-    debit = group.price - payment
+    debit = total_pay - payment
 
     return {
         'payment': payment,

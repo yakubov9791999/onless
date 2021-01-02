@@ -809,7 +809,9 @@ def bugalter_groups_list(request):
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
         total_pay = 0
         for group in groups:
-            total_pay += group.price
+            pupils_count = User.objects.filter(is_active=True, role='4',group=group).count()
+            total_pay += group.price * pupils_count
+
         pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
         pays = Pay.objects.filter(pupil__in=pupils)
         total_payments = 0

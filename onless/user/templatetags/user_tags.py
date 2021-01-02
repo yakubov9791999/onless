@@ -87,6 +87,7 @@ def get_offline_pupils(users):
 def get_group_pay(group_id):
     group = Group.objects.get(id=group_id)
     pupils = User.objects.filter(role='4', group=group, is_active=True)
+    total_pay = group.price * pupils.count()
     pays = Pay.objects.filter(pupil__in=pupils)
     payment = 0
     for pay in pays:
@@ -95,6 +96,7 @@ def get_group_pay(group_id):
 
     return {
         'payment': payment,
-        'debit': debit
+        'debit': debit,
+        'total_pay': total_pay
 
     }

@@ -52,7 +52,7 @@
                                 <th>An'anaviy ta'lim</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                     <th style="width: 4%">
-                                        Tahrirlash
+                                        Tahrirlash/O'chirish
                                     </th>
                                 {% endif %}
                             </tr>
@@ -96,15 +96,15 @@
                                                data-id="{{ pupil.id }}" type="checkbox"></td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
-                                            &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i
+                                            &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><button class="btn btn-primary"><i
                                                 class="fa fa-edit"
-                                        ></i></a>
+                                        ></i></button></a>
                                             {% if request.user.role == '2' %}
                                                 &nbsp;&nbsp;
                                                 <a href="#"
-                                                   onclick='delete_pupil({{ group.id }},{{ pupil.id }},`{{ pupil.name }}`)'><i
+                                                   onclick='delete_pupil({{ group.id }},{{ pupil.id }},`{{ pupil.name }}`)'><button class="btn btn-danger"><i
                                                         class="fa fa-trash"
-                                                ></i></a>
+                                                ></i></button></a>
                                             {% endif %}
 
                                         </td>

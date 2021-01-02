@@ -1,3 +1,4 @@
+import json
 import random
 import shutil
 from random import randrange
@@ -8,8 +9,10 @@ import xlrd
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.humanize.templatetags.humanize import intcomma
+from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import ProtectedError, Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.views.generic import UpdateView
@@ -833,29 +836,51 @@ def bugalter_group_detail(request, id):
 
 
 @login_required
-def add_pay(request):
+def set_pay(request):
     if request.user.role == '5':
-        if request.POST:
-            if not request.POST['pay'] == '0':
-                pupil = get_object_or_404(User, id=request.POST['pupil'])
-                group = get_object_or_404(Group, id=request.POST['group'])
-                values = Pay.objects.filter(pupil=pupil)
-                payment = 0
+        if request.GET:
+            pupil = get_object_or_404(User, id=request.GET['pupil'])
+            values = Pay.objects.filter(pupil=pupil)
+            payment = 0
+            try:
+                if request.GET['pay'] <= '0':
+                    return HttpResponse(False)
                 for value in values:
                     payment += value.payment
-                payment += int(request.POST['pay'])
-                if group.price >= payment:
-                    Pay.objects.create(pupil=pupil, payment=int(request.POST['pay']))
-                    messages.success(request, "O'qish puli muvaffaqiyatli qo'shildi !")
+                payment += int(request.GET['pay'])
+                if pupil.group.price >= payment:
+                    Pay.objects.create(pupil=pupil, payment=int(request.GET['pay']))
+                    pay = {
+                        'payment': payment,
+                        'debit': pupil.group.price - payment
+                    }
+                    # list = json.dumps(pay)
+                    return JsonResponse({'pay': pay})
                 else:
-                    messages.error(request, f"O'qish puli {group.price} dan ortiq bo'lishi mumkin emas !")
-            else:
-                messages.error(request, "Summani to'g'ri kiriting !")
-        next = request.META['HTTP_REFERER']
-        return HttpResponseRedirect(next)
+                    return HttpResponse({pupil.group.price})
+            except ValueError:
+                return HttpResponse(False)
+        return HttpResponse(False)
     else:
         return render(request, 'inc/404.html')
 
+
+
+@login_required
+def remove_pay(request, id):
+    if request.user.role == '5':
+        try:
+            pay = Pay.objects.get(id=id)
+            payment = pay.payment
+            pupil = pay.pupil
+            group = pupil.group
+            pay.delete()
+            messages.success(request, f"{payment} so'm muvaffaqiyatli o'chirildi!")
+            return redirect(reverse_lazy('user:pay_history', kwargs={'user_id': pupil.id, 'group_id': group.id}))
+        except ObjectDoesNotExist:
+            return redirect(reverse_lazy('user:bugalter_groups_list'))
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def pay_history(request, user_id, group_id):
@@ -1110,7 +1135,8 @@ def attendance_groups_list(request):
             return render(request, 'user/attendance/attendance_groups_list.html')
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(
+                teacher=request.user)).distinct()
         if not groups.exists():
             messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
         context = {
@@ -1128,6 +1154,7 @@ def attendance_groups_list(request):
         return render(request, 'user/attendance/attendance_groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def attendance_view(request, id):
@@ -1158,7 +1185,8 @@ def attendance_set_by_group(request, id):
     schedules = Schedule.objects.filter(date=today)
 
     subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date=today) & Q(subject_schedule__group=group)).distinct()
+        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date=today) & Q(
+            subject_schedule__group=group)).distinct()
     print(subjects)
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
@@ -1295,8 +1323,6 @@ def send_sms(request):
         return render(request, 'inc/404.html')
 
 
-
-
 @login_required
 def referral_list(request, id):
     if request.user.role == '2' or request.user.role == '5' or request.user.role == '3':
@@ -1329,6 +1355,7 @@ def referral_list(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def rating_groups_list(request):
     groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
@@ -1349,7 +1376,8 @@ def rating_groups_list(request):
             return render(request, 'user/rating/rating_groups_list.html')
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(
+                teacher=request.user)).distinct()
 
         if not groups.exists():
             messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
@@ -1360,7 +1388,8 @@ def rating_groups_list(request):
     elif request.user.role == '2':
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(group_user__pupil_attendance__created_date__day=today.day)).distinct()
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(
+                group_user__pupil_attendance__created_date__day=today.day)).distinct()
         if not groups.exists():
             messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
         context = {
@@ -1369,6 +1398,7 @@ def rating_groups_list(request):
         return render(request, 'user/rating/rating_groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def set_rating(request, group_id):
@@ -1392,4 +1422,3 @@ def set_rating(request, group_id):
         return render(request, 'user/attendance/attendance_set_by_subject.html', context)
     else:
         return render(request, 'inc/404.html')
-

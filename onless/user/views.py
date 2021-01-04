@@ -1317,6 +1317,9 @@ def send_sms(request):
     if request.user.role == '2':
         form = SendSmsForm(data=request.POST)
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
+        teachers = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=3)).order_by('name')
+        instructors = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=6)).order_by('name')
+        accountants = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=5)).order_by('name')
         sms_count = request.user.school.sms_count
         if sms_count == None:
             school_sms_count = 0
@@ -1325,7 +1328,10 @@ def send_sms(request):
 
         context = {
             'groups': groups,
-            'school_sms_count': school_sms_count
+            'school_sms_count': school_sms_count,
+            'teachers': teachers,
+            'instructors': instructors,
+            'accountants': accountants
         }
         if request.method == 'POST':
             if form.is_valid():
@@ -1335,8 +1341,17 @@ def send_sms(request):
                 text = form.cleaned_data['text']
                 text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
                 text = get_sms(text)
-                group = get_object_or_404(Group, id=int(request.POST['group']))
-                users = User.objects.filter(Q(group=group) & Q(is_active=True) & Q(role=4))
+
+                try:
+                    group = get_object_or_404(Group, id=int(request.POST['group']))
+                    users = User.objects.filter(Q(group=group) & Q(is_active=True) & Q(role=4))
+                except ValueError:
+                    if request.POST.get('group') == 'accountants':
+                        users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=5))
+                    elif request.POST.get('group') == 'instruktors':
+                        users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=6))
+                    else:
+                        users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=3))
                 if users.count() <= 0:
                     messages.error(request, "Ushbu guruhda o'quvchi mavjud emas!")
                     return render(request, 'user/director/send_sms.html', context)
@@ -1360,8 +1375,8 @@ def send_sms(request):
 
                     for user in users:
                         msg = text.replace(" ", "+")
-                        # url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                        # response = requests.get(url)
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                        response = requests.get(url)
                     # Sarflangan smslarni  bazaga yozish
                     this_user = School.objects.get(school_user=request.user)
                     this_user.sms_count = new_sms_count
@@ -1487,6 +1502,25 @@ def get_group_pupils_count(request):
         group = get_object_or_404(Group, id=request.POST.get('group'))
         pupils_count = User.objects.filter(Q(is_active=True) & Q(role=4) & Q(group=group)).count()
         return HttpResponse(pupils_count)
+    else:
+        return HttpResponse(False)
+
+
+@login_required
+def get_workers_count(request):
+    if request.POST:
+        context = {}
+        if request.POST.get('workers') == 'teachers':
+            teachers_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(role=3)).count()
+            return HttpResponse(teachers_count)
+        elif request.POST.get('workers') == 'instruktors':
+            instruktors_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=6)).count()
+            return HttpResponse(instruktors_count)
+        elif request.POST.get('workers') == 'accountants':
+            accountants_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=5)).count()
+            return HttpResponse(accountants_count)
+        else:
+            return HttpResponse(False)
     else:
         return HttpResponse(False)
 

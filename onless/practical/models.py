@@ -40,7 +40,7 @@ class Practical(models.Model):
                                    related_name='practical_instructor')
     pupil = models.ForeignKey(User, verbose_name="O'quvchi", null=True, on_delete=models.CASCADE,
                               related_name='practical_pupil')
-    created_date = models.DateTimeField(default=timezone.now)
+    # created_date = models.DateTimeField(default=timezone.now)
     training_time = models.DateTimeField("Amaliy mashg'ulotga yozilgan vaqti")
     status = models.BooleanField("Amaliy mashg'ulot holati", default=True)
     cancel = models.BooleanField("Bekor qilinganligi", default=False)

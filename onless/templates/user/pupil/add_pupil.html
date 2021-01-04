@@ -28,7 +28,7 @@
                             <label class="label_required" for="exampleInputname">Guruh</label>
                             <select name="group" class="form-control" id="" required="required">
                                 {% for group in groups %}
-                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>
+                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
                                 {% endfor %}
                             </select>
                         </div>

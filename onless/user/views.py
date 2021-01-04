@@ -1355,9 +1355,8 @@ def send_sms(request):
                     new_sms_count = sms_count - (users.count() * 5)
                 else:
                     new_sms_count = sms_count - (users.count() * 30)
-                print(users.count(), new_sms_count)
                 if new_sms_count >= 0:
-                    Sms.objects.create(sms_count=new_sms_count, school=request.user.school, text=text)
+                    Sms.objects.create(sms_count=sms_count - new_sms_count, school=request.user.school, text=text)
 
                     for user in users:
                         msg = text.replace(" ", "+")

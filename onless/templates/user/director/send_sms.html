@@ -36,7 +36,7 @@
                             <select name="group" id="selectedGroup" class="form-control">
                                 <option value="">-- guruhni tanlang --</option>
                                 {% for group in groups %}
-                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }}</option>
+                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
                                 {% endfor %}
                             </select>
                         </div>

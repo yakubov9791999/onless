@@ -98,8 +98,8 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(Sms)
 class SmsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'school']
-    list_display_links = ['user', ]
+    list_display = ['id', 'text','sms_count', 'school']
+    list_display_links = ['text', ]
     list_filter = ['school']
     save_on_top = True
 

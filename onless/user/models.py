@@ -297,8 +297,8 @@ class Rating(models.Model):
 
 
 class Sms(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sms_user')
-    created_date = models.DateTimeField(auto_now=True, verbose_name='Yaratilgan vaqt', editable=False)
+    sms_count = models.IntegerField(default=0, null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt', editable=False)
     text = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='sms_school')
 

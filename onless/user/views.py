@@ -1329,40 +1329,47 @@ def send_sms(request):
         }
         if request.method == 'POST':
             if form.is_valid():
+                if school_sms_count == 0:
+                    messages.error(request, "Sizda sms to'plam mavjud emas!")
+                    return render(request, 'user/director/send_sms.html', context)
                 text = form.cleaned_data['text']
                 text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
-                group = int(request.POST['group'])
-                users = User.objects.filter(group=group)
-
+                text = get_sms(text)
+                group = get_object_or_404(Group, id=int(request.POST['group']))
+                users = User.objects.filter(Q(group=group) & Q(is_active=True) & Q(role=4))
+                if users.count() <= 0:
+                    messages.error(request, "Ushbu guruhda o'quvchi mavjud emas!")
+                    return render(request, 'user/director/send_sms.html', context)
                 """
                 SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizimi
                 """
-                if len(text) > 0 and len(text) <= 159:
+                if len(text) >= 0 and len(text) <= 159:
                     new_sms_count = sms_count - users.count()
-                elif len(text) >= 160 and len(text) <= 317:
+                elif len(text) >= 160 and len(text) <= 316:
                     new_sms_count = sms_count - (users.count() * 2)
-                elif len(text) >= 318 and len(text) <= 477:
+                elif len(text) >= 317 and len(text) <= 476:
                     new_sms_count = sms_count - (users.count() * 3)
-                elif len(text) >= 478 and len(text) <= 635:
-                    new_sms_count = sms_count - (users.count() * 3)
-                elif len(text) >= 636 and len(text) <= 795:
+                elif len(text) >= 477 and len(text) <= 634:
+                    new_sms_count = sms_count - (users.count() * 4)
+                elif len(text) >= 635 and len(text) <= 794:
                     new_sms_count = sms_count - (users.count() * 5)
                 else:
-                    new_sms_count = sms_count - (users.count() * 10)
-                if new_sms_count != 0:
+                    new_sms_count = sms_count - (users.count() * 30)
+                print(users.count(), new_sms_count)
+                if new_sms_count >= 0:
+                    Sms.objects.create(sms_count=new_sms_count, school=request.user.school, text=text)
+
+                    for user in users:
+                        msg = text.replace(" ", "+")
+                        # url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                        # response = requests.get(url)
                     # Sarflangan smslarni  bazaga yozish
                     this_user = School.objects.get(school_user=request.user)
                     this_user.sms_count = new_sms_count
                     this_user.save()
-                    if users.count() > 0:
-                        for user in users:
-                            msg = text.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                            response = requests.get(url)
-                        messages.success(request,
-                                         f"Sizning SMS xabarnomangiz {users.count()} o'quvchiga muvaffaqiyatli yetkazildi")
-                    else:
-                        messages.error(request, "Ushbu guruhda o'quvchi mavjud emas!")
+
+                    messages.success(request, f"Sizning SMS xabarnomangiz {users.count()} ta o'quvchiga muvaffaqiyatli yetkazildi!")
+                    context.update(school_sms_count=new_sms_count)
                 else:
                     messages.error(request, "Kechirasiz, SMSlar soni guruhdagi o'quvchilar sonidan kam")
             else:
@@ -1473,3 +1480,14 @@ def set_rating(request, group_id):
         return render(request, 'user/attendance/attendance_set_by_subject.html', context)
     else:
         return render(request, 'inc/404.html')
+
+
+@login_required
+def get_group_pupils_count(request):
+    if request.POST:
+        group = get_object_or_404(Group, id=request.POST.get('group'))
+        pupils_count = User.objects.filter(Q(is_active=True) & Q(role=4) & Q(group=group)).count()
+        return HttpResponse(pupils_count)
+    else:
+        return HttpResponse(False)
+

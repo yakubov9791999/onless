@@ -30,7 +30,7 @@ class SubjectAdmin(admin.ModelAdmin):
 class ThemeAdmin(admin.ModelAdmin):
     list_display = ('title','get_subjects', 'sort')
     list_filter = ['sort', ]
-    
+
     search_fields = ['title', ]
     save_on_top = True
 

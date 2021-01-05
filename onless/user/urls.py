@@ -25,6 +25,7 @@ urlpatterns = [
     path('worker-delete/<int:id>/', worker_delete, name='worker_delete'),
     path('upload-file/', upload_file, name='upload_file'),
     path('add-bugalter/', add_bugalter, name='add_bugalter'),
+    path('add-instructor/', add_instructor, name='add_instructor'),
     path('bugalter/groups/', bugalter_groups_list, name='bugalter_groups_list'),
     path('bugalter/group/<int:id>/', bugalter_group_detail, name='bugalter_group_detail'),
     path('set-pay/', set_pay, name='set_pay'),

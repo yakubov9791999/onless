@@ -575,9 +575,10 @@ def workers_list(request):
     if request.user.role == '2':
         workers = User.objects.filter(
             Q(school=request.user.school, role=5, is_active=True) | Q(school=request.user.school, role=3,
+                                                                      is_active=True) | Q(school=request.user.school, role=6,
                                                                       is_active=True)).order_by('name')
         if not workers.exists():
-            messages.error(request, "Xodimlar ro'yhatga olinmagan !")
+            messages.error(request, "Xodimlar ro'yhatga olinmagan!")
         context = {
             'workers': workers
         }
@@ -786,6 +787,44 @@ def add_bugalter(request):
     else:
         return render(request, 'inc/404.html')
 
+
+@login_required
+def add_instructor(request):
+    if request.user.role == '2':
+        if request.POST:
+            form = AddUserForm(data=request.POST)
+            password = random.randint(1000000, 9999999)
+            pasport = get_pasport(request.POST['pasport'])
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                name = get_name(name)
+                try:
+                    user = User.objects.create_user(
+                        username=pasport,
+                        pasport=pasport,
+                        school=request.user.school,
+                        turbo=password,
+                        password=password,
+                        name=name,
+                        phone=form.cleaned_data['phone'],
+                        role='6',
+                        is_superuser=False,
+                    )
+                    user.set_password(password)
+                    user.username = pasport
+                    user.email = ''
+                    user.save()
+                    messages.success(request, "Instruktor muvaffaqiyatli qo'shildi")
+
+                except IntegrityError:
+                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
+        else:
+            form = AddUserForm(request)
+        return render(request, 'user/instructor/add_instructor.html')
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def bugalter_groups_list(request):
@@ -1348,7 +1387,7 @@ def send_sms(request):
                 except ValueError:
                     if request.POST.get('group') == 'accountants':
                         users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=5))
-                    elif request.POST.get('group') == 'instruktors':
+                    elif request.POST.get('group') == 'instructors':
                         users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=6))
                     else:
                         users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=3))
@@ -1513,9 +1552,9 @@ def get_workers_count(request):
         if request.POST.get('workers') == 'teachers':
             teachers_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(role=3)).count()
             return HttpResponse(teachers_count)
-        elif request.POST.get('workers') == 'instruktors':
-            instruktors_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=6)).count()
-            return HttpResponse(instruktors_count)
+        elif request.POST.get('workers') == 'instructors':
+            instructors_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=6)).count()
+            return HttpResponse(instructors_count)
         elif request.POST.get('workers') == 'accountants':
             accountants_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=5)).count()
             return HttpResponse(accountants_count)

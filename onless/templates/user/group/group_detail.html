@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
 {% block content %}
+    <style>
+    .offline_checkbox:hover {
+       cursor: pointer;
+    }
+    </style>
     <div class="row">
         <!-- left column -->
         <div class="col-md-12">
@@ -138,7 +143,6 @@
             document.getElementById('button_add_pupil').style.display = 'none';
             document.getElementById('export_excel_form').style.display = 'block';
             document.getElementById('export_pdf_form').style.display = 'none';
-
         }
 
     </script>

@@ -60,12 +60,27 @@
                     <div class="inner">
                         <h3>{{ count.bugalters }}</h3>
 
-                        <h5>Hisobchini qo'shish</h5>
+                        <h5>Hisobchi qo'shish</h5>
                     </div>
                     <div class="icon">
                         <i class="fas fa-coins"></i>
                     </div>
                     <a href="{% url 'user:add_bugalter' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+
+             <div class="col-lg-6 col-md-6 col-sm-12">
+                <!-- small box -->
+                <div class="small-box bg-gradient-cyan">
+                    <div class="inner">
+                        <h3>{{ count.instructors }}</h3>
+
+                        <h5>Instruktor qo'shish</h5>
+                    </div>
+                    <div class="icon">
+                        <i class="far fa-user"></i>
+                    </div>
+                    <a href="{% url 'user:add_instructor' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
                 </div>
             </div>
 
@@ -87,7 +102,7 @@
 
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
-                <div class="small-box bg-gradient-lightblue">
+                <div class="small-box bg-gradient-cyan">
                     <div class="inner">
                         {% count_schedules request.user.school.id as schedules_count %}
                         <h3>{{ schedules_count }}</h3>

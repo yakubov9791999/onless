@@ -165,7 +165,7 @@ ROLE_CHOICES = (
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
     ("5", "Bugalter"),
-    ("6", "Instruktor"),
+    ("6", "Instructor"),
 )
 
 GENDER_CHOICES = (

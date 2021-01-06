@@ -1331,8 +1331,10 @@ def attendance_set_visited(request):
             today = timezone.now()
             if request.GET.get('visited') == 'true':
                 visited = True
-            else:
+            elif request.GET.get('visited') == 'false':
                 visited = False
+            else:
+                return HttpResponse(False)
 
             attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
                                                    created_date__day=today.day)

@@ -27,7 +27,7 @@ def add_result(request):
 
             result = Result.objects.filter(question=question, user=user)
             if not result.exists():
-                Result.objects.create(question=question, user=user, answer=answer, created_date=datetime.now())
+                Result.objects.create(question=question, user=user, answer=answer)
                 attempt = Attempt.objects.filter(user=user)
                 if not attempt:
                     Attempt.objects.create(user=user)

@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from user.models import User
 from video.models import Video
 from . import fields
@@ -81,7 +83,7 @@ class Result(models.Model):
     question = models.ForeignKey(Savol, on_delete=models.CASCADE, related_name='result_question', null=True)
     answer = models.ForeignKey(Javob, on_delete=models.SET_NULL, related_name='result_answer', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user', blank=True, null=True)
-    created_date = models.DateTimeField(editable=False)
+    created_date = models.DateTimeField(editable=False, default=timezone.now)
 
     def __str__(self):
         return f"{self.user}"

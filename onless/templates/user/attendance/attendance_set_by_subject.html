@@ -102,7 +102,7 @@
                                 var $buttonDanger = $(`<button class="btn btn-danger not_visited" data-id="${pupilId}">Kelmagan</button>`);
                                 $(`button[data-id=${pupilId}]`).after($buttonDanger)
                                 $(`button.visited[data-id=${pupilId}]`).remove()
-                                $buttonDanger.on('click', function () {
+                                $buttonDanger.on('click', function (pupilId, subjectId) {
 
                                     clickBtnSetAttendance(pupilId, false, subjectId)
                                 });
@@ -113,13 +113,13 @@
                                     $(`button[data-id=${pupilId}]`).after($buttonSuccess)
                                 }
                                 $(`button.not_visited[data-id=${pupilId}]`).remove()
-                                $buttonSuccess.on('click', function () {
+                                $buttonSuccess.on('click', function (pupilId, subjectId) {
 
                                     clickBtnSetAttendance(pupilId, true, subjectId)
                                 });
                             }
                         } else {
-
+                            console.log(response)
                         }
                     },
                     error: function (response) {

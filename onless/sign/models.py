@@ -49,7 +49,7 @@ class Theme(models.Model):
     title = models.TextField(verbose_name='Nomi',)
     subject = models.ManyToManyField(Subject, related_name='subject_theme',)
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
-    created_date = models.DateTimeField(null=True,default=timezone.now, editable=False)
+    created_date = models.DateTimeField(default=timezone.now, editable=False)
     is_active = models.BooleanField(default=True)
 
 
@@ -64,8 +64,8 @@ class Schedule(models.Model):
     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, related_name='theme_schedule', null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_schedule', null=True)
-    created_date = models.DateTimeField(editable=False, null=True, blank=True)
-    updated_date = models.DateTimeField(null=True, blank=True)
+    created_date = models.DateTimeField(editable=False, default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
     date = models.DateField(verbose_name='Kuni', null=True,blank=True)
     start = models.CharField(verbose_name='Boshlanish vaqti', null=True, max_length=5)
     stop = models.CharField(verbose_name='Tugash vaqti', null=True,max_length=5)

@@ -236,7 +236,7 @@ def group_subjects(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
         subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category)).distinct()
-        print(subjects)
+
         if subjects.exists():
             options = "<option>-- -- --</option>"
             for subject in subjects:

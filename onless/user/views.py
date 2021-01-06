@@ -1249,11 +1249,13 @@ def attendance_groups_list(request):
 @login_required
 def attendance_view(request, id):
     group = get_object_or_404(Group, id=id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
     if request.user.school == group.school:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
-        attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__day=timezone.now().day))
+        attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__range=(today_min, today_max)))
         context = {
             'group': group,
             'attendances': attendances
@@ -1271,13 +1273,13 @@ def attendance_view(request, id):
 def attendance_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
     today = timezone.now()
-    # tomorrow = timezone.now() + datetime.timedelta(1)
-    schedules = Schedule.objects.filter(date=today)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
     subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date=today) & Q(
+        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date__range=(today_min, today_max)) & Q(
             subject_schedule__group=group)).distinct()
-    print(subjects)
+
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
     if request.user == group.teacher:
@@ -1330,7 +1332,7 @@ def attendance_set_visited(request):
             subject = get_object_or_404(Subject, id=request.GET.get('subject'))
             today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
             today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-            print('ok')
+
             if request.GET.get('visited') == 'true':
                 visited = True
             elif request.GET.get('visited') == 'false':

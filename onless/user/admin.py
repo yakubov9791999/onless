@@ -80,7 +80,7 @@ class PayAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'subject', 'pupil', 'teacher', 'created_date', 'updated_date']
+    list_display = ['id', 'subject', 'pupil', 'teacher','is_visited', 'created_date', 'updated_date']
     list_display_links = ['subject']
     list_filter = ['created_date', 'updated_date']
     search_fields = ['subject', 'pupil', 'teacher', ]

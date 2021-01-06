@@ -85,7 +85,6 @@
             })
 
             function clickBtnSetAttendance(pupilId, visited, subjectId) {
-
                 $.ajax({
                     type: 'GET',
                     url: '{% url "user:attendance_set_visited" %}',
@@ -102,8 +101,7 @@
                                 var $buttonDanger = $(`<button class="btn btn-danger not_visited" data-id="${pupilId}">Kelmagan</button>`);
                                 $(`button[data-id=${pupilId}]`).after($buttonDanger)
                                 $(`button.visited[data-id=${pupilId}]`).remove()
-                                $buttonDanger.on('click', function (pupilId, subjectId) {
-
+                                $buttonDanger.on('click', function () {
                                     clickBtnSetAttendance(pupilId, false, subjectId)
                                 });
                             } else {
@@ -113,7 +111,7 @@
                                     $(`button[data-id=${pupilId}]`).after($buttonSuccess)
                                 }
                                 $(`button.not_visited[data-id=${pupilId}]`).remove()
-                                $buttonSuccess.on('click', function (pupilId, subjectId) {
+                                $buttonSuccess.on('click', function () {
 
                                     clickBtnSetAttendance(pupilId, true, subjectId)
                                 });

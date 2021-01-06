@@ -1328,7 +1328,9 @@ def attendance_set_visited(request):
         if request.GET:
             pupil = get_object_or_404(User, id=request.GET.get('pupil'))
             subject = get_object_or_404(Subject, id=request.GET.get('subject'))
-            today = timezone.now()
+            today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+            today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+            print('ok')
             if request.GET.get('visited') == 'true':
                 visited = True
             elif request.GET.get('visited') == 'false':
@@ -1336,18 +1338,15 @@ def attendance_set_visited(request):
             else:
                 return HttpResponse(False)
 
-            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
-                                                   created_date__day=today.day)
+            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,created_date__range=(today_min, today_max))
 
             if not attendance.exists():
-
-                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today, updated_date=today,
-                                          subject=subject, is_visited=visited)
+                Attendance.objects.create(pupil=pupil, teacher=request.user,  subject=subject, is_visited=visited)
                 return HttpResponse(True)
             else:
                 for atten in attendance:
                     atten.is_visited = visited
-                    atten.updated_date = today
+                    atten.updated_date = timezone.now()
                     atten.save()
                 return HttpResponse(True)
     return HttpResponse(False)

@@ -79,6 +79,20 @@ def get_pupil_attendance(pupil_id, subject_id, teacher_id):
             elif atten.is_visited == False:
                 return False
 
+@register.simple_tag()
+def get_pupil_attendance_time(pupil_id, subject_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
+    attendance = Attendance.objects.filter(pupil=pupil, subject=subject,
+                                           created_date__range=(today_min, today_max))
+    if attendance.exists():
+        for atten in attendance:
+            return atten.updated_date
+
 
 @register.filter
 def get_offline_pupils(users):

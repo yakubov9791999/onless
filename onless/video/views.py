@@ -76,6 +76,12 @@ def home(request):
             return redirect(reverse_lazy('user:edit_profil'))
         else:
             return redirect(reverse_lazy('user:bugalter_groups_list'))
+
+    elif request.user.role == "6" and request.user.school.is_block == False:  # agarda role Instructor  bo'lsa
+        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
+            return redirect(reverse_lazy('user:edit_profil'))
+        else:
+            return redirect(reverse_lazy("user:result", kwargs={'id': request.user.id}))
     else:
         return render(request, 'inc/block.html')
 

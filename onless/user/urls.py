@@ -55,6 +55,7 @@ urlpatterns = [
     path('set-rating/', set_rating, name='set_rating'),
     path('get-group-pupils-count/', get_group_pupils_count, name='get_group_pupils_count'),
     path('get-workers-count/', get_workers_count, name='get_workers_count'),
+    path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
 
 
 ]

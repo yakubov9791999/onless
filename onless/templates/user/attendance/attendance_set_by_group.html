@@ -29,7 +29,7 @@
                             {% for subject in subjects %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b><a href="{% url 'user:attendance_set_by_subject' group.id subject.id %}">{{ subject.long_title }}</a></b>
+                                    <td><b><a href="{% url 'user:attendance_set_by_subject' group.id subject.id %}">{{ subject.short_title }} &nbsp; - &nbsp; {{ subject.long_title }}</a></b>
                                     </td>
 
                                 </tr>

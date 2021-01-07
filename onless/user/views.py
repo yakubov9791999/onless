@@ -1030,7 +1030,6 @@ def history_view_video_all(request):
                 if not views.exists():
                     messages.error(request, "Ko'rishlar mavjud emas !")
                 context.update(views=views)
-                print('ok')
             return render(request, 'user/view_video_history_all.html', context)
         else:
             views = ViewComplete.objects.filter(
@@ -1282,6 +1281,7 @@ def attendance_set_by_group(request, id):
 
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+        return redirect(reverse_lazy('user:attendance_groups_list'))
     if request.user == group.teacher:
         # pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
         context = {
@@ -1304,9 +1304,16 @@ def attendance_set_by_group(request, id):
 def attendance_set_by_subject(request, group_id, subject_id):
     group = get_object_or_404(Group, id=group_id)
     subject = get_object_or_404(Subject, id=subject_id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    # subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category) & Q(
+    #         subject_schedule__date__range=(today_min, today_max)) & Q(
+    #         subject_schedule__group=group))
+    schedules = Schedule.objects.filter(Q(date__range=(today_min, today_max)) & Q(is_active=True) & Q(subject=subject))
 
-    today = timezone.now()
-    tomorrow = timezone.now() + datetime.timedelta(1)
+    if not schedules.exists():
+        messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+        return redirect(reverse_lazy('user:attendance_groups_list'))
 
     if request.user == group.teacher:
         pupils = User.objects.filter(
@@ -1566,3 +1573,21 @@ def get_workers_count(request):
     else:
         return HttpResponse(False)
 
+
+@login_required
+def get_attendance_time(request):
+    if request.POST:
+        pupil = get_object_or_404(User, id=request.POST.get('pupil'))
+        subject = get_object_or_404(Subject, id=request.POST.get('subject'))
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        attendance = Attendance.objects.filter(pupil=pupil, subject=subject,created_date__range=(today_min, today_max))
+        for atten in attendance:
+            get_year = str(atten.updated_date)[0:4]
+            get_month = str(atten.updated_date)[5:7]
+            get_day = str(atten.updated_date)[8:10]
+            get_time = str(atten.updated_date)[11:16]
+            get_datetime = f"{get_day}.{get_month}.{get_year}  {get_time}"
+            return HttpResponse(get_datetime)
+    else:
+        return HttpResponse(False)

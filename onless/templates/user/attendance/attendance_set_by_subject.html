@@ -27,6 +27,7 @@
                                 <th style="width: 2%">№</th>
                                 <th>O'quvchining ism familiyasi</th>
                                 <th>Davomatni belgilash</th>
+                                <th>Belgilangan vaqt</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -47,7 +48,9 @@
                                             </button>
                                         {% endif %}
                                     </td>
-
+                                    {% get_pupil_attendance_time pupil.id subject.id as time %}
+                                    <td data-id="{{ pupil.id }}"
+                                        class="attendance_time">{{ time|date:'SHORT_DATETIME_FORMAT' }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -81,8 +84,44 @@
                 }
 
                 clickBtnSetAttendance(pupilId, visited, subjectId)
-
+                get_attendance_time()
             })
+
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+                }
+            })
+
+
+            function get_attendance_time() {
+
+                $(".attendance_time").each(function () {
+                    var pupilId = $(this).data('id')
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "user:get_attendance_time" %}',
+                        data: {
+                            'pupil': pupilId,
+                            'subject': subjectId,
+
+                        },
+                        success: function (response) {
+                            $(".attendance_time").each(function () {
+                            if ($(this).data('id') == pupilId) {
+                                $(this).data('id', pupilId).text(response)
+                            }
+                        });
+                        }, error: function (response) {
+                            console.log(response)
+                        }
+                    })
+
+                });
+            }
 
             function clickBtnSetAttendance(pupilId, visited, subjectId) {
                 $.ajax({
@@ -103,6 +142,7 @@
                                 $(`button.visited[data-id=${pupilId}]`).remove()
                                 $buttonDanger.on('click', function () {
                                     clickBtnSetAttendance(pupilId, false, subjectId)
+                                    get_attendance_time()
                                 });
                             } else {
 
@@ -112,7 +152,7 @@
                                 }
                                 $(`button.not_visited[data-id=${pupilId}]`).remove()
                                 $buttonSuccess.on('click', function () {
-
+                                    get_attendance_time()
                                     clickBtnSetAttendance(pupilId, true, subjectId)
                                 });
                             }

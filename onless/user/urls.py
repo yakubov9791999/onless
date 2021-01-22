@@ -25,9 +25,11 @@ urlpatterns = [
     path('worker-delete/<int:id>/', worker_delete, name='worker_delete'),
     path('upload-file/', upload_file, name='upload_file'),
     path('add-bugalter/', add_bugalter, name='add_bugalter'),
+    path('add-instructor/', add_instructor, name='add_instructor'),
     path('bugalter/groups/', bugalter_groups_list, name='bugalter_groups_list'),
     path('bugalter/group/<int:id>/', bugalter_group_detail, name='bugalter_group_detail'),
-    path('add-pay/', add_pay, name='add_pay'),
+    path('set-pay/', set_pay, name='set_pay'),
+    path('remove-pay/<int:id>/', remove_pay, name='remove_pay'),
     path('pay-history/<int:user_id>/<int:group_id>/', pay_history, name='pay_history'),
     path('history/view-video/all/', history_view_video_all, name='history_view_video_all'),
     path('history/pupil-view-video/<int:id>/', history_pupil_view_video, name='history_pupil_view_video'),
@@ -51,6 +53,9 @@ urlpatterns = [
 
     path('rating-groups-list/', rating_groups_list, name='rating_groups_list'),
     path('set-rating/', set_rating, name='set_rating'),
+    path('get-group-pupils-count/', get_group_pupils_count, name='get_group_pupils_count'),
+    path('get-workers-count/', get_workers_count, name='get_workers_count'),
+    path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
 
 
 ]

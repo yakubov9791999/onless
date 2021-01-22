@@ -28,6 +28,8 @@ urlpatterns = [
     path('quiz/', include('quiz.urls')),
     path('practical/', include('practical.urls')),
     path('accounts/', include('allauth.urls')),
+    path('payments/', include('payments.urls')),
+    path('payments/', include('click.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

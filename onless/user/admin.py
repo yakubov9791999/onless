@@ -4,7 +4,8 @@ from django.contrib.admin.forms import AdminPasswordChangeForm
 from quiz.admin import ChoiceInline
 from sign.models import *
 from .models import *
-
+from django.contrib import admin
+from .models import Payment
 @admin.register(EducationCategory)
 class EducationCategoryAdmin(admin.ModelAdmin):
     list_display = ('title','sort')
@@ -80,7 +81,7 @@ class PayAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'subject', 'pupil', 'teacher', 'created_date', 'updated_date']
+    list_display = ['id', 'subject', 'pupil', 'teacher','is_visited', 'created_date', 'updated_date']
     list_display_links = ['subject']
     list_filter = ['created_date', 'updated_date']
     search_fields = ['subject', 'pupil', 'teacher', ]
@@ -98,8 +99,8 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(Sms)
 class SmsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'school']
-    list_display_links = ['user', ]
+    list_display = ['id', 'text','sms_count', 'school']
+    list_display_links = ['text', ]
     list_filter = ['school']
     save_on_top = True
 
@@ -110,3 +111,9 @@ class ReferralAdmin(admin.ModelAdmin):
     list_display_links = ['pay', ]
     list_filter = ['pay']
     save_on_top = True
+
+
+class PaymentAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Payment, PaymentAdmin)

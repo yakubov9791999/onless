@@ -205,7 +205,7 @@ def get_subject(request):
         subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category))
         options = "<option>-- -- --</option>"
         for subject in subjects:
-            options += f"<option value='{subject.id}'>{subject.short_title}</option>"
+            options += f"<option value='{subject.id}'>{subject.short_title} - {subject.long_title}</option>"
         return HttpResponse(options)
     else:
         return False
@@ -236,11 +236,11 @@ def group_subjects(request):
     if request.is_ajax():
         group = get_object_or_404(Group, id=request.GET.get('group'))
         subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category)).distinct()
-        print(subjects)
+
         if subjects.exists():
             options = "<option>-- -- --</option>"
             for subject in subjects:
-                options += f"<option value='{subject.id}'>{subject.short_title}</option>"
+                options += f"<option value='{subject.id}'>{subject.short_title} - {subject.long_title}</option>"
             return HttpResponse(options)
         else:
             return HttpResponse(False)
@@ -265,7 +265,7 @@ def get_schedule(request):
                   f"<td>{schedule.date.strftime('%d.%m.%Y')}</td>" \
                   f"<td>{str(schedule.start)[0:16]}</td>" \
                   f"<td>{str(schedule.stop)[0:16]}</td>" \
-                  f"<td class='edit_block'><a href='{url_update}'><i class='fa fa-edit'></i></a><a class='deleteBtn' data-title='{schedule.theme}' data-id='{schedule.id}' href='#'><i class='fa fa-trash ml-2'></i></a></td>" \
+                  f"<td class='edit_block'><a href='{url_update}'><button class='btn btn-primary'><i class='fa fa-edit'></i></button></a>&nbsp<a class='deleteBtn' data-title='{schedule.theme}' data-id='{schedule.id}' href='#'><button class='btn btn-danger'><i class='fa fa-trash'></i></button></a></td>" \
                   f"</tr>"
         return HttpResponse(td)
     else:

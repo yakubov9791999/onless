@@ -23,7 +23,7 @@
                                 <th style="width: 15%">O'qish boshlanishi</th>
                                 <th style="width: 15%">O'qish yakunlanishi</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
-                                    <th style="width: 15%" >Tahrirlash</th>
+                                    <th style="width: 15%" >Ko'rish/Tahrirlash/O'chirish</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -50,22 +50,22 @@
                                         <td>
 
                                             &nbsp;
-                                            <a href="{% url 'user:group_detail' group.id %}"><i class="fas fa-eye"
-                                            ></i></a>
+                                            <a href="{% url 'user:group_detail' group.id %}"><button class="btn btn-info"><i class="fas fa-eye"
+                                            ></i></button></a>
 
                                             &nbsp;
 
-                                            <a href="{% url 'user:group_update' group.id %}"><i class="fa fa-edit"
-                                            ></i>
+                                            <a href="{% url 'user:group_update' group.id %}"><button class="btn btn-primary"><i class="fa fa-edit"
+                                            ></i></button>
                                             </a>
 
                                             {% if request.user.role == '2' %}
                                                 &nbsp;
                                                 {% get_fullname_group group.id as group_name %}
                                                 <a href="#"
-                                                   onclick="delete_group({{ group.id }}, `{{ group_name }}`)"><i
+                                                   onclick="delete_group({{ group.id }}, `{{ group_name }}`)"><button class="btn btn-danger"><i
                                                         class="fa fa-trash"
-                                                ></i></a>
+                                                ></i></button></a>
                                             {% endif %}
                                         </td>
                                     {% endif %}

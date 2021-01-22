@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
 {% block content %}
+    <style>
+    .offline_checkbox:hover {
+       cursor: pointer;
+    }
+    </style>
     <div class="row">
         <!-- left column -->
         <div class="col-md-12">
@@ -52,7 +57,7 @@
                                 <th>An'anaviy ta'lim</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                     <th style="width: 4%">
-                                        Tahrirlash
+                                        Tahrirlash/O'chirish
                                     </th>
                                 {% endif %}
                             </tr>
@@ -74,37 +79,44 @@
                                     {% pupil_result pupil.id as pupil_res %}
                                     <td title="Savollar/To'g'ri javoblar:  {{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}">
                                         <a href="{% url 'user:result' pupil.id %}">
-                                        <div class="progress">
+                                            <div class="progress">
 
-                                            {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
-                                                <div class="progress-bar {% if pupil_res.total_res >= 85 and pupil_res.total_res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.total_res >= 40 and pupil_res.total_res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.total_res < 40 %}bg-danger progress-bar-striped{% endif %}"
-                                                     role="progressbar"
-                                                     aria-valuenow="40" aria-valuemin="2"
+                                                {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
+                                                    <div class="progress-bar {% if pupil_res.total_res >= 85 and pupil_res.total_res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.total_res >= 40 and pupil_res.total_res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.total_res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                                                         role="progressbar"
+                                                         aria-valuenow="40" aria-valuemin="2"
 
-                                                     aria-valuemax="6" style="width:{{ pupil_res.total_res }}%">
-                                                    <b>{{ pupil_res.total_res }}%</b>
-                                                </div>
-                                            {% elif pupil_res.question_total_count > 0 and pupil_res.total_res < 1 %}
-                                                <div style="width: 100%; margin-left: 45%">0%</div>
-                                            {% else %}
-                                                <div style="margin-left: 10%">yechilmagan</div>
-                                            {% endif %}
-                                        </div>
+                                                         aria-valuemax="6" style="width:{{ pupil_res.total_res }}%">
+                                                        <b>{{ pupil_res.total_res }}%</b>
+                                                    </div>
+                                                {% elif pupil_res.question_total_count > 0 and pupil_res.total_res < 1 %}
+                                                    <div style="width: 100%; margin-left: 45%">0%</div>
+                                                {% else %}
+                                                    <div style="margin-left: 10%">yechilmagan</div>
+                                                {% endif %}
+                                            </div>
                                         </a>
                                     </td>
-                                    <td><input class="offline_checkbox" {% if pupil.is_offline %}checked{% endif %}
-                                               data-id="{{ pupil.id }}" type="checkbox"></td>
+                                    <td>
+                                        <input class="offline_checkbox"
+                                               {% if pupil.is_offline %}checked{% endif %}
+                                               data-id="{{ pupil.id }}" type="checkbox">
+                                    </td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
-                                            &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}"><i
-                                                class="fa fa-edit"
-                                        ></i></a>
+                                            &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}">
+                                            <button class="btn btn-primary"><i
+                                                    class="fa fa-edit"
+                                            ></i></button>
+                                        </a>
                                             {% if request.user.role == '2' %}
                                                 &nbsp;&nbsp;
                                                 <a href="#"
-                                                   onclick='delete_pupil({{ group.id }},{{ pupil.id }},`{{ pupil.name }}`)'><i
-                                                        class="fa fa-trash"
-                                                ></i></a>
+                                                   onclick='delete_pupil({{ group.id }},{{ pupil.id }},`{{ pupil.name }}`)'>
+                                                    <button class="btn btn-danger"><i
+                                                            class="fa fa-trash"
+                                                    ></i></button>
+                                                </a>
                                             {% endif %}
 
                                         </td>
@@ -122,13 +134,15 @@
         </div>
     </div>
 
+{% endblock content %}
+
+{% block bottom %}
     <script type="text/javascript">
         function add_pupil() {
             alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
             document.getElementById('button_add_pupil').style.display = 'none';
             document.getElementById('export_excel_form').style.display = 'block';
             document.getElementById('export_pdf_form').style.display = 'none';
-
         }
 
     </script>
@@ -176,6 +190,7 @@
         }
 
         $(document).ready(function () {
+
             $('.offline_checkbox').on('change', function () {
                 var checkbox = false,
                     pupilId = $(this).attr("data-id")
@@ -184,7 +199,6 @@
                 } else {
                     checkbox = false
                 }
-
                 $.ajax({
                     type: 'GET',
                     url: '{% url 'user:get_learning_type' %}',
@@ -206,4 +220,4 @@
 
 
     </script>
-{% endblock content %}
+{% endblock bottom %}

@@ -28,7 +28,7 @@
                                 <th>Parol</th>
                                 <th>O'zlashtirish</th>
                                 {% if request.user.role == '2' %}
-                                    <th>Tahrirlash</th>
+                                    <th>Tahrirlash/O'chirish</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -39,7 +39,7 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td><b id="{{ worker.name }}"><a href="{% url 'user:result' worker.id %}">{{ worker.name }}</a></b></td>
                                     <td><b>{% if worker.role == '5' %}Hisobchi{% elif worker.role == '3' %}
-                                        O'qituvchi{% endif %}</b></td>
+                                        O'qituvchi{% elif worker.role == '6' %}Instruktor{% endif %}</b></td>
                                     <td>{{ worker.birthday|date:'SHORT_DATE_FORMAT' }}</td>
                                     <td>{% if worker.district %}{{ worker.district }}{% endif %}</td>
                                     <td>+998{{ worker.phone }}</td>
@@ -68,12 +68,12 @@
                                         <td>
 
                                             &nbsp;&nbsp;
-                                            <a href="{% url 'user:worker_edit' worker.id %}"><i class="fa fa-edit"
-                                            ></i></a>
+                                            <a href="{% url 'user:worker_edit' worker.id %}"><button class="btn btn-primary"><i class="fa fa-edit"
+                                            ></i></button></a>
 
-                                            &nbsp;&nbsp;<a href="#" onclick="delete_worker({{ worker.id }},`{{ worker.name }}`)"><i
+                                            &nbsp;&nbsp;<a href="#" onclick="delete_worker({{ worker.id }},`{{ worker.name }}`)"><button class="btn btn-danger"><i
                                                 class="fa fa-trash"
-                                        ></i></a>
+                                        ></i></button></a>
 
                                         </td>
                                     {% endif %}

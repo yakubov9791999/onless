@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator, MaxLengthValidator
 
+from payments.models import BasePayment
 
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
@@ -165,7 +166,7 @@ ROLE_CHOICES = (
     ("3", "O'qituvchi"),
     ("4", "O'quvchi"),
     ("5", "Bugalter"),
-    ("6", "Instruktor"),
+    ("6", "Instructor"),
 )
 
 GENDER_CHOICES = (
@@ -231,7 +232,6 @@ class Pay(models.Model):
     def __str__(self):
         return f"{self.pupil}"
 
-
 """
 O'quvchi olib kelgani uchun o'quvchilar yoki o'qituvchilarga bonus dasturi 
 """
@@ -260,8 +260,8 @@ class Attendance(models.Model):
     subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE,
                                 related_name='subject_attendance', null=True)
     is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan', default=False)
-    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True, )
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True)
+    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True, default=timezone.now)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True, default=timezone.now)
 
     def __str__(self):
         return str(self.subject.short_title)
@@ -297,11 +297,16 @@ class Rating(models.Model):
 
 
 class Sms(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sms_user')
-    created_date = models.DateTimeField(auto_now=True, verbose_name='Yaratilgan vaqt', editable=False)
+    sms_count = models.IntegerField(default=0, null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt', editable=False)
     text = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='sms_school')
 
     class Meta:
         verbose_name = 'Sms'
         verbose_name_plural = 'Smslar'
+
+
+
+class Payment(BasePayment):
+    pass

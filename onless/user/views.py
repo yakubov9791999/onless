@@ -1,3 +1,4 @@
+import json
 import random
 import shutil
 from random import randrange
@@ -8,8 +9,10 @@ import xlrd
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.humanize.templatetags.humanize import intcomma
+from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import ProtectedError, Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.views.generic import UpdateView
@@ -572,9 +575,10 @@ def workers_list(request):
     if request.user.role == '2':
         workers = User.objects.filter(
             Q(school=request.user.school, role=5, is_active=True) | Q(school=request.user.school, role=3,
+                                                                      is_active=True) | Q(school=request.user.school, role=6,
                                                                       is_active=True)).order_by('name')
         if not workers.exists():
-            messages.error(request, "Xodimlar ro'yhatga olinmagan !")
+            messages.error(request, "Xodimlar ro'yhatga olinmagan!")
         context = {
             'workers': workers
         }
@@ -785,23 +789,106 @@ def add_bugalter(request):
 
 
 @login_required
+def add_instructor(request):
+    if request.user.role == '2':
+        if request.POST:
+            form = AddUserForm(data=request.POST)
+            password = random.randint(1000000, 9999999)
+            pasport = get_pasport(request.POST['pasport'])
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                name = get_name(name)
+                try:
+                    user = User.objects.create_user(
+                        username=pasport,
+                        pasport=pasport,
+                        school=request.user.school,
+                        turbo=password,
+                        password=password,
+                        name=name,
+                        phone=form.cleaned_data['phone'],
+                        role='6',
+                        is_superuser=False,
+                    )
+                    user.set_password(password)
+                    user.username = pasport
+                    user.email = ''
+                    user.save()
+                    messages.success(request, "Instruktor muvaffaqiyatli qo'shildi")
+
+                except IntegrityError:
+                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
+            else:
+                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
+        else:
+            form = AddUserForm(request)
+        return render(request, 'user/instructor/add_instructor.html')
+    else:
+        return render(request, 'inc/404.html')
+
+@login_required
 def bugalter_groups_list(request):
+    # total_pay = group.price * pupils.count()
+    # payments = Pay.objects.filter(pupil__in=pupils)
+    # if not payments.exists():
+    #     messages.error(request, "To'lovlar mavjud emas !")
+    # total_payments = 0
+    # for pay in payments:
+    #     total_payments += pay.payment
+    # total_debit = total_pay - total_payments
+    # context = {
+    #     'group': group,
+    #     'pupils': pupils,
+    #     'total_pay': total_pay,
+    #     'total_payments': total_payments,
+    #     'total_debit': total_debit
+    # }
+
     if request.user.role == '2' or request.user.role == '5':
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
+        total_pay = 0
+        for group in groups:
+            pupils_count = User.objects.filter(is_active=True, role='4',group=group).count()
+            total_pay += group.price * pupils_count
+
+        pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
+        pays = Pay.objects.filter(pupil__in=pupils)
+        total_payments = 0
+        for pay in pays:
+            total_payments += pay.payment
+        total_debit = total_pay - total_payments
+        context = {
+            'groups': groups,
+            'total_pay': total_pay,
+            'total_payments': total_payments,
+            'total_debit': total_debit
+        }
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
-        context = {
-            'groups': groups
-        }
+
         return render(request, 'user/bugalter/groups_list.html', context)
     elif request.user.role == '3':
         teacher = get_object_or_404(User, id=request.user.id)
         groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
+        total_pay = 0
+        for group in groups:
+            total_pay += group.price
+        pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
+        pays = Pay.objects.filter(pupil__in=pupils)
+        total_payments = 0
+        for pay in pays:
+            total_payments += pay.payment
+        total_debit = total_pay - total_payments
+        context = {
+            'groups': groups,
+            'total_pay': total_pay,
+            'total_payments': total_payments,
+            'total_debit': total_debit
+        }
+
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
-        context = {
-            'groups': groups
-        }
+
         return render(request, 'user/bugalter/groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
@@ -833,29 +920,51 @@ def bugalter_group_detail(request, id):
 
 
 @login_required
-def add_pay(request):
+def set_pay(request):
     if request.user.role == '5':
-        if request.POST:
-            if not request.POST['pay'] == '0':
-                pupil = get_object_or_404(User, id=request.POST['pupil'])
-                group = get_object_or_404(Group, id=request.POST['group'])
-                values = Pay.objects.filter(pupil=pupil)
-                payment = 0
+        if request.GET:
+            pupil = get_object_or_404(User, id=request.GET['pupil'])
+            values = Pay.objects.filter(pupil=pupil)
+            payment = 0
+            try:
+                if request.GET['pay'] <= '0':
+                    return HttpResponse(False)
                 for value in values:
                     payment += value.payment
-                payment += int(request.POST['pay'])
-                if group.price >= payment:
-                    Pay.objects.create(pupil=pupil, payment=int(request.POST['pay']))
-                    messages.success(request, "O'qish puli muvaffaqiyatli qo'shildi !")
+                payment += int(request.GET['pay'])
+                if pupil.group.price >= payment:
+                    Pay.objects.create(pupil=pupil, payment=int(request.GET['pay']))
+                    pay = {
+                        'payment': payment,
+                        'debit': pupil.group.price - payment
+                    }
+                    # list = json.dumps(pay)
+                    return JsonResponse({'pay': pay})
                 else:
-                    messages.error(request, f"O'qish puli {group.price} dan ortiq bo'lishi mumkin emas !")
-            else:
-                messages.error(request, "Summani to'g'ri kiriting !")
-        next = request.META['HTTP_REFERER']
-        return HttpResponseRedirect(next)
+                    return HttpResponse({pupil.group.price})
+            except ValueError:
+                return HttpResponse(False)
+        return HttpResponse(False)
     else:
         return render(request, 'inc/404.html')
 
+
+
+@login_required
+def remove_pay(request, id):
+    if request.user.role == '5':
+        try:
+            pay = Pay.objects.get(id=id)
+            payment = pay.payment
+            pupil = pay.pupil
+            group = pupil.group
+            pay.delete()
+            messages.success(request, f"{payment} so'm muvaffaqiyatli o'chirildi!")
+            return redirect(reverse_lazy('user:pay_history', kwargs={'user_id': pupil.id, 'group_id': group.id}))
+        except ObjectDoesNotExist:
+            return redirect(reverse_lazy('user:bugalter_groups_list'))
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def pay_history(request, user_id, group_id):
@@ -921,7 +1030,6 @@ def history_view_video_all(request):
                 if not views.exists():
                     messages.error(request, "Ko'rishlar mavjud emas !")
                 context.update(views=views)
-                print('ok')
             return render(request, 'user/view_video_history_all.html', context)
         else:
             views = ViewComplete.objects.filter(
@@ -1002,15 +1110,18 @@ def history_pupil_view_video(request, id):
         'pupil': pupil
     }
     director = User.objects.filter(school=pupil.school, role=2).first()
-
-    if request.user == pupil:
+    try:
+        if request.user == pupil:
+            return render(request, 'user/pupil/history_pupil_view_video.html', context)
+        elif request.user == group.teacher:
+            return render(request, 'user/pupil/history_pupil_view_video.html', context)
+        elif request.user == director:
+            return render(request, 'user/pupil/history_pupil_view_video.html', context)
+        else:
+            return render(request, 'inc/404.html')
+    except UnboundLocalError:
+        context.update(pupil=pupil)
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    elif request.user == group.teacher:
-        return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    elif request.user == director:
-        return render(request, 'user/pupil/history_pupil_view_video.html', context)
-    else:
-        return render(request, 'inc/404.html')
 
 
 @login_required
@@ -1065,17 +1176,20 @@ def result(request, id):
     if last_check_bilet:
         context.update(last_check_bilet=last_check_bilet.bilet)
     director = User.objects.filter(school=pupil.school, role=2).first()
-
-    if request.user == pupil:
-        return render(request, 'user/result.html', context)
-    elif request.user == group.teacher:
+    try:
+        if request.user == pupil:
+            return render(request, 'user/result.html', context)
+        elif request.user == group.teacher:
+            context.update(pupil=pupil)
+            return render(request, 'user/result.html', context)
+        elif request.user == director:
+            context.update(pupil=pupil)
+            return render(request, 'user/result.html', context)
+        else:
+            return render(request, 'inc/404.html')
+    except UnboundLocalError:
         context.update(pupil=pupil)
         return render(request, 'user/result.html', context)
-    elif request.user == director:
-        context.update(pupil=pupil)
-        return render(request, 'user/result.html', context)
-    else:
-        return render(request, 'inc/404.html')
 
 
 @login_required
@@ -1110,7 +1224,8 @@ def attendance_groups_list(request):
             return render(request, 'user/attendance/attendance_groups_list.html')
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(
+                teacher=request.user)).distinct()
         if not groups.exists():
             messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
         context = {
@@ -1129,14 +1244,17 @@ def attendance_groups_list(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def attendance_view(request, id):
     group = get_object_or_404(Group, id=id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
     if request.user.school == group.school:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
-        attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__day=timezone.now().day))
+        attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__range=(today_min, today_max)))
         context = {
             'group': group,
             'attendances': attendances
@@ -1154,14 +1272,16 @@ def attendance_view(request, id):
 def attendance_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
     today = timezone.now()
-    # tomorrow = timezone.now() + datetime.timedelta(1)
-    schedules = Schedule.objects.filter(date=today)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
     subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date=today) & Q(subject_schedule__group=group)).distinct()
-    print(subjects)
+        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date__range=(today_min, today_max)) & Q(
+            subject_schedule__group=group)).distinct()
+
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+        return redirect(reverse_lazy('user:attendance_groups_list'))
     if request.user == group.teacher:
         # pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
         context = {
@@ -1184,9 +1304,16 @@ def attendance_set_by_group(request, id):
 def attendance_set_by_subject(request, group_id, subject_id):
     group = get_object_or_404(Group, id=group_id)
     subject = get_object_or_404(Subject, id=subject_id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    # subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category) & Q(
+    #         subject_schedule__date__range=(today_min, today_max)) & Q(
+    #         subject_schedule__group=group))
+    schedules = Schedule.objects.filter(Q(date__range=(today_min, today_max)) & Q(is_active=True) & Q(subject=subject))
 
-    today = timezone.now()
-    tomorrow = timezone.now() + datetime.timedelta(1)
+    if not schedules.exists():
+        messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+        return redirect(reverse_lazy('user:attendance_groups_list'))
 
     if request.user == group.teacher:
         pupils = User.objects.filter(
@@ -1210,24 +1337,25 @@ def attendance_set_visited(request):
         if request.GET:
             pupil = get_object_or_404(User, id=request.GET.get('pupil'))
             subject = get_object_or_404(Subject, id=request.GET.get('subject'))
-            today = timezone.now()
+            today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+            today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
             if request.GET.get('visited') == 'true':
                 visited = True
-            else:
+            elif request.GET.get('visited') == 'false':
                 visited = False
+            else:
+                return HttpResponse(False)
 
-            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
-                                                   created_date__day=today.day)
+            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,created_date__range=(today_min, today_max))
 
             if not attendance.exists():
-
-                Attendance.objects.create(pupil=pupil, teacher=request.user, created_date=today, updated_date=today,
-                                          subject=subject, is_visited=visited)
+                Attendance.objects.create(pupil=pupil, teacher=request.user,  subject=subject, is_visited=visited)
                 return HttpResponse(True)
             else:
                 for atten in attendance:
                     atten.is_visited = visited
-                    atten.updated_date = today
+                    atten.updated_date = timezone.now()
                     atten.save()
                 return HttpResponse(True)
     return HttpResponse(False)
@@ -1238,6 +1366,9 @@ def send_sms(request):
     if request.user.role == '2':
         form = SendSmsForm(data=request.POST)
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
+        teachers = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=3)).order_by('name')
+        instructors = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=6)).order_by('name')
+        accountants = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=5)).order_by('name')
         sms_count = request.user.school.sms_count
         if sms_count == None:
             school_sms_count = 0
@@ -1246,44 +1377,62 @@ def send_sms(request):
 
         context = {
             'groups': groups,
-            'school_sms_count': school_sms_count
+            'school_sms_count': school_sms_count,
+            'teachers': teachers,
+            'instructors': instructors,
+            'accountants': accountants
         }
         if request.method == 'POST':
             if form.is_valid():
+                if school_sms_count == 0:
+                    messages.error(request, "Sizda sms to'plam mavjud emas!")
+                    return render(request, 'user/director/send_sms.html', context)
                 text = form.cleaned_data['text']
                 text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
-                group = int(request.POST['group'])
-                users = User.objects.filter(group=group)
+                text = get_sms(text)
 
+                try:
+                    group = get_object_or_404(Group, id=int(request.POST['group']))
+                    users = User.objects.filter(Q(group=group) & Q(is_active=True) & Q(role=4))
+                except ValueError:
+                    if request.POST.get('group') == 'accountants':
+                        users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=5))
+                    elif request.POST.get('group') == 'instructors':
+                        users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=6))
+                    else:
+                        users = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(role=3))
+                if users.count() <= 0:
+                    messages.error(request, "Ushbu guruhda o'quvchi mavjud emas!")
+                    return render(request, 'user/director/send_sms.html', context)
                 """
                 SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizimi
                 """
-                if len(text) > 0 and len(text) <= 159:
+                if len(text) >= 0 and len(text) <= 159:
                     new_sms_count = sms_count - users.count()
-                elif len(text) >= 160 and len(text) <= 317:
+                elif len(text) >= 160 and len(text) <= 316:
                     new_sms_count = sms_count - (users.count() * 2)
-                elif len(text) >= 318 and len(text) <= 477:
+                elif len(text) >= 317 and len(text) <= 476:
                     new_sms_count = sms_count - (users.count() * 3)
-                elif len(text) >= 478 and len(text) <= 635:
-                    new_sms_count = sms_count - (users.count() * 3)
-                elif len(text) >= 636 and len(text) <= 795:
+                elif len(text) >= 477 and len(text) <= 634:
+                    new_sms_count = sms_count - (users.count() * 4)
+                elif len(text) >= 635 and len(text) <= 794:
                     new_sms_count = sms_count - (users.count() * 5)
                 else:
-                    new_sms_count = sms_count - (users.count() * 10)
-                if new_sms_count != 0:
+                    new_sms_count = sms_count - (users.count() * 30)
+                if new_sms_count >= 0:
+                    Sms.objects.create(sms_count=sms_count - new_sms_count, school=request.user.school, text=text)
+
+                    for user in users:
+                        msg = text.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                        response = requests.get(url)
                     # Sarflangan smslarni  bazaga yozish
                     this_user = School.objects.get(school_user=request.user)
                     this_user.sms_count = new_sms_count
                     this_user.save()
-                    if users.count() > 0:
-                        for user in users:
-                            msg = text.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                            response = requests.get(url)
-                        messages.success(request,
-                                         f"Sizning SMS xabarnomangiz {users.count()} o'quvchiga muvaffaqiyatli yetkazildi")
-                    else:
-                        messages.error(request, "Ushbu guruhda o'quvchi mavjud emas!")
+
+                    messages.success(request, f"Sizning SMS xabarnomangiz {users.count()} ta o'quvchiga muvaffaqiyatli yetkazildi!")
+                    context.update(school_sms_count=new_sms_count)
                 else:
                     messages.error(request, "Kechirasiz, SMSlar soni guruhdagi o'quvchilar sonidan kam")
             else:
@@ -1293,8 +1442,6 @@ def send_sms(request):
         return render(request, 'user/director/send_sms.html', context)
     else:
         return render(request, 'inc/404.html')
-
-
 
 
 @login_required
@@ -1329,6 +1476,7 @@ def referral_list(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def rating_groups_list(request):
     groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
@@ -1349,7 +1497,8 @@ def rating_groups_list(request):
             return render(request, 'user/rating/rating_groups_list.html')
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(teacher=request.user)).distinct()
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(
+                teacher=request.user)).distinct()
 
         if not groups.exists():
             messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
@@ -1360,7 +1509,8 @@ def rating_groups_list(request):
     elif request.user.role == '2':
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(group_user__pupil_attendance__created_date__day=today.day)).distinct()
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(
+                group_user__pupil_attendance__created_date__day=today.day)).distinct()
         if not groups.exists():
             messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
         context = {
@@ -1369,6 +1519,7 @@ def rating_groups_list(request):
         return render(request, 'user/rating/rating_groups_list.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def set_rating(request, group_id):
@@ -1393,3 +1544,50 @@ def set_rating(request, group_id):
     else:
         return render(request, 'inc/404.html')
 
+
+@login_required
+def get_group_pupils_count(request):
+    if request.POST:
+        group = get_object_or_404(Group, id=request.POST.get('group'))
+        pupils_count = User.objects.filter(Q(is_active=True) & Q(role=4) & Q(group=group)).count()
+        return HttpResponse(pupils_count)
+    else:
+        return HttpResponse(False)
+
+
+@login_required
+def get_workers_count(request):
+    if request.POST:
+        context = {}
+        if request.POST.get('workers') == 'teachers':
+            teachers_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(role=3)).count()
+            return HttpResponse(teachers_count)
+        elif request.POST.get('workers') == 'instructors':
+            instructors_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=6)).count()
+            return HttpResponse(instructors_count)
+        elif request.POST.get('workers') == 'accountants':
+            accountants_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=5)).count()
+            return HttpResponse(accountants_count)
+        else:
+            return HttpResponse(False)
+    else:
+        return HttpResponse(False)
+
+
+@login_required
+def get_attendance_time(request):
+    if request.POST:
+        pupil = get_object_or_404(User, id=request.POST.get('pupil'))
+        subject = get_object_or_404(Subject, id=request.POST.get('subject'))
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        attendance = Attendance.objects.filter(pupil=pupil, subject=subject,created_date__range=(today_min, today_max))
+        for atten in attendance:
+            get_year = str(atten.updated_date)[0:4]
+            get_month = str(atten.updated_date)[5:7]
+            get_day = str(atten.updated_date)[8:10]
+            get_time = str(atten.updated_date)[11:16]
+            get_datetime = f"{get_day}.{get_month}.{get_year}  {get_time}"
+            return HttpResponse(get_datetime)
+    else:
+        return HttpResponse(False)

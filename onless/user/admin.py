@@ -4,7 +4,8 @@ from django.contrib.admin.forms import AdminPasswordChangeForm
 from quiz.admin import ChoiceInline
 from sign.models import *
 from .models import *
-
+from django.contrib import admin
+from .models import Payment
 @admin.register(EducationCategory)
 class EducationCategoryAdmin(admin.ModelAdmin):
     list_display = ('title','sort')
@@ -110,3 +111,9 @@ class ReferralAdmin(admin.ModelAdmin):
     list_display_links = ['pay', ]
     list_filter = ['pay']
     save_on_top = True
+
+
+class PaymentAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Payment, PaymentAdmin)

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'video.templatetags',
     'sign',
     'practical',
+    'payments',
+    'click',
 
 ]
 
@@ -95,6 +97,22 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
+
+
+PAYMENT_HOST = '81.177.139.231:8000'
+PAYMENT_USES_SSL = True  # set the True value if you are using the SSL
+PAYMENT_MODEL = 'user'
+# payment model format like this :: '<app_name>.<model_name>'
+# add "click" to your variants
+PAYMENT_VARIANTS = {
+    'click': ('click.ClickProvider', {
+        'merchant_id': 12584,
+        'merchant_service_id': 17367,
+        'merchant_user_id': 18969,
+        'secret_key': 'tVhBORlLRo8AN'
+    })
+
+}
 
 LANGUAGE_CODE = 'uz-UZ'
 

@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator, MaxLengthValidator
 
+from payments.models import BasePayment
 
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
@@ -231,7 +232,6 @@ class Pay(models.Model):
     def __str__(self):
         return f"{self.pupil}"
 
-
 """
 O'quvchi olib kelgani uchun o'quvchilar yoki o'qituvchilarga bonus dasturi 
 """
@@ -305,3 +305,8 @@ class Sms(models.Model):
     class Meta:
         verbose_name = 'Sms'
         verbose_name_plural = 'Smslar'
+
+
+
+class Payment(BasePayment):
+    pass

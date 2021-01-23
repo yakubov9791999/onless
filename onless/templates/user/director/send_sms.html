@@ -131,6 +131,8 @@ SMS to'plamni xarid qilish uchun 972800809 / 919791999 / 931444480 raqamlariga q
                 accept_send_sms()
             })
 
+            $("#textLabel").keypress(LotinInputFilter);
+
             $("form").submit(function (e) {
                 var SelectedGroup = $('#selectedGroup').children("option:selected").val()
 

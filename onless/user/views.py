@@ -512,6 +512,15 @@ def search(request):
                 pass
 
             try:
+                instructors = User.objects.filter(Q(pasport__icontains=query) |
+                                                Q(name__icontains=query)).filter(role=6, school=request.user.school,
+                                                                                 is_active=True).order_by('name')
+                context.update(instructors=instructors)
+                count += instructors.count()
+            except ValueError:
+                pass
+
+            try:
                 pupils = User.objects.filter(Q(pasport__icontains=query) |
                                              Q(name__icontains=query) &
                                              Q(group__isnull=False)).filter(role=4,

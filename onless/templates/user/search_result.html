@@ -42,6 +42,16 @@
                     </h5>
                 </div>
             {% endif %}
+            {% if instructors %}
+                <h4 class="h4 mt-2 ml-2">Instruktorlar:</h4>
+                <div class="card-body ml-5">
+                    <h5>
+                        {% for instructor in instructors %}
+                             <a href="{% url 'user:workers_list' %}#{{ instructor.name }}"><p>{{ instructor }}</p></a>
+                        {% endfor %}
+                    </h5>
+                </div>
+            {% endif %}
              {% if pupils %}
                 <h4 class="h4 mt-2 ml-2">O'quvchilar:</h4>
                 <div class="card-body ml-5">

@@ -57,7 +57,7 @@ def makesms(sms):
             'а', 'a').replace('б', 'b').replace('қ', 'q').replace('қ', "o'").replace('ғ', "g'").replace('ҳ',
                                                                                                         "h'").replace(
             'х',
-            "h'").replace(
+            "x'").replace(
             'в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
                                                                   'e').replace(
             'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',

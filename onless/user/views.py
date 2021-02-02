@@ -1400,6 +1400,7 @@ def send_sms(request):
                 text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
                 text = get_sms(text)
 
+
                 try:
                     group = get_object_or_404(Group, id=int(request.POST['group']))
                     users = User.objects.filter(Q(group=group) & Q(is_active=True) & Q(role=4))

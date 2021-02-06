@@ -1,19 +1,24 @@
 {% extends 'base.html' %}
 {% load sign_tags %}
 {% block content %}
+    <style>
+        .card-header:hover {
+            cursor: pointer;
+        }
+    </style>
     {% for category in categories %}
         <div id="accordion{{ category.id }}">
             <div class="card">
-                <div class="card-header" id="heading{{ category.id }}">
+                <div class="card-header" data-id="{{ category.id }}" id="heading{{ category.id }}">
                     <h5 class="mb-1 mt-1">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ category.id }}"
+                        <button class="btn btn-link" data-toggle="collapse"
                                 aria-expanded="true" aria-controls="collapse{{ category.id }}" id="collapse-title">
                             <i class="fas fa-angle-double-right"></i> {{ category.title }}
                         </button>
                     </h5>
                 </div>
 
-                <div id="collapse{{ category.id }}" class="collapse hide" aria-labelledby="heading{{ category.id }}"
+                <div id="collapse{{ category.id }}" class="collapse hide" data-id="{{ category.id }}" aria-labelledby="heading{{ category.id }}"
                      data-parent="#accordion{{ category.id }}">
                     <div class="card-body">
                         <div class="row">
@@ -44,3 +49,26 @@
     {% endfor %}
 
 {% endblock content %}
+
+{% block bottom %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".card-header").each(function () {
+                let id = $(this).data('id')
+                $(this).on('click', function () {
+                if ($(this).siblings('.collapse').data('id', id).hasClass('hide')) {
+
+                    $(this).siblings('.collapse').data('id', id).removeClass('hide').addClass('show')
+                } else if ($(this).siblings('.collapse').data('id', id).hasClass('show')) {
+
+                    $(this).siblings('.collapse').data('id', id).removeClass('show').addClass('hide')
+                } else {
+                    $(this).siblings('.collapse').data('id', id).addClass('show')
+                }
+            })
+
+
+            });
+        });
+    </script>
+{% endblock bottom %}

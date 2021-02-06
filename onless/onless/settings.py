@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 PAYMENT_HOST = '81.177.139.231:8000'
 PAYMENT_USES_SSL = True  # set the True value if you are using the SSL
-PAYMENT_MODEL = 'user'
+PAYMENT_MODEL = 'user.Payment'
 # payment model format like this :: '<app_name>.<model_name>'
 # add "click" to your variants
 PAYMENT_VARIANTS = {

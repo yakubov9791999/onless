@@ -18,7 +18,7 @@
                             <tr style="background-color: #ecebeb">
                                 <th style="width: 3%">№</th>
                                 <th>Guruh nomi</th>
-                                <th>Baholarni ko'rish</th>
+                                <th>An'anaviy ta'lim oluvchilar</th>
                                 <th>Baholarni qo'yish</th>
                             </tr>
                             </thead>
@@ -30,15 +30,18 @@
                                     {% get_fullname_group group.id as group_name %}
                                     <td>
                                         {% if request.user.role == '2' or request.user.role == '3' %}
-                                            <a href="{% url 'user:attendance_view' group.id %}">
+                                            <a href="{% url 'user:rating_set_by_group' group.id %}">
                                                 <b id="group_name">{{ group_name }}</b>
                                             </a>
                                         {% else %}
                                             <b id="group_name">{{ group_name }}</b>
                                         {% endif %}
                                     </td>
-                                    <td> <a class="btn btn-warning" href="{% url 'user:attendance_view' group.id %}">Baholarni ko'rish</a></td>
-                                    <td> <a class="btn btn-info" href="{% url 'user:attendance_set_by_group' group.id %}">Baholarni qo'yish</a></td>
+                                    <td>{% for pupil_count in group.group_user.all|get_offline_pupils %}
+                                        {{ pupil_count }}
+                                    {% endfor %}
+                                    </td>
+                                    <td> <a class="btn btn-info" href="{% url 'user:rating_set_by_group' group.id %}">Baholarni qo'yish</a></td>
                                 </tr>
 
                             {% endfor %}

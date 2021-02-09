@@ -94,6 +94,21 @@ def get_pupil_attendance_time(pupil_id, subject_id):
             return atten.updated_date
 
 
+@register.simple_tag()
+def get_pupil_rating_time(pupil_id, subject_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
+    ratings = Rating.objects.filter(pupil=pupil, subject=subject,
+                                           created_date__range=(today_min, today_max))
+    if ratings.exists():
+        for rating in ratings:
+            return rating.updated_date
+
+
 @register.filter
 def get_offline_pupils(users):
     return str(users.filter(is_offline=True).count())
@@ -115,3 +130,51 @@ def get_group_pay(group_id):
         'debit': debit,
         'total_pay': total_pay
     }
+
+@register.simple_tag()
+def get_pupil_rating(pupil_id, subject_id, teacher_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    teacher = get_object_or_404(User, id=teacher_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
+    ratings = Rating.objects.filter(pupil=pupil, teacher=teacher, subject=subject,created_date__range=(today_min, today_max))
+    if ratings.exists():
+        for rating in ratings:
+            return rating.score
+
+
+@register.simple_tag()
+def get_dates(pupil_id, subject_id, teacher_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    teacher = get_object_or_404(User, id=teacher_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
+    ratings = Rating.objects.filter(pupil=pupil, teacher=teacher, subject=subject,created_date__range=(today_min, today_max))
+    if ratings.exists():
+        for rating in ratings:
+            return rating.score
+
+@register.simple_tag()
+def get_pupil_rating_or_attendance(pupil_id, date, subject_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    subject = get_object_or_404(Subject, id=subject_id)
+    date = datetime.datetime.strptime(date, "%d.%m.%Y")
+    date_min = datetime.datetime.combine(date, datetime.time.min)
+    date_max = datetime.datetime.combine(date, datetime.time.max)
+    attendances  = Attendance.objects.filter(pupil=pupil, subject=subject, updated_date__range=(date_min, date_max))
+    context = {}
+    for attendance in attendances:
+        if attendance.is_visited == True:
+            context.update(attendance=True)
+        elif attendance.is_visited == False:
+            context.update(attendance=False)
+        else:
+            pass
+    ratings = Rating.objects.filter(pupil=pupil, subject=subject,updated_date__range=(date_min, date_max))
+    for rating in ratings:
+        context.update(rating=rating.score)
+    return context

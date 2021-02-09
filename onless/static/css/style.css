@@ -545,7 +545,12 @@ a:active {
     }
 }
 
-
+.vertical {
+    writing-mode: tb-rl;
+    transform: rotate(-180deg);
+    padding: 0;
+    margin: 0;
+}
 
 /*@media screen and (max-width: 768px) {*/
 /*          !*.side-collapse-container{*!*/

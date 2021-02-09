@@ -33,6 +33,9 @@ from video.models import *
 from sign.models import *
 from .models import *
 from django.db import IntegrityError
+import pandas as pd
+import calendar
+from calendar import month_name
 
 #
 from .utils import render_to_pdf
@@ -513,8 +516,8 @@ def search(request):
 
             try:
                 instructors = User.objects.filter(Q(pasport__icontains=query) |
-                                                Q(name__icontains=query)).filter(role=6, school=request.user.school,
-                                                                                 is_active=True).order_by('name')
+                                                  Q(name__icontains=query)).filter(role=6, school=request.user.school,
+                                                                                   is_active=True).order_by('name')
                 context.update(instructors=instructors)
                 count += instructors.count()
             except ValueError:
@@ -584,8 +587,10 @@ def workers_list(request):
     if request.user.role == '2':
         workers = User.objects.filter(
             Q(school=request.user.school, role=5, is_active=True) | Q(school=request.user.school, role=3,
-                                                                      is_active=True) | Q(school=request.user.school, role=6,
-                                                                      is_active=True)).order_by('name')
+                                                                      is_active=True) | Q(school=request.user.school,
+                                                                                          role=6,
+                                                                                          is_active=True)).order_by(
+            'name')
         if not workers.exists():
             messages.error(request, "Xodimlar ro'yhatga olinmagan!")
         context = {
@@ -835,6 +840,7 @@ def add_instructor(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def bugalter_groups_list(request):
     # total_pay = group.price * pupils.count()
@@ -857,7 +863,7 @@ def bugalter_groups_list(request):
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
         total_pay = 0
         for group in groups:
-            pupils_count = User.objects.filter(is_active=True, role='4',group=group).count()
+            pupils_count = User.objects.filter(is_active=True, role='4', group=group).count()
             total_pay += group.price * pupils_count
 
         pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
@@ -958,7 +964,6 @@ def set_pay(request):
         return render(request, 'inc/404.html')
 
 
-
 @login_required
 def remove_pay(request, id):
     if request.user.role == '5':
@@ -974,6 +979,7 @@ def remove_pay(request, id):
             return redirect(reverse_lazy('user:bugalter_groups_list'))
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def pay_history(request, user_id, group_id):
@@ -1255,58 +1261,29 @@ def attendance_groups_list(request):
 
 
 @login_required
-def attendance_view(request, id):
-    group = get_object_or_404(Group, id=id)
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-
-    if request.user.school == group.school:
-        pupils = User.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
-        attendances = Attendance.objects.filter(Q(pupil__in=pupils) & Q(created_date__range=(today_min, today_max)))
-        context = {
-            'group': group,
-            'attendances': attendances
-        }
-        if not attendances.exists():
-            messages.error(request, 'Davomat belgilanmagan!')
-            return render(request, 'user/attendance/attendance_view.html', context)
-
-        return render(request, 'user/attendance/attendance_view.html', context)
-    else:
-        return render(request, 'inc/404.html')
-
-
-@login_required
 def attendance_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
-    today = timezone.now()
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
     subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(categories__title=group.category) & Q(subject_schedule__date__range=(today_min, today_max)) & Q(
+        Q(is_active=True) & Q(categories__title=group.category) & Q(
+            subject_schedule__date__range=(today_min, today_max)) & Q(
             subject_schedule__group=group)).distinct()
 
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
         return redirect(reverse_lazy('user:attendance_groups_list'))
     if request.user == group.teacher:
-        # pupils = User.objects.filter(Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
         context = {
             'group': group,
             'subjects': subjects
         }
         return render(request, 'user/attendance/attendance_set_by_group.html', context)
     else:
-        groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True)).distinct()
-        context = {
-            'groups': groups
-        }
         messages.error(request,
                        f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash faqatgina {group.teacher}ga ruxsat berilgan!')
-        return render(request, 'user/attendance/attendance_groups_list.html', context)
+        return redirect(reverse_lazy('user:attendance_groups_list'))
 
 
 @login_required
@@ -1315,9 +1292,7 @@ def attendance_set_by_subject(request, group_id, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-    # subjects = Subject.objects.filter(Q(is_active=True) & Q(categories__title=group.category) & Q(
-    #         subject_schedule__date__range=(today_min, today_max)) & Q(
-    #         subject_schedule__group=group))
+
     schedules = Schedule.objects.filter(Q(date__range=(today_min, today_max)) & Q(is_active=True) & Q(subject=subject))
 
     if not schedules.exists():
@@ -1356,10 +1331,11 @@ def attendance_set_visited(request):
             else:
                 return HttpResponse(False)
 
-            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,created_date__range=(today_min, today_max))
+            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
+                                                   created_date__range=(today_min, today_max))
 
             if not attendance.exists():
-                Attendance.objects.create(pupil=pupil, teacher=request.user,  subject=subject, is_visited=visited)
+                Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject, is_visited=visited)
                 return HttpResponse(True)
             else:
                 for atten in attendance:
@@ -1375,9 +1351,12 @@ def send_sms(request):
     if request.user.role == '2':
         form = SendSmsForm(data=request.POST)
         groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
-        teachers = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=3)).order_by('name')
-        instructors = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=6)).order_by('name')
-        accountants = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=5)).order_by('name')
+        teachers = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=3)).order_by(
+            'name')
+        instructors = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=6)).order_by(
+            'name')
+        accountants = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=5)).order_by(
+            'name')
         sms_count = request.user.school.sms_count
         if sms_count == None:
             school_sms_count = 0
@@ -1399,7 +1378,6 @@ def send_sms(request):
                 text = form.cleaned_data['text']
                 text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
                 text = get_sms(text)
-
 
                 try:
                     group = get_object_or_404(Group, id=int(request.POST['group']))
@@ -1441,7 +1419,8 @@ def send_sms(request):
                     this_user.sms_count = new_sms_count
                     this_user.save()
 
-                    messages.success(request, f"Sizning SMS xabarnomangiz {users.count()} ta o'quvchiga muvaffaqiyatli yetkazildi!")
+                    messages.success(request,
+                                     f"Sizning SMS xabarnomangiz {users.count()} ta o'quvchiga muvaffaqiyatli yetkazildi!")
                     context.update(school_sms_count=new_sms_count)
                 else:
                     messages.error(request, "Kechirasiz, SMSlar soni guruhdagi o'quvchilar sonidan kam")
@@ -1489,29 +1468,24 @@ def referral_list(request, id):
 
 @login_required
 def rating_groups_list(request):
-    groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
-    if not groups.exists():
-        messages.error(request, 'Guruhlar mavjud emas!')
-        return render(request, 'user/rating/rating_groups_list.html')
-
-    today = timezone.now()
-    # attendances = Attendance.objects.filter(Q(teacher__school=request.user.school) & Q(created_date__day=today.day) & Q(is_visited=True))
-    # if not attendances.exists():
-    #     messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
-    #     return render(request, 'user/rating/rating_groups_list.html')
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
     if request.user.role == '3':
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
-        if not groups.exists():
+        teacher_groups = Group.objects.filter(
+            Q(school=request.user.school) & Q(is_active=True) & Q(teacher=request.user))
+        if not teacher_groups.exists():
             messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
             return render(request, 'user/rating/rating_groups_list.html')
 
         groups = Group.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__is_offline=True) & Q(
+            Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(
+                group_user__pupil_attendance__created_date__range=(today_min, today_max)) & Q(
                 teacher=request.user)).distinct()
-
         if not groups.exists():
-            messages.error(request, 'An\'anaviy ta\'limda o\'qiydigan o\'quvchilar mavjud emas!')
+            messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
+            return render(request, 'user/rating/rating_groups_list.html')
+
         context = {
             'groups': groups
         }
@@ -1520,7 +1494,8 @@ def rating_groups_list(request):
 
         groups = Group.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(group_user__pupil_attendance__is_visited=True) & Q(
-                group_user__pupil_attendance__created_date__day=today.day)).distinct()
+                group_user__pupil_attendance__created_date__range=(today_min, today_max))).distinct()
+
         if not groups.exists():
             messages.error(request, 'Davomat belgilangan guruhlar mavjud emas!')
         context = {
@@ -1532,16 +1507,47 @@ def rating_groups_list(request):
 
 
 @login_required
-def set_rating(request, group_id):
+def rating_set_by_group(request, id):
+    group = get_object_or_404(Group, id=id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
+    subjects = Subject.objects.filter(
+        Q(is_active=True) & Q(
+            subject_schedule__group=group) & Q(
+            subject_attendance__created_date__range=(today_min, today_max))).distinct()
+
+    if not subjects.exists():
+        messages.error(request, f'Davomat belgilangan fanlar mavjud emas!')
+        return redirect(reverse_lazy('user:rating_groups_list'))
+    if request.user == group.teacher:
+        context = {
+            'group': group,
+            'subjects': subjects
+        }
+        return render(request, 'user/rating/rating_set_by_group.html', context)
+    else:
+        messages.error(request,
+                       f'{group.category}-{group.number} {group.year} guruhi baholarini qo\'yish faqatgina {group.teacher}ga ruxsat berilgan!')
+        return redirect(reverse_lazy('user:rating_groups_list'))
+
+
+@login_required
+def rating_set_by_subject(request, group_id, subject_id):
     group = get_object_or_404(Group, id=group_id)
     subject = get_object_or_404(Subject, id=subject_id)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
-    today = timezone.now()
-    tomorrow = timezone.now() + datetime.timedelta(1)
+    schedules = Schedule.objects.filter(Q(date__range=(today_min, today_max)) & Q(is_active=True) & Q(subject=subject))
+
+    if not schedules.exists():
+        messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+        return redirect(reverse_lazy('user:rating_groups_list'))
 
     if request.user == group.teacher:
         pupils = User.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
+            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group) & Q(pupil_attendance__subject=subject) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))
 
         if not pupils.exists():
             messages.error(request, f'O\'quvchilar mavjud emas!')
@@ -1550,9 +1556,96 @@ def set_rating(request, group_id):
             'subject': subject,
             'pupils': pupils
         }
-        return render(request, 'user/attendance/attendance_set_by_subject.html', context)
+        return render(request, 'user/rating/rating_set_by_subject.html', context)
     else:
         return render(request, 'inc/404.html')
+
+
+@login_required
+def rating_create(request):
+    if request.is_ajax():
+        if request.POST:
+            print(request.POST)
+            pupil = get_object_or_404(User, id=request.POST.get('pupil'))
+            subject = get_object_or_404(Subject, id=request.POST.get('subject'))
+            score = request.POST.get('score')
+            today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+            today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+
+            rating = Rating.objects.filter(pupil=pupil, subject=subject, created_date__range=(today_min, today_max))
+            if not rating.exists():
+                rating = Rating.objects.create(created_date=timezone.now())
+                rating.score = score
+                rating.teacher = request.user
+                rating.subject = subject
+                rating.pupil = pupil
+                rating.score = score
+                rating.updated_date = timezone.now()
+                rating.save()
+
+                import pytz
+                new_timezone = pytz.timezone("Asia/Tashkent")
+                new_timezone_timestamp = rating.updated_date.astimezone(new_timezone)
+                get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+
+                rating = {
+                    'date': get_datetime,
+                    'score': score
+                }
+                return JsonResponse({'rating': rating})
+        return HttpResponse(False)
+    return HttpResponse(False)
+
+
+@login_required
+def electronical_journal(request):
+    groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True)).order_by('id')
+    if not groups.exists():
+        messages.error(request, 'Guruhlar mavjud emas!')
+        return render(request, 'user/electronical_journal.html')
+    subjects = Subject.objects.filter(Q(is_active=True) & Q(subject_schedule__group__in=groups)).distinct()
+    if not subjects.exists():
+        messages.error(request, 'Dars jadvali yaratilgan fanlar mavjud emas!')
+        return render(request, 'user/electronical_journal.html')
+
+
+    get_months_and_years_list = [i.strftime("%m.%Y") for i in pd.date_range(start=groups[0].start, end=groups[0].stop).tolist()]
+    month_list = list(set(get_months_and_years_list))
+    month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
+
+    # filtered_date = datetime.datetime.strptime(f"01.{month_list[0]}", "%d.%m.%Y")
+    # firstdayofmonth = datetime.datetime.combine(filtered_date, datetime.time.min)
+    endmonth = calendar.monthrange(groups[0].start.year, groups[0].start.month)
+    lastdayofmonth = datetime.datetime(groups[0].start.year, groups[0].start.month, endmonth[1])
+    # last_day = calendar.monthrange(groups[0].stop.year, groups[0].stop.month)
+    # if last_day[1] > groups[0].stop.month:
+    #     lastdayofmonth = groups[0].stop
+    # print(endmonth)
+    # print(lastdayofmonth)
+
+
+    get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
+    days_list = list(set(get_days))
+    days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+
+    users = User.objects.filter(school=request.user.school, group=groups[0])
+
+    context = {
+        'groups': groups,
+        'subjects': subjects,
+        'cols': days_list,
+        'rows': users,
+        'months_and_years': month_list
+    }
+    if request.method == 'POST':
+        group = get_object_or_404(Group, id=request.POST.get('group'))
+        subject = get_object_or_404(Subject, id=request.POST.get('subject'))
+        month_and_year = request.POST.get('month')
+        print(request.POST)
+        context.update(render_subject=subject)
+        context.update(render_group=group)
+
+    return render(request, 'user/electronical_journal.html', context)
 
 
 @login_required
@@ -1573,10 +1666,12 @@ def get_workers_count(request):
             teachers_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(role=3)).count()
             return HttpResponse(teachers_count)
         elif request.POST.get('workers') == 'instructors':
-            instructors_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=6)).count()
+            instructors_count = User.objects.filter(
+                Q(is_active=True) & Q(school=request.user.school) & Q(role=6)).count()
             return HttpResponse(instructors_count)
         elif request.POST.get('workers') == 'accountants':
-            accountants_count = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) &  Q(role=5)).count()
+            accountants_count = User.objects.filter(
+                Q(is_active=True) & Q(school=request.user.school) & Q(role=5)).count()
             return HttpResponse(accountants_count)
         else:
             return HttpResponse(False)
@@ -1591,13 +1686,39 @@ def get_attendance_time(request):
         subject = get_object_or_404(Subject, id=request.POST.get('subject'))
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        attendance = Attendance.objects.filter(pupil=pupil, subject=subject,created_date__range=(today_min, today_max))
-        for atten in attendance:
-            get_year = str(atten.updated_date)[0:4]
-            get_month = str(atten.updated_date)[5:7]
-            get_day = str(atten.updated_date)[8:10]
-            get_time = str(atten.updated_date)[11:16]
-            get_datetime = f"{get_day}.{get_month}.{get_year}  {get_time}"
-            return HttpResponse(get_datetime)
+        try:
+            attendance = Attendance.objects.filter(pupil=pupil, subject=subject,
+                                                   created_date__range=(today_min, today_max))
+            for atten in attendance:
+                import pytz
+                new_timezone = pytz.timezone("Asia/Tashkent")
+                new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
+                get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+                return HttpResponse(get_datetime)
+        except:
+            return HttpResponse(False)
     else:
         return HttpResponse(False)
+
+
+@login_required
+def get_group_months(request):
+    if request.is_ajax():
+        if request.POST:
+            group = get_object_or_404(Group, id=request.POST.get('group'))
+            get_months_and_years_list = [i.strftime("%m.%Y") for i in pd.date_range(start=group.start, end=group.stop).tolist()]
+            month_list = list(set(get_months_and_years_list))
+            month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
+            # for get_list in month_list:
+            #     split_month = str(get_list).split(' ')[0]
+            # group_months = [calendar.month_name[int(i)] for i in month_list]
+            # month_lookup = list(month_name)
+            # sorted_months = sorted(group_months, key=month_lookup.index)
+            # converted_months = []
+            options = ""
+            for month in month_list:
+                # converted_months = month.replace('January', 'Yanvar').replace('February','Fevral').replace('March','Mart').replace('April','Aprel').replace('June','Iyun').replace('July','Iyul').replace('August','Avgust').replace('September','Sentyabr').replace('October','Oktyabr').replace('November','Noyabr').replace('December','Dekabr')
+                options += f"<option value='{month}'>{month}</option>"
+            return HttpResponse(options)
+    else:
+        return False

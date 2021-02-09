@@ -67,7 +67,7 @@ def makesms(sms):
                                                                                                       'r').replace(
             'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
                                                                                                         'f').replace(
-            'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ў', "o'").replace('ь', "'").replace('ъ', "'")
+            'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ў', "o'").replace('ь', "'").replace('ъ', "'").replace('’', "'").replace('“', '"').replace('”', '"').replace(',', ',').replace('.', '.').replace(':', ':')
         # filter upper
         sms = sms.replace('Ц', 'Ts').replace('Ч', 'Ch').replace('Ю','Yu').replace(
             'А', 'A').replace('Б', 'B').replace('Қ', "Q").replace('Ғ', "G'").replace('Ҳ',"H").replace('Х',"X").replace(

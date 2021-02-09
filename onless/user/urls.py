@@ -42,7 +42,7 @@ urlpatterns = [
     path('get-learning-type/', get_learning_type, name='get_learning_type'),
 
     path('attendance-groups-list/', attendance_groups_list, name='attendance_groups_list'),
-    path('attendance-view/<int:id>/', attendance_view, name='attendance_view'),
+
     path('attendance-set-by-group/<int:id>/', attendance_set_by_group, name='attendance_set_by_group'),
     path('attendance-set-by-subject/<int:group_id>/<int:subject_id>/', attendance_set_by_subject,
          name='attendance_set_by_subject'),
@@ -52,10 +52,13 @@ urlpatterns = [
     path('referral-list/<int:id>/', referral_list, name='referral_list'),
 
     path('rating-groups-list/', rating_groups_list, name='rating_groups_list'),
-    path('set-rating/', set_rating, name='set_rating'),
+    path('rating-set-by-group/<int:id>/', rating_set_by_group, name='rating_set_by_group'),
+    path('rating-set-by-subject/<int:group_id>/<int:subject_id>/', rating_set_by_subject, name='rating_set_by_subject'),
+    path('electronical-journal/', electronical_journal, name='electronical_journal'),
+    path('rating-create/', rating_create, name='rating_create'),
     path('get-group-pupils-count/', get_group_pupils_count, name='get_group_pupils_count'),
     path('get-workers-count/', get_workers_count, name='get_workers_count'),
     path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
-
+    path('get-group-months/', get_group_months, name='get_group_months'),
 
 ]

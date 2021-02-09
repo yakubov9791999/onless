@@ -20,7 +20,7 @@
                                 <th style="width: 3%">№</th>
                                 <th>Guruh nomi</th>
                                 <th>An'anaviy ta'lim oluvchilar</th>
-                                <th>Davomatni ko'rish</th>
+
                                 <th>Davomatni belgilash</th>
                             </tr>
                             </thead>
@@ -32,7 +32,7 @@
                                     {% get_fullname_group group.id as group_name %}
                                     <td>
                                         {% if request.user.role == '2' or request.user.role == '3' %}
-                                            <a href="{% url 'user:attendance_view' group.id %}">
+                                            <a href="{% url 'user:attendance_set_by_group' group.id %}">
                                                 <b id="group_name">{{ group_name }}</b>
                                             </a>
                                         {% else %}
@@ -44,9 +44,8 @@
                                         {{ pupil_count }}
                                     {% endfor %}
                                     </td>
-                                    <td><a class="btn btn-info" href="{% url 'user:attendance_view' group.id %}">Davomatni
-                                        ko'rish</a></td>
-                                    <td><a class="btn btn-warning"
+
+                                    <td><a class="btn btn-info"
                                            href="{% url 'user:attendance_set_by_group' group.id %}">Davomatni
                                         belgilash</a></td>
                                 </tr>

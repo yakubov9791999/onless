@@ -272,6 +272,7 @@ class Attendance(models.Model):
 
 
 SCORE_CHOICES = (
+    ('1', '1'),
     ('2', '2'),
     ('3', '3'),
     ('4', '4'),
@@ -285,11 +286,11 @@ class Rating(models.Model):
     score = models.CharField(verbose_name='Olgan bahosi', choices=SCORE_CHOICES, max_length=12, blank=True, null=True)
     subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_rating',
                                 null=True)
-    created_date = models.DateTimeField(verbose_name='Yaratilgan vaqt', editable=False)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqt', blank=True, null=True)
+    created_date = models.DateTimeField(verbose_name='Yaratilgan vaqt', editable=False, default=timezone.now)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqt', blank=True, null=True,default=timezone.now)
 
     def __str__(self):
-        return f'{self.pupil.name}: {self.score}'
+        return f'{self.pupil}: {self.score}'
 
     class Meta:
         verbose_name = 'Baho'

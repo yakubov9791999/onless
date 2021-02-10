@@ -39,7 +39,8 @@
                                 <select name="month" id="month" class="form-control"
                                         style="cursor: pointer;">
                                     {% for months_and_year in months_and_years %}
-                                        <option value="{{ months_and_year }}">{{ months_and_year }}</option>
+                                        <option {% if selected_months_and_years == months_and_year %}selected{% endif %}
+                                                value="{{ months_and_year }}">{{ months_and_year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -56,7 +57,8 @@
                             <tr style="background-color: #faf7f7">
                                 {% if render_group and render_subject %}
                                     {% get_fullname_group render_group.id as group_name %}
-                                    <th style="text-align: center; font-size: xx-large; color: #5353d5" colspan="{{ cols|length|add:2 }}">
+                                    <th style="text-align: center; font-size: xx-large; color: #5353d5"
+                                        colspan="{{ cols|length|add:2 }}">
                                         Guruh: {{ group_name }} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                         Fan: {{ render_subject.long_title }}
                                     </th>
@@ -97,26 +99,36 @@
                                 {% endfor %}
 
                             </tr>
-                            {% for row in rows %}
-                                <tr>
-                                <th>{{ forloop.counter }}</th>
-                                <th>{{ row.name }}</th>
+                            {% if rows %}
+                                {% for row in rows %}
+                                    <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <th>{{ row.name }}</th>
 
-                                {% for col in cols %}
-                                    {% get_pupil_rating_or_attendance row.id col subjects.first.id as rating_or_attendance %}
-
-                                    <th>
-                                        {% if rating_or_attendance.attendance == False %}
-                                            <span style="color: red">dk</span>
-                                        {% elif rating_or_attendance.attendance == True %}
-                                            <span>{{ rating_or_attendance.rating }}</span>
+                                    {% for col in cols %}
+                                        {% if subject %}
+                                            {% get_pupil_rating_or_attendance row.id col subject.id as rating_or_attendance %}
+                                        {% else %}
+                                            {% get_pupil_rating_or_attendance row.id col subjects.first.id as rating_or_attendance %}
                                         {% endif %}
-                                    </th>
+                                        <th>
+                                            {% if rating_or_attendance.attendance == False %}
+                                                <span style="color: red">dk</span>
+                                            {% elif rating_or_attendance.attendance == True %}
+                                                <span>{{ rating_or_attendance.rating }}</span>
+                                            {% endif %}
+                                        </th>
 
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
+                            {% else %}
+                                <tr>
+                                <th style="color: red; text-align: center" colspan="{{ cols|length|add:2 }}">O'quvchilar mavjud emas!</th>
+                                </tr>
+                            {% endif %}
                             <tr>
-                                <td colspan="{{ cols|length|add:2 }}" ><span style="color: red">dk - darsga kelmagan</span></td>
+                                <td colspan="{{ cols|length|add:2 }}"><span
+                                        style="color: red; float: right">dk - darsga kelmagan</span></td>
                             </tr>
                             </tbody>
                             <tfoot>

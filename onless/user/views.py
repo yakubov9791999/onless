@@ -1547,7 +1547,8 @@ def rating_set_by_subject(request, group_id, subject_id):
 
     if request.user == group.teacher:
         pupils = User.objects.filter(
-            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group) & Q(pupil_attendance__subject=subject) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))
+            Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group) & Q(
+                pupil_attendance__subject=subject) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))
 
         if not pupils.exists():
             messages.error(request, f'O\'quvchilar mavjud emas!')
@@ -1608,27 +1609,42 @@ def electronical_journal(request):
         messages.error(request, 'Dars jadvali yaratilgan fanlar mavjud emas!')
         return render(request, 'user/electronical_journal.html')
 
-
-    get_months_and_years_list = [i.strftime("%m.%Y") for i in pd.date_range(start=groups[0].start, end=groups[0].stop).tolist()]
+    # o'quv oylari yili bilan selectga chiqarish uchun
+    get_months_and_years_list = [i.strftime("%m.%Y") for i in
+                                 pd.date_range(start=groups[0].start, end=groups[0].stop).tolist()]
     month_list = list(set(get_months_and_years_list))
     month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
+    # o'quv oylari yili bilan selectga chiqarish uchun oxiri
 
     # filtered_date = datetime.datetime.strptime(f"01.{month_list[0]}", "%d.%m.%Y")
     # firstdayofmonth = datetime.datetime.combine(filtered_date, datetime.time.min)
+
+    # o'quv oyining eng oxirgi kuni
     endmonth = calendar.monthrange(groups[0].start.year, groups[0].start.month)
     lastdayofmonth = datetime.datetime(groups[0].start.year, groups[0].start.month, endmonth[1])
+
     # last_day = calendar.monthrange(groups[0].stop.year, groups[0].stop.month)
     # if last_day[1] > groups[0].stop.month:
     #     lastdayofmonth = groups[0].stop
     # print(endmonth)
     # print(lastdayofmonth)
 
+    group_stop_month = groups[0].stop.strftime("%m")
+    group_stop_day = groups[0].stop.strftime("%d")
+    stop_month = lastdayofmonth.strftime("%m")
+    stop_day = lastdayofmonth.strftime("%d")
 
+    if group_stop_month == stop_month:
+        if group_stop_day < stop_day:
+            lastdayofmonth = groups[0].stop
+
+    # guruh o'quv kunlarini olish
     get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
     days_list = list(set(get_days))
     days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+    # guruh o'quv kunlarini olishni oxiri
 
-    users = User.objects.filter(school=request.user.school, group=groups[0])
+    users = User.objects.filter(Q(school=request.user.school) & Q(group=groups[0]) & Q(is_active=True))
 
     context = {
         'groups': groups,
@@ -1641,9 +1657,60 @@ def electronical_journal(request):
         group = get_object_or_404(Group, id=request.POST.get('group'))
         subject = get_object_or_404(Subject, id=request.POST.get('subject'))
         month_and_year = request.POST.get('month')
-        print(request.POST)
-        context.update(render_subject=subject)
-        context.update(render_group=group)
+        users = User.objects.filter(Q(school=request.user.school) & Q(group=group) & Q(is_active=True))
+
+        # o'quv oylari yili bilan selectga chiqarish uchun
+        get_months_and_years_list = [i.strftime("%m.%Y") for i in
+                                     pd.date_range(start=group.start, end=group.stop).tolist()]
+        month_list = list(set(get_months_and_years_list))
+        month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
+        # o'quv oylari yili bilan selectga chiqarish uchun oxiri
+
+        startdate = dt.strptime(month_and_year, '%m.%Y')
+        get_month = startdate.strftime("%m")
+        get_year = startdate.strftime("%Y")
+        get_group_month = group.start.strftime("%m")
+
+        # agar o'qishning birinchi oyi bo'lsa
+        if get_group_month == get_month:
+            first_day = f"{group.start.strftime('%d')}.{get_month}.{get_year}"
+            firstdayofmonth = dt.strptime(first_day, '%d.%m.%Y')
+        else:
+            first_day = f"01.{get_month}.{get_year}"
+            firstdayofmonth = dt.strptime(first_day, '%d.%m.%Y')
+
+        # o'quv oyining eng oxirgi kuni
+        endmonth = calendar.monthrange(int(get_year), int(get_month))
+        lastdayofmonth = datetime.datetime(int(get_year), int(get_month), endmonth[1])
+
+        group_stop_month = group.stop.strftime("%m")
+        group_stop_day = group.stop.strftime("%d")
+        stop_month = lastdayofmonth.strftime("%m")
+        stop_day = lastdayofmonth.strftime("%d")
+
+        if group_stop_month == stop_month:
+            if group_stop_day < stop_day:
+                lastdayofmonth = group.stop
+
+        # guruh o'quv kunlarini olish
+        get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=firstdayofmonth, end=lastdayofmonth).tolist()]
+        days_list = list(set(get_days))
+        days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+        # guruh o'quv kunlarini olishni oxiri
+
+        context = {
+            'render_subject': subject,
+            'render_group': group,
+            'rows': users,
+            'cols': days_list,
+            'subject': subject,
+            'subjects': subjects,
+            'groups': groups,
+            'months_and_years': month_list,
+            'selected_months_and_years': month_and_year
+        }
+
+        return render(request, 'user/electronical_journal.html', context)
 
     return render(request, 'user/electronical_journal.html', context)
 
@@ -1706,7 +1773,8 @@ def get_group_months(request):
     if request.is_ajax():
         if request.POST:
             group = get_object_or_404(Group, id=request.POST.get('group'))
-            get_months_and_years_list = [i.strftime("%m.%Y") for i in pd.date_range(start=group.start, end=group.stop).tolist()]
+            get_months_and_years_list = [i.strftime("%m.%Y") for i in
+                                         pd.date_range(start=group.start, end=group.stop).tolist()]
             month_list = list(set(get_months_and_years_list))
             month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
             # for get_list in month_list:

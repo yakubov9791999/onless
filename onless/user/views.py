@@ -74,7 +74,7 @@ def settings_list(request):
 
 
 @login_required
-def add_teacher(request):
+def worker_add(request):
     if request.user.role == '2':
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
@@ -84,6 +84,14 @@ def add_teacher(request):
                 name = get_name(name)
                 username = request.POST['pasport']
                 username = get_pasport(username)
+                worker = request.POST.get('worker')
+                if worker == 'instructor':
+                    role = 6
+                elif worker == 'accountant':
+                    role = 5
+                else:
+                    role = 3
+
                 try:
                     user = User.objects.create_user(
                         username=username,
@@ -93,7 +101,7 @@ def add_teacher(request):
                         password=password,
                         name=name,
                         phone=form.cleaned_data['phone'],
-                        role='3',
+                        role=str(role),
                         is_superuser=False,
                     )
                     user.set_password(password)
@@ -101,14 +109,14 @@ def add_teacher(request):
                     user.email = ''
                     user.save()
 
-                    messages.success(request, "O'qituvchi muvaffaqiyatli qo'shildi")
+                    messages.success(request, "Xodim muvaffaqiyatli qo'shildi")
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
                 messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
         else:
             form = AddUserForm(request)
-        return render(request, 'user/teacher/add_teacher.html', )
+        return render(request, 'user/worker_add.html', )
     else:
         return render(request, 'inc/404.html')
 
@@ -762,83 +770,6 @@ def upload_file(request):
     else:
         return render(request, 'inc/404.html')
 
-
-@login_required
-def add_bugalter(request):
-    if request.user.role == '2':
-        if request.POST:
-            form = AddUserForm(data=request.POST)
-            password = random.randint(1000000, 9999999)
-            pasport = get_pasport(request.POST['pasport'])
-            if form.is_valid():
-                name = form.cleaned_data['name']
-                name = get_name(name)
-                try:
-                    user = User.objects.create_user(
-                        username=pasport,
-                        pasport=pasport,
-                        school=request.user.school,
-                        turbo=password,
-                        password=password,
-                        name=name,
-                        phone=form.cleaned_data['phone'],
-                        role='5',
-                        is_superuser=False,
-                    )
-                    user.set_password(password)
-                    user.username = pasport
-                    user.email = ''
-                    user.save()
-                    messages.success(request, "Hisobchi muvaffaqiyatli qo'shildi")
-
-                except IntegrityError:
-                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
-            else:
-                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
-        else:
-            form = AddUserForm(request)
-        return render(request, 'user/bugalter/add_bugalter.html')
-    else:
-        return render(request, 'inc/404.html')
-
-
-@login_required
-def add_instructor(request):
-    if request.user.role == '2':
-        if request.POST:
-            form = AddUserForm(data=request.POST)
-            password = random.randint(1000000, 9999999)
-            pasport = get_pasport(request.POST['pasport'])
-            if form.is_valid():
-                name = form.cleaned_data['name']
-                name = get_name(name)
-                try:
-                    user = User.objects.create_user(
-                        username=pasport,
-                        pasport=pasport,
-                        school=request.user.school,
-                        turbo=password,
-                        password=password,
-                        name=name,
-                        phone=form.cleaned_data['phone'],
-                        role='6',
-                        is_superuser=False,
-                    )
-                    user.set_password(password)
-                    user.username = pasport
-                    user.email = ''
-                    user.save()
-                    messages.success(request, "Instruktor muvaffaqiyatli qo'shildi")
-
-                except IntegrityError:
-                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
-            else:
-                messages.error(request, "Formani to'liq yoki to'g'ri to'ldirilmagan !")
-        else:
-            form = AddUserForm(request)
-        return render(request, 'user/instructor/add_instructor.html')
-    else:
-        return render(request, 'inc/404.html')
 
 
 @login_required

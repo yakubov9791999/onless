@@ -14,7 +14,7 @@
                     <form action="{% url 'user:electronical_journal' %}" method="post">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-md-3">
                                 <label for="">Guruh: </label>
                                 <select name="group" id="group" class="form-control"
                                         style="cursor: pointer;">
@@ -24,7 +24,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-3">
+                            <div class="col-md-3">
                                 <label for="">Fan: </label>
                                 <select name="subject" id="subject" class="form-control"
                                         style="cursor: pointer;">
@@ -34,7 +34,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-3">
+                            <div class="col-md-3">
                                 <label for="">O'quv oyi: </label>
                                 <select name="month" id="month" class="form-control"
                                         style="cursor: pointer;">
@@ -44,7 +44,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-2" style="margin-top: 1.9rem; text-align: center">
+                            <div class="col-md-2" style="margin-top: 1.9rem; text-align: center">
                                 <button class="btn btn-info">Yangilash</button>
                             </div>
                         </div>

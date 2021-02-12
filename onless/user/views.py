@@ -275,8 +275,12 @@ def groups_list(request):
 
 @login_required
 def group_detail(request, id):
+    group = get_object_or_404(Group, id=id)
+    if request.user.role == '3':
+        if group.teacher != request.user:
+            return render(request, 'inc/404.html')
+
     if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
-        group = get_object_or_404(Group, id=id)
         pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by(
             'name')
         # pupils = []
@@ -1571,10 +1575,13 @@ def electronical_journal(request):
 
     # guruh o'quv kunlarini olish
     get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
+    # get_days = get_days.apply(lambda x: x[x.dayofweek <= 4])
     days_list = list(set(get_days))
     days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
-    # guruh o'quv kunlarini olishni oxiri
-
+    # g = [datetime.datetime.strptime(d, "%d.%m.%Y") for d in days_list if not d.isoweekday() in [6,7]]
+    # # guruh o'quv kunlarini olishni oxiri
+    #
+    # print(g)
     users = User.objects.filter(Q(school=request.user.school) & Q(group=groups[0]) & Q(is_active=True))
 
     context = {

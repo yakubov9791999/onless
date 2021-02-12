@@ -1535,9 +1535,9 @@ def electronical_journal(request):
     if not groups.exists():
         messages.error(request, 'Guruhlar mavjud emas!')
         return render(request, 'user/electronical_journal.html')
-    subjects = Subject.objects.filter(Q(is_active=True) & Q(subject_schedule__group__in=groups)).distinct()
+    subjects = Subject.objects.filter(Q(is_active=True)).distinct()
     if not subjects.exists():
-        messages.error(request, 'Dars jadvali yaratilgan fanlar mavjud emas!')
+        messages.error(request, 'Fanlar mavjud emas!')
         return render(request, 'user/electronical_journal.html')
 
     # o'quv oylari yili bilan selectga chiqarish uchun

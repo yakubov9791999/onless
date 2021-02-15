@@ -1935,5 +1935,15 @@ def modify_checkbox_send_sms(request):
 
 @login_required
 def payment_payme(request):
-    print(request)
-    return HttpResponse(True)
+    if request.POST:
+        URL = 'https://test.paycom.uz/'
+        KEY = 'dZp&k%s@Qm72ADXHdbK4EWnRrEf&R@xmnUvk'
+        merchant_id = '602a69da2f3eb10fc98597ee'
+
+        headers = {
+            'KEY': KEY,
+            'merchant_id': merchant_id
+        }
+        r = requests.post(url=URL, headers=headers)
+        print(r.text)
+        return HttpResponse(r.text)

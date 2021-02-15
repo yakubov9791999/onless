@@ -15,17 +15,21 @@
                     <div class="row justify-content-around">
                         <div class="col-4">
                             <!-- small box -->
-                            <div class="small-box bg-gradient-navy">
-                                <div class="inner">
-                                    <h3>{{ request.user.school.money|intcomma }} so'm</h3>
+                            <form action="{% url 'user:payment_payme' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="small-box bg-gradient-navy">
+                                    <div class="inner">
+                                        <h3>{{ request.user.school.money|intcomma }} so'm</h3>
 
-                                    <p>Hisob</p>
+                                        <p>Hisob</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-money-check"></i>
+                                    </div>
+                                   <button type="submit" class="small-box-footer"> Hisobni to'ldirish <i
+                                            class="fas fa-arrow-circle-right"></i></button>
                                 </div>
-                                <div class="icon">
-                                    <i class="fas fa-money-check"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">Hisobni to'ldirish <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
+                            </form>
                         </div>
 
                         <div class="col-4">
@@ -55,7 +59,8 @@
                                 <div class="icon">
                                     <i class="far fa-envelope"></i>
                                 </div>
-                                <a href="#" class="small-box-footer">Oddiy sms olish <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="#" class="small-box-footer">Oddiy sms olish <i
+                                        class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>

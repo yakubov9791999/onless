@@ -58,5 +58,9 @@ urlpatterns = [
     path('get-workers-count/', get_workers_count, name='get_workers_count'),
     path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
     path('get-group-months/', get_group_months, name='get_group_months'),
+    path('sms-settings/', sms_settings, name='sms_settings'),
+
+    path('modify-checkbox-send-sms/', modify_checkbox_send_sms, name='modify_checkbox_send_sms'),
+    path('payment-payme/', payment_payme, name='payment_payme'),
 
 ]

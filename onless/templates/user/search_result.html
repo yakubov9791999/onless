@@ -11,79 +11,85 @@
                     <h3 class="card-title"> " {{ q }} " qidiruv natijasida
                         {% if count > 0 %}{{ count }} ta ma'lumot topildi {% else %} ma'lumot topilmadi {% endif %}</h3>
                 </div>
-            {% if groups %}
-                <h4 class="h4 mt-2 ml-2">Guruhlar:</h4>
-                <div class="card-body ml-5">
+                {% if groups %}
+                    <h4 class="h4 mt-2 ml-2">Guruhlar:</h4>
+                    <div class="card-body ml-5">
 
-                    <h5>
-                        {% for group in groups %}
-                            <a href="{% url 'user:group_detail' group.id %}">{{ group }}</a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
-            {% if teachers %}
-                <h4 class="h4 mt-2 ml-2">O'qituvchilar:</h4>
-                <div class="card-body ml-5">
-                    <h5>
-                        {% for teacher in teachers %}
-                            <a href="{% url 'user:workers_list' %}#{{ teacher.name }}"><p>{{ teacher.name }}</p></a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
-            {% if bugalters %}
-                <h4 class="h4 mt-2 ml-2">Hisobchilar:</h4>
-                <div class="card-body ml-5">
-                    <h5>
-                        {% for bugalter in bugalters %}
-                             <a href="{% url 'user:workers_list' %}#{{ bugalter.name }}"><p>{{ bugalter }}</p></a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
-            {% if instructors %}
-                <h4 class="h4 mt-2 ml-2">Instruktorlar:</h4>
-                <div class="card-body ml-5">
-                    <h5>
-                        {% for instructor in instructors %}
-                             <a href="{% url 'user:workers_list' %}#{{ instructor.name }}"><p>{{ instructor }}</p></a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
-             {% if pupils %}
-                <h4 class="h4 mt-2 ml-2">O'quvchilar:</h4>
-                <div class="card-body ml-5">
-                    <h5>
-                        {% for pupil in pupils %}
-                             <a style="" href="{% url 'user:group_detail' pupil.group.id %}#{{ pupil.name }}"><p>{{ pupil.name }}</p></a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
-            {% if videos %}
-                <h4 class="h4 mt-2 ml-2">Videolar:</h4>
-                <div class="card-body ml-5">
+                        <h5>
+                            {% for group in groups %}
+                                <a href="{% url 'user:group_detail' group.id %}">{{ group }}</a>
+                                <br>
+                                <br>
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
+                {% if teachers %}
+                    <h4 class="h4 mt-2 ml-2">O'qituvchilar:</h4>
+                    <div class="card-body ml-5">
+                        <h5>
+                            {% for teacher in teachers %}
+                                <a href="{% url 'user:workers_list' %}#{{ teacher.name }}"><p>{{ teacher.name }}</p></a>
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
+                {% if bugalters %}
+                    <h4 class="h4 mt-2 ml-2">Hisobchilar:</h4>
+                    <div class="card-body ml-5">
+                        <h5>
+                            {% for bugalter in bugalters %}
+                                <a href="{% url 'user:workers_list' %}#{{ bugalter.name }}"><p>{{ bugalter }}</p></a>
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
+                {% if instructors %}
+                    <h4 class="h4 mt-2 ml-2">Instruktorlar:</h4>
+                    <div class="card-body ml-5">
+                        <h5>
+                            {% for instructor in instructors %}
+                                <a href="{% url 'user:workers_list' %}#{{ instructor.name }}"><p>{{ instructor }}</p>
+                                </a>
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
+                {% if pupils %}
+                    <h4 class="h4 mt-2 ml-2">O'quvchilar:</h4>
+                    <div class="card-body ml-5">
+                        <h5>
+                            {% for pupil in pupils %}
+                                <a href="{% url 'user:group_detail' pupil.group.id %}#{{ pupil.name }}">
+                                    <p>{{ pupil.name }}</p></a>
 
-                    <h5>
-                        {% for video in videos %}
-                            <a href="{% url 'video:video_detail' video.id %}"><p>{{ video }}</p></a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
-            {% if materials %}
-                <h4 class="h4 mt-2 ml-2">Materiallar:</h4>
-                <div class="card-body ml-5">
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
+                {% if videos %}
+                    <h4 class="h4 mt-2 ml-2">Videolar:</h4>
+                    <div class="card-body ml-5">
 
-                    <h5>
-                        {% for material in materials %}
-                            <a href="{% url 'sign:materials' %}#{{ material.title }}"><p>{{ material.title }}</p></a>
-                        {% endfor %}
-                    </h5>
-                </div>
-            {% endif %}
+                        <h5>
+                            {% for video in videos %}
+                                <a href="{% url 'video:video_detail' video.id %}"><p>{{ video }}</p></a>
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
+                {% if materials %}
+                    <h4 class="h4 mt-2 ml-2">Materiallar:</h4>
+                    <div class="card-body ml-5">
+
+                        <h5>
+                            {% for material in materials %}
+                                <a href="{% url 'sign:materials' %}#{{ material.title }}"><p>{{ material.title }}</p>
+                                </a>
+                            {% endfor %}
+                        </h5>
+                    </div>
+                {% endif %}
             </div>
 
 

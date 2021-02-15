@@ -4,6 +4,9 @@
 
 {% block content %}
     <div class="row">
+        <div class="col-12">
+            {% include 'inc/messages.html' %}
+        </div>
         {% get_count request.user.school.id as count %}
         {% if request.user.role == '2' %}
             <div class="col-lg-6 col-md-6 col-sm-12">
@@ -19,7 +22,7 @@
                     </div>
 
 
-                        <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
+                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
 
                 </div>
             </div>

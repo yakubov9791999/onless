@@ -2,9 +2,9 @@
 {% load quiz_tags %}
 {% block content %}
     <style>
-    .offline_checkbox:hover {
-       cursor: pointer;
-    }
+        .offline_checkbox:hover {
+            cursor: pointer;
+        }
     </style>
     <div class="row">
         <!-- left column -->
@@ -98,9 +98,12 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <input class="offline_checkbox"
-                                               {% if pupil.is_offline %}checked{% endif %}
-                                               data-id="{{ pupil.id }}" type="checkbox">
+                                        <label class="switch ml-2">
+                                            <input type="checkbox" class="offline_checkbox"
+                                                   {% if pupil.is_offline %}checked{% endif %}
+                                                   data-id="{{ pupil.id }}"/><span
+                                                class="slider round"></span>
+                                        </label>
                                     </td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>

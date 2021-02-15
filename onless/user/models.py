@@ -103,12 +103,18 @@ class School(models.Model):
     is_block = models.BooleanField(default=False)
     sms_login = models.CharField(max_length=255, blank=True)
     sms_token = models.CharField(max_length=255, blank=True)
-    sms_count = models.IntegerField(blank=True, null=True, default=0)
     sms_password = models.CharField(max_length=255, blank=True)
     notification = models.BooleanField(default=False)
     notification_text = models.TextField(blank=True)
-    # is_access_input_user = models.BooleanField(default=False)
-    # input_user_count = models.IntegerField(default=25, null=True, blank=True)
+    money = models.IntegerField(blank=True, null=True, default=0)
+    sms_count = models.IntegerField(blank=True, null=True, default=0)
+    add_pupil_sms_count = models.IntegerField(blank=True, null=True, default=0)
+    send_sms_edit_pupil = models.BooleanField(default=False)
+    send_sms_add_worker = models.BooleanField(default=False)
+    send_sms_edit_worker = models.BooleanField(default=False)
+    send_sms_attendance = models.BooleanField(default=False)
+    send_sms_rating = models.BooleanField(default=False)
+    send_sms_payment = models.BooleanField(default=False)
 
 
     def __str__(self):
@@ -196,7 +202,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=5, default='M')
     turbo = models.CharField(max_length=200, blank=True, null=True, validators=[MinLengthValidator(7)])
-    is_offline = models.BooleanField(default=False)
+    is_offline = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

@@ -110,7 +110,6 @@
 
                         },
                         success: function (response) {
-                            alert(response)
                             $(".attendance_time").each(function () {
                             if ($(this).data('id') == pupilId) {
                                 $(this).data('id', pupilId).text(response)

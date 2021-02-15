@@ -1,0 +1,435 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">SMS Sozlamalar</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row justify-content-around">
+                        <div class="col-4">
+                            <!-- small box -->
+                            <div class="small-box bg-gradient-navy">
+                                <div class="inner">
+                                    <h3>{{ request.user.school.money|intcomma }} so'm</h3>
+
+                                    <p>Hisob</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-money-check"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Hisobni to'ldirish <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <!-- small box -->
+                            <div class="small-box bg-gradient-navy">
+                                <div class="inner">
+                                    <h3>{{ request.user.school.add_pupil_sms_count }}</h3>
+
+                                    <p>Kiritish smslar</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Kiritish sms olish <i
+                                        class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+
+                        </div>
+                        <div class="col-4">
+                            <!-- small box -->
+                            <div class="small-box bg-gradient-navy">
+                                <div class="inner">
+                                    <h3>{{ request.user.school.sms_count }}</h3>
+
+                                    <p>Oddiy smslar</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="far fa-envelope"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Oddiy sms olish <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        {#                        <li class="list-group-item text-lg">O'quvchi qo'shishda sms jo'natish#}
+                        {#                            <label class="switch float-right">#}
+                        {#                                <input type="checkbox" {% if request.user.school.send_sms_add_pupil %}checked{% endif %} class="checkbox" id="checkbox_add_pupil"><span#}
+                        {#                                    class="slider round"></span>#}
+                        {#                            </label>#}
+                        {#                        </li>#}
+
+                        <li class="list-group-item text-lg">
+
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    O'quvchini tahrirlashda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox"
+                                               checked disabled><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Kiritish sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">210 tadan - 240 tagacha
+                                        </dd>
+                                        {#                                        <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget#}
+                                        {#                                            metus.#}
+                                        {#                                        </dd>#}
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">1 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Siz B-1 guruhiga
+                                            onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun
+                                            http://onless.uz/kirish manziliga kiring. Login: AB Parol: 3749044
+                                            Qo'shimcha ma'lumot uchun: 919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+
+                        </li>
+
+                        <li class="list-group-item text-lg">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    O'quvchini tahrirlashda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox" class="checkbox"
+                                               {% if request.user.school.send_sms_edit_pupil %}checked{% endif %}
+                                               id="checkbox_edit_pupil"><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm" id="edit_pupil_text"
+                                     style="display: {% if request.user.school.send_sms_edit_pupil %}block{% else %}none{% endif %}">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Oddiy sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">160 tadan - 200 tagacha
+                                        </dd>
+                                        {#                                        <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget#}
+                                        {#                                            metus.#}
+                                        {#                                        </dd>#}
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">2 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Sizning
+                                            ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring.
+                                            Login: AB3870293 Parol: 3749044 Qo'shimcha ma'lumot uchun: 919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        <li class="list-group-item text-lg">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    Xodim qo'shishda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox" class="checkbox"
+                                               {% if request.user.school.send_sms_add_worker %}checked{% endif %}
+                                               id="checkbox_add_worker"><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm" id="add_worker_text"
+                                     style="display: {% if request.user.school.send_sms_add_worker %}block{% else %}none{% endif %}">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Oddiy sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">205 tadan - 240 tagacha</dd>
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">2 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Siz "BUXORO RAVON AVTOMAKTAB" MCHJ da o'qituvchi lavozimida
+                                            ro'yhatga olindingiz. http://onless.uz/kirish manziliga kiring. Login:
+                                            AB3870293 Parol: 8846510 Qo'shimcha ma'lumot uchun: 919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item text-lg">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    Xodimni tahrirlashda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox" class="checkbox"
+                                               {% if request.user.school.send_sms_edit_worker %}checked{% endif %}
+                                               id="checkbox_edit_worker"><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm" id="edit_worker_text"
+                                     style="display: {% if request.user.school.send_sms_edit_worker %}block{% else %}none{% endif %}">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Oddiy sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">160 tadan - 200 tagacha</dd>
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">2 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Sizning
+                                            ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring.
+                                            Login: AB3870293 Parol: 3749044 Qo'shimcha ma'lumot uchun: 919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        <li class="list-group-item text-lg">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    Davomat belgilanganda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox" class="checkbox"
+                                               {% if request.user.school.send_sms_attendance %}checked{% endif %}
+                                               id="checkbox_attendance_pupil"><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm" id="attendance_text"
+                                     style="display: {% if request.user.school.send_sms_attendance %}block{% else %}none{% endif %}">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Oddiy sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">160 tadan - 190 tagacha</dd>
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">2 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Bugun YHQ
+                                            fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan
+                                            chetlashtirilasiz! Qo'shimcha ma'lumot uchun: 919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        <li class="list-group-item text-lg">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    Baholanganda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox" class="checkbox"
+                                               {% if request.user.school.send_sms_rating %}checked{% endif %}
+                                               id="checkbox_rating_pupil"><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm" id="rating_text"
+                                     style="display: {% if request.user.school.send_sms_rating %}block{% else %}none{% endif %}">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Oddiy sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">90 tadan - 120 tagacha</dd>
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">1 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Bugun YHQ fanidan 5 bahosini oldingiz! Qo'shimcha ma'lumot uchun:
+                                            919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        <li class="list-group-item text-lg">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    To'lov qilinganda sms jo'natish
+                                    <label class="switch float-right">
+                                        <input type="checkbox" class="checkbox"
+                                               {% if request.user.school.send_sms_payment %}checked{% endif %}
+                                               id="checkbox_payment_pupil"><span
+                                            class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="card-body text-sm" id="payment_text"
+                                     style="display: {% if request.user.school.send_sms_payment %}block{% else %}none{% endif %}">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-4">Sms turi</dt>
+                                        <dd class="col-sm-8">Oddiy sms</dd>
+                                        <dt class="col-sm-4">Belgilar soni</dt>
+                                        <dd class="col-sm-8">160 tadan - 190 tagacha</dd>
+                                        <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
+                                        <dd class="col-sm-8">2 ta</dd>
+                                        <dt class="col-sm-4">Sms matni</dt>
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Bugun avtomaktabga 200 000 so'm to'lov qildingiz! Jami to'lovingiz 1 700 000
+                                            so'm. Toifa bo'yicha 300 000 so'm qarzdorligingiz qoldi! Qo'shimcha ma'lumot
+                                            uchun: 919791999</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block bottom %}
+
+    <script>
+        $(document).ready(function () {
+            var editPupil = false,
+                attendancePupil = false,
+                paymentPupil = false,
+                ratingPupil = false,
+                addWorker = false,
+                editWorker = false
+
+
+            $('#checkbox_edit_pupil').on('change', function () {
+                if ($(this).prop('checked')) {
+                    editPupil = true
+                    $('#edit_pupil_text').show()
+                } else {
+                    editPupil = false
+                    $('#edit_pupil_text').hide()
+                }
+            })
+            $('#checkbox_attendance_pupil').on('change', function () {
+                if ($(this).prop('checked')) {
+                    attendancePupil = true
+                    $('#attendance_text').show()
+                } else {
+                    attendancePupil = false
+                    $('#attendance_text').hide()
+                }
+            })
+            $('#checkbox_payment_pupil').on('change', function () {
+                if ($(this).prop('checked')) {
+                    paymentPupil = true
+                    $('#payment_text').show()
+                } else {
+                    paymentPupil = false
+                    $('#payment_text').hide()
+                }
+            })
+
+            $('#checkbox_rating_pupil').on('change', function () {
+                if ($(this).prop('checked')) {
+                    ratingPupil = true
+                    $('#rating_text').show()
+                } else {
+                    ratingPupil = false
+                    $('#rating_text').hide()
+                }
+            })
+
+            $('#checkbox_add_worker').on('change', function () {
+                if ($(this).prop('checked')) {
+                    addWorker = true
+                    $('#add_worker_text').show()
+                } else {
+                    addWorker = false
+                    $('#add_worker_text').hide()
+                }
+            })
+            $('#checkbox_edit_worker').on('change', function () {
+                if ($(this).prop('checked')) {
+                    editWorker = true
+                    $('#edit_worker_text').show()
+                } else {
+                    editWorker = false
+                    $('#edit_worker_text').hide()
+                }
+            })
+
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+                }
+            })
+            $('.checkbox').on('change', function () {
+
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "user:modify_checkbox_send_sms" %}',
+                    data: {
+                        'editPupil': editPupil,
+                        'attendancePupil': attendancePupil,
+                        'paymentPupil': paymentPupil,
+                        'ratingPupil': ratingPupil,
+                        'addWorker': addWorker,
+                        'editWorker': editWorker
+                    },
+
+                    success: function (response) {
+                        if (response === 'True') {
+                            $.notifyDefaults({
+                                type: 'success',
+                                allow_dismiss: false,
+                                animate: {
+                                    enter: 'animated fadeInRight',
+                                    exit: 'animated fadeOutRight'
+                                },
+                                placement: {
+                                    from: "top",
+                                    align: "right"
+                                },
+                                z_index: 9999,
+                            })
+                            $.notify({
+                                icon: 'glyphicon glyphicon-star',
+                                message: '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-patch-exclamation" fill="currentColor" xmlns="http://www.w3.org/2000/svg">\n' +
+                                    '  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>\n' +
+                                    '  <path fill-rule="evenodd" d="M10.273 2.513l-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911l-1.318.016z"/>\n' +
+                                    '</svg> Sms xizmati muvvafaqiyatli tahrirlandi!'
+                            })
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                })
+
+            })
+
+
+        });
+    </script>
+
+{% endblock bottom %}

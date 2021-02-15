@@ -79,6 +79,7 @@ def worker_add(request):
         if request.method == 'POST':
             form = AddUserForm(data=request.POST)
             password = random.randint(1000000, 9999999)
+            school = get_object_or_404(School, id=request.user.school.id)
             if form.is_valid():
                 name = form.cleaned_data['name']
                 name = get_name(name)
@@ -87,16 +88,19 @@ def worker_add(request):
                 worker = request.POST.get('worker')
                 if worker == 'instructor':
                     role = 6
+                    send_role = 'instruktor'
                 elif worker == 'accountant':
                     role = 5
+                    send_role = 'hisobchi'
                 else:
                     role = 3
+                    send_role = "o'qituvchi"
 
                 try:
                     user = User.objects.create_user(
                         username=username,
                         pasport=username,
-                        school=request.user.school,
+                        school=school,
                         turbo=password,
                         password=password,
                         name=name,
@@ -109,7 +113,21 @@ def worker_add(request):
                     user.email = ''
                     user.save()
 
-                    messages.success(request, "Xodim muvaffaqiyatli qo'shildi")
+                    if school.send_sms_add_worker:
+                        if school.sms_count >= 2:
+                            school.sms_count = school.sms_count - 2
+                            school.save()
+                            msg = f"Hurmatli {user.name}! Siz {school.title} da {send_role} lavozimida ro'yhatga olindingiz. http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                            msg = msg.replace(" ", "+")
+                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                            response = requests.get(url)
+                            messages.success(request, "Xodim muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                        else:
+                            messages.success(request,
+                                             "Xodim muvaffaqiyatli qo'shildi! Sms to'plam mavjud emasligi sabab sms yuborilmadi!")
+                    else:
+                        messages.success(request,
+                                         "Xodim muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
@@ -124,6 +142,11 @@ def worker_add(request):
 @login_required
 def add_pupil(request):
     if request.user.role == '2' or request.user.role == '3':
+        school = get_object_or_404(School, id=request.user.school.id)
+        if school.add_pupil_sms_count == 0:
+            messages.error(request,
+                           "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
+            return redirect(reverse_lazy('user:add_list'))
         if request.user.role == '2':
             groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
             if not groups.exists():
@@ -167,12 +190,24 @@ def add_pupil(request):
                         birthday = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
                         user.birthday = birthday
                     user.email = ''
-                    user.save()
-                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
-                    msg = msg.replace(" ", "+")
-                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                    response = requests.get(url)
-                    messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi")
+
+                    if school.add_pupil_sms_count > 0:
+                        school.add_pupil_sms_count = school.add_pupil_sms_count - 1
+                        school.save()
+                        user.save()
+                        msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                        msg = msg.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                        response = requests.get(url)
+                        messages.success(request,
+                                         "O'quvchi muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                    else:
+                        print('no sms')
+                        messages.error(request,
+                                       "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
+                        return redirect(reverse_lazy('user:add_list'))
+
+
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
@@ -445,10 +480,11 @@ def school_edit(request):
 def pupil_edit(request, id):
     if request.user.role == '2' or request.user.role == '3':
         user = get_object_or_404(User, id=id)
+        school = get_object_or_404(School, id=user.school.id)
         form = EditPupilForm(instance=user, request=request)
         if request.POST:
             pasport = request.POST['pasport']
-            print(pasport)
+
             pasport = get_pasport(pasport)
             form = EditPupilForm(request.POST, request.FILES, instance=user, request=request)
             if form.is_valid():
@@ -460,7 +496,25 @@ def pupil_edit(request, id):
                 form.username = pasport
                 user.set_password(request.POST['turbo'])
                 form.save()
-                messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+                messages.success(request, 'Muvaffaqiyatli tahrirlandi!')
+
+                if school.send_sms_edit_pupil:
+                    if school.sms_count >= 2:
+                        school.sms_count = school.sms_count - 2
+                        school.save()
+                        msg = f"Hurmatli {user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                        msg = msg.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                        response = requests.get(url)
+                        messages.success(request,
+                                         "O'quvchi muvaffaqiyatli tahrirlandi! Login va parol sms tarzida yuborildi!")
+                    else:
+                        messages.success(request,
+                                         "O'quvchi muvaffaqiyatli tahrirlandi! Sms to'plam yetarli emasligi sabab sms yuborilmadi!")
+                else:
+                    messages.success(request,
+                                     "O'quvchi muvaffaqiyatli tahrirlandi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
+
                 form = EditPupilForm(instance=user, request=request)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
@@ -617,6 +671,7 @@ def workers_list(request):
 def worker_edit(request, id):
     if request.user.role == '2':
         worker = get_object_or_404(User, id=id)
+        school = get_object_or_404(School, id=worker.school.id)
         form = EditWorkerForm(instance=worker)
         if request.POST:
             pasport = get_pasport(request.POST['pasport'])
@@ -628,6 +683,24 @@ def worker_edit(request, id):
                 worker.set_password(request.POST['turbo'])
                 form.save()
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
+
+                if school.send_sms_edit_worker:
+                    if school.sms_count >= 2:
+                        school.sms_count = school.sms_count - 2
+                        school.save()
+                        msg = f"Hurmatli {worker.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. %0aLogin: {worker.username}%0aParol: {worker.turbo}%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                        msg = msg.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{worker.phone}&unicode=1&msg={msg}"
+                        response = requests.get(url)
+                        messages.success(request,
+                                         "Xodim muvaffaqiyatli tahrirlandi! Login va parol sms tarzida yuborildi!")
+                    else:
+                        messages.success(request,
+                                         "Xodim muvaffaqiyatli tahrirlandi! Sms to'plam mavjud emasligi sabab sms yuborilmadi!")
+                else:
+                    messages.success(request,
+                                     "Xodim muvaffaqiyatli tahrirlandi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
+
                 form = EditWorkerForm(instance=worker)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
@@ -654,6 +727,7 @@ def worker_delete(request, id):
 @login_required
 def upload_file(request):
     if request.user.role == '2' or request.user.role == '3':
+        school = get_object_or_404(School, id=request.user.school.id)
         if request.POST and request.FILES:
             file = request.FILES['file']
             file = File.objects.create(file=file)
@@ -685,6 +759,11 @@ def upload_file(request):
                     messages.error(request, f"Excel fayldagi {row + 1}-ustunda ism kiritilmagan ! ")
                     break
 
+                if school.add_pupil_sms_count == 0:
+                    messages.error(request,
+                                   "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
+                    return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
+
                 split_phone = str((sheet.cell(row, 3).value)).split('.')
 
                 try:
@@ -696,7 +775,7 @@ def upload_file(request):
                             user = User.objects.create_user(
                                 username=pasport,
                                 pasport=pasport,
-                                school=request.user.school,
+                                school=school,
                                 turbo=parol,
                                 password=parol,
                                 name=name,
@@ -708,13 +787,21 @@ def upload_file(request):
                             user.set_password(parol)
                             user.username = pasport
                             user.email = ''
-                            user.save()
-                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha savollar bo'lsa {user.school.phone} raqamiga qo'ng'iroq qilishingiz mumkin"
-                            msg = msg.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                            response = requests.get(url)
-                            messages.success(request, f"Muvaffaqiyatli qo'shildi !")
 
+                            if school.add_pupil_sms_count > 0:
+                                school.add_pupil_sms_count = school.add_pupil_sms_count - 1
+                                school.save()
+                                user.save()
+                                msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                                msg = msg.replace(" ", "+")
+                                url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
+                                response = requests.get(url)
+                                messages.success(request,
+                                                 "O'quvchi(lar) muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                            else:
+                                messages.error(request,
+                                               "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
+                                return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
 
                         except IntegrityError:
                             messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
@@ -749,11 +836,17 @@ def upload_file(request):
                             user.set_password(parol)
                             user.username = pasport
                             user.email = ''
-                            user.save()
-                            messages.success(request, f"Muvaffaqiyatli qo'shildi !")
-                            # messages.error(request, f"Excel fayldagi {row + 1}-ustunda xatolik ! ")
-                            # next = request.META['HTTP_REFERER']
-                            # return HttpResponseRedirect(next)
+
+                            if school.add_pupil_sms_count > 0:
+                                school.add_pupil_sms_count = school.add_pupil_sms_count - 1
+                                school.save()
+                                user.save()
+                                messages.success(request,
+                                                 "O'quvchi(lar) muvaffaqiyatli qo'shildi!")
+                            else:
+                                messages.error(request,
+                                               "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
+                                return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
 
                         except IntegrityError:
                             messages.error(request, f"{pasport} pasport oldin ro'yhatdan o'tkazilgan !")
@@ -773,7 +866,6 @@ def upload_file(request):
             return HttpResponseRedirect(next)
     else:
         return render(request, 'inc/404.html')
-
 
 
 @login_required
@@ -874,6 +966,7 @@ def set_pay(request):
     if request.user.role == '5':
         if request.GET:
             pupil = get_object_or_404(User, id=request.GET['pupil'])
+            school = get_object_or_404(School, id=pupil.school.id)
             values = Pay.objects.filter(pupil=pupil)
             payment = 0
             try:
@@ -888,7 +981,17 @@ def set_pay(request):
                         'payment': payment,
                         'debit': pupil.group.price - payment
                     }
-                    # list = json.dumps(pay)
+
+                    if school.send_sms_payment:
+                        if school.sms_count >= 2:
+                            school.sms_count = school.sms_count - 2
+                            school.save()
+
+                            msg = f"Hurmatli {pupil.name}! Bugun avtomaktabga {request.GET['pay']} so'm to'lov qildingiz! Jami to'lovingiz {payment} so'm. Toifa bo'yicha {pupil.group.price - payment} so'm qarzdorligingiz qoldi!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                            msg = msg.replace(" ", "+")
+                            url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
+                            response = requests.get(url)
+
                     return JsonResponse({'pay': pay})
                 else:
                     return HttpResponse({pupil.group.price})
@@ -1256,6 +1359,7 @@ def attendance_set_visited(request):
         if request.GET:
             pupil = get_object_or_404(User, id=request.GET.get('pupil'))
             subject = get_object_or_404(Subject, id=request.GET.get('subject'))
+            school = get_object_or_404(School, id=pupil.school.id)
             today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
             today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
@@ -1277,6 +1381,17 @@ def attendance_set_visited(request):
                     atten.is_visited = visited
                     atten.updated_date = timezone.now()
                     atten.save()
+
+                    if atten.is_visited == False:
+                        if school.send_sms_attendance:
+                            if school.sms_count >= 2:
+                                school.sms_count = school.sms_count - 2
+                                school.save()
+                                msg = f"Hurmatli {pupil.name}! Bugun {subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                                msg = msg.replace(" ", "+")
+                                url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
+                                response = requests.get(url)
+
                 return HttpResponse(True)
     return HttpResponse(False)
 
@@ -1347,7 +1462,7 @@ def send_sms(request):
 
                     for user in users:
                         msg = text.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                         response = requests.get(url)
                     # Sarflangan smslarni  bazaga yozish
                     this_user = School.objects.get(school_user=request.user)
@@ -1501,9 +1616,9 @@ def rating_set_by_subject(request, group_id, subject_id):
 def rating_create(request):
     if request.is_ajax():
         if request.POST:
-            print(request.POST)
             pupil = get_object_or_404(User, id=request.POST.get('pupil'))
             subject = get_object_or_404(Subject, id=request.POST.get('subject'))
+            school = get_object_or_404(School, id=pupil.school.id)
             score = request.POST.get('score')
             today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
             today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
@@ -1518,6 +1633,15 @@ def rating_create(request):
                 rating.score = score
                 rating.updated_date = timezone.now()
                 rating.save()
+
+                if school.send_sms_rating:
+                    if school.sms_count > 0:
+                        school.sms_count = school.sms_count - 1
+                        school.save()
+                        msg = f"Hurmatli {pupil.name}! Bugun {subject.short_title} fanidan {score} bahosini oldingiz!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                        msg = msg.replace(" ", "+")
+                        url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
+                        response = requests.get(url)
 
                 import pytz
                 new_timezone = pytz.timezone("Asia/Tashkent")
@@ -1573,21 +1697,32 @@ def electronical_journal(request):
         if group_stop_day < stop_day:
             lastdayofmonth = groups[0].stop
 
+    # # guruh o'quv kunlarini olish
+    # get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
+    # # get_days = get_days.apply(lambda x: x[x.dayofweek <= 4])
+    # days_list = list(set(get_days))
+    # days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+    # # # guruh o'quv kunlarini olishni oxiri
+
     # guruh o'quv kunlarini olish
-    get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
-    # get_days = get_days.apply(lambda x: x[x.dayofweek <= 4])
-    days_list = list(set(get_days))
-    days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
-    # g = [datetime.datetime.strptime(d, "%d.%m.%Y") for d in days_list if not d.isoweekday() in [6,7]]
-    # # guruh o'quv kunlarini olishni oxiri
-    #
-    # print(g)
+    def daterange(date1, date2):
+        for n in range(int((date2 - date1).days) + 1):
+            yield date1 + datetime.timedelta(n)
+
+    days = []
+    weekdays = [6]
+
+    for dt in daterange(groups[0].start, lastdayofmonth.date()):
+        if dt.weekday() not in weekdays:  # to print only the weekdates
+            days.append(dt.strftime("%d.%m.%Y"))
+    # guruh o'quv kunlarini olishni oxiri
+
     users = User.objects.filter(Q(school=request.user.school) & Q(group=groups[0]) & Q(is_active=True))
 
     context = {
         'groups': groups,
         'subjects': subjects,
-        'cols': days_list,
+        'cols': days,
         'rows': users,
         'months_and_years': month_list
     }
@@ -1604,7 +1739,7 @@ def electronical_journal(request):
         month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
         # o'quv oylari yili bilan selectga chiqarish uchun oxiri
 
-        startdate = dt.strptime(month_and_year, '%m.%Y')
+        startdate = datetime.datetime.strptime(month_and_year, '%m.%Y')
         get_month = startdate.strftime("%m")
         get_year = startdate.strftime("%Y")
         get_group_month = group.start.strftime("%m")
@@ -1612,10 +1747,10 @@ def electronical_journal(request):
         # agar o'qishning birinchi oyi bo'lsa
         if get_group_month == get_month:
             first_day = f"{group.start.strftime('%d')}.{get_month}.{get_year}"
-            firstdayofmonth = dt.strptime(first_day, '%d.%m.%Y')
+            firstdayofmonth = datetime.datetime.strptime(first_day, '%d.%m.%Y')
         else:
             first_day = f"01.{get_month}.{get_year}"
-            firstdayofmonth = dt.strptime(first_day, '%d.%m.%Y')
+            firstdayofmonth = datetime.datetime.strptime(first_day, '%d.%m.%Y')
 
         # o'quv oyining eng oxirgi kuni
         endmonth = calendar.monthrange(int(get_year), int(get_month))
@@ -1630,17 +1765,26 @@ def electronical_journal(request):
             if group_stop_day < stop_day:
                 lastdayofmonth = group.stop
 
+        # # guruh o'quv kunlarini olish
+        # get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=firstdayofmonth, end=lastdayofmonth).tolist()]
+        # days_list = list(set(get_days))
+        # days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+        # # guruh o'quv kunlarini olishni oxiri
+
         # guruh o'quv kunlarini olish
-        get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=firstdayofmonth, end=lastdayofmonth).tolist()]
-        days_list = list(set(get_days))
-        days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+        days = []
+        weekdays = [6]
+
+        for dt in daterange(firstdayofmonth.date(), lastdayofmonth.date()):
+            if dt.weekday() not in weekdays:  # to print only the weekdates
+                days.append(dt.strftime("%d.%m.%Y"))
         # guruh o'quv kunlarini olishni oxiri
 
         context = {
             'render_subject': subject,
             'render_group': group,
             'rows': users,
-            'cols': days_list,
+            'cols': days,
             'subject': subject,
             'subjects': subjects,
             'groups': groups,
@@ -1728,3 +1872,68 @@ def get_group_months(request):
             return HttpResponse(options)
     else:
         return False
+
+
+@login_required
+def sms_settings(request):
+    if request.user.role == '2':
+
+        return render(request, 'account/sms_settings.html', )
+    else:
+        return render(request, 'inc/404.html')
+
+
+@login_required
+def modify_checkbox_send_sms(request):
+    if request.user.role == '2':
+        if request.method == 'POST':
+            school = get_object_or_404(School, id=request.user.school.id)
+            editPupil = request.POST.get('editPupil')
+            attendancePupil = request.POST.get('attendancePupil')
+            paymentPupil = request.POST.get('paymentPupil')
+            ratingPupil = request.POST.get('ratingPupil')
+            addWorker = request.POST.get('addWorker')
+            editWorker = request.POST.get('editWorker')
+
+            if editPupil == 'true':
+                school.send_sms_edit_pupil = True
+            else:
+                school.send_sms_edit_pupil = False
+
+            if attendancePupil == 'true':
+                school.send_sms_attendance = True
+            else:
+                school.send_sms_attendance = False
+
+            if paymentPupil == 'true':
+                school.send_sms_payment = True
+            else:
+                school.send_sms_payment = False
+
+            if ratingPupil == 'true':
+                school.send_sms_rating = True
+            else:
+                school.send_sms_rating = False
+
+            if addWorker == 'true':
+                school.send_sms_add_worker = True
+            else:
+                school.send_sms_add_worker = False
+
+            if editWorker == 'true':
+                school.send_sms_edit_worker = True
+            else:
+                school.send_sms_edit_worker = False
+
+            school.save()
+            return HttpResponse(True)
+        else:
+            return HttpResponse(False)
+    else:
+        return render(request, 'inc/404.html')
+
+
+@login_required
+def payment_payme(request):
+    print(request)
+    return HttpResponse(True)

@@ -81,6 +81,11 @@ function LotinInputFilter(e) {
                 enter: 'animated fadeInRight',
                 exit: 'animated fadeOutRight'
             },
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            z_index: 9999,
         })
         $.notify({
             icon: 'glyphicon glyphicon-star',
@@ -106,6 +111,15 @@ function PassportInputFilter(e) {
         $.notifyDefaults({
             type: 'danger',
             allow_dismiss: false,
+            animate: {
+                enter: 'animated fadeInRight',
+                exit: 'animated fadeOutRight'
+            },
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            z_index: 9999,
         })
         $.notify({
             icon: 'glyphicon glyphicon-star',
@@ -119,6 +133,15 @@ function PassportInputFilter(e) {
         $.notifyDefaults({
             type: 'danger',
             allow_dismiss: false,
+            animate: {
+                enter: 'animated fadeInRight',
+                exit: 'animated fadeOutRight'
+            },
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            z_index: 9999,
         })
         $.notify({
             icon: 'glyphicon glyphicon-star',

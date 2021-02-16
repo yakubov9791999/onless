@@ -44,7 +44,7 @@
                 <div style="width: 18rem !important;" class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <div class="text-left ml-2"><i class="fas fa-money-check ml-2 mr-2"></i>Hisob: <span
                             class="ml-2">{% if request.user.school.money %}
-                        {{ request.user.school.money|intcomma }} so'm{% else %}0 so'm{% endif %} <a href="#"><i style="font-size: 1.2em" class="fas fa-plus-circle ml-3 pt-2"></i></a></span>
+                        {{ request.user.school.money|intcomma }} so'm{% else %}0 so'm{% endif %} <a href="{% url 'user:sms_settings' %}"><i style="font-size: 1.2em" class="fas fa-plus-circle ml-3 pt-2"></i></a></span>
                     </div>
                     <hr>
                     <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Kiritish sms soni: <span

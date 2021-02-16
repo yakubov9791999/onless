@@ -2,8 +2,10 @@
 {% load humanize %}
 {% block content %}
     <div class="row" style="margin: auto">
+
         <!-- left column -->
         <div class="col-12" style="margin: auto">
+        <div class="alert alert-danger text-center"><b>DIQQAT! To'lov tizimlari ishlari yakunlanmagani sababli, 972800809 raqamiga qo'ng'iroq qilib to'lov qilishingiz mumkin!</b></div>
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -26,8 +28,10 @@
                                     <div class="icon">
                                         <i class="fas fa-money-check"></i>
                                     </div>
-                                   <button type="submit" class="small-box-footer"> Hisobni to'ldirish <i
-                                            class="fas fa-arrow-circle-right"></i></button>
+                                    <button type="submit" style="width: 100%" class="small-box-footer btn"> Hisobni
+                                        to'ldirish <i
+                                                class="fas fa-arrow-circle-right"></i></button>
+
                                 </div>
                             </form>
                         </div>
@@ -38,12 +42,13 @@
                                 <div class="inner">
                                     <h3>{{ request.user.school.add_pupil_sms_count }}</h3>
 
-                                    <p>Kiritish smslar</p>
+                                    <p>Kiritish sms: 10 000 so'm</p>
+
                                 </div>
                                 <div class="icon">
                                     <i class="fas fa-users"></i>
                                 </div>
-                                <a href="#" class="small-box-footer">Kiritish sms olish <i
+                                <a href="#" class="small-box-footer btn">Kiritish sms olish <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </div>
 
@@ -54,12 +59,12 @@
                                 <div class="inner">
                                     <h3>{{ request.user.school.sms_count }}</h3>
 
-                                    <p>Oddiy smslar</p>
+                                    <p>Oddiy sms: 200 so'm</p>
                                 </div>
                                 <div class="icon">
                                     <i class="far fa-envelope"></i>
                                 </div>
-                                <a href="#" class="small-box-footer">Oddiy sms olish <i
+                                <a href="#" class="small-box-footer btn">Oddiy sms olish <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -77,7 +82,7 @@
 
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    O'quvchini tahrirlashda sms jo'natish
+                                    O'quvchi qo'shishda sms jo'natish
                                     <label class="switch float-right">
                                         <input type="checkbox"
                                                checked disabled><span

@@ -121,7 +121,8 @@ def worker_add(request):
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                             response = requests.get(url)
-                            messages.success(request, "Xodim muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                            messages.success(request,
+                                             "Xodim muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
                         else:
                             messages.success(request,
                                              "Xodim muvaffaqiyatli qo'shildi! Sms to'plam mavjud emasligi sabab sms yuborilmadi!")
@@ -1944,6 +1945,15 @@ def payment_payme(request):
             'KEY': KEY,
             'merchant_id': merchant_id
         }
-        r = requests.post(url=URL, headers=headers)
+        params = {
+            "method": "CheckPerformTransaction",
+            "params": {
+                "amount": 100000,
+                "account": {
+                    "phone": "919791999"
+                }
+            }
+        }
+        r = requests.post(url=URL, headers=headers, data=params)
         print(r.text)
         return HttpResponse(r.text)

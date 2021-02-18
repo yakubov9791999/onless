@@ -39,7 +39,7 @@ class SchoolAdmin(admin.ModelAdmin):
 
     list_display = ['id', 'title', 'director', 'phone']
     list_display_links = ['title']
-    search_fields = ['title', 'director__name', 'phone', 'username', 'pasport']
+    search_fields = ['title', 'director__name', 'phone', 'pasport']
     list_filter = ['title', ]
     save_on_top = True
 

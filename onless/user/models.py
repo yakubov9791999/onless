@@ -109,6 +109,7 @@ class School(models.Model):
     money = models.IntegerField(blank=True, null=True, default=0)
     sms_count = models.IntegerField(blank=True, null=True, default=0)
     add_pupil_sms_count = models.IntegerField(blank=True, null=True, default=0)
+    send_sms_add_pupil = models.BooleanField(default=True)
     send_sms_edit_pupil = models.BooleanField(default=False)
     send_sms_add_worker = models.BooleanField(default=False)
     send_sms_edit_worker = models.BooleanField(default=False)

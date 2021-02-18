@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load user_tags %}
 {% block content %}
+
     <div class="row">
         <!-- left column -->
         <div class="col-md-12">
@@ -52,7 +53,7 @@
                     <br>
                     <div class="table-responsive">
                         <table style="font-size: 0.9rem" id="example1"
-                               class="table table-bordered table-hovered">
+                               class="table table-bordered table-hovered table-hover">
                             <thead>
                             <tr style="background-color: #faf7f7">
                                 {% if render_group and render_subject %}
@@ -123,7 +124,9 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                <th style="color: red; text-align: center" colspan="{{ cols|length|add:2 }}">O'quvchilar mavjud emas!</th>
+                                    <th style="color: red; text-align: center" colspan="{{ cols|length|add:2 }}">
+                                        O'quvchilar mavjud emas!
+                                    </th>
                                 </tr>
                             {% endif %}
                             <tr>

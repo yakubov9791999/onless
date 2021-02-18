@@ -340,3 +340,21 @@ def delete_material(request, id):
         material.save()
     else:
         return render(request, 'inc/404.html')
+
+
+# @login_required
+# def get_group_full_schedule(request):
+#     if request.is_ajax():
+#         group = get_object_or_404(Group, id=request.GET.get('group'))
+#         schedules = Schedule.objects.filter(Q(is_active=True)).distinct()
+#         print(schedules)
+#
+#         if schedules.exists():
+#             options = "<option>-- -- --</option>"
+#             for subject in schedules:
+#                 options += f"<option value='{subject.id}'>{subject.theme}</option>"
+#             return HttpResponse(options)
+#         else:
+#             return HttpResponse(False)
+#     else:
+#         return False

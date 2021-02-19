@@ -32,11 +32,15 @@ def add_schedule(request):
         if not groups.exists():
             messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
     else:
+        teachers = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(Q(role=3) | Q(role=2)))
+        themes = Theme.objects.filter(Q(is_active=True))
         groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
     context = {
-        'groups': groups
+        'groups': groups,
+        'teachers': teachers,
+        'themes': themes
     }
     if request.POST:
         get_date = request.POST.get('date').split('.')

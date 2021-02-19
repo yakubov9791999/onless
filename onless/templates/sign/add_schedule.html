@@ -2,16 +2,17 @@
 {% load static %}
 {% block content %}
     <style>
-        #datepicker, #starttimepicker, #stoptimepicker:hover {
+        .datepicker, #starttimepicker, #stoptimepicker:hover {
             cursor: pointer;
         }
+
 
     </style>
     <div class="row" style="margin: auto">
         <!-- left column -->
-        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
+        <div class="col-12" style="margin: auto">
             <!-- general form elements -->
-            <div class="card card-primary">
+            <div class="card card-primary table-responsive">
                 <div class="card-header">
                     <h3 class="card-title">Dars jadvali yaratish</h3>
                 </div>
@@ -19,51 +20,95 @@
                 <!-- /.card-header -->
                 <!-- form start -->
 
-                <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">
-                    {% csrf_token %}
-                    <div class="card-body">
-                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni
-                            tanlang</label>
-                        <select name="group" id="group" class="form-control">
-                            <option value="">-- -- --</option>
-                            {% for group in groups %}
-                                <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
-                            {% endfor %}
-                        </select>
-                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fanni tanlang</label>
-                        <select id="subject" name="subject" class="form-control">
-                            <option value="">--Guruhni tanlang--</option>
-                        </select>
-                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzuni
-                            tanlang</label>
-                        <select id="theme" name="theme" class="form-control">
-                            <option value="">--Fanni tanlang--</option>
-                        </select>
+                {#                <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">#}
+                {#                    {% csrf_token %}#}
+                {#                    <div class="card-body">#}
+                {#                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni#}
+                {#                            tanlang</label>#}
+                {#                        <select name="group" id="group" class="form-control">#}
+                {#                            <option value="">-- -- --</option>#}
+                {#                            {% for group in groups %}#}
+                {#                                <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>#}
+                {#                            {% endfor %}#}
+                {#                        </select>#}
+                {#                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fanni tanlang</label>#}
+                {#                        <select id="subject" name="subject" class="form-control">#}
+                {#                            <option value="">--Guruhni tanlang--</option>#}
+                {#                        </select>#}
+                {#                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzuni#}
+                {#                            tanlang</label>#}
+                {#                        <select id="theme" name="theme" class="form-control">#}
+                {#                            <option value="">--Fanni tanlang--</option>#}
+                {#                        </select>#}
+                {##}
+                {#                        <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>#}
+                {#                        <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date">#}
+                {##}
+                {#                        <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish#}
+                {#                            vaqti</label>#}
+                {#                        <input type="text" id="starttimepicker" onkeydown="return false;" class="form-control"#}
+                {#                               name="start">#}
+                {##}
+                {#                        <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash#}
+                {#                            vaqti</label>#}
+                {#                        <input type="text" id="stoptimepicker" onkeydown="return false;" class="form-control"#}
+                {#                               name="stop">#}
+                {##}
+                {#                        <label for="sort" class="label_required"#}
+                {#                               style="margin-bottom: 0; margin-top: 2%">Tartibi</label>#}
+                {#                        <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">#}
+                {#                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun#}
+                {#                            ishlatiladi! M-1</small>#}
+                {#                    </div>#}
+                {#                    <div class="card-footer">#}
+                {#                        <button type="submit" class="btn btn-success">Saqlash</button>#}
+                {#                        <button type="reset" class="btn btn-danger">Tozalash</button>#}
+                {#                    </div>#}
+                {#                </form>#}
 
-                        <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>
-                        <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date">
 
-                        <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish
-                            vaqti</label>
-                        <input type="text" id="starttimepicker" onkeydown="return false;" class="form-control"
-                               name="start">
+                <table id="example1" class="table table-bordered table-hovered">
+                    <thead>
+                    <tr style="background-color: #ecebeb">
+                        <th style="width: 2%; text-align: center">№</th>
+                        <th style="width: 9%; text-align: center">Sana</th>
+                        <th style="width: 6%; text-align: center">Fan</th>
+                        <th style="width: 4%; text-align: center">Soati</th>
+                        <th style="width: 45%; text-align: center">Mavzu va ularning qisqacha mazmuni</th>
+                        <th style="width: 17%; text-align: center">O'qituvchi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                        <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash
-                            vaqti</label>
-                        <input type="text" id="stoptimepicker" onkeydown="return false;" class="form-control"
-                               name="stop">
+                    {% for theme in themes %}
 
-                        <label for="sort" class="label_required"
-                               style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
-                        <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
-                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun
-                            ishlatiladi! M-1</small>
-                    </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-success">Saqlash</button>
-                        <button type="reset" class="btn btn-danger">Tozalash</button>
-                    </div>
-                </form>
+                        <tr>
+                            <td class="text-center" style="vertical-align: revert;">1</td>
+                            <td class="text-center" style="vertical-align: revert;">
+                                <input class="form-control datepicker" type="text"/>
+                            </td>
+                            <td>{{ theme.subject.all.first }}</td>
+                            <td>1-2</td>
+                            <td>{{ theme.title }}</td>
+                            <td>
+                                <select class="form-control" name="teacher">
+
+                                    {% for teacher in teachers %}
+                                        <option value="{{ teacher.id }}">{{ teacher.name|truncatewords:2 }} </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+
+                </table>
+
+
             </div>
         </div>
     </div>
@@ -71,75 +116,8 @@
 {% endblock content %}
 
 {% block bottom %}
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script>
         $(document).ready(function () {
-            $(function () {
-
-                $("#datepicker").datepicker({
-                    dateFormat: "dd.mm.yy",
-                    minDate: '-90d',
-                    maxDate: '+5M',
-                    // defaultDate: '01-01-1985',
-                    // value: "7/11/2011",
-                    showButtonPanel: true,
-                    numberOfMonths: 1,
-                    //startDate: "-30d",
-                    //endDate: "+30d",
-                    //currentText: 'Today',
-                    autoclose: true,
-                    changeMonth: false,
-                    changeYear: false,
-                    beforeShowDay: function (date) {
-                        var day = date.getDay();
-                        return [(day !== 0), ''];
-                    }
-                    //gotoCurrent: true,
-                    //stepMonths: 0,
-                    //duration: 'fast',
-                    // yearRange: '1920:2030',
-
-                    // beforeShow: function () {
-                    //     alert('show');
-                    //    $("#ui-datepicker-div").addClass("DatePikerEN");
-                    //},
-
-
-                })
-
-                $("#datepicker").datepicker('setDate', CreateNewDateExceptionSunday());
-
-                $("#starttimepicker").timepicker({
-                    timeFormat: 'H:mm',
-                    interval: 5,
-                    minTime: '08',
-                    maxTime: '22:00',
-                    defaultTime: '08',
-                    startTime: '08',
-                    dynamic: true,
-                    dropdown: true,
-                    scrollbar: true,
-                });
-
-                $("#stoptimepicker").timepicker({
-                    timeFormat: 'H:mm',
-                    interval: 5,
-                    minTime: '08',
-                    maxTime: '22:00',
-                    defaultTime: '10',
-                    startTime: '08',
-                    dynamic: true,
-                    dropdown: true,
-                    scrollbar: true,
-
-                });
-            });
-
 
             $("#group").change(function () {
 
@@ -161,7 +139,7 @@
                 });
             });
 
-             $("#subject").change(function () {
+            $("#subject").change(function () {
 
                 var selectedSubject = $(this).children("option:selected").val();
                 $.ajax({
@@ -185,7 +163,6 @@
                     $('#subject').css('border-color', 'green')
                 }
             })
-
 
 
             $('#group').on('change', function () {

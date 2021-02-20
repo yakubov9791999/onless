@@ -4,7 +4,10 @@ from django.urls import path
 
 class CheckOrder(Paycom):
     def check_order(self, amount, account):
-        return self.ORDER_FOUND
+        if account:
+            return self.ORDER_FOUND
+        else:
+            return self.ORDER_NOT_FOUND
 
 class TestView(MerchantAPIView):
     VALIDATE_CLASS = CheckOrder

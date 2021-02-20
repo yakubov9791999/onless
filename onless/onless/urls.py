@@ -20,17 +20,21 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.static import serve
 
+from paycom.views import TestView
+
 urlpatterns = [
-    path('bugun/', admin.site.urls),
-    path('', include('video.urls')),
-    path('sign/', include('sign.urls')),
-    path('user/', include('user.urls')),
-    path('quiz/', include('quiz.urls')),
-    path('practical/', include('practical.urls')),
-    path('accounts/', include('allauth.urls')),
-    path('payments/', include('payments.urls')),
-    path('payments/', include('click.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  path('bugun/', admin.site.urls),
+                  path('', include('video.urls')),
+                  path('sign/', include('sign.urls')),
+                  path('user/', include('user.urls')),
+                  path('quiz/', include('quiz.urls')),
+                  path('practical/', include('practical.urls')),
+                  path('accounts/', include('allauth.urls')),
+                  path('payments/', include('payments.urls')),
+                  path('payments/', include('click.urls')),
+                  path('paycom/', TestView.as_view())
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

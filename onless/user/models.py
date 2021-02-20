@@ -107,7 +107,7 @@ class School(models.Model):
     notification = models.BooleanField(default=False)
     notification_text = models.TextField(blank=True)
     money = models.IntegerField(blank=True, null=True, default=0)
-    sms_count = models.IntegerField(blank=True, null=True, default=1)
+    sms_count = models.IntegerField(blank=True, null=True, default=0)
     add_pupil_sms_count = models.IntegerField(blank=True, null=True, default=0)
     send_sms_add_pupil = models.BooleanField(default=True)
     send_sms_edit_pupil = models.BooleanField(default=False)
@@ -156,7 +156,7 @@ class Group(models.Model):
     sort = models.IntegerField(default=1)
 
     def __str__(self):
-        return f"{self.category}-{self.number}-{self.year}"
+        return f"{self.category}-{self.number} {self.year}"
 
     def get_absolute_url(self):
         return reverse('group_detail_url', kwargs={'id': self.id})

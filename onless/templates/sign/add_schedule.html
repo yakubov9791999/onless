@@ -2,16 +2,17 @@
 {% load static %}
 {% block content %}
     <style>
-        #datepicker, #starttimepicker, #stoptimepicker:hover {
+        .datepicker, #starttimepicker, #stoptimepicker:hover {
             cursor: pointer;
         }
+
 
     </style>
     <div class="row" style="margin: auto">
         <!-- left column -->
-        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
+        <div class="col-12" style="margin: auto">
             <!-- general form elements -->
-            <div class="card card-primary">
+            <div class="card card-primary table-responsive">
                 <div class="card-header">
                     <h3 class="card-title">Dars jadvali yaratish</h3>
                 </div>
@@ -25,44 +26,25 @@
                         <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni
                             tanlang</label>
                         <select name="group" id="group" class="form-control">
-                            <option value="">-- -- --</option>
-                            {% for group in groups %}
-                                <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                            <option value="">-- guruhni tanlang --</option>
+                            {% for render_group in groups %}
+                                <option {% if group.id == render_group.id %}selected{% endif %}
+                                        value="{{ render_group.id }}">{{ render_group.category }}-{{ render_group.number }} {{ render_group.year }}</option>
                             {% endfor %}
                         </select>
-                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fanni tanlang</label>
-                        <select id="subject" name="subject" class="form-control">
-                            <option value="">--Guruhni tanlang--</option>
-                        </select>
-                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzuni
+                        <label for="teacher" class="label_required" style="margin-bottom: 0; margin-top: 2%">O'qituvchini
                             tanlang</label>
-                        <select id="theme" name="theme" class="form-control">
-                            <option value="">--Fanni tanlang--</option>
+                        <select id="teacher" name="teacher" class="form-control">
+
+                            {% for teacher in teachers %}
+                                <option value="{{ teacher.id }}">{{ teacher.name|truncatewords:2 }}</option>
+                            {% endfor %}
+
                         </select>
-
-                        <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>
-                        <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date">
-
-                        <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish
-                            vaqti</label>
-                        <input type="text" id="starttimepicker" onkeydown="return false;" class="form-control"
-                               name="start">
-
-                        <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash
-                            vaqti</label>
-                        <input type="text" id="stoptimepicker" onkeydown="return false;" class="form-control"
-                               name="stop">
-
-                        <label for="sort" class="label_required"
-                               style="margin-bottom: 0; margin-top: 2%">Tartibi</label>
-                        <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">
-                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun
-                            ishlatiladi! M-1</small>
+                        <button type="submit" style="float: right" class="btn btn-success mt-5">Yaratish</button>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-success">Saqlash</button>
-                        <button type="reset" class="btn btn-danger">Tozalash</button>
-                    </div>
+
+
                 </form>
             </div>
         </div>
@@ -71,122 +53,8 @@
 {% endblock content %}
 
 {% block bottom %}
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script>
         $(document).ready(function () {
-            $(function () {
-
-                $("#datepicker").datepicker({
-                    dateFormat: "dd.mm.yy",
-                    minDate: '-90d',
-                    maxDate: '+5M',
-                    // defaultDate: '01-01-1985',
-                    // value: "7/11/2011",
-                    showButtonPanel: true,
-                    numberOfMonths: 1,
-                    //startDate: "-30d",
-                    //endDate: "+30d",
-                    //currentText: 'Today',
-                    autoclose: true,
-                    changeMonth: false,
-                    changeYear: false,
-                    beforeShowDay: function (date) {
-                        var day = date.getDay();
-                        return [(day !== 0), ''];
-                    }
-                    //gotoCurrent: true,
-                    //stepMonths: 0,
-                    //duration: 'fast',
-                    // yearRange: '1920:2030',
-
-                    // beforeShow: function () {
-                    //     alert('show');
-                    //    $("#ui-datepicker-div").addClass("DatePikerEN");
-                    //},
-
-
-                })
-
-                $("#datepicker").datepicker('setDate', CreateNewDateExceptionSunday());
-
-                $("#starttimepicker").timepicker({
-                    timeFormat: 'H:mm',
-                    interval: 5,
-                    minTime: '08',
-                    maxTime: '22:00',
-                    defaultTime: '08',
-                    startTime: '08',
-                    dynamic: true,
-                    dropdown: true,
-                    scrollbar: true,
-                });
-
-                $("#stoptimepicker").timepicker({
-                    timeFormat: 'H:mm',
-                    interval: 5,
-                    minTime: '08',
-                    maxTime: '22:00',
-                    defaultTime: '10',
-                    startTime: '08',
-                    dynamic: true,
-                    dropdown: true,
-                    scrollbar: true,
-
-                });
-            });
-
-
-            $("#group").change(function () {
-
-                var selectedGroup = $(this).children("option:selected").val();
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'sign:get_subject' %}",
-                    data: {
-                        'group': selectedGroup, // from form
-                    },
-                    success: function (message) {
-                        $('#subject').empty().append(message)
-                        $('#subject').css('border-color', '#007bff')
-                        // setTimeout(function () {
-                        //     $('#subject').css('border-color', '#ced4da')
-                        // }, 2000)
-
-                    }
-                });
-            });
-
-             $("#subject").change(function () {
-
-                var selectedSubject = $(this).children("option:selected").val();
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'sign:get_themes' %}",
-                    data: {
-                        'subject': selectedSubject, // from form
-                    },
-                    success: function (message) {
-                        $('#theme').empty().append(message)
-                        $('#theme').css('border-color', '#007bff')
-
-                    }
-                });
-            });
-
-            $('#subject').on('change', function () {
-                if (!$.isNumeric($("#subject").children("option:selected").val())) {
-                    $('#subject').css('border-color', 'red')
-                } else {
-                    $('#subject').css('border-color', 'green')
-                }
-            })
-
-
 
             $('#group').on('change', function () {
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
@@ -196,54 +64,14 @@
                 }
             })
 
-            $('#theme').on('change', function () {
-                if (!$.isNumeric($("#theme").children("option:selected").val())) {
-                    $('#theme').css('border-color', 'red')
-                } else {
-                    $('#theme').css('border-color', 'green')
-                }
-            })
-
-
-            $('#sort').on('keypress', function () {
-                if ($(this).val().length < 0) {
-                    $('#sort').css('border-color', 'red')
-                } else {
-                    $('#sort').css('border-color', 'green')
-                }
-            })
-
-
-            // $('#datepicker').on('change', function () {
-            //     if (isNaN(Date.parse($(this).val())) == true)
-            //          $(this).css('border-color', 'red')
-            //     else
-            //         $(this).css('border-color', 'green')
-            // })
-
-
-            $(document).on('click', '#starttimepicker, #stoptimepicker, #datepicker', function (e) {
-                //if (parseDate(e.target.value)) {
-                //    $(e.target).css("border-bottom", "2px solid green")
-                // } else {
-                //     $(e.target).css("border-bottom", "2px solid red")
-                //  }
-                $(e.target).css('border-color', 'green')
-            })
 
             $('#schedule_form').submit(function (e) {
 
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
                     $('#group').css('border-color', 'red')
                     return false;
-                } else if (!$.isNumeric($("#subject").children("option:selected").val())) {
-                    $('#subject').css('border-color', 'red')
-                    return false;
-                } else if (!$.isNumeric($("#theme").children("option:selected").val())) {
-                    $('#theme').css('border-color', 'red')
-                    return false;
-                } else if ($('#sort').val().length < 1) {
-                    $('#sort').css('border-color', 'red')
+                } else if (!$.isNumeric($("#teacher").children("option:selected").val())) {
+                    $('#teacher').css('border-color', 'red')
                     return false;
                 } else {
                     return true;

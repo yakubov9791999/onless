@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        .datepicker, #starttimepicker, #stoptimepicker:hover {
+            cursor: pointer;
+        }
+
+
+    </style>
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary table-responsive">
+                <div class="card-header">
+                    <h3 class="card-title">Dars jadvali yaratish</h3>
+                </div>
+                {% include 'inc/messages.html' %}
+                <!-- /.card-header -->
+                <!-- form start -->
+
+
+                <table id="example1" class="table table-bordered table-hovered">
+                    <thead>
+                    <tr style="background-color: #ecebeb">
+                        <th colspan="6" style="text-align: center; font-size: xx-large; color: #5353d5">
+                            Guruh: {{ group }}</th>
+                    </tr>
+                    <tr style="background-color: #faf7f7">
+                        <th style="width: 2%; text-align: center">№</th>
+                        <th style="width: 8%; text-align: center">Sana</th>
+                        <th style="width: 6%; text-align: center">Fan</th>
+                        <th style="width: 4%; text-align: center">Soati</th>
+                        <th style="width: 45%; text-align: center">Mavzu va ularning qisqacha mazmuni</th>
+                        <th style="width: 17%; text-align: center">O'qituvchi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for theme in themes %}
+                        <tr>
+                            <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
+                                style="vertical-align: revert;">{{ forloop.counter }}</td>
+                            <td class="text-center" style="vertical-align: revert;">
+                                <input style="float:left;" class="form-control datepicker" type="text"/>
+                            </td>
+                            <td>{{ theme.subject.all.first }}</td>
+                            <td><input type="number" class="form-control lesson_time"
+                                       value="{{ theme.lesson_time }}"></td>
+                            <td class="theme" data-id="{{ theme.id }}">{{ theme.title }}</td>
+                            <td>
+                                <select class="form-control teacher" name="teacher">
+                                    {% for render_teacher in teachers %}
+                                        <option {% if render_teacher.id == teacher.id %}selected{% endif %}
+                                                value="{{ render_teacher.id }}">{{ render_teacher.name|truncatewords:2 }} </option>
+                                    {% endfor %}
+                                </select>
+
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="6">
+                            <button id="save_schedule_button" style="float: right"
+                                    class="btn btn-success mt-2 mr-2">Saqlash
+                            </button>
+                        </th>
+                    </tr>
+                    </tfoot>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block bottom %}
+    <script>
+        $(document).ready(function () {
+            var schedules = {
+                dates : [],
+                lesson_times : [],
+                themes : [],
+                teachers : []
+            };
+            $('#save_schedule_button').on('click', function () {
+                $('.forloop').each(function () {
+                    var selectedTeacher = $('.teacher').children("option:selected").val()
+
+                    schedules.indeks.push($('.datepicker').val())
+                    schedules.dates.push($('.datepicker').val())
+                    schedules.lesson_times.push($('.lesson_time').val())
+                    schedules.themes.push($('.theme').data('id'))
+                    schedules.teachers.push(selectedTeacher)
+
+                })
+
+                var csrftoken = getCookie('csrftoken');
+
+                $.ajaxSetup({
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken)
+                    }
+                })
+                alert('ok')
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "sign:save_schedule" %}',
+                    data: {
+                        {#'dates': dates,#}
+                        {#'lesson_times': lesson_times,#}
+                        {#'themes': themes,#}
+                        {#'teachers': teachers,#}
+                        'schedules': schedules
+
+                    }
+                })
+            })
+
+
+        });
+    </script>
+
+
+{% endblock bottom %}

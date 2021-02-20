@@ -48,15 +48,6 @@ function parseDate(value) {
     // return new Date(y, m - 1, d);
 }
 
-function CreateNewDateExceptionSunday() {
-    var get_date = new Date();
-    if (get_date.getDay() === 0) {
-        return new Date(new Date().setDate(new Date().getDate() + 1));
-    } else {
-        return get_date
-    }
-}
-
 // faqat lotin harflari raqamlar va belgilar
 
 function LotinInputFilter(e) {
@@ -207,3 +198,76 @@ function instruction_sweet() {
 
     })
 }
+
+
+// datepicker timepicker
+
+function CreateNewDateExceptionSunday() {
+    var get_date = new Date();
+    if (get_date.getDay() === 0) {
+        return new Date(new Date().setDate(new Date().getDate() + 1));
+    } else {
+        return get_date
+    }
+}
+
+$(function () {
+
+    $(".datepicker").datepicker({
+        dateFormat: "dd.mm.yy",
+        // minDate: '-90d',
+        // maxDate: '+5M',
+        // defaultDate: '01-01-1985',
+        // value: "7/11/2011",
+        showButtonPanel: true,
+        numberOfMonths: 1,
+        //startDate: "-30d",
+        //endDate: "+30d",
+        //currentText: 'Today',
+        autoclose: true,
+        changeMonth: false,
+        changeYear: false,
+        beforeShowDay: function (date) {
+            var day = date.getDay();
+            return [(day !== 0), ''];
+        }
+        //gotoCurrent: true,
+        //stepMonths: 0,
+        //duration: 'fast',
+        // yearRange: '1920:2030',
+
+        // beforeShow: function () {
+        //     alert('show');
+        //    $("#ui-datepicker-div").addClass("DatePikerEN");
+        //},
+
+
+    })
+
+    $(".datepicker").datepicker('setDate', CreateNewDateExceptionSunday());
+
+    $(".starttimepicker").timepicker({
+        timeFormat: 'H:mm',
+        interval: 5,
+        minTime: '08',
+        maxTime: '22:00',
+        defaultTime: '08',
+        startTime: '08',
+        dynamic: true,
+        dropdown: true,
+        scrollbar: true,
+    });
+
+    $(".stoptimepicker").timepicker({
+        timeFormat: 'H:mm',
+        interval: 5,
+        minTime: '08',
+        maxTime: '22:00',
+        defaultTime: '10',
+        startTime: '08',
+        dynamic: true,
+        dropdown: true,
+        scrollbar: true,
+
+    });
+});

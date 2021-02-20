@@ -50,6 +50,7 @@ class Theme(models.Model):
     subject = models.ManyToManyField(Subject, related_name='subject_theme',)
     sort = models.IntegerField(verbose_name='Tartibi',null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now, editable=False)
+    lesson_time = models.SmallIntegerField(default=2)
     is_active = models.BooleanField(default=True)
 
 

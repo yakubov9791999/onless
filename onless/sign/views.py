@@ -2,9 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from datetime import datetime as dt
+from datetime import datetime as dt, timedelta
 
 from django.utils import formats
 
@@ -27,42 +27,43 @@ def sign(request):
 
 @login_required
 def add_schedule(request):
+    school = get_object_or_404(School, id=request.user.school.id)
+    teachers = User.objects.filter(Q(is_active=True) & Q(school=school) & Q(Q(role=3) | Q(role=2)))
+    if not teachers.exists():
+        messages.error(request, 'O\'qituvchilar mavjud emas!')
+    context = {
+        'teachers': teachers
+    }
     if request.user.role == '3':
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=school) & Q(teacher=request.user))
+        context.update(groups=groups)
         if not groups.exists():
             messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
-    else:
-        teachers = User.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(Q(role=3) | Q(role=2)))
-        themes = Theme.objects.filter(Q(is_active=True))
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
+    if request.user.role == '2':
+
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=school))
+        context.update(groups=groups)
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
-    context = {
-        'groups': groups,
-        'teachers': teachers,
-        'themes': themes
-    }
+
     if request.POST:
-        get_date = request.POST.get('date').split('.')
-        date = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
-        form = AddScheduleForm(request.POST)
-        author = User.objects.get(id=request.user.id)
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.author = author
-            form.date = date
-            form.subject_id = request.POST.get('subject')
-            form.theme_id = request.POST.get('theme')
-            form.group_id = request.POST.get('group')
-            form.start = request.POST.get('start')
-            form.stop = request.POST.get('stop')
-            form.save()
-            messages.success(request, "Muvaffaqiyatli qo'shildi !")
-        else:
-            messages.error(request, "Formani to'ldirishda xatolik !")
+        group = get_object_or_404(Group, id=request.POST.get('group'))
+        teacher = get_object_or_404(User, id=request.POST.get('teacher'))
+        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by('-sort')
+        context.update(teacher=teacher)
+        context.update(group=group)
+        context.update(themes=themes)
+        return render(request, 'sign/save_schedule.html', context)
     return render(request, 'sign/add_schedule.html', context)
 
+@login_required
+def save_schedule(request):
+    school = get_object_or_404(School, id=request.user.school.id)
+    if request.POST:
+        print(request.POST)
 
+        messages.success(request, 'Muvaffaqiyatli yaratildi!')
+        return redirect(reverse_lazy('user:add_list'))
 # @login_required
 # def add_subject(request):
 #     if request.POST:
@@ -219,18 +220,6 @@ def get_subject_long_title(request):
     if request.is_ajax():
         subject = get_object_or_404(Subject, id=request.GET.get('subject'))
         return HttpResponse(subject.long_title)
-    else:
-        return False
-
-@login_required
-def get_themes(request):
-    if request.is_ajax():
-        subject = get_object_or_404(Subject, id=request.GET.get('subject'))
-        themes = Theme.objects.filter(Q(is_active=True) & Q(subject=subject))
-        options = "<option>-- -- --</option>"
-        for theme in themes:
-            options += f"<option value='{theme.id}'>{theme.title}</option>"
-        return HttpResponse(options)
     else:
         return False
 

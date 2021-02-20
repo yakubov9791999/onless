@@ -6,6 +6,7 @@ app_name = 'sign'
 urlpatterns = [
     path("belgilar/", sign, name='sign'),
     path('add-schedule/', add_schedule, name='add_schedule'),
+    path('save-schedule/', save_schedule, name='save_schedule'),
     # path('add-subject/', add_subject, name='add_subject'),
     path('update-schedule/<int:id>/', update_schedule, name='update_schedule'),
     # path('update-subject/<int:id>/', update_subject, name='update_subject'),
@@ -14,7 +15,7 @@ urlpatterns = [
     path('subjects/', subjects_list, name='subjects_list'),
     path('get-subject/', get_subject, name='get_subject'),
     path('get-subject-long-title/', get_subject_long_title, name='get_subject_long_title'),
-    path('get-themes/', get_themes, name='get_themes'),
+
     path('group-subjects/', group_subjects, name='group_subjects'),
     path('get-schedule/', get_schedule, name='get_schedule'),
     path('materials/', materials, name='materials'),

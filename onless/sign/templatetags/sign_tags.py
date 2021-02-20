@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django import template
 from django.shortcuts import get_object_or_404
 
@@ -34,3 +36,10 @@ def count_schedules(school_id):
 @register.filter
 def view_sign(queryset):
     return queryset.order_by('sort')
+
+@register.filter
+def daterange(start_date, end_date):
+    start_date = datetime.date.today()
+    end_date = start_date + datetime.timedelta(days=5)
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)

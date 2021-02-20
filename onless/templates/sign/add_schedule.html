@@ -20,95 +20,32 @@
                 <!-- /.card-header -->
                 <!-- form start -->
 
-                {#                <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">#}
-                {#                    {% csrf_token %}#}
-                {#                    <div class="card-body">#}
-                {#                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni#}
-                {#                            tanlang</label>#}
-                {#                        <select name="group" id="group" class="form-control">#}
-                {#                            <option value="">-- -- --</option>#}
-                {#                            {% for group in groups %}#}
-                {#                                <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>#}
-                {#                            {% endfor %}#}
-                {#                        </select>#}
-                {#                        <label for="subject" class="label_required" style="margin-bottom: 0; margin-top: 2%">Fanni tanlang</label>#}
-                {#                        <select id="subject" name="subject" class="form-control">#}
-                {#                            <option value="">--Guruhni tanlang--</option>#}
-                {#                        </select>#}
-                {#                        <label for="title" class="label_required" style="margin-bottom: 0; margin-top: 2%">Mavzuni#}
-                {#                            tanlang</label>#}
-                {#                        <select id="theme" name="theme" class="form-control">#}
-                {#                            <option value="">--Fanni tanlang--</option>#}
-                {#                        </select>#}
-                {##}
-                {#                        <label for="date" class="label_required" style="margin-bottom: 0; margin-top: 2%">Sana</label>#}
-                {#                        <input type="text" id="datepicker" onkeydown="return false;" class="form-control" name="date">#}
-                {##}
-                {#                        <label for="start" class="label_required" style="margin-bottom: 0; margin-top: 2%">Boshlanish#}
-                {#                            vaqti</label>#}
-                {#                        <input type="text" id="starttimepicker" onkeydown="return false;" class="form-control"#}
-                {#                               name="start">#}
-                {##}
-                {#                        <label for="stop" class="label_required" style="margin-bottom: 0; margin-top: 2%">Tugash#}
-                {#                            vaqti</label>#}
-                {#                        <input type="text" id="stoptimepicker" onkeydown="return false;" class="form-control"#}
-                {#                               name="stop">#}
-                {##}
-                {#                        <label for="sort" class="label_required"#}
-                {#                               style="margin-bottom: 0; margin-top: 2%">Tartibi</label>#}
-                {#                        <input type="number" id="sort" class="form-control" placeholder="Masalan: 1" name="sort">#}
-                {#                        <small class="text-muted">Ushbu tartib raqami mavzularni ketma-ketligini belgilash uchun#}
-                {#                            ishlatiladi! M-1</small>#}
-                {#                    </div>#}
-                {#                    <div class="card-footer">#}
-                {#                        <button type="submit" class="btn btn-success">Saqlash</button>#}
-                {#                        <button type="reset" class="btn btn-danger">Tozalash</button>#}
-                {#                    </div>#}
-                {#                </form>#}
+                <form role="form" id="schedule_form" method="POST" action="{% url 'sign:add_schedule' %}">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <label class="label_required" style="margin-bottom: 0" for="exampleInputname">Guruhni
+                            tanlang</label>
+                        <select name="group" id="group" class="form-control">
+                            <option value="">-- guruhni tanlang --</option>
+                            {% for render_group in groups %}
+                                <option {% if group.id == render_group.id %}selected{% endif %}
+                                        value="{{ render_group.id }}">{{ render_group.category }}-{{ render_group.number }} {{ render_group.year }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="teacher" class="label_required" style="margin-bottom: 0; margin-top: 2%">O'qituvchini
+                            tanlang</label>
+                        <select id="teacher" name="teacher" class="form-control">
+
+                            {% for teacher in teachers %}
+                                <option value="{{ teacher.id }}">{{ teacher.name|truncatewords:2 }}</option>
+                            {% endfor %}
+
+                        </select>
+                        <button type="submit" style="float: right" class="btn btn-success mt-5">Yaratish</button>
+                    </div>
 
 
-                <table id="example1" class="table table-bordered table-hovered">
-                    <thead>
-                    <tr style="background-color: #ecebeb">
-                        <th style="width: 2%; text-align: center">№</th>
-                        <th style="width: 9%; text-align: center">Sana</th>
-                        <th style="width: 6%; text-align: center">Fan</th>
-                        <th style="width: 4%; text-align: center">Soati</th>
-                        <th style="width: 45%; text-align: center">Mavzu va ularning qisqacha mazmuni</th>
-                        <th style="width: 17%; text-align: center">O'qituvchi</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    {% for theme in themes %}
-
-                        <tr>
-                            <td class="text-center" style="vertical-align: revert;">1</td>
-                            <td class="text-center" style="vertical-align: revert;">
-                                <input class="form-control datepicker" type="text"/>
-                            </td>
-                            <td>{{ theme.subject.all.first }}</td>
-                            <td>1-2</td>
-                            <td>{{ theme.title }}</td>
-                            <td>
-                                <select class="form-control" name="teacher">
-
-                                    {% for teacher in teachers %}
-                                        <option value="{{ teacher.id }}">{{ teacher.name|truncatewords:2 }} </option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-
-                    </tfoot>
-
-                </table>
-
-
+                </form>
             </div>
         </div>
     </div>
@@ -119,52 +56,6 @@
     <script>
         $(document).ready(function () {
 
-            $("#group").change(function () {
-
-                var selectedGroup = $(this).children("option:selected").val();
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'sign:get_subject' %}",
-                    data: {
-                        'group': selectedGroup, // from form
-                    },
-                    success: function (message) {
-                        $('#subject').empty().append(message)
-                        $('#subject').css('border-color', '#007bff')
-                        // setTimeout(function () {
-                        //     $('#subject').css('border-color', '#ced4da')
-                        // }, 2000)
-
-                    }
-                });
-            });
-
-            $("#subject").change(function () {
-
-                var selectedSubject = $(this).children("option:selected").val();
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'sign:get_themes' %}",
-                    data: {
-                        'subject': selectedSubject, // from form
-                    },
-                    success: function (message) {
-                        $('#theme').empty().append(message)
-                        $('#theme').css('border-color', '#007bff')
-
-                    }
-                });
-            });
-
-            $('#subject').on('change', function () {
-                if (!$.isNumeric($("#subject").children("option:selected").val())) {
-                    $('#subject').css('border-color', 'red')
-                } else {
-                    $('#subject').css('border-color', 'green')
-                }
-            })
-
-
             $('#group').on('change', function () {
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
                     $('#group').css('border-color', 'red')
@@ -173,54 +64,14 @@
                 }
             })
 
-            $('#theme').on('change', function () {
-                if (!$.isNumeric($("#theme").children("option:selected").val())) {
-                    $('#theme').css('border-color', 'red')
-                } else {
-                    $('#theme').css('border-color', 'green')
-                }
-            })
-
-
-            $('#sort').on('keypress', function () {
-                if ($(this).val().length < 0) {
-                    $('#sort').css('border-color', 'red')
-                } else {
-                    $('#sort').css('border-color', 'green')
-                }
-            })
-
-
-            // $('#datepicker').on('change', function () {
-            //     if (isNaN(Date.parse($(this).val())) == true)
-            //          $(this).css('border-color', 'red')
-            //     else
-            //         $(this).css('border-color', 'green')
-            // })
-
-
-            $(document).on('click', '#starttimepicker, #stoptimepicker, #datepicker', function (e) {
-                //if (parseDate(e.target.value)) {
-                //    $(e.target).css("border-bottom", "2px solid green")
-                // } else {
-                //     $(e.target).css("border-bottom", "2px solid red")
-                //  }
-                $(e.target).css('border-color', 'green')
-            })
 
             $('#schedule_form').submit(function (e) {
 
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
                     $('#group').css('border-color', 'red')
                     return false;
-                } else if (!$.isNumeric($("#subject").children("option:selected").val())) {
-                    $('#subject').css('border-color', 'red')
-                    return false;
-                } else if (!$.isNumeric($("#theme").children("option:selected").val())) {
-                    $('#theme').css('border-color', 'red')
-                    return false;
-                } else if ($('#sort').val().length < 1) {
-                    $('#sort').css('border-color', 'red')
+                } else if (!$.isNumeric($("#teacher").children("option:selected").val())) {
+                    $('#teacher').css('border-color', 'red')
                     return false;
                 } else {
                     return true;

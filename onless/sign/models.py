@@ -61,6 +61,7 @@ class Theme(models.Model):
     class Meta:
         verbose_name = "Mavzu"
         verbose_name_plural = "Mavzular"
+        ordering = ['sort']
 
 class Schedule(models.Model):
     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, related_name='theme_schedule', null=True)
@@ -81,6 +82,7 @@ class Schedule(models.Model):
     class Meta:
         verbose_name = "Dars jadvali"
         verbose_name_plural = "Dars jadvallari"
+        ordering = ['sort']
 
 
 def path_and_rename(instance, filename):

@@ -49,7 +49,11 @@ def check_schedule_disable_or_enable(group_id,theme_id):
     group = get_object_or_404(Group, id=group_id)
     theme = get_object_or_404(Theme, id=theme_id)
     subject = get_object_or_404(Subject, id=theme.subject.first().id)
-    schedule = Schedule.objects.filter(group=group, subject=subject, theme=theme, theme_order=theme.theme_order)
+    if theme.theme_order == None:
+        schedule = Schedule.objects.filter(group=group, subject=subject, theme=theme, sort=theme.sort)
+    else:
+        schedule = Schedule.objects.filter(group=group, subject=subject, theme=theme, sort=theme.sort, theme_order=theme.theme_order)
+
     if schedule.exists():
         return True
     else:

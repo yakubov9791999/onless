@@ -76,12 +76,11 @@ def save_schedule(request):
                 theme_id = schedules[2]
                 teacher_id = schedules[3]
                 theme_order = schedules[4]
-                print(theme_order)
                 date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
                 theme = get_object_or_404(Theme, id=theme_id)
                 teacher = get_object_or_404(User, id=teacher_id)
                 subject = get_object_or_404(Subject, id=theme.subject.first().id)
-                schedules = Schedule.objects.filter(group=group, subject=subject, theme=theme, theme_order=theme_order)
+                schedules = Schedule.objects.filter(group=group, subject=subject, theme=theme,sort=theme.sort, theme_order=theme_order)
                 if schedules.exists():
                     for schedule in schedules:
                         schedule.lesson_time = lesson_time
@@ -91,7 +90,7 @@ def save_schedule(request):
                         schedule.updated_date = timezone.now()
                         schedule.save()
                 else:
-                    schedule = Schedule.objects.create(date=date, theme_order=theme_order)
+                    schedule = Schedule.objects.create(date=date, theme_order=theme_order, sort=theme.sort)
                     schedule.lesson_time = lesson_time
                     schedule.theme = theme
                     schedule.teacher = teacher

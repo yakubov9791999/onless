@@ -84,8 +84,8 @@
                                             class="form-control lesson_time"
                                             value="{{ theme.lesson_time }}"></td>
                                     <td class="text-center sort" style="vertical-align: revert;"
-                                        data-forloop="{{ forloop.counter }}" data-value="{{ theme.sort }}">
-                                        {% if theme.sort %}M-{{ theme.sort }}{% else %}{% endif %}</td>
+                                        data-forloop="{{ forloop.counter }}" data-value="{{ theme.theme_order }}">
+                                        {% if theme.theme_order %}M-{{ theme.theme_order }}{% else %}{% endif %}</td>
 
                                     <td style="vertical-align: revert;" class="theme"
                                         data-forloop="{{ forloop.counter }}"
@@ -103,7 +103,8 @@
                                     <td style="text-align: center;vertical-align: revert;">
                                         {% if check_schedule %}
                                             <button data-forloop="{{ forloop.counter }}" data-save="false"
-                                                    class="btn btn-warning scheduleBtn editBtn"><i class="fas fa-edit"></i></button>
+                                                    class="btn btn-warning scheduleBtn editBtn"><i
+                                                    class="fas fa-edit"></i></button>
                                         {% else %}
                                             <button data-forloop="{{ forloop.counter }}" data-save="true"
                                                     class="btn btn-primary scheduleBtn saveBtn"><i
@@ -198,6 +199,7 @@
                 })
 
                 saveSchedule(schedules, groupId, forloop, save)
+
             })
 
 
@@ -242,32 +244,23 @@
             }
 
             function saveSchedule(schedules, groupId, forloop, save) {
-                $.ajax({
-                    type: "POST",
-                    url: '{% url "sign:save_schedule" %}',
-                    data: {
-                        'schedules': schedules,
-                        'group': groupId
-                    },
-                    success: function (response) {
-                        if (response === 'True') {
-                            if (save === true){
-                                alert(save)
-                            }
-                            var $buttonEdit = $(`<button class="btn btn-warning editBtn" data-forloop="${forloop}"><i class="fas fa-edit"></i></button>`);
-                            $(`button[data-forloop=${forloop}]`).after($buttonEdit)
-                            $(`button.saveBtn[data-forloop=${forloop}]`).remove()
-                            AttrDisabled(forloop)
+                if (save === true) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{% url "sign:save_schedule" %}',
+                        data: {
+                            'schedules': schedules,
+                            'group': groupId
+                        },
+                        success: function (response) {
+                            if (response === 'True') {
+                                var $buttonEdit = $(`<button class="btn btn-warning editBtn" data-forloop="${forloop}"><i class="fas fa-edit"></i></button>`);
+                                $(`button[data-forloop=${forloop}]`).after($buttonEdit)
+                                $(`button.saveBtn[data-forloop=${forloop}]`).remove()
+                                AttrDisabled(forloop)
 
-                            $buttonEdit.on('click', function () {
-                                var $buttonSave = $(`<button class="btn btn-primary saveBtn" data-forloop="${forloop}"><i class="fas fa-save"></i></button>`);
-                                $(`button[data-forloop=${forloop}]`).after($buttonSave)
-                                $(`button.editBtn[data-forloop=${forloop}]`).remove()
+                                $buttonEdit.on('click', function () {
 
-                                AttrEnabled(forloop)
-
-
-                                $buttonSave.on('click', function () {
                                     var schedules = [],
                                         groupId = '{{ group.id }}',
                                         forloop = $(this).data('forloop')
@@ -302,41 +295,89 @@
                                         }
                                     })
 
-                                    saveSchedule(schedules, groupId, forloop)
+                                    saveSchedule(schedules, groupId, forloop, false)
+
+
+                                });
+
+
+                            } else {
+                                $.notifyDefaults({
+                                    type: 'danger',
+                                    allow_dismiss: false,
+                                    animate: {
+                                        enter: 'animated fadeInRight',
+                                        exit: 'animated fadeOutRight'
+                                    },
+                                    placement: {
+                                        from: "top",
+                                        align: "right"
+                                    },
+                                    z_index: 9999,
                                 })
+                                $.notify({
+                                    icon: 'glyphicon glyphicon-star',
+                                    message: '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-patch-exclamation" fill="currentColor" xmlns="http://www.w3.org/2000/svg">\n' +
+                                        '  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>\n' +
+                                        '  <path fill-rule="evenodd" d="M10.273 2.513l-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911l-1.318.016z"/>\n' +
+                                        '</svg> Xatolik! Birozdan so\'ng qayta urinib ko\'ring'
+                                })
+                            }
 
-                            });
-
-
-                        } else {
-                            $.notifyDefaults({
-                                type: 'danger',
-                                allow_dismiss: false,
-                                animate: {
-                                    enter: 'animated fadeInRight',
-                                    exit: 'animated fadeOutRight'
-                                },
-                                placement: {
-                                    from: "top",
-                                    align: "right"
-                                },
-                                z_index: 9999,
-                            })
-                            $.notify({
-                                icon: 'glyphicon glyphicon-star',
-                                message: '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-patch-exclamation" fill="currentColor" xmlns="http://www.w3.org/2000/svg">\n' +
-                                    '  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>\n' +
-                                    '  <path fill-rule="evenodd" d="M10.273 2.513l-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911l-1.318.016z"/>\n' +
-                                    '</svg> Xatolik! Birozdan so\'ng qayta urinib ko\'ring'
-                            })
+                        },
+                        error: function (response) {
+                            console.log(response)
                         }
+                    })
+                    schedules = []
+                } else {
+                    var $buttonSave = $(`<button class="btn btn-primary saveBtn" data-forloop="${forloop}"><i class="fas fa-save"></i></button>`);
+                    $(`button[data-forloop=${forloop}]`).after($buttonSave)
+                    $(`button.editBtn[data-forloop=${forloop}]`).remove()
 
-                    },
-                    error: function (response) {
-                        console.log(response)
-                    }
-                })
-                schedules = []
+                    AttrEnabled(forloop)
+
+
+                    $buttonSave.on('click', function () {
+                        var schedules = [],
+                            groupId = '{{ group.id }}',
+                            forloop = $(this).data('forloop')
+
+                        $('.datepicker').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).val())
+                            }
+                        })
+
+                        $('.lesson_time').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).val())
+                            }
+                        })
+
+                        $('.theme').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).data('id'))
+                            }
+                        })
+
+                        $('.teacher').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).children("option:selected").val())
+                            }
+                        })
+
+                        $('.sort').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).data('value'))
+                            }
+                        })
+
+
+                        saveSchedule(schedules, groupId, forloop, true)
+                    })
+                }
+
             }
 
 

@@ -49,12 +49,11 @@ def schedules_list(request):
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
     themes = Theme.objects.filter(
-        Q(is_active=True) & Q(subject__categories__title=context.get('group').category)).order_by('-sort')
+        Q(is_active=True) & Q(subject__categories__title=context.get('group').category)).order_by('sort')
     context.update(themes=themes)
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
-        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by(
-            '-sort')
+        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by('sort')
         context.update(teacher=group.teacher)
         context.update(group=group)
         context.update(themes=themes)
@@ -75,12 +74,13 @@ def save_schedule(request):
                 lesson_time = schedules[1]
                 theme_id = schedules[2]
                 teacher_id = schedules[3]
-                sort = schedules[4]
+                theme_order = schedules[4]
+                print(theme_order)
                 date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
                 theme = get_object_or_404(Theme, id=theme_id)
                 teacher = get_object_or_404(User, id=teacher_id)
                 subject = get_object_or_404(Subject, id=theme.subject.first().id)
-                schedules = Schedule.objects.filter(group=group, subject=subject, theme=theme, sort=sort)
+                schedules = Schedule.objects.filter(group=group, subject=subject, theme=theme, theme_order=theme_order)
                 if schedules.exists():
                     for schedule in schedules:
                         schedule.lesson_time = lesson_time
@@ -90,7 +90,7 @@ def save_schedule(request):
                         schedule.updated_date = timezone.now()
                         schedule.save()
                 else:
-                    schedule = Schedule.objects.create(date=date, sort=sort)
+                    schedule = Schedule.objects.create(date=date, theme_order=theme_order)
                     schedule.lesson_time = lesson_time
                     schedule.theme = theme
                     schedule.teacher = teacher

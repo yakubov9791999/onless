@@ -48,7 +48,8 @@ class Subject(models.Model):
 class Theme(models.Model):
     title = models.TextField(verbose_name='Nomi',)
     subject = models.ManyToManyField(Subject, related_name='subject_theme',)
-    sort = models.CharField(verbose_name='Tartibi',null=True, blank=True, max_length=5)
+    sort = models.SmallIntegerField(verbose_name='Tartibi',default=1)
+    theme_order = models.CharField(verbose_name='Mavzu tartibi',null=True, blank=True, max_length=5)
     created_date = models.DateTimeField(default=timezone.now, editable=False)
     lesson_time = models.SmallIntegerField(default=2)
     is_active = models.BooleanField(default=True)
@@ -71,7 +72,8 @@ class Schedule(models.Model):
     lesson_time = models.SmallIntegerField(default=2)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
     is_active = models.BooleanField(default=True)
-    sort = models.CharField(max_length=5)
+    theme_order = models.CharField(verbose_name='Mavzu tartibi', null=True, blank=True, max_length=5)
+    sort = models.SmallIntegerField(default=1)
 
     def __str__(self):
         return str(self.theme)

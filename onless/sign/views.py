@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -26,7 +28,7 @@ def sign(request):
 
 
 @login_required
-def add_schedule(request):
+def schedules_list(request):
     school = get_object_or_404(School, id=request.user.school.id)
     teachers = User.objects.filter(Q(is_active=True) & Q(school=school) & Q(Q(role=3) | Q(role=2)))
     if not teachers.exists():
@@ -35,35 +37,77 @@ def add_schedule(request):
         'teachers': teachers
     }
     if request.user.role == '3':
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=school) & Q(teacher=request.user))
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=school) & Q(teacher=request.user)).order_by('-id')
         context.update(groups=groups)
+        context.update(group=groups[0])
         if not groups.exists():
             messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
     if request.user.role == '2':
-
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=school))
+        groups = Group.objects.filter(Q(is_active=True) & Q(school=school)).order_by('-id')
         context.update(groups=groups)
+        context.update(group=groups[0])
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
-
+    themes = Theme.objects.filter(
+        Q(is_active=True) & Q(subject__categories__title=context.get('group').category)).order_by('-sort')
+    context.update(themes=themes)
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
-        teacher = get_object_or_404(User, id=request.POST.get('teacher'))
-        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by('-sort')
-        context.update(teacher=teacher)
+        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by(
+            '-sort')
+        context.update(teacher=group.teacher)
         context.update(group=group)
         context.update(themes=themes)
-        return render(request, 'sign/save_schedule.html', context)
-    return render(request, 'sign/add_schedule.html', context)
+        return render(request, 'sign/schedules_list.html', context)
+    return render(request, 'sign/schedules_list.html', context)
+
 
 @login_required
 def save_schedule(request):
-    school = get_object_or_404(School, id=request.user.school.id)
-    if request.POST:
-        print(request.POST)
+    if request.is_ajax():
+        if request.POST:
+            if request.POST.getlist('schedules[]'):
+                schedules = request.POST.getlist('schedules[]')
+                groupd_id = request.POST.getlist('group')
+                groupd_id = str(groupd_id).replace('[', '').replace(']', '').replace('"', '').replace("'", '')
+                group = get_object_or_404(Group, id=groupd_id)
+                print(schedules)
+                date = schedules[0]
+                lesson_time = schedules[1]
+                theme_id = schedules[2]
+                teacher_id = schedules[3]
+                sort = schedules[4]
+                date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
+                theme = get_object_or_404(Theme, id=theme_id)
+                teacher = get_object_or_404(User, id=teacher_id)
+                subject = get_object_or_404(Subject, id=theme.subject.first().id)
+                schedules = Schedule.objects.filter(group=group, subject=subject, theme=theme, sort=sort)
+                if schedules.exists():
+                    for schedule in schedules:
+                        schedule.lesson_time = lesson_time
+                        schedule.teacher = teacher
+                        schedule.author = request.user
+                        schedule.date = date
+                        schedule.updated_date = timezone.now()
+                        schedule.save()
+                else:
+                    schedule = Schedule.objects.create(date=date, sort=sort)
+                    schedule.lesson_time = lesson_time
+                    schedule.theme = theme
+                    schedule.teacher = teacher
+                    schedule.subject = subject
+                    schedule.author = request.user
+                    schedule.group = group
+                    schedule.save()
 
-        messages.success(request, 'Muvaffaqiyatli yaratildi!')
-        return redirect(reverse_lazy('user:add_list'))
+                return HttpResponse(True)
+            else:
+                return HttpResponse(False)
+        else:
+            return HttpResponse(False)
+    return HttpResponse(False)
+
+
 # @login_required
 # def add_subject(request):
 #     if request.POST:
@@ -87,12 +131,12 @@ def update_schedule(request, id):
         groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
         if not groups.exists():
             messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
-            return render(request, 'sign/schedules_list.html', {'groups':groups})
+            return render(request, 'sign/old_schedules_list.html', {'groups': groups})
     else:
         groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
-            return render(request, 'sign/schedules_list.html')
+            return render(request, 'sign/old_schedules_list.html')
     schedule = Schedule.objects.get(id=id)
     context = {
         'schedule': schedule,
@@ -113,7 +157,7 @@ def update_schedule(request, id):
                 form.schedule = schedule
                 form.save()
                 messages.success(request, "Muvaffaqiyatli tahrirlandi !")
-                return render(request, 'sign/schedules_list.html', context)
+                return render(request, 'sign/old_schedules_list.html', context)
             else:
                 messages.error(request, "Formani to'ldirishda xatolik !")
         else:
@@ -123,8 +167,7 @@ def update_schedule(request, id):
         groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
         context.update(groups=groups)
         messages.error(request, 'Mavzuni tahrirlash guruh rahbari va maktab rahbariga ruxsat berilgan!')
-        return render(request, 'sign/schedules_list.html', context)
-
+        return render(request, 'sign/old_schedules_list.html', context)
 
 
 # @login_required
@@ -161,32 +204,11 @@ def delete_schedule(request, id):
 
     if schedule.group.school.director == request.user or schedule.group.teacher == request.user:
         schedule.delete()
-        return render(request, 'sign/schedules_list.html', context)
+        return render(request, 'sign/old_schedules_list.html', context)
     else:
         messages.error(request, 'Mavzuni o\'chirish guruh rahbari va maktab rahbariga ruxsat berilgan!')
-        return render(request, 'sign/schedules_list.html',context)
+        return render(request, 'sign/old_schedules_list.html', context)
 
-
-
-@login_required
-def schedules_list(request):
-    context = {}
-    if request.user.role == '3':
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(teacher=request.user))
-        context.update(groups=groups)
-        if not groups.exists():
-            messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
-        return render(request, 'sign/schedules_list.html', context)
-    elif request.user.role == '4':
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school) & Q(id=request.user.group.id))
-        context.update(groups=groups)
-        return render(request, 'sign/schedules_list.html', context)
-    else:
-        groups = Group.objects.filter(Q(is_active=True) & Q(school=request.user.school))
-        context.update(groups=groups)
-        if not groups.exists():
-            messages.error(request, 'Guruhlar mavjud emas!')
-        return render(request, 'sign/schedules_list.html', context)
 
 @login_required
 def subjects_list(request):
@@ -203,6 +225,7 @@ def subjects_list(request):
         context.update(subjects=subjects)
     return render(request, 'sign/subjects_list.html', context)
 
+
 @login_required
 def get_subject(request):
     if request.is_ajax():
@@ -214,6 +237,7 @@ def get_subject(request):
         return HttpResponse(options)
     else:
         return False
+
 
 @login_required
 def get_subject_long_title(request):
@@ -239,6 +263,7 @@ def group_subjects(request):
             return HttpResponse(False)
     else:
         return False
+
 
 @login_required
 def get_schedule(request):
@@ -333,7 +358,6 @@ def delete_material(request, id):
         material.save()
     else:
         return render(request, 'inc/404.html')
-
 
 # @login_required
 # def get_group_full_schedule(request):

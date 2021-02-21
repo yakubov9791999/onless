@@ -2,7 +2,8 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, IntegerField
+from django.db.models.functions import Cast
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -49,11 +50,11 @@ def schedules_list(request):
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
     themes = Theme.objects.filter(
-        Q(is_active=True) & Q(subject__categories__title=context.get('group').category)).order_by('sort')
+        Q(is_active=True) & Q(subject__categories__title=context.get('group').category)).order_by("sort")
     context.update(themes=themes)
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
-        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by('sort')
+        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by("sort")
         context.update(teacher=group.teacher)
         context.update(group=group)
         context.update(themes=themes)

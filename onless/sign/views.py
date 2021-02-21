@@ -71,7 +71,6 @@ def save_schedule(request):
                 groupd_id = request.POST.getlist('group')
                 groupd_id = str(groupd_id).replace('[', '').replace(']', '').replace('"', '').replace("'", '')
                 group = get_object_or_404(Group, id=groupd_id)
-                print(schedules)
                 date = schedules[0]
                 lesson_time = schedules[1]
                 theme_id = schedules[2]

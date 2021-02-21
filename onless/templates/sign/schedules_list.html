@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load sign_tags %}
 {% block content %}
     <style>
         .datepicker, #starttimepicker, #stoptimepicker:hover {
@@ -66,18 +67,22 @@
                         <tbody>
                         {% if themes.exists %}
                             {% for theme in themes %}
+                                {% check_schedule_disable_or_enable group.id theme.id as check_schedule %}
                                 <tr>
                                     <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
                                         style="vertical-align: revert;">{{ forloop.counter }}</td>
                                     <td class="text-center" style="vertical-align: revert;">
-                                        <input data-forloop="{{ forloop.counter }}" style="float:left;"
+                                        <input data-forloop="{{ forloop.counter }}"
+                                               {% if check_schedule %}disabled{% endif %} style="float:left;"
                                                class="form-control datepicker" type="text"/>
                                     </td>
                                     <td style="vertical-align: revert;">{{ theme.subject.all.first }}</td>
-                                    <td style="vertical-align: revert;"><input data-forloop="{{ forloop.counter }}"
-                                                                               type="number"
-                                                                               class="form-control lesson_time"
-                                                                               value="{{ theme.lesson_time }}"></td>
+                                    <td style="vertical-align: revert;"><input
+                                            {% if check_schedule %}disabled{% endif %}
+                                            data-forloop="{{ forloop.counter }}"
+                                            type="number"
+                                            class="form-control lesson_time"
+                                            value="{{ theme.lesson_time }}"></td>
                                     <td class="text-center sort" style="vertical-align: revert;"
                                         data-forloop="{{ forloop.counter }}" data-value="{{ theme.sort }}">
                                         {% if theme.sort %}M-{{ theme.sort }}{% else %}{% endif %}</td>
@@ -86,7 +91,8 @@
                                         data-forloop="{{ forloop.counter }}"
                                         data-id="{{ theme.id }}">{{ theme.title }}</td>
                                     <td style="vertical-align: revert;">
-                                        <select data-forloop="{{ forloop.counter }}" class="form-control teacher"
+                                        <select data-forloop="{{ forloop.counter }}"
+                                                {% if check_schedule %}disabled{% endif %} class="form-control teacher"
                                                 name="teacher">
                                             {% for render_teacher in teachers %}
                                                 <option {% if render_teacher.id == teacher.id %}selected{% endif %}
@@ -95,9 +101,15 @@
                                         </select>
                                     </td>
                                     <td style="text-align: center;vertical-align: revert;">
-                                        <button data-forloop="{{ forloop.counter }}"
-                                                class="btn btn-primary saveBtn"><i
-                                                class="fas fa-save"></i></button>
+                                        {% if check_schedule %}
+                                            <button data-forloop="{{ forloop.counter }}" data-save="false"
+                                                    class="btn btn-warning scheduleBtn editBtn"><i class="fas fa-edit"></i></button>
+                                        {% else %}
+                                            <button data-forloop="{{ forloop.counter }}" data-save="true"
+                                                    class="btn btn-primary scheduleBtn saveBtn"><i
+                                                    class="fas fa-save"></i></button>
+                                        {% endif %}
+
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -149,10 +161,11 @@
                 }
             })
 
-            $('.saveBtn').on('click', function () {
+            $('.scheduleBtn').on('click', function () {
                 var schedules = [],
                     groupId = '{{ group.id }}',
-                    forloop = $(this).data('forloop')
+                    forloop = $(this).data('forloop'),
+                    save = $(this).data('save')
 
                 $('.datepicker').each(function () {
                     if ($(this).data('forloop') == forloop) {
@@ -184,7 +197,7 @@
                     }
                 })
 
-                saveSchedule(schedules, groupId, forloop)
+                saveSchedule(schedules, groupId, forloop, save)
             })
 
 
@@ -228,7 +241,7 @@
                 })
             }
 
-            function saveSchedule(schedules, groupId, forloop) {
+            function saveSchedule(schedules, groupId, forloop, save) {
                 $.ajax({
                     type: "POST",
                     url: '{% url "sign:save_schedule" %}',
@@ -238,6 +251,9 @@
                     },
                     success: function (response) {
                         if (response === 'True') {
+                            if (save === true){
+                                alert(save)
+                            }
                             var $buttonEdit = $(`<button class="btn btn-warning editBtn" data-forloop="${forloop}"><i class="fas fa-edit"></i></button>`);
                             $(`button[data-forloop=${forloop}]`).after($buttonEdit)
                             $(`button.saveBtn[data-forloop=${forloop}]`).remove()

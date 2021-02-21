@@ -43,3 +43,14 @@ def daterange(start_date, end_date):
     end_date = start_date + datetime.timedelta(days=5)
     for n in range(int((end_date - start_date).days)):
         yield start_date + timedelta(n)
+
+@register.simple_tag()
+def check_schedule_disable_or_enable(group_id,theme_id):
+    group = get_object_or_404(Group, id=group_id)
+    theme = get_object_or_404(Theme, id=theme_id)
+    subject = get_object_or_404(Subject, id=theme.subject.first().id)
+    schedule = Schedule.objects.filter(group=group, subject=subject, theme=theme, sort=theme.sort)
+    if schedule.exists():
+        return True
+    else:
+        return False

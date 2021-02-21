@@ -67,7 +67,9 @@
                         <tbody>
                         {% if themes.exists %}
                             {% for theme in themes %}
+
                                 {% check_schedule_disable_or_enable group.id theme.id as check_schedule %}
+
                                 <tr>
                                     <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
                                         style="vertical-align: revert;">{{ forloop.counter }}</td>
@@ -76,7 +78,7 @@
                                                {% if check_schedule %}disabled{% endif %} style="float:left;"
                                                class="form-control datepicker" type="text"/>
                                     </td>
-                                    <td style="vertical-align: revert;">{{ theme.subject.all.first }}</td>
+                                    <td style="vertical-align: revert;">{% if theme.subject %}{{ theme.subject }}{% else %}{% endif %}</td>
                                     <td style="vertical-align: revert;"><input
                                             {% if check_schedule %}disabled{% endif %}
                                             data-forloop="{{ forloop.counter }}"

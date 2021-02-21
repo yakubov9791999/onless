@@ -50,11 +50,12 @@ def schedules_list(request):
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
     themes = Theme.objects.filter(
-        Q(is_active=True) & Q(subject__categories__title=context.get('group').category)).order_by("sort")
+        Q(is_active=True) & Q(category__title=context.get('group').category)).order_by("sort")
     context.update(themes=themes)
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
-        themes = Theme.objects.filter(Q(is_active=True) & Q(subject__categories__title=group.category)).order_by("sort")
+        themes = Theme.objects.filter(Q(is_active=True) & Q(category__title=group.category)).order_by("sort")
+        print(themes)
         context.update(teacher=group.teacher)
         context.update(group=group)
         context.update(themes=themes)
@@ -79,8 +80,7 @@ def save_schedule(request):
                 date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
                 theme = get_object_or_404(Theme, id=theme_id)
                 teacher = get_object_or_404(User, id=teacher_id)
-                subject = get_object_or_404(Subject, id=theme.subject.first().id)
-                schedules = Schedule.objects.filter(group=group, subject=subject, theme=theme,sort=theme.sort, theme_order=theme_order)
+                schedules = Schedule.objects.filter(group=group, theme=theme,sort=theme.sort, theme_order=theme_order)
                 if schedules.exists():
                     for schedule in schedules:
                         schedule.lesson_time = lesson_time
@@ -94,7 +94,8 @@ def save_schedule(request):
                     schedule.lesson_time = lesson_time
                     schedule.theme = theme
                     schedule.teacher = teacher
-                    schedule.subject = subject
+                    if theme.subject:
+                        schedule.subject = get_object_or_404(Subject, id=theme.subject.id)
                     schedule.author = request.user
                     schedule.group = group
                     schedule.save()

@@ -28,14 +28,14 @@ class SubjectAdmin(admin.ModelAdmin):
 
 @admin.register(Theme)
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('title','get_subjects', 'sort')
+    list_display = ('title','subject', 'sort')
     list_filter = ['sort', ]
 
     search_fields = ['title', ]
     save_on_top = True
 
-    def get_subjects(self, obj):
-        return ",\n".join([p.short_title for p in obj.subject.all()])
+    # def get_subjects(self, obj):
+    #     return ",\n".join([p.short_title for p in obj.subject.all()])
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):

@@ -230,7 +230,16 @@ $(function () {
         beforeShowDay: function (date) {
             var day = date.getDay();
             return [(day !== 0), ''];
+        },
+        onClose: function () {
+            if ($(this).val().match(dateReg)) {
+               $(this).css('border-color', 'green')
+            } else {
+                $(this).css('border-color', 'red')
+            }
         }
+
+
         //gotoCurrent: true,
         //stepMonths: 0,
         //duration: 'fast',
@@ -243,6 +252,7 @@ $(function () {
 
 
     })
+
 
     $(".datepicker").datepicker('setDate', CreateNewDateExceptionSunday());
 
@@ -271,3 +281,18 @@ $(function () {
 
     });
 });
+
+function parseDate(value) {
+    var date = value.split("-");
+    var y = parseInt(date[0], 10),
+        m = parseInt(date[1], 10),
+        d = parseInt(date[2], 10);
+    if (y != NaN && m != NaN && d != NaN) {
+        return y
+    }
+    // return `${d}.${m}.${y}`
+
+    // return new Date(y, m - 1, d);
+}
+
+var dateReg = /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[012])[./-]\d{4}$/

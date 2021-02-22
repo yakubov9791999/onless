@@ -78,7 +78,8 @@
                                                {% if check_schedule %}disabled{% endif %} style="float:left;"
                                                class="form-control datepicker" type="text"/>
                                     </td>
-                                    <td style="vertical-align: revert;">{% if theme.subject %}{{ theme.subject }}{% else %}{% endif %}</td>
+                                    <td style="vertical-align: revert;">
+                                        {% if theme.subject %}{{ theme.subject }}{% else %}{% endif %}</td>
                                     <td style="vertical-align: revert;"><input
                                             {% if check_schedule %}disabled{% endif %}
                                             data-forloop="{{ forloop.counter }}"

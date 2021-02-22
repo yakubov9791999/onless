@@ -45,45 +45,45 @@ class Subject(models.Model):
         ordering = ['sort']
 
 
-class Theme(models.Model):
-    title = models.TextField(verbose_name='Nomi',)
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_theme',null=True, blank=True,default=6)
-    sort = models.SmallIntegerField(verbose_name='Tartibi',default=1)
-    theme_order = models.CharField(verbose_name='Mavzu tartibi',null=True, blank=True, max_length=5)
-    category = models.ForeignKey(EducationCategory,related_name='category_theme', on_delete=models.SET_NULL, null=True, default=2)
-    created_date = models.DateTimeField(default=timezone.now, editable=False)
-    lesson_time = models.SmallIntegerField(default=2)
-    is_active = models.BooleanField(default=True)
+# class Theme(models.Model):
+#     title = models.TextField(verbose_name='Nomi',)
+#     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_theme',null=True, blank=True,default=6)
+#     sort = models.SmallIntegerField(verbose_name='Tartibi',default=1)
+#     theme_order = models.CharField(verbose_name='Mavzu tartibi',null=True, blank=True, max_length=5)
+#     category = models.ForeignKey(EducationCategory,related_name='category_theme', on_delete=models.SET_NULL, null=True, default=2)
+#     created_date = models.DateTimeField(default=timezone.now, editable=False)
+#     lesson_time = models.SmallIntegerField(default=2)
+#     is_active = models.BooleanField(default=True)
+#
+#
+#     def __str__(self):
+#         return self.title
+#
+#     class Meta:
+#         verbose_name = "Mavzu"
+#         verbose_name_plural = "Mavzular"
+#         ordering = ['sort']
 
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = "Mavzu"
-        verbose_name_plural = "Mavzular"
-        ordering = ['sort']
-
-class Schedule(models.Model):
-    theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, related_name='theme_schedule', null=True)
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True, blank=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_schedule', null=True)
-    created_date = models.DateTimeField(editable=False, default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
-    date = models.DateField(verbose_name='Kuni', null=True,blank=True)
-    lesson_time = models.SmallIntegerField(default=2)
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
-    is_active = models.BooleanField(default=True)
-    theme_order = models.CharField(verbose_name='Mavzu tartibi', null=True, blank=True, max_length=5)
-    sort = models.SmallIntegerField(default=1)
-
-    def __str__(self):
-        return str(self.theme)
-
-    class Meta:
-        verbose_name = "Dars jadvali"
-        verbose_name_plural = "Dars jadvallari"
-        ordering = ['sort']
+# class Schedule(models.Model):
+#     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, related_name='theme_schedule', null=True)
+#     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_schedule', null=True, blank=True)
+#     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_schedule', null=True)
+#     created_date = models.DateTimeField(editable=False, default=timezone.now)
+#     updated_date = models.DateTimeField(default=timezone.now)
+#     date = models.DateField(verbose_name='Kuni', null=True,blank=True)
+#     lesson_time = models.SmallIntegerField(default=2)
+#     author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='author_schedule', null=True)
+#     is_active = models.BooleanField(default=True)
+#     theme_order = models.CharField(verbose_name='Mavzu tartibi', null=True, blank=True, max_length=5)
+#     sort = models.SmallIntegerField(default=1)
+#
+#     def __str__(self):
+#         return str(self.theme)
+#
+#     class Meta:
+#         verbose_name = "Dars jadvali"
+#         verbose_name_plural = "Dars jadvallari"
+#         ordering = ['sort']
 
 
 def path_and_rename(instance, filename):

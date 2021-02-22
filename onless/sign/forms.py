@@ -3,11 +3,6 @@ from django import forms
 from sign.models import *
 
 
-class AddScheduleForm(forms.ModelForm):
-    class Meta:
-        model = Schedule
-        fields = ( 'date', 'subject', 'theme',)
-        exclude = ['',]
 
 
 # class AddSubjectForm(forms.ModelForm):

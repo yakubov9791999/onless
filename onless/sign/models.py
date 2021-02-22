@@ -47,10 +47,10 @@ class Subject(models.Model):
 
 class Theme(models.Model):
     title = models.TextField(verbose_name='Nomi',)
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_theme',null=True, blank=True,default=6)
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='subject_theme',null=True, blank=True)
     sort = models.SmallIntegerField(verbose_name='Tartibi',default=1)
     theme_order = models.CharField(verbose_name='Mavzu tartibi',null=True, blank=True, max_length=5)
-    category = models.ForeignKey(EducationCategory,related_name='category_theme', on_delete=models.SET_NULL, null=True, default=2)
+    category = models.ForeignKey(EducationCategory,related_name='category_theme', on_delete=models.SET_NULL, null=True)
     created_date = models.DateTimeField(default=timezone.now, editable=False)
     lesson_time = models.SmallIntegerField(default=2)
     is_active = models.BooleanField(default=True)

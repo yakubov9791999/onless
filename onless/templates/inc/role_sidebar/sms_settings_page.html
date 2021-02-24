@@ -1,11 +1,11 @@
 <li class="nav-item has-treeview">
     {% if request.user.role == '2' %}
-        <a href="{% url 'user:send_sms' %}"
-           class="nav-link {% if request.resolver_match.url_name == 'send_sms' %}active{% endif %}">
+        <a href="{% url 'user:sms_settings' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'sms_settings' %}active{% endif %}">
      {% endif %}
-    &nbsp;<i class="fas fa-sms"></i>&nbsp;&nbsp;&nbsp;
+    &nbsp;<i class="fas fa-cogs"></i>&nbsp;&nbsp;&nbsp;
     <p>
-            &nbsp;SMS jo'natish
+            SMS sozlamalar
     </p>
     </a>
 </li>

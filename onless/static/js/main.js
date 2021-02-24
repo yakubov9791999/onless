@@ -296,3 +296,11 @@ function parseDate(value) {
 }
 
 var dateReg = /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[012])[./-]\d{4}$/
+
+$('.datepicker_icon').on('click', function () {
+    $('.datepicker').datepicker('show')
+})
+
+$('.datepicker').on('keypress', function (e) {
+    return false
+})

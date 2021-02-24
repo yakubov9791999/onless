@@ -55,7 +55,7 @@
                         </tr>
                         <tr style="background-color: #faf7f7">
                             <th style="width: 2%; text-align: center">№</th>
-                            <th style="width: 8%; text-align: center">Sana</th>
+                            <th style="width: 12%; text-align: center">Sana</th>
                             <th style="width: 6%; text-align: center">Fan</th>
                             <th style="width: 4%; text-align: center">Soati</th>
                             <th style="width: 4%; text-align: center">Tartibi</th>
@@ -74,9 +74,16 @@
                                     <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
                                         style="vertical-align: revert;">{{ forloop.counter }}</td>
                                     <td class="text-center" style="vertical-align: revert;">
-                                        <input data-forloop="{{ forloop.counter }}"
-                                               {% if check_schedule %}disabled{% endif %} style="float:left;"
-                                               class="form-control datepicker" type="text"/>
+                                        <div class="input-group mb-2">
+                                            <input data-forloop="{{ forloop.counter }}"
+                                                   {% if check_schedule %}disabled{% endif %} style="float:left;"
+                                                   type="text" class="form-control datepicker"/>
+                                            <div class="input-group-prepend datepicker_icon">
+                                                <div class="input-group-text"><i class="fa fa-calendar"
+                                                                                 aria-hidden="true"></i></div>
+                                            </div>
+                                        </div>
+
                                     </td>
                                     <td style="vertical-align: revert;">
                                         {% if theme.subject %}{{ theme.subject }}{% else %}{% endif %}</td>

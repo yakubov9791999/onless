@@ -53,7 +53,7 @@
 {#                    </div>#}
                     <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Smslar soni: <span
                             class="ml-2">{% if request.user.school.sms_count %}
-                        {{ request.user.school.sms_count }}{% else %}0{% endif %}</span>
+                        {{ request.user.school.sms_count }} ta{% else %}0 ta{% endif %}</span>
                     </div>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" style="color: blue" href="{% url 'user:sms_settings' %}"><i

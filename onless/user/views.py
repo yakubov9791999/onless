@@ -998,7 +998,7 @@ def set_pay(request):
                             school.sms_count = school.sms_count - 2
                             school.save()
 
-                            msg = f"Hurmatli {pupil.name}! Bugun avtomaktabga {request.GET['pay']} so'm to'lov qildingiz! Jami to'lovingiz {payment} so'm. Toifa bo'yicha {pupil.group.price - payment} so'm qarzdorligingiz qoldi!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                            msg = f"Hurmatli {pupil.name}! Avtomaktabga {request.GET['pay']} so’m to’lov qildingiz! Jami to’lovingiz {payment} so’m. Toifa bo’yicha {pupil.group.price - payment} so’m qarzdorligingiz qoldi!%0aSavollar bo’lsa:%0a{school.phone}"
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
                             response = requests.get(url)

@@ -197,7 +197,7 @@ def add_pupil(request):
                             school.sms_count = school.sms_count - 2
                             school.save()
                             user.save()
-                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
                             response = requests.get(url)
@@ -798,7 +798,7 @@ def upload_file(request):
                                     school.sms_count = school.sms_count - 2
                                     school.save()
                                     user.save()
-                                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
                                     msg = msg.replace(" ", "+")
                                     url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                                     response = requests.get(url)

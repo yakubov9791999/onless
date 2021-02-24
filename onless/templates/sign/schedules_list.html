@@ -2,13 +2,6 @@
 {% load static %}
 {% load sign_tags %}
 {% block content %}
-    <style>
-        .datepicker, #starttimepicker, #stoptimepicker:hover {
-            cursor: pointer;
-        }
-
-
-    </style>
     <div class="row" style="margin: auto">
         <!-- left column -->
         <div class="col-12" style="margin: auto">
@@ -78,7 +71,8 @@
                                             <input data-forloop="{{ forloop.counter }}"
                                                    {% if check_schedule %}disabled{% endif %} style="float:left;"
                                                    type="text" class="form-control datepicker"/>
-                                            <div class="input-group-prepend datepicker_icon">
+                                            <div class="input-group-prepend datepicker_icon"
+                                                 data-forloop="{{ forloop.counter }}">
                                                 <div class="input-group-text"><i class="fa fa-calendar"
                                                                                  aria-hidden="true"></i></div>
                                             </div>
@@ -143,6 +137,16 @@
 {% block bottom %}
     <script>
         $(document).ready(function () {
+
+
+            $('.datepicker_icon').on('click', function () {
+                var forloop = $(this).data('forloop')
+                $('.datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).datepicker('show')
+                    }
+                })
+            })
 
             $('#group').on('change', function () {
                 if (!$.isNumeric($("#group").children("option:selected").val())) {

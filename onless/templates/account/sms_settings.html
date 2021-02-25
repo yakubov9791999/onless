@@ -5,7 +5,8 @@
 
         <!-- left column -->
         <div class="col-12" style="margin: auto">
-        <div class="alert alert-danger text-center"><b>DIQQAT! To'lov tizimlari ishlari yakunlanmagani sababli, 972800809, 906366264 raqamlariga qo'ng'iroq qilib sms xarid qilishingiz mumkin!</b></div>
+            <div class="alert alert-danger text-center"><b>DIQQAT! To'lov tizimlari ishlari yakunlanmagani sababli,
+                972800809, 906366264 raqamlariga qo'ng'iroq qilib sms xarid qilishingiz mumkin!</b></div>
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -36,22 +37,22 @@
                             </form>
                         </div>
 
-{#                        <div class="col-4">#}
-{#                            <!-- small box -->#}
-{#                            <div class="small-box bg-gradient-navy">#}
-{#                                <div class="inner">#}
-{#                                    <h3>{{ request.user.school.add_pupil_sms_count }} ta</h3>#}
-{##}
-{#                                    <p>Kiritish sms: 10 000 so'm</p>#}
-{##}
-{#                                </div>#}
-{#                                <div class="icon">#}
-{#                                    <i class="fas fa-users"></i>#}
-{#                                </div>#}
-{#                                <a href="#" class="small-box-footer btn">Kiritish sms olish <i#}
-{#                                        class="fas fa-arrow-circle-right"></i></a>#}
-{#                            </div>#}
-{#                        </div>#}
+                        {#                        <div class="col-4">#}
+                        {#                            <!-- small box -->#}
+                        {#                            <div class="small-box bg-gradient-navy">#}
+                        {#                                <div class="inner">#}
+                        {#                                    <h3>{{ request.user.school.add_pupil_sms_count }} ta</h3>#}
+                        {##}
+                        {#                                    <p>Kiritish sms: 10 000 so'm</p>#}
+                        {##}
+                        {#                                </div>#}
+                        {#                                <div class="icon">#}
+                        {#                                    <i class="fas fa-users"></i>#}
+                        {#                                </div>#}
+                        {#                                <a href="#" class="small-box-footer btn">Kiritish sms olish <i#}
+                        {#                                        class="fas fa-arrow-circle-right"></i></a>#}
+                        {#                            </div>#}
+                        {#                        </div>#}
 
                         <div class="col-6">
                             <!-- small box -->
@@ -85,14 +86,15 @@
                                     O'quvchi qo'shishda sms jo'natish
                                     <label class="switch float-right">
                                         <input type="checkbox" id="checkbox_add_pupil" class="checkbox"
-                                              {% if request.user.school.send_sms_add_pupil %}checked{% endif %}><span
-                                            class="slider round" ></span>
+                                               {% if request.user.school.send_sms_add_pupil %}checked{% endif %}><span
+                                            class="slider round"></span>
                                     </label>
                                 </div>
-                                <div class="card-body text-sm" id="add_pupil_text" style="display: {% if request.user.school.send_sms_add_pupil %}block{% else %}none{% endif %}">
+                                <div class="card-body text-sm" id="add_pupil_text"
+                                     style="display: {% if request.user.school.send_sms_add_pupil %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Kiritish sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Kiritish sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">210 tadan - 240 tagacha
                                         </dd>
@@ -102,7 +104,10 @@
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
                                         <dd class="col-sm-8">2 ta</dd>
                                         <dt class="col-sm-4">Sms matni</dt>
-                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich! Siz B-1 guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. Login: AB3870293 Parol: 3749044
+                                        <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
+                                            Siz B-1 guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va
+                                            imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga
+                                            kiring. Login: AB3870293 Parol: 3749044
                                             Qo'shimcha ma'lumot uchun: 919791999</p>
                                         </dd>
                                     </dl>
@@ -125,8 +130,8 @@
                                 <div class="card-body text-sm" id="edit_pupil_text"
                                      style="display: {% if request.user.school.send_sms_edit_pupil %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">160 tadan - 200 tagacha
                                         </dd>
@@ -161,8 +166,8 @@
                                 <div class="card-body text-sm" id="add_worker_text"
                                      style="display: {% if request.user.school.send_sms_add_worker %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">205 tadan - 240 tagacha</dd>
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
@@ -192,8 +197,8 @@
                                 <div class="card-body text-sm" id="edit_worker_text"
                                      style="display: {% if request.user.school.send_sms_edit_worker %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">160 tadan - 200 tagacha</dd>
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
@@ -224,8 +229,8 @@
                                 <div class="card-body text-sm" id="attendance_text"
                                      style="display: {% if request.user.school.send_sms_attendance %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">160 tadan - 190 tagacha</dd>
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
@@ -256,8 +261,8 @@
                                 <div class="card-body text-sm" id="rating_text"
                                      style="display: {% if request.user.school.send_sms_rating %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">90 tadan - 120 tagacha</dd>
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
@@ -287,8 +292,8 @@
                                 <div class="card-body text-sm" id="payment_text"
                                      style="display: {% if request.user.school.send_sms_payment %}block{% else %}none{% endif %}">
                                     <dl class="row mb-0">
-{#                                        <dt class="col-sm-4">Sms turi</dt>#}
-{#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
+                                        {#                                        <dt class="col-sm-4">Sms turi</dt>#}
+                                        {#                                        <dd class="col-sm-8">Oddiy sms</dd>#}
                                         <dt class="col-sm-4">Belgilar soni</dt>
                                         <dd class="col-sm-8">160 tadan - 190 tagacha</dd>
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
@@ -296,7 +301,8 @@
                                         <dt class="col-sm-4">Sms matni</dt>
                                         <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
                                             Avtomaktabga 200 000 so'm to'lov qildingiz! Jami to'lovingiz 1 700 000
-                                            so'm. Toifa bo'yicha 300 000 so'm qarzdorligingiz qoldi! Savollar bo'lsa: 919791999</p>
+                                            so'm. Toifa bo'yicha 300 000 so'm qarzdorligingiz qoldi! Savollar bo'lsa:
+                                            919791999</p>
                                         </dd>
                                     </dl>
                                 </div>
@@ -317,13 +323,55 @@
 
     <script>
         $(document).ready(function () {
-            var addPupil = false,
-                editPupil = false,
-                attendancePupil = false,
-                paymentPupil = false,
-                ratingPupil = false,
-                addWorker = false,
-                editWorker = false
+            var addPupil = '{{ request.user.school.send_sms_add_pupil }}',
+                editPupil = '{{ request.user.school.send_sms_edit_pupil  }}',
+                attendancePupil = '{{ request.user.school.send_sms_attendance  }}',
+                paymentPupil = '{{ request.user.school.send_sms_payment  }}',
+                ratingPupil = '{{ request.user.school.send_sms_rating  }}',
+                addWorker = '{{ request.user.school.send_add_worker }}',
+                editWorker = '{{ request.user.school.send_sms_edit_worker }}'
+
+                if (addPupil === 'True') {
+                    addPupil = true
+                }else{
+                    addPupil = false
+                }
+
+                if (editPupil === 'True') {
+                    editPupil = true
+                }else{
+                    editPupil = false
+                }
+
+                if (attendancePupil === 'True') {
+                    attendancePupil = true
+                }else{
+                    attendancePupil = false
+                }
+
+                if (paymentPupil === 'True') {
+                    paymentPupil = true
+                }else{
+                    paymentPupil = false
+                }
+
+                if (ratingPupil === 'True') {
+                    ratingPupil = true
+                }else{
+                    ratingPupil = false
+                }
+
+                if (addWorker === 'True') {
+                    addWorker = true
+                }else{
+                    addWorker = false
+                }
+
+                 if (editWorker === 'True') {
+                    editWorker = true
+                }else{
+                    editWorker = false
+                }
 
 
             $('#checkbox_add_pupil').on('change', function () {
@@ -401,7 +449,6 @@
                 }
             })
             $('.checkbox').on('change', function () {
-
                 $.ajax({
                     type: "POST",
                     url: '{% url "user:modify_checkbox_send_sms" %}',

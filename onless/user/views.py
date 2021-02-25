@@ -1898,6 +1898,7 @@ def sms_settings(request):
 def modify_checkbox_send_sms(request):
     if request.user.role == '2':
         if request.method == 'POST':
+            print(request.POST)
             school = get_object_or_404(School, id=request.user.school.id)
             addPupil = request.POST.get('addPupil')
             editPupil = request.POST.get('editPupil')

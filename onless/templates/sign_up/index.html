@@ -41,13 +41,13 @@
                     etmoqchi bo'lsangiz, quyidagi formani to'ldiring. Bizning mutaxasislarimiz tez orada siz bilan
                     bog'lanishadi .</p>
                 <p class="mbr-text pb-3 mbr-fonts-style display-5">Agarda siz tizimdan ro'yhatdan o'tgan bo'lsangiz</p>
-                <a href="{% url 'video:kirish' %}" class="btn btn-primary">Tizimga kirish</a>
+                <a href="{% url 'landing:kirish' %}" class="btn btn-primary">Tizimga kirish</a>
             </div>
             <div class="col-lg-4 col-md-5">
                 <div class="form-container">
                     <div class="media-container-column" data-form-type="formoid">
                         <!---Formbuilder Form--->
-                        <form action="{% url 'video:sign_up' %}" method="post" class="mbr-form form-with-styler">
+                        <form action="{% url 'landing:sign_up' %}" method="post" class="mbr-form form-with-styler">
                             {% csrf_token %}
 
                             {#                                <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Спасибо за заполнение анкеты!</div>#}

@@ -23,8 +23,8 @@ from django.views.static import serve
 from paycom.views import TestView
 
 urlpatterns = [
-                  path('bugun/', admin.site.urls),
-                  path('', include('video.urls')),
+                  path('bahor/', admin.site.urls),
+                  path('', include('landing.urls')),
                   path('sign/', include('sign.urls')),
                   path('user/', include('user.urls')),
                   path('quiz/', include('quiz.urls')),

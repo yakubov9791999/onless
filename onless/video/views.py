@@ -12,78 +12,7 @@ from video.models import *
 from video.forms import *
 
 
-def landing_page(request):
-    return render(request, 'landing/index.html')
 
-
-def sign_up(request):
-    regions = Region.objects.all()
-    context = {
-        'regions': regions
-    }
-
-    if request.POST:
-        form = SignUpSchoolForm(request.POST)
-        viloyat = Region.objects.get(id=request.POST.get('viloyat'))
-        if form.is_valid():
-            if request.POST['select'] == '1':
-                form = form.save(commit=False)
-                form.viloyat = viloyat
-                form.select = True
-                form.save()
-            elif request.POST['select'] == '0':
-                form = form.save(commit=False)
-                form.viloyat = viloyat
-                form.select = False
-                form.save()
-            messages.success(request, 'Muvaffaqiyatli yuborildi !')
-    return render(request, 'sign_up/index.html', context)
-
-
-@login_required
-def home(request):
-    if request.user.role == "4" and request.user.school.is_block == False:  # agarda role o'quvchi  bo'lsa
-        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(reverse_lazy('user:edit_profil'))
-        else:
-            return redirect(reverse_lazy("user:result", kwargs={'id': request.user.id}))
-
-
-    elif request.user.role == "1":  # agarda role inspeksiya bo'lsa
-        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(reverse_lazy('user:edit_profil'))
-        else:
-            schools = School.objects.filter(Q(region=request.user.school.region)& Q(is_active=True)).exclude(id=request.user.school.id)
-            return render(request, 'user/inspection/schools_list.html', {
-                'schools': schools,
-            })
-
-    elif request.user.role == "3" and request.user.school.is_block == False:  # agarda role o'qituvchi  bo'lsa
-        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(reverse_lazy('user:edit_profil'))
-        else:
-            return redirect(reverse_lazy("user:result", kwargs={'id': request.user.id}))
-
-
-    elif request.user.role == "2" and request.user.school.is_block == False:  # agarda role Direktor  bo'lsa
-        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(reverse_lazy('user:edit_profil'))
-        else:
-            return redirect(reverse_lazy("user:result", kwargs={'id': request.user.id}))
-
-    elif request.user.role == "5" and request.user.school.is_block == False:  # agarda role Bugalter  bo'lsa
-        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(reverse_lazy('user:edit_profil'))
-        else:
-            return redirect(reverse_lazy('user:bugalter_groups_list'))
-
-    elif request.user.role == "6" and request.user.school.is_block == False:  # agarda role Instructor  bo'lsa
-        if request.user.avatar == '' and request.user.birthday == '' and request.user.gender == '':
-            return redirect(reverse_lazy('user:edit_profil'))
-        else:
-            return redirect(reverse_lazy("user:result", kwargs={'id': request.user.id}))
-    else:
-        return render(request, 'inc/block.html')
 
 
 @login_required
@@ -211,5 +140,3 @@ def myvideos_list(request):
 # def show_categories(request):
 #     return render(request, 'inc/breadcumb.html', {'categories': Category.objects.all()})
 
-def kirish(request):
-    return HttpResponseRedirect(reverse('account_login'))  # or http response

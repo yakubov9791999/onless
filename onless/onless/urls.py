@@ -25,6 +25,7 @@ from paycom.views import TestView
 urlpatterns = [
                   path('bahor/', admin.site.urls),
                   path('', include('landing.urls')),
+                  path('video/', include('video.urls')),
                   path('sign/', include('sign.urls')),
                   path('user/', include('user.urls')),
                   path('quiz/', include('quiz.urls')),

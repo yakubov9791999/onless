@@ -51,7 +51,7 @@ def user_login(request):
             # if user.is_active and user.school.is_block == False:
             if user.is_active:
                 login(request, user)
-                return redirect(reverse_lazy('video:home'))
+                return redirect(reverse_lazy('landing:home'))
             else:
                 messages.error(request, 'Siz bloklangansiz !')
                 return HttpResponseRedirect('/accounts/login/')

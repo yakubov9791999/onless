@@ -764,7 +764,7 @@ def upload_file(request):
                     messages.error(request, f"Excel fayldagi {row + 1}-ustunda ism kiritilmagan ! ")
                     break
 
-                if school.add_pupil_sms_count == 0:
+                if school.sms_count == 0:
                     messages.error(request,
                                    "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
                     return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
@@ -848,8 +848,8 @@ def upload_file(request):
                             user.username = pasport
                             user.email = ''
 
-                            if school.add_pupil_sms_count > 0:
-                                school.add_pupil_sms_count = school.add_pupil_sms_count - 1
+                            if school.sms_count > 0:
+                                school.sms_count = school.sms_count - 2
                                 school.save()
                                 user.save()
                                 messages.success(request,

@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'practical',
     'payments',
     'click',
+    'rest_framework',
+    'paycomuz',
+    'paycom',
+    'landing',
 
 ]
 
@@ -99,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 
-PAYMENT_HOST = '81.177.139.231:8000'
+PAYMENT_HOST = '81.177.139.231:443'
 PAYMENT_USES_SSL = True  # set the True value if you are using the SSL
 PAYMENT_MODEL = 'user.Payment'
 # payment model format like this :: '<app_name>.<model_name>'
@@ -144,3 +148,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 LOGIN_REDIRECT_URL = '/home/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+PAYCOM_SETTINGS = {
+    "PAYCOM_ENV": False,  # test host
+    "TOKEN": "token",  # token
+    "SECRET_KEY": "password",  # password
+    "ACCOUNTS": {
+        "KEY_1": "order_id",
+        "KEY_2": None  # or "type"
+    }
+}

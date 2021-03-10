@@ -3,8 +3,9 @@ from django.views.decorators.csrf import csrf_exempt
 from . import utils
 from . import Services
 
-@csrf_exempt
+# @csrf_exempt
 def prepare(request):
+    print(request.POST)
     return utils.prepare(request)
 
 @csrf_exempt

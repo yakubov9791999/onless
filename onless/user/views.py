@@ -51,7 +51,7 @@ def user_login(request):
             # if user.is_active and user.school.is_block == False:
             if user.is_active:
                 login(request, user)
-                return redirect(reverse_lazy('video:home'))
+                return redirect(reverse_lazy('landing:home'))
             else:
                 messages.error(request, 'Siz bloklangansiz !')
                 return HttpResponseRedirect('/accounts/login/')
@@ -197,7 +197,7 @@ def add_pupil(request):
                             school.sms_count = school.sms_count - 2
                             school.save()
                             user.save()
-                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
                             response = requests.get(url)
@@ -798,7 +798,7 @@ def upload_file(request):
                                     school.sms_count = school.sms_count - 2
                                     school.save()
                                     user.save()
-                                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga onlayn o'qish rejimida qabul qilindingiz. Darslarga qatnashish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
+                                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
                                     msg = msg.replace(" ", "+")
                                     url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
                                     response = requests.get(url)
@@ -998,7 +998,7 @@ def set_pay(request):
                             school.sms_count = school.sms_count - 2
                             school.save()
 
-                            msg = f"Hurmatli {pupil.name}! Bugun avtomaktabga {request.GET['pay']} so'm to'lov qildingiz! Jami to'lovingiz {payment} so'm. Toifa bo'yicha {pupil.group.price - payment} so'm qarzdorligingiz qoldi!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                            msg = f"Hurmatli {pupil.name}! Avtomaktabga {request.GET['pay']} so’m to’lov qildingiz! Jami to’lovingiz {payment} so’m. Toifa bo’yicha {pupil.group.price - payment} so’m qarzdorligingiz qoldi!%0aSavollar bo’lsa:%0a{school.phone}"
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
                             response = requests.get(url)
@@ -1786,7 +1786,7 @@ def electronical_journal(request):
         days = []
         weekdays = [6]
 
-        for dt in daterange(firstdayofmonth.date(), lastdayofmonth.date()):
+        for dt in daterange(firstdayofmonth.date(), lastdayofmonth):
             if dt.weekday() not in weekdays:  # to print only the weekdates
                 days.append(dt.strftime("%d.%m.%Y"))
         # guruh o'quv kunlarini olishni oxiri
@@ -1898,6 +1898,7 @@ def sms_settings(request):
 def modify_checkbox_send_sms(request):
     if request.user.role == '2':
         if request.method == 'POST':
+            print(request.POST)
             school = get_object_or_404(School, id=request.user.school.id)
             addPupil = request.POST.get('addPupil')
             editPupil = request.POST.get('editPupil')

@@ -653,6 +653,10 @@ select:hover {
     cursor: pointer;
 }
 
+.datepicker, .datepicker_icon:hover {
+    cursor: pointer;
+}
+
 /*@media screen and (max-width: 78em) {*/
 /*    #account_settings_dropdown {*/
 /*        font-size: smaller;*/

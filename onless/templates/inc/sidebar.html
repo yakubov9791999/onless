@@ -50,7 +50,8 @@
                 {% elif user.is_authenticated and request.user.role == '2' %}
                     {#                                        {% include 'inc/role_sidebar/messeges_page.html' %}#}
                     {% include 'inc/role_sidebar/videos_page.html' %}
-                    {% include 'inc/role_sidebar/send_sms.html' %}
+                    {% include 'inc/role_sidebar/send_sms_page.html' %}
+                    {% include 'inc/role_sidebar/sms_settings_page.html' %}
                     {% include 'inc/role_sidebar/results_page.html' %}
                     {% include 'inc/role_sidebar/workers_page.html' %}
                     {% include 'inc/role_sidebar/groups_page.html' %}

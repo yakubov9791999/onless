@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django import template
 from django.shortcuts import get_object_or_404
 
@@ -34,3 +36,25 @@ def count_schedules(school_id):
 @register.filter
 def view_sign(queryset):
     return queryset.order_by('sort')
+
+@register.filter
+def daterange(start_date, end_date):
+    start_date = datetime.date.today()
+    end_date = start_date + datetime.timedelta(days=5)
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)
+
+@register.simple_tag()
+def check_schedule_disable_or_enable(group_id,theme_id):
+    group = get_object_or_404(Group, id=group_id)
+    theme = get_object_or_404(Theme, id=theme_id)
+
+    if theme.theme_order == None:
+        schedule = Schedule.objects.filter(group=group,  theme=theme, sort=theme.sort)
+    else:
+        schedule = Schedule.objects.filter(group=group,  theme=theme, sort=theme.sort, theme_order=theme.theme_order)
+
+    if schedule.exists():
+        return True
+    else:
+        return False

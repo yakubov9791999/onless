@@ -39,7 +39,7 @@ from calendar import month_name
 
 #
 from .utils import render_to_pdf
-
+from docxtpl import DocxTemplate
 
 def user_login(request):
     if request.method == 'POST':
@@ -190,6 +190,35 @@ def add_pupil(request):
                         get_date = request.POST.get('birthday').split('.')
                         birthday = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
                         user.birthday = birthday
+
+                    # Hujjatlar uchun qo'shimcha ma'lumotlar
+                    
+                    # if request.POST['place_of_birth']:
+                    #     place_of_birth = request.POST.get('place_of_birth')
+                    #     user.place_of_birth = place_of_birth
+                    # if request.POST['residence_address']:
+                    #     residence_address = request.POST.get('residence_address')
+                    #     user.residence_address = residence_address
+                    # if request.POST['passport_issued_time']:
+                    #     passport_issued_time = request.POST.get('passport_issued_time')
+                    #     user.passport_issued_time = passport_issued_time
+                    # if request.POST['passport_issued_organization']:
+                    #     passport_issued_organization = request.POST.get('passport_issued_organization')
+                    #     user.passport_issued_organization = passport_issued_organization
+
+                    # if request.POST['medical_series']:
+                    #     medical_series = request.POST.get('medical_series')
+                    #     user.medical_series = medical_series
+                    # if request.POST['medical_issued_organization']:
+                    #     medical_issued_organization = request.POST.get('medical_issued_organization')
+                    #     user.medical_issued_organization = medical_issued_organization
+                    # if request.POST['certificate_series']:
+                    #     certificate_series = request.POST.get('certificate_series')
+                    #     user.certificate_series = certificate_series
+                    # if request.POST['certificate_number']:
+                    #     certificate_number = request.POST.get('certificate_number')
+                    #     user.certificate_number = certificate_number
+
                     user.email = ''
 
                     if school.send_sms_add_pupil:
@@ -1974,3 +2003,43 @@ def payment_payme(request):
         r = requests.post(url=URL, headers=headers, data=params)
         print(r.text)
         return HttpResponse(r.text)
+
+
+@login_required
+def personal_exam_doc_generate(request, id):
+    user = get_object_or_404(User, id=id)
+  
+
+    context = {}
+    
+    doc = DocxTemplate(f"static{os.sep}docs{os.sep}personal_exam.docx")
+    passport_issued_time = dt.strptime(str(user.passport_issued_time), "%Y-%m-%d").strftime("%d.%m.%Y")
+    medical_issued_date = dt.strptime(str(user.medical_issued_date), "%Y-%m-%d").strftime("%d.%m.%Y")
+    birthday = dt.strptime(str(user.birthday), "%Y-%m-%d").strftime("%d.%m.%Y")
+  
+    context.update(
+        name=user.name,
+        birthday=birthday,
+        place_of_birth=user.place_of_birth,
+        residence_address=user.residence_address,
+        pass_seriya=user.pasport,
+        passport_issued_time=passport_issued_time,
+        passport_issued_organization=user.passport_issued_organization,
+        medical_series=user.medical_series,
+        medical_issued_organization=user.medical_issued_organization,
+        school=user.school,
+        certificate_series=user.certificate_series,
+        certificate_number = user.certificate_number,
+        medical_issued_date=medical_issued_date
+
+        )
+
+
+    doc.render(context)
+    response = HttpResponse(doc, content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    filename = f"{user.name} - imtihon varaqa.docx"
+    content = "attachment; filename=%s" % (filename)
+    response['Content-Disposition'] = content
+    doc.save(response)
+    return response
+

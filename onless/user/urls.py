@@ -62,5 +62,6 @@ urlpatterns = [
 
     path('modify-checkbox-send-sms/', modify_checkbox_send_sms, name='modify_checkbox_send_sms'),
     path('payment-payme/', payment_payme, name='payment_payme'),
+    path('personal-exam-doc-generate/<int:id>/', personal_exam_doc_generate, name='personal_exam_doc_generate'),
 
 ]

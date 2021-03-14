@@ -136,10 +136,19 @@ class EditPupilForm(ModelForm):
     turbo = forms.CharField(label='Parol', widget=forms.TextInput(attrs={'class': 'form-control'}))
     pasport = forms.CharField(label='Pasport', widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'pasport'}))
     group = forms.ModelChoiceField(label='Guruh',queryset=Group.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    place_of_birth = forms.CharField(label='Tug\'ilgan joyi)',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Masalan: Samarqand v. Urgut t.','id': 'place_of_birth'}))
+    residence_address = forms.CharField(label='Yashash manzili (Propiska bo\'yicha)', required=False,  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: Alpomish MFY Fayzobod 1A 53/26 ', 'id': 'residence_address', 'required': False,}))
+    passport_issued_time = forms.CharField(label='Amal qilish muddati (fuqarolik pasporti)',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'date','id': 'passport_issued_time', 'required': False,}))
+    passport_issued_organization = forms.CharField(label='Kim tomonidan berilgan (fuqarolik pasporti)',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: Buxoro viloyati Kogon tumani IIB','required': False, 'id': 'passport_issued_organization'}))
+    medical_series = forms.CharField(label='Tibbiy ma\'lumotnoma seriyasi (0.83 med spravka)',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: 00859545','required': False, 'id': 'medical_series'}))
+    medical_issued_organization = forms.CharField(label='Tibbiy ma\'lumotnoma bergan tashkilot (poliklinika)',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: Yunusobod tuman poliklinikasi','required': False, 'id': 'medical_issued_organization'}))
+    medical_issued_date = forms.CharField(label='Tibbiy ma\'lumotnoma berilgan sana',  required=False, widget=forms.TextInput(attrs={'class': 'form-control','type':'date','required': False, 'id': 'medical_issued_organization'}))
+    certificate_series = forms.CharField(label='Guvohnoma seriyasi',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: 10 AA','required': False, 'id': 'certificate_series'}))
+    certificate_number = forms.CharField(label='Guvohnoma raqami',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: 316561','required': False, 'id': 'certificate_number'}))
 
     class Meta:
         model = User
-        fields = ('name', 'pasport','group', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo')
+        fields = ('name', 'pasport','group', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo', 'place_of_birth', 'residence_address', 'passport_issued_time', 'passport_issued_organization', 'medical_series', 'medical_issued_organization', 'certificate_series','certificate_number', 'medical_issued_date')
 
 class EditWorkerForm(ModelForm):
     name = forms.CharField(label='F.I.O', widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -156,6 +165,7 @@ class EditWorkerForm(ModelForm):
                                widget=forms.Select(attrs={'class': 'form-control'}))
     turbo = forms.CharField(label='Parol', widget=forms.TextInput(attrs={'class': 'form-control'}))
     pasport = forms.CharField(label='Pasport', widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'pasport'}))
+
 
     class Meta:
         model = User

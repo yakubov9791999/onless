@@ -55,6 +55,7 @@
                                 <th>Parol</th>
                                 <th>O'zlashtirish</th>
                                 <th>An'anaviy ta'lim</th>
+                                <th>Hujjatlarni yaratish</th>
                                 {% if request.user.role == '2' or request.user.role == '3' %}
                                     <th style="width: 4%">
                                         Tahrirlash/O'chirish
@@ -105,6 +106,8 @@
                                                 class="slider round"></span>
                                         </label>
                                     </td>
+
+                                          <td>  {% if request.user.role == '2' and pupil.place_of_birth != None and pupil.residence_address != None and pupil.passport_issued_time != None and pupil.passport_issued_organization != None  and pupil.medical_series != None and pupil.medical_issued_organization != None and pupil.certificate_series != None and pupil.certificate_number != None and pupil.medical_issued_date != None and pupil.passport_issued_time != None  %}<a href="{% url 'user:personal_exam_doc_generate' pupil.id %} ">Imtihon varaqasi {% else %}Ma'lumotlar to'ldirilmagan{% endif %}</a></td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
                                             &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}">

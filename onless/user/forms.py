@@ -128,7 +128,9 @@ class EditPupilForm(ModelForm):
     district = forms.ModelChoiceField(label="Tuman/Shahar", queryset=District.objects.all(),
                                       widget=forms.Select(
                                           attrs={'class': 'form-control', 'id': 'district', 'required': 'required'}))
-    birthday = forms.DateField(label="Tug'ilgan kun", widget=forms.DateInput(attrs={'class': 'form-control'}))
+
+    birthday = forms.CharField(label='Tug\'ilgan vaqti',  required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'date','id': 'birthday', 'required': False,}))
+
     phone = forms.IntegerField(label='Tel raqam',
                                widget=forms.NumberInput(attrs={'class': 'form-control', 'max': '999999999','id': 'phone' }))
     gender = forms.ChoiceField(label='Jinsi', choices=GENDER_CHOICES,

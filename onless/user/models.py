@@ -207,11 +207,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     place_of_birth = models.CharField("Tug'ilgan joyi",max_length=255, blank=True, null=True)
     residence_address = models.CharField("Yashash manzili",max_length=255, blank=True, null=True)
-    passport_issued_time = models.DateField("Pasport berilgan vaqti",max_length=255, blank=True, null=True)
+    passport_issued_time = models.DateField("Pasport berilgan vaqti",max_length=255, blank=True, null=True, default=datetime.date.today)
     passport_issued_organization = models.CharField("Pasport bergan tashkilot",max_length=255, blank=True, null=True)
     medical_series = models.CharField("Tibbiy ma'lumotnoma seriyasi",max_length=255, blank=True, null=True)
     medical_issued_organization = models.CharField("Tibbiy ma'lumotnoma bergan poliklinika",max_length=255, blank=True, null=True)
-    medical_issued_date = models.DateField("Tibbiy ma'lumotnoma berilgan sana",max_length=255, blank=True, null=True)
+    medical_issued_date = models.DateField("Tibbiy ma'lumotnoma berilgan sana",max_length=255, blank=True, null=True, default=datetime.date.today)
     
     certificate_series = models.CharField("Guvohnoma seriyasi",max_length=255, blank=True, null=True)
     certificate_number = models.CharField("Guvohnoma raqami", max_length=255, blank=True, null=True)

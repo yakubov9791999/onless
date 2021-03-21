@@ -148,7 +148,7 @@ class EditPupilForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('name', 'pasport','group', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo', 'place_of_birth', 'residence_address', 'passport_issued_time', 'passport_issued_organization', 'medical_series', 'medical_issued_organization', 'certificate_series','certificate_number', 'medical_issued_date')
+        fields = ('name', 'pasport','group', 'region', 'district', 'birthday', 'phone', 'gender', 'turbo', 'place_of_birth', 'residence_address', 'passport_issued_time', 'passport_issued_organization', 'medical_series', 'medical_issued_organization', 'medical_issued_date','certificate_number', 'certificate_series')
 
 class EditWorkerForm(ModelForm):
     name = forms.CharField(label='F.I.O', widget=forms.TextInput(attrs={'class': 'form-control'}))

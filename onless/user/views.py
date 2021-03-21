@@ -2012,7 +2012,7 @@ def personal_exam_doc_generate(request, id):
 
     context = {}
     
-    doc = DocxTemplate(f"static{os.sep}docs{os.sep}personal_exam.docx")
+    doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam.docx")
     passport_issued_time = dt.strptime(str(user.passport_issued_time), "%Y-%m-%d").strftime("%d.%m.%Y")
     medical_issued_date = dt.strptime(str(user.medical_issued_date), "%Y-%m-%d").strftime("%d.%m.%Y")
     birthday = dt.strptime(str(user.birthday), "%Y-%m-%d").strftime("%d.%m.%Y")

@@ -15,6 +15,7 @@ from django.db.models import ProtectedError, Q
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
+from django.urls import reverse_lazy
 from django.views.generic import UpdateView
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
@@ -26,6 +27,7 @@ from quiz.models import *
 from sign.models import Material
 from user.decorators import *
 
+from .decorators import get_name, get_pasport
 from .forms import *
 from user.models import User, Group, CATEGORY_CHOICES, School
 from video.views import *
@@ -793,10 +795,11 @@ def upload_file(request):
                     messages.error(request, f"Excel fayldagi {row + 1}-ustunda ism kiritilmagan ! ")
                     break
 
-                if school.sms_count == 0:
-                    messages.error(request,
-                                   "Sizda kiritish smslar mavjud emas! O'quvchi qo'shish uchun kiritish smsidan xarid qiling!")
-                    return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
+                if school.send_sms_add_pupil:
+                    if school.sms_count == 0:
+                        messages.error(request,
+                                       "Sizda smslar mavjud emas! O'quvchi qo'shish uchun sms xarid qiling!")
+                        return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
 
                 split_phone = str((sheet.cell(row, 3).value)).split('.')
 

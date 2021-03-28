@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from ckeditor.fields import RichTextField
+from django_summernote.fields import SummernoteTextFormField, SummernoteTextField
 
 from user.decorators import get_name
 from .decorators import get_slug
@@ -120,7 +120,7 @@ class Material(models.Model):
 
 class TrafficRules(models.Model):
     title = models.CharField(verbose_name="Mavzu nomi", max_length=255)
-    text = RichTextField(verbose_name="Mavzu matni", blank=True)
+    text = SummernoteTextField(verbose_name="Mavzu matni", blank=True)
     pub_date = models.DateTimeField(auto_now_add=True)
     sort = models.IntegerField(default=0, blank=True, null=True)
 

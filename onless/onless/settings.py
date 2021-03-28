@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'paycomuz',
     'paycom',
     'landing',
-    'tinymce',
+    'ckeditor',
 
 ]
 
@@ -159,3 +159,11 @@ PAYCOM_SETTINGS = {
         "KEY_2": None  # or "type"
     }
 }
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+#This ensures you have all toolbar icons
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': None, 
+        },
+    }

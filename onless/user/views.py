@@ -2067,7 +2067,7 @@ def personal_exam_doc_generate(request, id):
 
 
     doc.render(context)
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response = HttpResponse()
     filename = f"{user.name} - imtihon varaqa.docx"
     content = "attachment; filename=%s" % (filename)
     response['Content-Disposition'] = content

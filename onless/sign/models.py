@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from ckeditor.fields import RichTextField
 
+from ckeditor.fields import RichTextField
 
 from user.decorators import get_name
 from .decorators import get_slug

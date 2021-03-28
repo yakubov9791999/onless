@@ -34,7 +34,7 @@ urlpatterns = [
                 path('payments/', include('payments.urls')),
                 path('payments/', include('click.urls')),
                 path('paycom/', TestView.as_view()),
-                path('tinymce/', include('tinymce.urls')),
+                path('ckeditor/', include('ckeditor_uploader.urls')),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

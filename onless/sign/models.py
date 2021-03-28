@@ -118,16 +118,16 @@ class Material(models.Model):
         verbose_name_plural = "Materiallar"
 
 
-# class TrafficRules(models.Model):
-#     title = models.CharField(verbose_name="Mavzu nomi", max_length=255)
-#     text = RichTextField(verbose_name="Mavzu matni", blank=True)
-#     pub_date = models.DateTimeField(auto_now_add=True)
-#     sort = models.IntegerField(default=0, blank=True, null=True)
+class TrafficRules(models.Model):
+    title = models.CharField(verbose_name="Mavzu nomi", max_length=255)
+    text = RichTextField(verbose_name="Mavzu matni", blank=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    sort = models.IntegerField(default=0, blank=True, null=True)
 
 
-#     def __str__(self):
-#         return self.title
+    def __str__(self):
+        return self.title
 
-#     class Meta:
-#         verbose_name = "Yo'l harakati qoidasi"
-#         verbose_name_plural = "Yo'l harakati qoidalari"
+    class Meta:
+        verbose_name = "Yo'l harakati qoidasi"
+        verbose_name_plural = "Yo'l harakati qoidalari"

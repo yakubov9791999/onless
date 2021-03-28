@@ -21,6 +21,6 @@ urlpatterns = [
     path('add-material/', add_material, name='add_material'),
     path('get-video/', get_video, name='get_video'),
     path('delete-material/<int:id>/', delete_material, name='delete_material'),
-    # path("traffic_rules/", traffic_rules, name='traffic_rules'),
+    path("traffic_rules/", traffic_rules, name='traffic_rules'),
 
 ]

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'paycomuz',
     'paycom',
     'landing',
-    'ckeditor',
+    'django_summernote',
 
 ]
 

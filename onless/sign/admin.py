@@ -53,5 +53,6 @@ class MaterialAdmin(admin.ModelAdmin):
 @admin.register(TrafficRules)
 class TrafficRulesAdmin(admin.ModelAdmin):
     list_display = ('title','sort', 'pub_date')
+    summernote_fields = ('text',)
     # list_filter = ['subject','pub_date']
     save_on_top = True

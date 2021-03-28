@@ -2011,15 +2011,46 @@ def personal_exam_doc_generate(request, id):
   
 
     context = {}
+
+    now = datetime.datetime.now()
     
-    doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam.docx")
+    if user.group.category == 'B':
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_b.docx")
+        # doc = DocxTemplate("static/docs/personal_exam_b.docx")
+    elif user.group.category == 'BC':
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_bc.docx")
+        # doc = DocxTemplate("static/docs/personal_exam_bc.docx")
+    elif user.group.category == 'C':
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_c.docx")
+        # doc = DocxTemplate("static/docs/personal_exam_c.docx")
+    elif user.group.category == 'D':
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_a.docx")
+        # doc = DocxTemplate("static/docs/personal_exam_d.docx")
+    elif user.group.category == 'E':
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_e.docx")
+        # doc = DocxTemplate("static/docs/personal_exam_e.docx")
+    elif user.group.category == 'D':
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_d.docx")
+        # doc = DocxTemplate("static/docs/personal_exam_d.docx")
+    else:
+        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam.docx")
+        # doc = DocxTemplate("static/docs/personal_exam.docx")
+    
+    
+
     passport_issued_time = dt.strptime(str(user.passport_issued_time), "%Y-%m-%d").strftime("%d.%m.%Y")
     medical_issued_date = dt.strptime(str(user.medical_issued_date), "%Y-%m-%d").strftime("%d.%m.%Y")
     birthday = dt.strptime(str(user.birthday), "%Y-%m-%d").strftime("%d.%m.%Y")
   
     context.update(
         name=user.name,
+        year=now.year,
         birthday=birthday,
+        traffic_rules_teacher = user.group.teacher,
+        car_structure_teacher = user.group.car_structure_teacher,
+        group_number = user.group.number,
+        group_category = user.group.category,
+        instructors = user.group.instructors,
         place_of_birth=user.place_of_birth,
         residence_address=user.residence_address,
         pass_seriya=user.pasport,

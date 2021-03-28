@@ -34,6 +34,36 @@
 {% endblock content %}
 {% block bottom %}
     <script>
+
+
+    {% if form.passport_issued_time == Null %}
+   $(document).ready( function() {
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+    $('#passport_issued_time').val(today);
+});
+{% endif %}
+
+{% if form.medical_issued_date == Null %}
+$(document).ready( function() {
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+    $('#medical_issued_date').val(today);
+});
+{% endif%}
+
     $(document).ready(function () {
         $("#pasport").keypress(PassportInputFilter);
 
@@ -74,5 +104,6 @@
 
 
     });
+
 </script>
 {% endblock bottom %}

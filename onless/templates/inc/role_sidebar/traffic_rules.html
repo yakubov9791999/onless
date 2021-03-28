@@ -1,0 +1,8 @@
+<li class="nav-item has-treeview">
+    <a href="{% url 'sign:traffic_rules' %}" class="nav-link {% if request.resolver_match.url_name == 'add_list' or request.resolver_match.url_name == 'add_teacher' or request.resolver_match.url_name == 'worker_add' or request.resolver_match.url_name == 'add_group' or request.resolver_match.url_name == 'add_schedule' or request.resolver_match.url_name == 'add_material' or request.resolver_match.url_name == 'add_pupil'  %}active{% endif %}">
+        &nbsp;<i class="fas fa-folder-plus"></i>
+        <p>
+            &nbsp;&nbsp;&nbsp;&nbsp;Qoidalar
+        </p>
+    </a>
+</li>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from tinymce import models as tinymce_models
 
 
 from user.decorators import get_name
@@ -115,3 +116,18 @@ class Material(models.Model):
     class Meta:
         verbose_name = "Material"
         verbose_name_plural = "Materiallar"
+
+
+class TrafficRules(models.Model):
+    title = models.CharField(verbose_name="Mavzu nomi", max_length=255)
+    text = tinymce_models.HTMLField(verbose_name="Mavzu matni", blank=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    sort = models.IntegerField(default=0, blank=True, null=True)
+
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Yo'l harakati qoidasi"
+        verbose_name_plural = "Yo'l harakati qoidalari"

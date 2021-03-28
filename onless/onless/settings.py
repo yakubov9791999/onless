@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'paycomuz',
     'paycom',
     'landing',
+    'tinymce',
 
 ]
 

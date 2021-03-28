@@ -49,3 +49,9 @@ class MaterialAdmin(admin.ModelAdmin):
     list_display = ['id','title', 'pub_date','author','file', 'sort', 'is_active']
     list_display_links = ['title', 'pub_date','author' ]
     list_filter = ['is_active','title', 'pub_date','author', ]
+
+@admin.register(TrafficRules)
+class TrafficRulesAdmin(admin.ModelAdmin):
+    list_display = ('title','sort', 'pub_date')
+    # list_filter = ['subject','pub_date']
+    save_on_top = True

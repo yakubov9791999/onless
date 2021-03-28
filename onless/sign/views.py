@@ -29,6 +29,14 @@ def sign(request):
 
 
 @login_required
+def traffic_rules(request):
+    traffic_rules = TrafficRules.objects.all()
+    return render(request, 'sign/traffic_rules.html', {
+        'traffic_rules': traffic_rules,
+        # 'categories': categories,
+    })
+
+@login_required
 def schedules_list(request):
     school = get_object_or_404(School, id=request.user.school.id)
     teachers = User.objects.filter(Q(is_active=True) & Q(school=school) & Q(Q(role=3) | Q(role=2)))

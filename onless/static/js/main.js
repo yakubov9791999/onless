@@ -56,9 +56,7 @@ function LotinInputFilter(e) {
 
     if (33 <= ew && ew <= 38) {
         e.preventDefault()
-    } else if (40 <= ew && ew <= 64) {
-        e.preventDefault()
-    } else if (91 <= ew && ew <= 96) {
+    }  else if (91 <= ew && ew <= 96) {
         e.preventDefault()
     } else if (123 <= ew && ew <= 126) {
         e.preventDefault()

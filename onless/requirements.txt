@@ -13,13 +13,18 @@ django-js-asset==1.2.2
 django-mptt==0.11.0
 django-multiselectfield==0.1.12
 django-payments==0.13.0
+django-summernote==0.8.11.6
 django-template-maths==0.2.0
 djangorestframework==3.12.2
+docxtpl==0.11.3
 et-xmlfile==1.0.1
 html5lib==1.1
 idna==2.9
 jdcal==1.4.1
+Jinja2==2.11.3
+lxml==4.6.3
 MarkupPy==1.14
+MarkupSafe==1.1.1
 mysqlclient==1.4.6
 numpy==1.20.1
 oauthlib==3.1.0
@@ -32,6 +37,7 @@ pycparser==2.20
 PyJWT==2.0.1
 PyPDF2==1.26.0
 python-dateutil==2.8.1
+python-docx==0.8.10
 python3-openid==3.1.0
 pytz==2020.1
 PyYAML==5.3.1

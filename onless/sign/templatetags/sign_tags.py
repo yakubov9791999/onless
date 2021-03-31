@@ -58,3 +58,13 @@ def check_schedule_disable_or_enable(group_id,theme_id):
         return True
     else:
         return False
+
+
+@register.simple_tag()
+def get_schedule(group_id,theme_id):
+    group = get_object_or_404(Group, id=group_id)
+    theme = get_object_or_404(Theme, id=theme_id)
+
+    schedule = Schedule.objects.filter(group=group,  theme=theme, sort=theme.sort)
+
+    return schedule

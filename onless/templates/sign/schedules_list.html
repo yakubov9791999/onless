@@ -62,7 +62,8 @@
                             {% for theme in themes %}
 
                                 {% check_schedule_disable_or_enable group.id theme.id as check_schedule %}
-
+                                {% get_schedule group.id theme.id as schedule %}
+                                {{ schedule.created_user }}
                                 <tr>
                                     <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
                                         style="vertical-align: revert;">{{ forloop.counter }}</td>
@@ -70,7 +71,8 @@
                                         <div class="input-group mb-2">
                                             <input data-forloop="{{ forloop.counter }}"
                                                    {% if check_schedule %}disabled{% endif %} style="float:left;"
-                                                   type="text" class="form-control datepicker"/>
+                                                   type="text" data-datepicker="{{ schedule.date }}"
+                                                   class="form-control datepicker"/>
                                             <div class="input-group-prepend datepicker_icon"
                                                  data-forloop="{{ forloop.counter }}">
                                                 <div class="input-group-text"><i class="fa fa-calendar"
@@ -137,7 +139,9 @@
 {% block bottom %}
     <script>
         $(document).ready(function () {
+            var birthday = "{{ form.instance.birthday|date:"SHORT_DATE_FORMAT" }}"
 
+            $(".datepicker").datepicker('setDate', '02.02.2021');
 
             $('.datepicker_icon').on('click', function () {
                 var forloop = $(this).data('forloop')
@@ -147,6 +151,8 @@
                     }
                 })
             })
+
+            $("#birthday").datepicker('setDate', birthday);
 
             $('#group').on('change', function () {
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
@@ -184,6 +190,7 @@
 
                 $('.datepicker').each(function () {
                     if ($(this).data('forloop') == forloop) {
+
                         schedules.push($(this).val())
                     }
                 })

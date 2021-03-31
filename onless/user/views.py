@@ -1355,7 +1355,8 @@ def attendance_set_by_group(request, id):
     if not subjects.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
         return redirect(reverse_lazy('user:attendance_groups_list'))
-    if request.user == group.teacher:
+    director = User.objects.filter(school=request.user.school, role=2).first()
+    if request.user == group.teacher or request.user == director:
         context = {
             'group': group,
             'subjects': subjects
@@ -1363,7 +1364,7 @@ def attendance_set_by_group(request, id):
         return render(request, 'user/attendance/attendance_set_by_group.html', context)
     else:
         messages.error(request,
-                       f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash faqatgina {group.teacher}ga ruxsat berilgan!')
+                       f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash guruh rahbari va maktab rahbariga ruxsat berilgan!')
         return redirect(reverse_lazy('user:attendance_groups_list'))
 
 
@@ -1379,8 +1380,8 @@ def attendance_set_by_subject(request, group_id, subject_id):
     if not schedules.exists():
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
         return redirect(reverse_lazy('user:attendance_groups_list'))
-
-    if request.user == group.teacher:
+    director = User.objects.filter(school=request.user.school, role=2).first()
+    if request.user == group.teacher or request.user == director:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
 

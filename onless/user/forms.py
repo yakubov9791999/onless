@@ -57,6 +57,7 @@ class GroupUpdateForm(ModelForm):
         super().__init__(*args, **kwargs)
         if user is not None:
             self.fields['teacher'].queryset = User.objects.filter(Q(role=3, school=user.school)|Q(role=2, school=user.school))
+            self.fields['car_structure_teacher'].queryset = User.objects.filter(Q(role=3, school=user.school)|Q(role=2, school=user.school))
 
 
 

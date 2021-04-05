@@ -1820,8 +1820,8 @@ def electronical_journal(request):
         # guruh o'quv kunlarini olish
         days = []
         weekdays = [6]
-
-        for dt in daterange(firstdayofmonth.date(), lastdayofmonth):
+      
+        for dt in daterange(firstdayofmonth.date(), lastdayofmonth.date()):
             if dt.weekday() not in weekdays:  # to print only the weekdates
                 days.append(dt.strftime("%d.%m.%Y"))
         # guruh o'quv kunlarini olishni oxiri

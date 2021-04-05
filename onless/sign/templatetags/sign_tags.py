@@ -65,6 +65,6 @@ def get_schedule(group_id,theme_id):
     group = get_object_or_404(Group, id=group_id)
     theme = get_object_or_404(Theme, id=theme_id)
 
-    schedule = Schedule.objects.filter(group=group,  theme=theme, sort=theme.sort)
+    schedule = Schedule.objects.filter(group=group,  theme=theme, sort=theme.sort).first()
 
     return schedule

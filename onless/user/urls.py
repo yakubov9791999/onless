@@ -32,6 +32,8 @@ urlpatterns = [
     path('history/view-video/all/', history_view_video_all, name='history_view_video_all'),
     path('history/pupil-view-video/<int:id>/', history_pupil_view_video, name='history_pupil_view_video'),
     path('get-district/', get_district, name='get_district'),
+    path('getDistrict/', getDistrict, name='getDistrict'),
+
     path('school-groups/<int:id>/', school_groups, name='school_groups'),
     path('school-group/<int:id>/', school_group_detail, name='school_group_detail'),
     path('support/', support, name='support'),

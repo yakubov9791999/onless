@@ -1,0 +1,22 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(function () {
+            // inspect html to check id of category select dropdown.
+            $(document).on('change', "select#id_region", function () {
+                $.getJSON('{% url 'user:getDistrict' %}', {id: $(this).val()}, function (j) {
+                    {#var options = '<option value="">---------</option>';#}
+                    var options = '';
+                    for (var i = 0; i < j.length; i++) {
+                        options += '<option value="' + j[i].id + '">' + j[i].title + '</option>';
+                    }
+                    $("select#id_district").html(options);
+                });
+            });
+
+        });
+    </script>
+{% endblock %} 

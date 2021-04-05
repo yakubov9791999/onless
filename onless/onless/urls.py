@@ -29,12 +29,12 @@ urlpatterns = [
                   path('sign/', include('sign.urls')),
                   path('user/', include('user.urls')),
                   path('quiz/', include('quiz.urls')),
-                path('practical/', include('practical.urls')),
-                path('accounts/', include('allauth.urls')),
-                path('payments/', include('payments.urls')),
-                path('payments/', include('click.urls')),
-                path('paycom/', TestView.as_view()),
-                # path('summernote/', include('django_summernote.urls')),
+                  path('practical/', include('practical.urls')),
+                  path('accounts/', include('allauth.urls')),
+                  path('payments/', include('payments.urls')),
+                  path('payments/', include('click.urls')),
+                  path('paycom/', TestView.as_view()),
+                  # path('summernote/', include('django_summernote.urls')),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -55,7 +55,6 @@ def check_schedule_disable_or_enable(group_id,theme_id):
         schedule = Schedule.objects.filter(group=group,  theme=theme, sort=theme.sort, theme_order=theme.theme_order)
 
     if schedule.exists():
-        print(schedule.first())
         return schedule.first()
     else:
         return False

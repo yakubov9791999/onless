@@ -49,12 +49,14 @@ def schedules_list(request):
         groups = Group.objects.filter(Q(is_active=True) & Q(school=school) & Q(teacher=request.user)).order_by('-id')
         context.update(groups=groups)
         context.update(group=groups[0])
+        context.update(teacher=groups[0].teacher)
         if not groups.exists():
             messages.error(request, 'Siz rahbarlik qilayotgan guruhlar mavjud emas!')
     if request.user.role == '2':
         groups = Group.objects.filter(Q(is_active=True) & Q(school=school)).order_by('-id')
         context.update(groups=groups)
         context.update(group=groups[0])
+        context.update(teacher=groups[0].teacher)
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
     themes = Theme.objects.filter(
@@ -63,8 +65,6 @@ def schedules_list(request):
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
         themes = Theme.objects.filter(Q(is_active=True) & Q(category__title=group.category)).order_by("sort")
-        print(themes)
-        context.update(teacher=group.teacher)
         context.update(group=group)
         context.update(themes=themes)
         return render(request, 'sign/schedules_list.html', context)

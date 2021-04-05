@@ -1233,6 +1233,16 @@ def get_district(request):
 
 
 @login_required
+def getDistrict(request):
+    id = request.GET.get('id','')
+    print(id)
+    result = list(District.objects.filter(region_id=int(id)).values('id', 'title'))
+
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+
+
+@login_required
 def school_groups(request, id):
     school = get_object_or_404(School, id=id)
     groups = Group.objects.filter(school=school, is_active=True).order_by('sort')
@@ -1820,7 +1830,7 @@ def electronical_journal(request):
         # guruh o'quv kunlarini olish
         days = []
         weekdays = [6]
-      
+
         for dt in daterange(firstdayofmonth.date(), lastdayofmonth.date()):
             if dt.weekday() not in weekdays:  # to print only the weekdates
                 days.append(dt.strftime("%d.%m.%Y"))

@@ -2,6 +2,11 @@
 {% load static %}
 {% load sign_tags %}
 {% block content %}
+    <style>
+        .schedule_datepicker_icon {
+            cursor: pointer;
+        }
+    </style>
     <div class="row" style="margin: auto">
         <!-- left column -->
         <div class="col-12" style="margin: auto">
@@ -61,19 +66,19 @@
                         {% if themes.exists %}
                             {% for theme in themes %}
 
-                                {% check_schedule_disable_or_enable group.id theme.id as check_schedule %}
-                                {% get_schedule group.id theme.id as schedule %}
-                                {{ schedule.created_user }}
+                                {% check_schedule_disable_or_enable group.id theme.id as schedule %}
                                 <tr>
                                     <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
-                                        style="vertical-align: revert;">{{ forloop.counter }}</td>
+                                        style="vertical-align: revert;">
+                                        {{ forloop.counter }}</td>
                                     <td class="text-center" style="vertical-align: revert;">
                                         <div class="input-group mb-2">
                                             <input data-forloop="{{ forloop.counter }}"
-                                                   {% if check_schedule %}disabled{% endif %} style="float:left;"
-                                                   type="text" data-datepicker="{{ schedule.date }}"
-                                                   class="form-control datepicker"/>
-                                            <div class="input-group-prepend datepicker_icon"
+                                                   {% if not schedule == False %}disabled{% endif %}
+                                                   style="float:left;"
+                                                   type="text" {% if schedule.date %}value="{{ schedule.date|date:'SHORT_DATE_FORMAT' }}" {% else %}value="{% now "SHORT_DATE_FORMAT" %}"{% endif %}
+                                                   class="form-control schedule_datepicker"/>
+                                            <div class="input-group-prepend schedule_datepicker_icon"
                                                  data-forloop="{{ forloop.counter }}">
                                                 <div class="input-group-text"><i class="fa fa-calendar"
                                                                                  aria-hidden="true"></i></div>
@@ -84,11 +89,12 @@
                                     <td style="vertical-align: revert;">
                                         {% if theme.subject %}{{ theme.subject }}{% else %}{% endif %}</td>
                                     <td style="vertical-align: revert;"><input
-                                            {% if check_schedule %}disabled{% endif %}
+                                            {% if not schedule == False %}disabled{% endif %}
                                             data-forloop="{{ forloop.counter }}"
                                             type="number"
                                             class="form-control lesson_time"
-                                            value="{{ theme.lesson_time }}"></td>
+                                            {% if schedule.lesson_time %}value="{{ schedule.lesson_time }}"{% else %}
+                                            value="{{ theme.lesson_time }}" {% endif %}></td>
                                     <td class="text-center sort" style="vertical-align: revert;"
                                         data-forloop="{{ forloop.counter }}" data-value="{{ theme.theme_order }}">
                                         {% if theme.theme_order %}M-{{ theme.theme_order }}{% else %}{% endif %}</td>
@@ -98,16 +104,19 @@
                                         data-id="{{ theme.id }}">{{ theme.title }}</td>
                                     <td style="vertical-align: revert;">
                                         <select data-forloop="{{ forloop.counter }}"
-                                                {% if check_schedule %}disabled{% endif %} class="form-control teacher"
+                                                {% if not schedule == False %}disabled{% endif %}
+                                                class="form-control teacher"
                                                 name="teacher">
                                             {% for render_teacher in teachers %}
-                                                <option {% if render_teacher.id == teacher.id %}selected{% endif %}
+                                                <option
+                                                        {% if schedule.teacher %}{% if render_teacher == schedule.teacher %}selected{% endif %}{% else %}{% if render_teacher.id == teacher.id %}selected
+                                                        {% endif %}{% endif %}
                                                         value="{{ render_teacher.id }}">{{ render_teacher.name|truncatewords:2 }} </option>
                                             {% endfor %}
                                         </select>
                                     </td>
                                     <td style="text-align: center;vertical-align: revert;">
-                                        {% if check_schedule %}
+                                        {% if not schedule == False %}
                                             <button data-forloop="{{ forloop.counter }}" data-save="false"
                                                     class="btn btn-warning scheduleBtn editBtn"><i
                                                     class="fas fa-edit"></i></button>
@@ -138,21 +147,65 @@
 
 {% block bottom %}
     <script>
+        $(function () {
+            var dateReg = /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[012])[./-]\d{4}$/
+
+            $(".schedule_datepicker").datepicker({
+                dateFormat: "dd.mm.yy",
+                // minDate: '-90d',
+                // maxDate: '+5M',
+                // defaultDate: '01-01-1985',
+                // value: "7/11/2011",
+                showButtonPanel: true,
+                numberOfMonths: 1,
+                //startDate: "-30d",
+                //endDate: "+30d",
+                //currentText: 'Today',
+                autoclose: true,
+                changeMonth: false,
+                changeYear: false,
+                beforeShowDay: function (date) {
+                    var day = date.getDay();
+                    return [(day !== 0), ''];
+                },
+                onClose: function () {
+                    if ($(this).val().match(dateReg)) {
+                        $(this).css('border-color', 'green')
+                    } else {
+                        $(this).css('border-color', 'red')
+                    }
+                }
+            })
+        })
+
         $(document).ready(function () {
-            var birthday = "{{ form.instance.birthday|date:"SHORT_DATE_FORMAT" }}"
 
-            $(".datepicker").datepicker('setDate', '02.02.2021');
+            $('.schedule_datepicker').each(function () {
+                var date = $(this).val(),
+                    forloop = $(this).data('forloop')
+                console.log(forloop)
+                if ($(".schedule_datepicker").data('forloop') === forloop) {
+                    if (date) {
+                        $(this).datepicker('setDate', date);
+                    } else {
+                        $(this).datepicker('setDate', new Date());
+                    }
+                }
+            })
 
-            $('.datepicker_icon').on('click', function () {
+            $('.schedule_datepicker').on('keypress', function (e) {
+                return false
+            })
+
+            $('.schedule_datepicker_icon').on('click', function () {
                 var forloop = $(this).data('forloop')
-                $('.datepicker').each(function () {
+                $('.schedule_datepicker').each(function () {
                     if ($(this).data('forloop') === forloop) {
                         $(this).datepicker('show')
                     }
                 })
             })
 
-            $("#birthday").datepicker('setDate', birthday);
 
             $('#group').on('change', function () {
                 if (!$.isNumeric($("#group").children("option:selected").val())) {
@@ -188,7 +241,7 @@
                     forloop = $(this).data('forloop'),
                     save = $(this).data('save')
 
-                $('.datepicker').each(function () {
+                $('.schedule_datepicker').each(function () {
                     if ($(this).data('forloop') == forloop) {
 
                         schedules.push($(this).val())
@@ -196,25 +249,25 @@
                 })
 
                 $('.lesson_time').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         schedules.push($(this).val())
                     }
                 })
 
                 $('.theme').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         schedules.push($(this).data('id'))
                     }
                 })
 
                 $('.teacher').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         schedules.push($(this).children("option:selected").val())
                     }
                 })
 
                 $('.sort').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         schedules.push($(this).data('value'))
                     }
                 })
@@ -225,8 +278,8 @@
 
 
             function AttrDisabled(forloop) {
-                $('.datepicker').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                $('.schedule_datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
                         $(this).attr('disabled', true)
                     }
                 })
@@ -245,20 +298,20 @@
             }
 
             function AttrEnabled(forloop) {
-                $('.datepicker').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                $('.schedule_datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
                         $(this).attr('disabled', false)
                     }
                 })
 
                 $('.lesson_time').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         $(this).attr('disabled', false)
                     }
                 })
 
                 $('.teacher').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         $(this).attr('disabled', false)
                     }
                 })
@@ -286,7 +339,7 @@
                                         groupId = '{{ group.id }}',
                                         forloop = $(this).data('forloop')
 
-                                    $('.datepicker').each(function () {
+                                    $('.schedule_datepicker').each(function () {
                                         if ($(this).data('forloop') == forloop) {
                                             schedules.push($(this).val())
                                         }
@@ -364,7 +417,7 @@
                             groupId = '{{ group.id }}',
                             forloop = $(this).data('forloop')
 
-                        $('.datepicker').each(function () {
+                        $('.schedule_datepicker').each(function () {
                             if ($(this).data('forloop') == forloop) {
                                 schedules.push($(this).val())
                             }

@@ -56,7 +56,7 @@ function LotinInputFilter(e) {
 
     if (33 <= ew && ew <= 38) {
         e.preventDefault()
-    }  else if (91 <= ew && ew <= 96) {
+    } else if (91 <= ew && ew <= 96) {
         e.preventDefault()
     } else if (123 <= ew && ew <= 126) {
         e.preventDefault()
@@ -231,7 +231,7 @@ $(function () {
         },
         onClose: function () {
             if ($(this).val().match(dateReg)) {
-               $(this).css('border-color', 'green')
+                $(this).css('border-color', 'green')
             } else {
                 $(this).css('border-color', 'red')
             }

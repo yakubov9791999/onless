@@ -1614,7 +1614,8 @@ def rating_set_by_group(request, id):
     if not subjects.exists():
         messages.error(request, f'Davomat belgilangan fanlar mavjud emas!')
         return redirect(reverse_lazy('user:rating_groups_list'))
-    if request.user == group.teacher:
+    director = User.objects.filter(school=request.user.school, role=2).first()
+    if request.user == group.teacher or request.user == director:
         context = {
             'group': group,
             'subjects': subjects
@@ -1622,7 +1623,7 @@ def rating_set_by_group(request, id):
         return render(request, 'user/rating/rating_set_by_group.html', context)
     else:
         messages.error(request,
-                       f'{group.category}-{group.number} {group.year} guruhi baholarini qo\'yish faqatgina {group.teacher}ga ruxsat berilgan!')
+                       f'{group.category}-{group.number} {group.year} guruhi baholarini qo\'yish faqatgina guruh rahbari va maktab rahbariga ruxsat berilgan!')
         return redirect(reverse_lazy('user:rating_groups_list'))
 
 
@@ -1639,7 +1640,8 @@ def rating_set_by_subject(request, group_id, subject_id):
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
         return redirect(reverse_lazy('user:rating_groups_list'))
 
-    if request.user == group.teacher:
+    director = User.objects.filter(school=request.user.school, role=2).first()
+    if request.user == group.teacher or request.user == director:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group) & Q(
                 pupil_attendance__subject=subject) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))

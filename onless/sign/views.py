@@ -88,6 +88,7 @@ def save_schedule(request):
                 date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
                 theme = get_object_or_404(Theme, id=theme_id)
                 teacher = get_object_or_404(User, id=teacher_id)
+                print(teacher)
                 schedules = Schedule.objects.filter(group=group, theme=theme,sort=theme.sort, theme_order=theme_order)
                 if schedules.exists():
                     for schedule in schedules:

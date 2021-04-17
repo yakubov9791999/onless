@@ -38,6 +38,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="google-site-verification" content="gagH8qOwZzXNERShxKP9ST89rJPPaHMtC1TqfTGQwvU"/>
 </head>
 <body class="hold-transition sidebar-mini">
+<div id="load"></div>
 <div class="wrapper">
 
     {% include 'inc/navbar.html' %}
@@ -170,6 +171,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {#    })#}
     {##}
 
+    document.onreadystatechange = function () {
+        var state = document.readyState
+        {#console.log(state)#}
+        if (state === 'interactive') {
+            {#document.getElementsByClassName('wrapper').style.visibility = "hidden";#}
+        } else if (state === 'complete') {
+            setTimeout(function () {
+                document.getElementById('interactive');
+                document.getElementById('load').style.visibility = "hidden";
+                {#document.getElementsByClassName('wrapper').style.visibility = "visible";#}
+            }, 100);
+        }
+    }
 
     $(document).ready(function () {
 

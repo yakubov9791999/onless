@@ -60,9 +60,13 @@
                     <div class="card-body ml-5">
                         <h5>
                             {% for pupil in pupils %}
-                                <a href="{% url 'user:group_detail' pupil.group.id %}#{{ pupil.name }}">
-                                    <p>{{ pupil.name }}</p></a>
-
+                                {% if request.user.role == '5' %}
+                                     <a href="{% url 'user:bugalter_group_detail' pupil.group.id %}#{{ pupil.name }}">
+                                        <p>{{ pupil.name }}</p></a>
+                                {% else %}
+                                    <a href="{% url 'user:group_detail' pupil.group.id %}#{{ pupil.name }}">
+                                        <p>{{ pupil.name }}</p></a>
+                                {% endif %}
                             {% endfor %}
                         </h5>
                     </div>

@@ -147,7 +147,7 @@ class Group(models.Model):
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
     teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
                                 related_name='group_teacher', null=True)
-    car_structure_teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
+    car_structure_teacher = models.ForeignKey('User', verbose_name="Avtomobil tuzilishi o'qituvchisi", on_delete=models.SET_NULL,
                                 related_name='car_structure_teacher', null=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups',
                                null=True)
@@ -249,7 +249,11 @@ class File(models.Model):
 class Pay(models.Model):
     payment = models.IntegerField(default=0)
     pay_date = models.DateTimeField(auto_now=True)
+    comment = models.CharField(verbose_name="Izoh", max_length=500, blank=True, null=True, default=' ')
+    removed_date = models.DateTimeField(blank=True, null=True)
+    removed_reason = models.CharField(verbose_name="O'chirish sababi", max_length=500, blank=True, null=True, default=' ')
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_pay')
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.pupil}"

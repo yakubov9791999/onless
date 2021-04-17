@@ -937,7 +937,7 @@ def bugalter_groups_list(request):
             total_pay += group.price * pupils_count
 
         pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
-        pays = Pay.objects.filter(pupil__in=pupils)
+        pays = Pay.objects.filter(pupil__in=pupils, is_active=True)
         total_payments = 0
         for pay in pays:
             total_payments += pay.payment
@@ -959,7 +959,7 @@ def bugalter_groups_list(request):
         for group in groups:
             total_pay += group.price
         pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
-        pays = Pay.objects.filter(pupil__in=pupils)
+        pays = Pay.objects.filter(pupil__in=pupils, is_active=True)
         total_payments = 0
         for pay in pays:
             total_payments += pay.payment
@@ -985,7 +985,7 @@ def bugalter_group_detail(request, id):
         group = get_object_or_404(Group, id=id)
         pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
         total_pay = group.price * pupils.count()
-        payments = Pay.objects.filter(pupil__in=pupils)
+        payments = Pay.objects.filter(pupil__in=pupils, is_active=True)
         if not payments.exists():
             messages.error(request, "To'lovlar mavjud emas !")
         total_payments = 0
@@ -1007,19 +1007,22 @@ def bugalter_group_detail(request, id):
 @login_required
 def set_pay(request):
     if request.user.role == '5':
-        if request.GET:
-            pupil = get_object_or_404(User, id=request.GET['pupil'])
+        if request.POST:
+            pupil = get_object_or_404(User, id=request.POST['pupil'])
             school = get_object_or_404(School, id=pupil.school.id)
-            values = Pay.objects.filter(pupil=pupil)
+            values = Pay.objects.filter(pupil=pupil, is_active=True)
             payment = 0
             try:
-                if request.GET['pay'] <= '0':
+                if request.POST['pay'] <= '0':
                     return HttpResponse(False)
                 for value in values:
                     payment += value.payment
-                payment += int(request.GET['pay'])
+                payment += int(request.POST['pay'])
                 if pupil.group.price >= payment:
-                    Pay.objects.create(pupil=pupil, payment=int(request.GET['pay']))
+                    obj = Pay.objects.create(pupil=pupil, payment=int(request.POST['pay']))
+                    if request.POST.get('comment'):
+                        obj.comment = request.POST.get('comment')
+                        obj.save()
                     pay = {
                         'payment': payment,
                         'debit': pupil.group.price - payment
@@ -1030,7 +1033,7 @@ def set_pay(request):
                             school.sms_count = school.sms_count - 2
                             school.save()
 
-                            msg = f"Hurmatli {pupil.name}! Avtomaktabga {request.GET['pay']} so’m to’lov qildingiz! Jami to’lovingiz {payment} so’m. Toifa bo’yicha {pupil.group.price - payment} so’m qarzdorligingiz qoldi!%0aSavollar bo’lsa:%0a{school.phone}"
+                            msg = f"Hurmatli {pupil.name}! Avtomaktabga {request.POST['pay']} so’m to’lov qildingiz! Jami to’lovingiz {payment} so’m. Toifa bo’yicha {pupil.group.price - payment} so’m qarzdorligingiz qoldi!%0aSavollar bo’lsa:%0a{school.phone}"
                             msg = msg.replace(" ", "+")
                             url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
                             response = requests.get(url)
@@ -1047,34 +1050,46 @@ def set_pay(request):
 
 @login_required
 def remove_pay(request, id):
-    if request.user.role == '5':
+    if request.user.role == '5' or request.user.role == '2':
         try:
             pay = Pay.objects.get(id=id)
             payment = pay.payment
             pupil = pay.pupil
-            group = pupil.group
-            pay.delete()
-            messages.success(request, f"{payment} so'm muvaffaqiyatli o'chirildi!")
-            return redirect(reverse_lazy('user:pay_history', kwargs={'user_id': pupil.id, 'group_id': group.id}))
+
+            if request.POST.get('removed_reason'):
+                pay.removed_reason = request.POST.get('removed_reason')
+
+            pay.is_active = False
+            pay.removed_date = timezone.now()
+            pay.save()
+
+            return HttpResponse(payment)
         except ObjectDoesNotExist:
-            return redirect(reverse_lazy('user:bugalter_groups_list'))
+            return HttpResponse(False)
     else:
         return render(request, 'inc/404.html')
 
 
 @login_required
 def pay_history(request, user_id, group_id):
-    if request.user.role == '5' or request.user.role == '2' or request.user.role == '4' or request.user.role == '3':
-        pupil = get_object_or_404(User, id=user_id)
-        payments = Pay.objects.filter(pupil=pupil)
+    pupil = get_object_or_404(User, id=user_id)
+    school = get_object_or_404(School, id=pupil.school.id)
+
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (request.user.school == school and request.user == pupil and request.user.role == '4'):
+        payments = Pay.objects.filter(pupil=pupil, is_active=True)
         if not payments.exists():
             messages.error(request, "To'lov amalga oshirilmagan !")
         group = get_object_or_404(Group, id=group_id)
 
+        if request.user.role == '2' or request.user.role == '5':
+            removed_pays = Pay.objects.filter(pupil=pupil, is_active=False)
+        else:
+            removed_pays = None
         context = {
             'pupil': pupil,
             'payments': payments,
-            'group': group
+            'group': group,
+            'removed_pays': removed_pays
         }
         return render(request, 'user/bugalter/pay_history.html', context)
     else:
@@ -1549,7 +1564,7 @@ def referral_list(request, id):
         for referral in referrals:
             total_referrals += referral.amount
         # print(total_referrals)
-        pays = Pay.objects.filter(pupil=user)
+        pays = Pay.objects.filter(pupil=user, is_active=True)
 
         learn_payment = user.group.price
         total_payments = 0

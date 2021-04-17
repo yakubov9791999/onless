@@ -26,7 +26,7 @@ def get_count(school_id):
 def get_payments(pupil_id, group_id):
     pupil = get_object_or_404(User, id=pupil_id)
     group = get_object_or_404(Group, id=group_id)
-    values = Pay.objects.filter(pupil=pupil)
+    values = Pay.objects.filter(pupil=pupil, is_active=True)
     total = group.price
     payment = 0
     debit = 0
@@ -124,7 +124,7 @@ def get_group_pay(group_id):
     group = Group.objects.get(id=group_id)
     pupils = User.objects.filter(role='4', group=group, is_active=True)
     total_pay = group.price * pupils.count()
-    pays = Pay.objects.filter(pupil__in=pupils)
+    pays = Pay.objects.filter(pupil__in=pupils, is_active=True)
     payment = 0
     for pay in pays:
         payment += int(pay.payment)

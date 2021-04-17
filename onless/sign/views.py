@@ -59,6 +59,8 @@ def schedules_list(request):
         context.update(teacher=groups[0].teacher)
         if not groups.exists():
             messages.error(request, 'Sizda guruhlar mavjud emas!')
+
+
     themes = Theme.objects.filter(
         Q(is_active=True) & Q(category__title=context.get('group').category)).order_by("sort")
     context.update(themes=themes)

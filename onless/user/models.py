@@ -147,7 +147,7 @@ class Group(models.Model):
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
     teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
                                 related_name='group_teacher', null=True)
-    car_structure_teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
+    car_structure_teacher = models.ForeignKey('User', verbose_name="Avtomobil tuzilishi o'qituvchisi", on_delete=models.SET_NULL,
                                 related_name='car_structure_teacher', null=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups',
                                null=True)

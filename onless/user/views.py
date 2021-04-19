@@ -598,7 +598,7 @@ def search(request):
 
         if query:
             try:
-                teachers = User.objects.filter(Q(pasport__icontains=query) |
+                teachers = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
                                                Q(name__icontains=query)).filter(role=3, school=request.user.school,
                                                                                 is_active=True).order_by('name')
                 context.update(teachers=teachers)
@@ -608,7 +608,7 @@ def search(request):
                 pass
 
             try:
-                bugalters = User.objects.filter(Q(pasport__icontains=query) |
+                bugalters = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
                                                 Q(name__icontains=query)).filter(role=5, school=request.user.school,
                                                                                  is_active=True).order_by('name')
                 context.update(bugalters=bugalters)
@@ -617,7 +617,7 @@ def search(request):
                 pass
 
             try:
-                instructors = User.objects.filter(Q(pasport__icontains=query) |
+                instructors = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
                                                   Q(name__icontains=query)).filter(role=6, school=request.user.school,
                                                                                    is_active=True).order_by('name')
                 context.update(instructors=instructors)
@@ -626,7 +626,7 @@ def search(request):
                 pass
 
             try:
-                pupils = User.objects.filter(Q(pasport__icontains=query) |
+                pupils = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
                                              Q(name__icontains=query) &
                                              Q(group__isnull=False)).filter(role=4,
                                                                             school=request.user.school,
@@ -1837,7 +1837,7 @@ def electronical_journal(request):
 
         # o'quv oyining eng oxirgi kuni
         endmonth = calendar.monthrange(int(get_year), int(get_month))
-        lastdayofmonth = datetime.datetime(int(get_year), int(get_month), endmonth[1])
+        lastdayofmonth = datetime.datetime(int(get_year), int(get_month), endmonth[1]).date()
 
         group_stop_month = group.stop.strftime("%m")
         group_stop_day = group.stop.strftime("%d")
@@ -1858,7 +1858,7 @@ def electronical_journal(request):
         days = []
         weekdays = [6]
 
-        for dt in daterange(firstdayofmonth.date(), lastdayofmonth.date()):
+        for dt in daterange(firstdayofmonth.date(), lastdayofmonth):
             if dt.weekday() not in weekdays:  # to print only the weekdates
                 days.append(dt.strftime("%d.%m.%Y"))
         # guruh o'quv kunlarini olishni oxiri

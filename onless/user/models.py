@@ -248,7 +248,7 @@ class File(models.Model):
 
 class Pay(models.Model):
     payment = models.IntegerField(default=0)
-    pay_date = models.DateTimeField(auto_now=True)
+    pay_date = models.DateTimeField(blank=True, null=True, default=timezone.now)
     comment = models.CharField(verbose_name="Izoh", max_length=500, blank=True, null=True, default=' ')
     removed_date = models.DateTimeField(blank=True, null=True)
     removed_reason = models.CharField(verbose_name="O'chirish sababi", max_length=500, blank=True, null=True, default=' ')

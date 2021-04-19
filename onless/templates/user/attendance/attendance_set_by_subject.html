@@ -42,7 +42,7 @@
                                         <button {% if visited == True %} disabled{% endif %} data-id="{{ pupil.id }}"
                                                                          class="btn btn-success visited">Kelgan
                                         </button>
-                                        <button {% if visited == False or visited == None %} disabled {% endif %}
+                                        <button {% if visited == False %} disabled {% endif %}
                                                                                              data-id="{{ pupil.id }}"
                                                                                              class="btn btn-danger not_visited">
                                             Kelmagan
@@ -52,7 +52,7 @@
                                     </td>
                                     {% get_pupil_attendance_time pupil.id subject.id as time %}
                                     <td data-id="{{ pupil.id }}"
-                                        class="attendance_time">{{ time|date:'SHORT_DATETIME_FORMAT' }}</td>
+                                        class="attendance_time">{% if time %}{{ time|date:'SHORT_DATETIME_FORMAT' }}{% else %}<span style="color: red">davomat belgilanmagan</span>{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

@@ -58,7 +58,7 @@ urlpatterns = [
     path('rating-create/', rating_create, name='rating_create'),
     path('get-group-pupils-count/', get_group_pupils_count, name='get_group_pupils_count'),
     path('get-workers-count/', get_workers_count, name='get_workers_count'),
-    path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
+    # path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
     path('get-group-months/', get_group_months, name='get_group_months'),
     path('sms-settings/', sms_settings, name='sms_settings'),
 

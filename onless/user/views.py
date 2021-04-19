@@ -1424,46 +1424,58 @@ def attendance_set_by_subject(request, group_id, subject_id):
 
 @login_required
 def attendance_set_visited(request):
-    if request.is_ajax():
-        if request.GET:
-            pupil = get_object_or_404(User, id=request.GET.get('pupil'))
-            subject = get_object_or_404(Subject, id=request.GET.get('subject'))
-            school = get_object_or_404(School, id=pupil.school.id)
-            today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-            today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    try:
+        if request.is_ajax():
+            if request.GET:
+                pupil = get_object_or_404(User, id=request.GET.get('pupil'))
+                subject = get_object_or_404(Subject, id=request.GET.get('subject'))
+                school = get_object_or_404(School, id=pupil.school.id)
+                today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+                today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+                import pytz
+                new_timezone = pytz.timezone("Asia/Tashkent")
 
-            if request.GET.get('visited') == 'true':
-                visited = True
-            elif request.GET.get('visited') == 'false':
-                visited = False
-            else:
-                return HttpResponse(False)
+                if request.GET.get('visited') == 'true':
+                    visited = True
+                elif request.GET.get('visited') == 'false':
+                    visited = False
+                else:
+                    return HttpResponse(False)
 
-            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
-                                                   created_date__range=(today_min, today_max))
+                attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
+                                                       created_date__range=(today_min, today_max))
 
-            if not attendance.exists():
-                Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject, is_visited=visited)
-                return HttpResponse(True)
-            else:
-                for atten in attendance:
-                    atten.is_visited = visited
-                    atten.updated_date = timezone.now()
-                    atten.save()
+                if not attendance.exists():
+                    atten = Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject, is_visited=visited)
 
-                    if atten.is_visited == False:
-                        if school.send_sms_attendance:
-                            if school.sms_count >= 2:
-                                school.sms_count = school.sms_count - 2
-                                school.save()
-                                msg = f"Hurmatli {pupil.name}! Bugun {subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
-                                msg = msg.replace(" ", "+")
-                                url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
-                                response = requests.get(url)
+                    new_timezone_timestamp = atten.created_date.astimezone(new_timezone)
+                    get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+                    return HttpResponse(get_datetime)
+                else:
+                    for atten in attendance:
+                        atten.is_visited = visited
+                        atten.updated_date = timezone.now()
+                        atten.save()
 
-                return HttpResponse(True)
-    return HttpResponse(False)
+                        if atten.is_visited == False:
+                            if school.send_sms_attendance:
+                                if school.sms_count >= 2:
+                                    school.sms_count = school.sms_count - 2
+                                    school.save()
+                                    msg = f"Hurmatli {pupil.name}! Bugun {subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
+                                    msg = msg.replace(" ", "+")
+                                    url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
+                                    response = requests.get(url)
 
+
+                        new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
+                        get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+                        return HttpResponse(get_datetime)
+
+                    return HttpResponse(True)
+        return HttpResponse(False)
+    except:
+        return HttpResponse(False)
 
 @login_required
 def send_sms(request):
@@ -1899,26 +1911,26 @@ def get_workers_count(request):
         return HttpResponse(False)
 
 
-@login_required
-def get_attendance_time(request):
-    if request.POST:
-        pupil = get_object_or_404(User, id=request.POST.get('pupil'))
-        subject = get_object_or_404(Subject, id=request.POST.get('subject'))
-        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        try:
-            attendance = Attendance.objects.filter(pupil=pupil, subject=subject,
-                                                   created_date__range=(today_min, today_max))
-            for atten in attendance:
-                import pytz
-                new_timezone = pytz.timezone("Asia/Tashkent")
-                new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
-                get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
-                return HttpResponse(get_datetime)
-        except:
-            return HttpResponse(False)
-    else:
-        return HttpResponse(False)
+# @login_required
+# def get_attendance_time(request):
+#     if request.POST:
+#         pupil = get_object_or_404(User, id=request.POST.get('pupil'))
+#         subject = get_object_or_404(Subject, id=request.POST.get('subject'))
+#         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+#         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+#         try:
+#             attendance = Attendance.objects.filter(pupil=pupil, subject=subject,
+#                                                    created_date__range=(today_min, today_max))
+#             for atten in attendance:
+#                 import pytz
+#                 new_timezone = pytz.timezone("Asia/Tashkent")
+#                 new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
+#                 get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+#                 return HttpResponse(get_datetime)
+#         except:
+#             return HttpResponse(False)
+#     else:
+#         return HttpResponse(False)
 
 
 @login_required

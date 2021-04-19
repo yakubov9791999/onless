@@ -21,7 +21,7 @@
 
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form role="form" method="POST" action="{% url 'user:send_sms' %}">
+                <form role="form" id="send_sms_form" method="POST" action="{% url 'user:send_sms' %}">
                     {% csrf_token %}
                     <div class="card-body">
                         <div class="form-group">

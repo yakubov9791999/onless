@@ -39,14 +39,16 @@
                                     </td>
                                     <td class="parentBtn">
                                         {% get_pupil_attendance pupil.id subject.id request.user.id as visited %}
-                                        {% if visited == True %}
-                                            <button data-id="{{ pupil.id }}" class="btn btn-danger not_visited">Kelmagan
-                                            </button>
-                                        {% else %}
-                                            <button data-id="{{ pupil.id }}"
-                                                    class="btn btn-success visited">Kelgan
-                                            </button>
-                                        {% endif %}
+                                        <button {% if visited == True %} disabled{% endif %} data-id="{{ pupil.id }}"
+                                                                         class="btn btn-success visited">Kelgan
+                                        </button>
+                                        <button {% if visited == False or visited == None %} disabled {% endif %}
+                                                                                             data-id="{{ pupil.id }}"
+                                                                                             class="btn btn-danger not_visited">
+                                            Kelmagan
+                                        </button>
+
+
                                     </td>
                                     {% get_pupil_attendance_time pupil.id subject.id as time %}
                                     <td data-id="{{ pupil.id }}"
@@ -73,18 +75,20 @@
         $(document).ready(function () {
             var subjectId = '{{ subject.id }}'
 
-            $('.parentBtn button').on('click', function () {
+            $('.visited').on('click', function () {
+                var pupilId = $(this).data('id'),
+                    visited = true
+
+                clickBtnSetAttendance(pupilId, visited, subjectId)
+
+            })
+
+            $('.not_visited').on('click', function () {
                 var pupilId = $(this).data('id'),
                     visited = false
 
-                if ($(`.parentBtn button[data-id="${pupilId}"]`).hasClass('btn-success')) {
-                    visited = true
-                } else {
-                    visited = false
-                }
-
                 clickBtnSetAttendance(pupilId, visited, subjectId)
-                get_attendance_time()
+
             })
 
             var csrftoken = getCookie('csrftoken');
@@ -96,34 +100,8 @@
             })
 
 
-            function get_attendance_time() {
-
-                $(".attendance_time").each(function () {
-                    var pupilId = $(this).data('id')
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url "user:get_attendance_time" %}',
-                        data: {
-                            'pupil': pupilId,
-                            'subject': subjectId,
-
-                        },
-                        success: function (response) {
-                            $(".attendance_time").each(function () {
-                            if ($(this).data('id') == pupilId) {
-                                $(this).data('id', pupilId).text(response)
-                            }
-                        });
-                        }, error: function (response) {
-                            console.log(response)
-                        }
-                    })
-
-                });
-            }
-
             function clickBtnSetAttendance(pupilId, visited, subjectId) {
+
                 $.ajax({
                     type: 'GET',
                     url: '{% url "user:attendance_set_visited" %}',
@@ -133,34 +111,54 @@
                         'visited': visited
                     },
                     success: function (response) {
-                        if (response === 'True') {
+                        if (response !== 'False') {
+
+                            $(".attendance_time").each(function () {
+
+                                if ($(this).data('id') === pupilId) {
+                                    $(this).data('id', pupilId).text(response)
+                                }
+                            });
 
                             if (visited === true) {
 
-                                var $buttonDanger = $(`<button class="btn btn-danger not_visited" data-id="${pupilId}">Kelmagan</button>`);
-                                $(`button[data-id=${pupilId}]`).after($buttonDanger)
-                                $(`button.visited[data-id=${pupilId}]`).remove()
-                                $buttonDanger.on('click', function () {
-                                    clickBtnSetAttendance(pupilId, false, subjectId)
-                                    get_attendance_time()
-                                });
-                            } else {
+                                $('.visited').each(function () {
 
-                                var $buttonSuccess = $(`<button class="btn btn-success visited" data-id="${pupilId}">Kelgan</button>`);
-                                if (!$(`button[data-id=${pupilId}]`).parent('.parentBtn').children('button').hasClass('visited')) {
-                                    $(`button[data-id=${pupilId}]`).after($buttonSuccess)
-                                }
-                                $(`button.not_visited[data-id=${pupilId}]`).remove()
-                                $buttonSuccess.on('click', function () {
-                                    get_attendance_time()
-                                    clickBtnSetAttendance(pupilId, true, subjectId)
-                                });
+                                    if ($(this).data('id') === pupilId) {
+                                        $(this).attr('disabled', true)
+                                    }
+                                })
+
+                                $('.not_visited').each(function () {
+
+                                    if ($(this).data('id') === pupilId) {
+                                        $(this).attr('disabled', false)
+                                    }
+                                })
+
+                            } else {
+                                $('.visited').each(function () {
+
+                                    if ($(this).data('id') === pupilId) {
+                                        $(this).attr('disabled', false)
+                                    }
+                                })
+
+                                $('.not_visited').each(function () {
+
+                                    if ($(this).data('id') === pupilId) {
+                                        $(this).attr('disabled', true)
+                                    }
+                                })
                             }
+
                         } else {
+                            errorFunction()
                             console.log(response)
                         }
                     },
                     error: function (response) {
+                        errorFunction()
                         console.log(response)
                     }
                 })

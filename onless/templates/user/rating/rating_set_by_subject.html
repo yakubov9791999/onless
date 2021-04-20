@@ -64,7 +64,7 @@
                                     {% get_pupil_rating_time pupil.id subject.id as time %}
 
                                     <td data-id="{{ pupil.id }}"
-                                        class="rating_time">{{ time|date:'SHORT_DATETIME_FORMAT' }}
+                                        class="rating_time">{% if time %}{{ time|date:'SHORT_DATETIME_FORMAT' }}{% else %}<span style="color: red">baholanmagan</span>{% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -1681,7 +1681,7 @@ def rating_set_by_subject(request, group_id, subject_id):
     if request.user == group.teacher or request.user == director:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group) & Q(
-                pupil_attendance__subject=subject) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))
+                pupil_attendance__subject=subject) & Q(pupil_attendance__is_visited=True) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))
 
         if not pupils.exists():
             messages.error(request, f'O\'quvchilar mavjud emas!')

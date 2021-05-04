@@ -1,67 +1,81 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
     <div class="row">
         <div class="col-md-12">
             <div class="callout callout-info">
-                <h5><i class="fas fa-info"></i>  Yangilanishlar:</h5>
-                Test savollari qo'shildi. Endi siz trenirofka va imtihon varinatlari orqali 700 talik testni yechish imkoniyatiga egasiz.
+
+                <h5><i class="fas fa-info"></i>  <b>Yangilanishlar:</b></h5>
+                     <br>
+                <b>Hurmatli foydalanuvchi! Endilikda siz o'quvchilarning qaysi vaqtdan qaysi vaqtgacha to'lov amalga oshirilganliklari haqida yanayam to'liqroq ma'lumot olish imkoniyatiga egasiz. Bundan tashqari guruhlar yilma yil qilib alohida qilib ajratilgan.</b>
+
+                <hr>
+                <br>
+                <img src="{% static 'online/messeges/Screenshot_236.png' %}" style="display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  width: 70%;" alt="Screenshot-236" >
             </div>
-        </div>
-    </div>
-    <section class="content">
-
-        <!-- Default box -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">BUXORO RAVON AVTOMAKTAB</h3>
-
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
-                            title="Collapse">
-                        <i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"
-                            title="Remove">
-                        <i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="card-body">
-                Hurmatli o'quvchi o'qishingiz tugashiga 1 oy qoldi o'qish pulini to'lang !
-            </div>
-            <!-- /.card-body -->
-            <div class="card-footer">
-
-            </div>
-            <!-- /.card-footer-->
-        </div>
-        <!-- /.card -->
-
-    </section>
-    <div class="row">
-        <div class="col-md-12">
-            <h4>So'nggi xabarlar</h4>
-
-
-            <div class="post clearfix">
-                <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="/static/online/man.jpg" alt="User Image">
-                    <span class="username">
-                          <a href="#">Salohiddin Yoqubov</a>
-                        </span>
-                    <span class="description">Yuborilgan vaqti - 3 kun oldin</span>
-                </div>
-                <!-- /.user-block -->
-                <p>
-                    Hurmatli o'quvchi ! Darslarga o'z vaqtida qatnashib boring. Videodarsni ko'rganingizdan so'ng test ochiladi !
-                </p>
-                <p>
-                    <a href="#" ><i class="fas fa-reply mr-1 ml-2"></i> Javob berish</a>
-                </p>
-            </div>
-
-
 
         </div>
     </div>
+{#    <section class="content">#}
+{##}
+{#        <!-- Default box -->#}
+{#        <div class="card">#}
+{#            <div class="card-header">#}
+{#                <h3 class="card-title">BUXORO RAVON AVTOMAKTAB</h3>#}
+{##}
+{#                <div class="card-tools">#}
+{#                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"#}
+{#                            title="Collapse">#}
+{#                        <i class="fas fa-minus"></i></button>#}
+{#                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"#}
+{#                            title="Remove">#}
+{#                        <i class="fas fa-times"></i></button>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="card-body">#}
+{#                Hurmatli o'quvchi o'qishingiz tugashiga 1 oy qoldi o'qish pulini to'lang !#}
+{#            </div>#}
+{#            <!-- /.card-body -->#}
+{#            <div class="card-footer">#}
+{##}
+{#            </div>#}
+{#            <!-- /.card-footer-->#}
+{#        </div>#}
+{#        <!-- /.card -->#}
+{##}
+{#    </section>#}
+
+
+
+{#    <div class="row">#}
+{#        <div class="col-md-12">#}
+{#            <h4>So'nggi xabarlar</h4>#}
+{##}
+{##}
+{#            <div class="post clearfix">#}
+{#                <div class="user-block">#}
+{#                    <img class="img-circle img-bordered-sm" src="/static/online/man.jpg" alt="User Image">#}
+{#                    <span class="username">#}
+{#                          <a href="#">Salohiddin Yoqubov</a>#}
+{#                        </span>#}
+{#                    <span class="description">Yuborilgan vaqti - 3 kun oldin</span>#}
+{#                </div>#}
+{#                <!-- /.user-block -->#}
+{#                <p>#}
+{#                    Hurmatli o'quvchi ! Darslarga o'z vaqtida qatnashib boring. Videodarsni ko'rganingizdan so'ng test ochiladi !#}
+{#                </p>#}
+{#                <p>#}
+{#                    <a href="#" ><i class="fas fa-reply mr-1 ml-2"></i> Javob berish</a>#}
+{#                </p>#}
+{#            </div>#}
+{##}
+{##}
+{##}
+{#        </div>#}
+{#    </div>#}
 {% endblock content %}

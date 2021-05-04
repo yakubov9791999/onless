@@ -1,7 +1,9 @@
 from django import template
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-
+from django.utils.datastructures import MultiValueDictKeyError
+from datetime import datetime as dt
+from onless.settings import ASIA_TASHKENT_TIMEZONE
 from user.models import *
 from video.models import *
 
@@ -119,22 +121,48 @@ def get_offline_pupils(users):
     return str(users.filter(is_offline=True).count())
 
 
+@register.simple_tag(takes_context=True)
 @register.simple_tag()
-def get_group_pay(group_id):
-    group = Group.objects.get(id=group_id)
-    pupils = User.objects.filter(role='4', group=group, is_active=True)
-    total_pay = group.price * pupils.count()
-    pays = Pay.objects.filter(pupil__in=pupils, is_active=True)
-    payment = 0
-    for pay in pays:
-        payment += int(pay.payment)
-    debit = total_pay - payment
+def get_group_pay(context, group_id):
+    try:
+        request = context.get('request')
+        startdate = timezone.now().replace(year=2020, month=6, day=1)
+        stopdate = timezone.now()
 
-    return {
-        'payment': payment,
-        'debit': debit,
-        'total_pay': total_pay
-    }
+        try:
+            if request.GET['startdate'] and request.GET['startdate'] != 'None' and request.GET['startdate'] != '':
+                startdate = dt.strptime(request.GET['startdate'], "%Y-%m-%d").replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
+        except MultiValueDictKeyError:
+            pass
+
+        try:
+            if request.GET['stopdate'] and request.GET['stopdate'] != 'None' and request.GET['stopdate'] != '':
+                stopdate = dt.strptime(request.GET['stopdate'], '%Y-%m-%d').replace(tzinfo=ASIA_TASHKENT_TIMEZONE, hour=23,
+                                                                                    minute=59, second=59)
+        except MultiValueDictKeyError:
+            pass
+
+        group = Group.objects.get(id=group_id)
+        pupils = User.objects.filter(role='4', group=group, is_active=True)
+        total_pay = group.price * pupils.count()
+        pays = Pay.objects.filter(pupil__in=pupils,is_active=True, pay_date__range=[startdate,stopdate])
+
+        payment = 0
+        for pay in pays:
+            payment += int(pay.payment)
+        debit = total_pay - payment
+
+        return {
+            'payment': payment,
+            'debit': debit,
+            'total_pay': total_pay
+        }
+    except:
+        return {
+            'payment': 0,
+            'debit': 0,
+            'total_pay': 0
+        }
 
 
 @register.simple_tag()
@@ -187,3 +215,5 @@ def get_pupil_rating_or_attendance(pupil_id, date, subject_id):
     for rating in ratings:
         context.update(rating=rating.score)
     return context
+
+

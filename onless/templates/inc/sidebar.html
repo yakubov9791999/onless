@@ -49,7 +49,7 @@
                     {% include 'inc/role_sidebar/settings_page.html' %}
                     {% include 'inc/role_sidebar/support.html' %}
                 {% elif user.is_authenticated and request.user.role == '2' %}
-                    {#                                        {% include 'inc/role_sidebar/messeges_page.html' %}#}
+                                                            {% include 'inc/role_sidebar/messeges_page.html' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/send_sms_page.html' %}
                     {% include 'inc/role_sidebar/sms_settings_page.html' %}
@@ -75,7 +75,7 @@
                     {% include 'inc/role_sidebar/support.html' %}
 
                 {% elif user.is_authenticated and request.user.role == '3' %}
-                    {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
+                                        {% include 'inc/role_sidebar/messeges_page.html' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/results_page.html' %}
                     {% include 'inc/role_sidebar/payments_page.html' %}
@@ -95,7 +95,7 @@
                     {% include 'inc/role_sidebar/support.html' %}
 
                 {% elif user.is_authenticated and request.user.role == '4' %}
-                    {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
+{#                                        {% include 'inc/role_sidebar/messeges_page.html' %}#}
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/results_page.html' %}
                     {% include 'inc/role_sidebar/payments_page.html' %}
@@ -111,7 +111,7 @@
                     {% include 'inc/role_sidebar/support.html' %}
 
                 {% elif user.is_authenticated and request.user.role == '5' %}
-                    {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
+                                        {% include 'inc/role_sidebar/messeges_page.html' %}
                     {% include 'inc/role_sidebar/payments_page.html' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
 {#                    {% include 'inc/role_sidebar/attendance_page.html' %}#}
@@ -127,7 +127,7 @@
                     {% include 'inc/role_sidebar/support.html' %}
 
                 {% elif user.is_authenticated and request.user.role == '6' %}
-                    {#                    {% include 'inc/role_sidebar/messeges_page.html' %}#}
+                                        {% include 'inc/role_sidebar/messeges_page.html' %}
                     {% include 'inc/role_sidebar/videos_page.html' %}
                     {% include 'inc/role_sidebar/tests.page.html' %}
                     {% comment %} {% include 'inc/role_sidebar/traffic_rules.html' %} {% endcomment %}

@@ -4,6 +4,8 @@ import shutil
 from random import randrange
 from datetime import datetime as dt
 import datetime
+
+import pytz
 import requests
 import xlrd
 from django.contrib import messages
@@ -16,13 +18,14 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic import UpdateView
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
 from onless import settings
-from onless.settings import BASE_DIR
+from onless.settings import BASE_DIR, ASIA_TASHKENT_TIMEZONE
 from quiz.models import *
 from sign.models import Material
 from user.decorators import *
@@ -913,71 +916,58 @@ def upload_file(request):
 
 @login_required
 def bugalter_groups_list(request):
-    # total_pay = group.price * pupils.count()
-    # payments = Pay.objects.filter(pupil__in=pupils)
-    # if not payments.exists():
-    #     messages.error(request, "To'lovlar mavjud emas !")
-    # total_payments = 0
-    # for pay in payments:
-    #     total_payments += pay.payment
-    # total_debit = total_pay - total_payments
-    # context = {
-    #     'group': group,
-    #     'pupils': pupils,
-    #     'total_pay': total_pay,
-    #     'total_payments': total_payments,
-    #     'total_debit': total_debit
-    # }
+    try:
+        if request.user.role == '2' or request.user.role == '5':
+            groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
+        elif request.user.role == '3':
+            teacher = get_object_or_404(User, id=request.user.id)
+            groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
+        else:
+            return render(request, 'inc/404.html')
 
-    if request.user.role == '2' or request.user.role == '5':
-        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
-        total_pay = 0
-        for group in groups:
-            pupils_count = User.objects.filter(is_active=True, role='4', group=group).count()
-            total_pay += group.price * pupils_count
-
-        pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
-        pays = Pay.objects.filter(pupil__in=pupils, is_active=True)
-        total_payments = 0
-        for pay in pays:
-            total_payments += pay.payment
-        total_debit = total_pay - total_payments
         context = {
-            'groups': groups,
-            'total_pay': total_pay,
-            'total_payments': total_payments,
-            'total_debit': total_debit
+            'groups': groups
         }
-        if not groups.exists():
-            messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
 
-        return render(request, 'user/bugalter/groups_list.html', context)
-    elif request.user.role == '3':
-        teacher = get_object_or_404(User, id=request.user.id)
-        groups = Group.objects.filter(school=request.user.school, teacher=teacher, is_active=True).order_by('sort')
-        total_pay = 0
-        for group in groups:
-            total_pay += group.price
-        pupils = User.objects.filter(group__in=groups, is_active=True, role='4')
-        pays = Pay.objects.filter(pupil__in=pupils, is_active=True)
-        total_payments = 0
-        for pay in pays:
-            total_payments += pay.payment
-        total_debit = total_pay - total_payments
-        context = {
-            'groups': groups,
-            'total_pay': total_pay,
-            'total_payments': total_payments,
-            'total_debit': total_debit
-        }
+        try:
+            if request.GET.get('startdate') and request.GET.get('startdate') != 'None' and request.GET.get('startdate') != '':
+                context.update(startdate=request.GET.get('startdate'))
+                startdate = dt.strptime(request.GET['startdate'], "%Y-%m-%d").replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
+                if startdate > timezone.now():
+                    context.update(startdate=timezone.now().strftime('%Y-%m-%d'))
+                    messages.error(request, 'Boshlanish sana bugungi sanadan katta bo\'lishi mumkin emas!')
+                    return render(request, 'user/bugalter/groups_list.html', context)
+        except MultiValueDictKeyError:
+            pass
+
+        try:
+            if request.GET.get('stopdate') and request.GET.get('stopdate') != 'None' and request.GET.get('stopdate') != '':
+                context.update(stopdate=request.GET.get('stopdate'))
+                stopdate = dt.strptime(request.GET['stopdate'], "%Y-%m-%d").replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
+                if stopdate > timezone.now():
+                    context.update(stopdate=timezone.now().strftime('%Y-%m-%d'))
+                    messages.error(request, 'Tugash sanasi bugungi sanadan katta bo\'lishi mumkin emas!')
+                    return render(request, 'user/bugalter/groups_list.html', context)
+        except MultiValueDictKeyError:
+            pass
+
+        try:
+            if startdate and stopdate:
+                if startdate > stopdate:
+                    context.update(startdate=timezone.now().strftime('%Y-%m-%d'))
+                    context.update(stopdate=timezone.now().strftime('%Y-%m-%d'))
+                    messages.error(request, 'Boshlanish sanasi tugash sanasidan katta bo\'lishi mumkin emas!')
+                    return render(request, 'user/bugalter/groups_list.html', context)
+        except:
+            pass
 
         if not groups.exists():
             messages.error(request, "Guruhlar mavjud emas avval guruh ro'yhatdan o'tkazing !")
-
         return render(request, 'user/bugalter/groups_list.html', context)
-    else:
-        return render(request, 'inc/404.html')
 
+    except:
+        messages.error(request, "Xatolik yuz berdi! Sahifani yangilab qayta urinib ko'ring!")
+        return redirect(reverse_lazy('user:bugalter_groups_list'))
 
 @login_required
 def bugalter_group_detail(request, id):
@@ -1645,7 +1635,7 @@ def rating_set_by_group(request, id):
 
     subjects = Subject.objects.filter(
         Q(is_active=True) & Q(
-            subject_schedule__group=group) & Q(
+            subject_schedule__group=group) & Q(subject_schedule__date__range=(today_min, today_max)) & Q(
             subject_attendance__created_date__range=(today_min, today_max))).distinct()
 
     if not subjects.exists():

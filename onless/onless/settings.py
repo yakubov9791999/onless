@@ -161,9 +161,13 @@ PAYCOM_SETTINGS = {
 }
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-#This ensures you have all toolbar icons
+# This ensures you have all toolbar icons
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': None, 
-        },
-    }
+        'toolbar': None,
+    },
+}
+
+import pytz
+
+ASIA_TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")

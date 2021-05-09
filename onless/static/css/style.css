@@ -679,3 +679,71 @@ select:hover {
     font-size: 15px;
 }
 
+label {
+        margin-top: .5rem;
+        margin-bottom: unset;
+}
+
+/* The slider */
+.small-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.small-slider:before {
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .small-slider {
+    background-color: #2196F3;
+}
+
+input:focus + .small-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .small-slider:before {
+    -webkit-transform: translateX(13px);
+    -ms-transform: translateX(13px);
+    transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.small-slider.small-round {
+    border-radius: 17px;
+    width: 36px;
+    height: 21px;
+}
+
+.small-slider.small-round:before {
+    border-radius: 50%;
+}
+i {
+    cursor: pointer;
+}
+
+label.error {
+    font-size: small;
+    color: #ff0000;
+    padding: 3px;
+    margin-left: 5px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    margin-top: unset !important;
+    width: 100%;
+}

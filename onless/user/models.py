@@ -190,11 +190,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     initsatial =  models.CharField(verbose_name="F.I.O qisqartirilgani (Masalan S.T.Yoqubov)", blank=True,  max_length=255)
     role = models.CharField(verbose_name="Foydalanuvchi roli",choices=ROLE_CHOICES, max_length=15, default="2")
     school = models.ForeignKey(School,verbose_name="Avtomaktab", on_delete=models.SET_NULL, null=True, related_name='school_user', blank=True)
-    region = models.ForeignKey(Region, verbose_name="Viloyat",on_delete=models.SET_NULL, null=True, blank=True)
-    district = models.ForeignKey(District,verbose_name="Tuman", on_delete=models.SET_NULL, null=True, blank=True)
+
     email = models.EmailField(max_length=254, unique=False, blank=True, default='')
     avatar = models.ImageField(verbose_name="Foto",upload_to='user/', default='', blank=True)
-    birthday = models.DateField(verbose_name="Tug'ilgan vaqti",blank=True, null=True, default=datetime.date.today)
+    birthday = models.DateField(verbose_name="Tug'ilgan vaqti",blank=True, null=True, default=timezone.now)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.IntegerField(null=True, blank=True,
                                 validators=[MaxValueValidator(999999999), MinValueValidator(100000000)])
@@ -210,9 +209,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_offline = models.BooleanField(default=True)
 
     place_of_birth = models.CharField("Tug'ilgan joyi",max_length=255, blank=True, null=True)
-    residence_address = models.CharField("Yashash manzili",max_length=255, blank=True, null=True)
+    region = models.ForeignKey(Region, verbose_name="Yashash joyi (Viloyat)",on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(District,verbose_name="Yashash joyi (Tuman/Shahar)", on_delete=models.SET_NULL, null=True, blank=True)
+    residence_address = models.CharField("Yashash joyi (Ko'cha/Qishloq)", max_length=255, blank=True, null=True)
+
     passport_issued_time = models.DateField("Pasport berilgan vaqti",max_length=255, blank=True, null=True, default=datetime.date.today)
     passport_issued_organization = models.CharField("Pasport bergan tashkilot",max_length=255, blank=True, null=True)
+
     medical_series = models.CharField("Tibbiy ma'lumotnoma seriyasi",max_length=255, blank=True, null=True)
     medical_issued_organization = models.CharField("Tibbiy ma'lumotnoma bergan poliklinika",max_length=255, blank=True, null=True)
     medical_issued_date = models.DateField("Tibbiy ma'lumotnoma berilgan sana",max_length=255, blank=True, null=True, default=datetime.date.today)

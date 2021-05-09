@@ -354,7 +354,8 @@ def group_detail(request, id):
         if group.teacher != request.user:
             return render(request, 'inc/404.html')
 
-    if request.user.role == '2' or request.user.role == '3' or request.user.role == '5':
+    school = get_object_or_404(School, id=group.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by(
             'name')
         # pupils = []
@@ -443,8 +444,10 @@ def group_delete(request, id):
 
 @login_required
 def group_update(request, id):
-    if request.user.role == '2' or request.user.role == '3':
-        group = get_object_or_404(Group, id=id)
+    group = get_object_or_404(Group, id=id)
+    school = get_object_or_404(School, id=group.school.id)
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         form = GroupUpdateForm(instance=group, user=request.user)
         if request.POST:
             form = GroupUpdateForm(request.POST, instance=group, user=request.user)
@@ -517,25 +520,57 @@ def school_edit(request):
 
 @login_required
 def pupil_edit(request, id):
-    if request.user.role == '2' or request.user.role == '3':
-        user = get_object_or_404(User, id=id)
-        school = get_object_or_404(School, id=user.school.id)
-        form = EditPupilForm(instance=user, request=request)
+    user = get_object_or_404(User, id=id)
+    school = get_object_or_404(School, id=user.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')):
+        groups = Group.objects.filter(is_active=True, school=request.user.school)
+        regions = Region.objects.all()
         if request.POST:
-            pasport = request.POST['pasport']
+            try:
+                #
+                name = get_name(request.POST.get('name'))
+                passport = get_pasport(request.POST['passport'])
+                group = get_object_or_404(Group, id=request.POST.get('group'))
+                phone = request.POST.get('phone').replace('(', '').replace(')','').replace('-','').replace(' ','')
+                password = request.POST.get('password')
+                #
+                user.name = name
+                user.pasport = passport
+                user.group = group
+                user.phone = phone
+                user.turbo = password
+                user.set_password(password)
+                #
+                if request.POST.get('birthday'):
+                    user.birthday = datetime.datetime.strptime(request.POST.get('birthday', None), '%d.%m.%Y')
+                if request.POST.get('place_of_birth'):
+                    user.place_of_birth = request.POST.get('place_of_birth')
+                if request.POST.get('region'):
+                    user.region = get_object_or_404(Region, id=request.POST.get('region'))
+                if request.POST.get('district'):
+                    user.district = get_object_or_404(District, id=request.POST.get('district'))
+                if request.POST.get('residence_address'):
+                    user.residence_address = request.POST.get('residence_address')
+                #
+                if request.POST.get('passport_issued_organization'):
+                    user.passport_issued_organization = request.POST.get('passport_issued_organization')
+                if request.POST.get('passport_issued_time'):
+                    user.passport_issued_time = datetime.datetime.strptime(request.POST.get('passport_issued_time', None), '%d.%m.%Y')
+                #
+                if request.POST.get('medical_series'):
+                    user.medical_series = request.POST.get('medical_series')
+                if request.POST.get('medical_issued_organization'):
+                    user.medical_issued_organization = request.POST.get('medical_issued_organization')
+                if request.POST.get('medical_issued_date'):
+                    user.medical_issued_date = datetime.datetime.strptime(
+                        request.POST.get('medical_issued_date', None), '%d.%m.%Y')
+                #
+                if request.POST.get('certificate_series'):
+                    user.certificate_series = request.POST.get('certificate_series')
+                if request.POST.get('certificate_number'):
+                    user.certificate_number = request.POST.get('certificate_number')
+                user.save()
 
-            pasport = get_pasport(pasport)
-            form = EditPupilForm(request.POST, request.FILES, instance=user, request=request)
-            if form.is_valid():
-                name = form.cleaned_data['name']
-                name = get_name(name)
-                form = form.save(commit=False)
-                form.name = name
-                form.pasport = pasport
-                form.username = pasport
-                user.set_password(request.POST['turbo'])
-                form.save()
-                messages.success(request, 'Muvaffaqiyatli tahrirlandi!')
 
                 if school.send_sms_edit_pupil:
                     if school.sms_count >= 2:
@@ -553,15 +588,13 @@ def pupil_edit(request, id):
                 else:
                     messages.success(request,
                                      "O'quvchi muvaffaqiyatli tahrirlandi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
+            except:
+                messages.error(request, "Formani to'ldirishda xatolik!")
 
-                form = EditPupilForm(instance=user, request=request)
-            else:
-                messages.error(request, "Formani to'ldirishda xatolik !")
-        else:
-            form = EditPupilForm(instance=user, request=request)
         context = {
-            'form': form,
             'user': user,
+            'groups':groups,
+            'regions': regions
         }
         return render(request, 'user/pupil/pupil_edit.html', context)
     else:
@@ -680,8 +713,9 @@ def search(request):
 
 @login_required
 def pupil_delete(request, id):
-    if request.user.role == '2':
-        pupil = get_object_or_404(User, id=id)
+    pupil = get_object_or_404(User, id=id)
+    school = get_object_or_404(School, id=pupil.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         pupil.delete()
     else:
         return render(request, 'inc/404.html')
@@ -708,9 +742,9 @@ def workers_list(request):
 
 @login_required
 def worker_edit(request, id):
-    if request.user.role == '2':
-        worker = get_object_or_404(User, id=id)
-        school = get_object_or_404(School, id=worker.school.id)
+    worker = get_object_or_404(User, id=id)
+    school = get_object_or_404(School, id=worker.school.id)
+    if (request.user.school == school and request.user.role == '2' and (worker.role == '3' or worker.role == '5' or worker.role == '6')):
         form = EditWorkerForm(instance=worker)
         if request.POST:
             pasport = get_pasport(request.POST['pasport'])
@@ -756,8 +790,9 @@ def worker_edit(request, id):
 
 @login_required
 def worker_delete(request, id):
-    if request.user.role == '2':
-        worker = get_object_or_404(User, id=id)
+    worker = get_object_or_404(User, id=id)
+    school = get_object_or_404(School, id=worker.school.id)
+    if (request.user.school == school and request.user.role == '2'):
         worker.delete()
     else:
         return render(request, 'inc/404.html')
@@ -971,8 +1006,10 @@ def bugalter_groups_list(request):
 
 @login_required
 def bugalter_group_detail(request, id):
-    if request.user.role == '2' or request.user.role == '5' or request.user.role == '3':
-        group = get_object_or_404(Group, id=id)
+    group = get_object_or_404(Group, id=id)
+    school = get_object_or_404(School, id=group.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+
         pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
         total_pay = group.price * pupils.count()
         payments = Pay.objects.filter(pupil__in=pupils, is_active=True)
@@ -1040,12 +1077,11 @@ def set_pay(request):
 
 @login_required
 def remove_pay(request, id):
-    if request.user.role == '5' or request.user.role == '2':
+    pay = Pay.objects.get(id=id)
+    school = get_object_or_404(School, id=pay.pupil.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '5') and (pay.pupil.role == '4')):
         try:
-            pay = Pay.objects.get(id=id)
             payment = pay.payment
-            pupil = pay.pupil
-
             if request.POST.get('removed_reason'):
                 pay.removed_reason = request.POST.get('removed_reason')
 
@@ -1201,35 +1237,27 @@ def history_view_video_all(request):
 @login_required
 def history_pupil_view_video(request, id):
     pupil = get_object_or_404(User, id=id)
-    if pupil.role == '4':
-        group = get_object_or_404(Group, id=pupil.group.id)
-    videos = Video.objects.filter(is_active=True).order_by('id')
-    if not videos.exists():
-        messages.error(request, "Ko'rishlar mavjud emas !")
-    context = {
-        'videos': videos,
-        'pupil': pupil
-    }
-    director = User.objects.filter(school=pupil.school, role=2).first()
-    try:
-        if request.user == pupil:
-            return render(request, 'user/pupil/history_pupil_view_video.html', context)
-        elif request.user == group.teacher:
-            return render(request, 'user/pupil/history_pupil_view_video.html', context)
-        elif request.user == director:
-            return render(request, 'user/pupil/history_pupil_view_video.html', context)
-        else:
-            return render(request, 'inc/404.html')
-    except UnboundLocalError:
+    school = get_object_or_404(School, id=pupil.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (request.user.school == school and request.user == pupil and request.user.role == '4'):
+
+        videos = Video.objects.filter(is_active=True).order_by('id')
+        if not videos.exists():
+            messages.error(request, "Ko'rishlar mavjud emas !")
+        context = {
+            'videos': videos,
+            'pupil': pupil
+        }
+
         context.update(pupil=pupil)
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
-
+    else:
+        return render(request, 'inc/404.html')
 
 @login_required
 def get_district(request):
     if request.is_ajax():
         districts = District.objects.filter(region=request.GET.get('region'))
-        options = "<option>--- --- ---</option>"
+        options = ""
         for district in districts:
             options += f"<option value='{district.id}'>{district.title}</option>"
         return HttpResponse(options)
@@ -1359,33 +1387,38 @@ def attendance_groups_list(request):
 @login_required
 def attendance_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    school = get_object_or_404(School, id=group.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
 
-    subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(categories__title=group.category) & Q(
-            subject_schedule__date__range=(today_min, today_max)) & Q(
-            subject_schedule__group=group)).distinct()
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
-    if not subjects.exists():
-        messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
-        return redirect(reverse_lazy('user:attendance_groups_list'))
-    director = User.objects.filter(school=request.user.school, role=2).first()
-    if request.user == group.teacher or request.user == director:
-        context = {
-            'group': group,
-            'subjects': subjects
-        }
-        return render(request, 'user/attendance/attendance_set_by_group.html', context)
+        subjects = Subject.objects.filter(
+            Q(is_active=True) & Q(categories__title=group.category) & Q(
+                subject_schedule__date__range=(today_min, today_max)) & Q(
+                subject_schedule__group=group)).distinct()
+
+        if not subjects.exists():
+            messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
+            return redirect(reverse_lazy('user:attendance_groups_list'))
+        director = User.objects.filter(school=request.user.school, role=2).first()
+        if request.user == group.teacher or request.user == director:
+            context = {
+                'group': group,
+                'subjects': subjects
+            }
+            return render(request, 'user/attendance/attendance_set_by_group.html', context)
+        else:
+            messages.error(request,
+                           f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash guruh rahbari va maktab rahbariga ruxsat berilgan!')
+            return redirect(reverse_lazy('user:attendance_groups_list'))
     else:
-        messages.error(request,
-                       f'{group.category}-{group.number} {group.year} guruhi davomatini belgilash guruh rahbari va maktab rahbariga ruxsat berilgan!')
-        return redirect(reverse_lazy('user:attendance_groups_list'))
-
+        return render(request, 'inc/404.html')
 
 @login_required
 def attendance_set_by_subject(request, group_id, subject_id):
     group = get_object_or_404(Group, id=group_id)
+    school = get_object_or_404(School, id=group.school.id)
     subject = get_object_or_404(Subject, id=subject_id)
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
@@ -1396,7 +1429,7 @@ def attendance_set_by_subject(request, group_id, subject_id):
         messages.error(request, f'Jadval bo\'yicha bugunga biriktirilgan fanlar mavjud emas!')
         return redirect(reverse_lazy('user:attendance_groups_list'))
     director = User.objects.filter(school=request.user.school, role=2).first()
-    if request.user == group.teacher or request.user == director:
+    if (request.user == group.teacher or request.user == director) and request.user.school == school:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group))
 
@@ -1630,29 +1663,32 @@ def rating_groups_list(request):
 @login_required
 def rating_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    school = get_object_or_404(School, id=group.school.id)
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
-    subjects = Subject.objects.filter(
-        Q(is_active=True) & Q(
-            subject_schedule__group=group) & Q(subject_schedule__date__range=(today_min, today_max)) & Q(
-            subject_attendance__created_date__range=(today_min, today_max))).distinct()
+        subjects = Subject.objects.filter(
+            Q(is_active=True) & Q(
+                subject_schedule__group=group) & Q(subject_schedule__date__range=(today_min, today_max)) & Q(
+                subject_attendance__created_date__range=(today_min, today_max))).distinct()
 
-    if not subjects.exists():
-        messages.error(request, f'Davomat belgilangan fanlar mavjud emas!')
-        return redirect(reverse_lazy('user:rating_groups_list'))
-    director = User.objects.filter(school=request.user.school, role=2).first()
-    if request.user == group.teacher or request.user == director:
-        context = {
-            'group': group,
-            'subjects': subjects
-        }
-        return render(request, 'user/rating/rating_set_by_group.html', context)
+        if not subjects.exists():
+            messages.error(request, f'Davomat belgilangan fanlar mavjud emas!')
+            return redirect(reverse_lazy('user:rating_groups_list'))
+        director = User.objects.filter(school=request.user.school, role=2).first()
+        if request.user == group.teacher or request.user == director:
+            context = {
+                'group': group,
+                'subjects': subjects
+            }
+            return render(request, 'user/rating/rating_set_by_group.html', context)
+        else:
+            messages.error(request,
+                           f'{group.category}-{group.number} {group.year} guruhi baholarini qo\'yish faqatgina guruh rahbari va maktab rahbariga ruxsat berilgan!')
+            return redirect(reverse_lazy('user:rating_groups_list'))
     else:
-        messages.error(request,
-                       f'{group.category}-{group.number} {group.year} guruhi baholarini qo\'yish faqatgina guruh rahbari va maktab rahbariga ruxsat berilgan!')
-        return redirect(reverse_lazy('user:rating_groups_list'))
-
+        return render(request, 'inc/404.html')
 
 @login_required
 def rating_set_by_subject(request, group_id, subject_id):

@@ -23,6 +23,7 @@ def pupil_result(id):
     answer_true = int(old_answer_true) + int(new_answer_true)
     answer_false = int(old_answer_false) + int(new_answer_false)
     answer_count = int(old_answer_count) + int(new_answer_count)
+
     try:
         res = int(answer_true * 100 / answer_count)
     except ZeroDivisionError:

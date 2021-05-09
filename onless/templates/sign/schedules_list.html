@@ -242,7 +242,7 @@
                     save = $(this).data('save')
 
                 $('.schedule_datepicker').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
 
                         schedules.push($(this).val())
                     }
@@ -285,13 +285,13 @@
                 })
 
                 $('.lesson_time').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         $(this).attr('disabled', true)
                     }
                 })
 
                 $('.teacher').each(function () {
-                    if ($(this).data('forloop') == forloop) {
+                    if ($(this).data('forloop') === forloop) {
                         $(this).attr('disabled', true)
                     }
                 })

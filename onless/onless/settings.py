@@ -123,8 +123,9 @@ PAYMENT_VARIANTS = {
 
 CLICK_SETTINGS = {
     'service_id': '17367',
-    'merchant_id':'12584',
-    'secret_key':'tVhBORlLRo8AN'
+    'merchant_id': '12584',
+    'secret_key': 'tVhBORlLRo8AN',
+    'merchant_user_id': 18969,
 }
 
 LANGUAGE_CODE = 'uz-UZ'

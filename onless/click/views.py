@@ -16,21 +16,19 @@ def create_order_url(request):
 
 class OrderCheckAndPayment(ClickUz):
     def check_order(self, order_id: str, amount: str):
-        send_message_to_developer('order_id ' + order_id + '/n' + 'amount ' + amount)
+        send_message_to_developer('check   order_id ' + order_id + ' ' + 'amount ' + amount)
         return self.ORDER_FOUND
 
     def successfully_payment(self, order_id: str, transaction: object):
-        send_message_to_developer('order_id ' + order_id + 'transaction '+ transaction)
-        return HttpResponse('SUCCESSFULLY PAYMENT')
+        send_message_to_developer('success  order_id ' + order_id + 'transaction '+ transaction)
+
 
 class TestView(ClickUzMerchantAPIView):
     VALIDATE_CLASS = OrderCheckAndPayment
 
 
 def success_order(request):
-    send_message_to_developer('success ' + request.GET)
-
-    return HttpResponse(request.GET)
+    send_message_to_developer('success')
 
 # from clickuz import ClickUz
 #

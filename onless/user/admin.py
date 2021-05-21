@@ -58,7 +58,7 @@ class RegionAdmin(admin.ModelAdmin):
 
 
 @admin.register(Contact)
-class ConatctAdmin(admin.ModelAdmin):
+class ContactAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'text']
     list_display_links = ['user']
     save_on_top = True

@@ -24,6 +24,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
+
 from onless import settings
 from onless.settings import BASE_DIR, ASIA_TASHKENT_TIMEZONE
 from quiz.models import *
@@ -2051,27 +2052,19 @@ def modify_checkbox_send_sms(request):
 
 @login_required
 def payment_payme(request):
-    if request.POST:
-        URL = 'https://test.paycom.uz/'
-        KEY = 'dZp&k%s@Qm72ADXHdbK4EWnRrEf&R@xmnUvk'
-        merchant_id = '602a69da2f3eb10fc98597ee'
+    from clickuz import ClickUz
+    from click.models import Order
 
-        headers = {
-            'KEY': KEY,
-            'merchant_id': merchant_id
-        }
-        params = {
-            "method": "CheckPerformTransaction",
-            "params": {
-                "amount": 100000,
-                "account": {
-                    "phone": "919791999"
-                }
-            }
-        }
-        r = requests.post(url=URL, headers=headers, data=params)
-        print(r.text)
-        return HttpResponse(r.text)
+    order = Order.objects.create(amount=1000,user=request.user)
+    url = ClickUz.generate_url(order_id=order.id, amount=order.amount,return_url='http://127.0.0.1:8000/user/payment-payme/')
+    print(url)
+    if request.POST:
+        print('POST')
+        print(request.POST)
+    if request.GET:
+        print("GET")
+        print(request.GET)
+    return HttpResponse(url)
 
 
 @login_required

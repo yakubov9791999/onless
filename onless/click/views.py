@@ -1,18 +1,29 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from . import utils
-from . import Services
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from clickuz import ClickUz
+from django.shortcuts import redirect
+from clickuz.views import ClickUzMerchantAPIView
+from clickuz import ClickUz
+from click.models import Order
 
-# @csrf_exempt
-def prepare(request):
-    print(request.POST)
-    return utils.prepare(request)
+@login_required
+def create_order_url(request):
+    order = Order.objects.create(amount=1000,user=request.user)
+    url = ClickUz.generate_url(order_id=order.id, amount=order.amount,return_url='http://onless.uz/click/transaction/')
+    return redirect(url)
 
-@csrf_exempt
-def complete(request):
-    return utils.complete(request)
+class OrderCheckAndPayment(ClickUz):
+    def check_order(self, order_id: str, amount: float):
+        print('CHECK ORDER')
+        print(order_id)
+        print(amount)
+        return self.ORDER_FOUND
 
-@csrf_exempt
-def service(request, service_type):
-    service = Services(request.POST, service_type)
-    return JsonResponse(service.api())
+    def successfully_payment(self, order_id: str, transaction: object):
+        print('SUCCESSFULLY PAYMENT')
+        print(order_id)
+        print(transaction)
+        return HttpResponse('SUCCESSFULLY PAYMENT')
+
+class TestView(ClickUzMerchantAPIView):
+    VALIDATE_CLASS = OrderCheckAndPayment

@@ -18,7 +18,7 @@
                     <div class="row justify-content-around">
                         <div class="col-6">
                             <!-- small box -->
-                            <form action="{% url 'user:payment_payme' %}" method="POST">
+                            <form action="{% url 'click:create_order_url' %}" method="POST">
                                 {% csrf_token %}
                                 <div class="small-box bg-gradient-navy">
                                     <div class="inner">

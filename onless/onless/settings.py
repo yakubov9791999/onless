@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'paycom',
     'landing',
     'django_summernote',
+    'my_payme',
+    'clickuz',
 
 ]
 
@@ -119,6 +121,12 @@ PAYMENT_VARIANTS = {
 
 }
 
+CLICK_SETTINGS = {
+    'service_id': '17367',
+    'merchant_id':'12584',
+    'secret_key':'tVhBORlLRo8AN'
+}
+
 LANGUAGE_CODE = 'uz-UZ'
 
 TIME_ZONE = 'Asia/Tashkent'
@@ -159,6 +167,17 @@ PAYCOM_SETTINGS = {
         "KEY_2": None  # or "type"
     }
 }
+
+PAYME_SETTINGS = {
+    'DEBUG': True,  # True - test mode, False - production mode
+    'ID': '',
+    'SECRET_KEY': '',
+    'ACCOUNTS': {
+        'KEY_1': 'order_id',
+        'KEY_2': '',
+    }
+}
+
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 # This ensures you have all toolbar icons

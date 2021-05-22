@@ -20,10 +20,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.static import serve
 
-from paycom.views import TestView
+
 
 urlpatterns = [
-                  path('bahor/', admin.site.urls),
+                  path('yoz/', admin.site.urls),
                   path('', include('landing.urls')),
                   path('video/', include('video.urls')),
                   path('sign/', include('sign.urls')),

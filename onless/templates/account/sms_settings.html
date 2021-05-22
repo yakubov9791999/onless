@@ -5,8 +5,7 @@
 
         <!-- left column -->
         <div class="col-12" style="margin: auto">
-            <div class="alert alert-danger text-center"><b>DIQQAT! To'lov tizimlari ishlari yakunlanmagani sababli,
-                972800809, 906366264 raqamlariga qo'ng'iroq qilib sms xarid qilishingiz mumkin!</b></div>
+            {% include 'inc/messages.html' %}
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -29,12 +28,14 @@
                                     <div class="icon">
                                         <i class="fas fa-money-check"></i>
                                     </div>
-                                    <button type="submit" style="width: 100%" class="small-box-footer btn"> Hisobni
+                                    <button id="addAmountBtn" type="submit" style="width: 100%"
+                                            class="small-box-footer btn"> Hisobni
                                         to'ldirish <i
                                                 class="fas fa-arrow-circle-right"></i></button>
 
                                 </div>
                             </form>
+
                         </div>
 
                         {#                        <div class="col-4">#}
@@ -320,7 +321,7 @@
 {% endblock content %}
 
 {% block bottom %}
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
         $(document).ready(function () {
             var addPupil = '{{ request.user.school.send_sms_add_pupil }}',
@@ -331,47 +332,47 @@
                 addWorker = '{{ request.user.school.send_add_worker }}',
                 editWorker = '{{ request.user.school.send_sms_edit_worker }}'
 
-                if (addPupil === 'True') {
-                    addPupil = true
-                }else{
-                    addPupil = false
-                }
+            if (addPupil === 'True') {
+                addPupil = true
+            } else {
+                addPupil = false
+            }
 
-                if (editPupil === 'True') {
-                    editPupil = true
-                }else{
-                    editPupil = false
-                }
+            if (editPupil === 'True') {
+                editPupil = true
+            } else {
+                editPupil = false
+            }
 
-                if (attendancePupil === 'True') {
-                    attendancePupil = true
-                }else{
-                    attendancePupil = false
-                }
+            if (attendancePupil === 'True') {
+                attendancePupil = true
+            } else {
+                attendancePupil = false
+            }
 
-                if (paymentPupil === 'True') {
-                    paymentPupil = true
-                }else{
-                    paymentPupil = false
-                }
+            if (paymentPupil === 'True') {
+                paymentPupil = true
+            } else {
+                paymentPupil = false
+            }
 
-                if (ratingPupil === 'True') {
-                    ratingPupil = true
-                }else{
-                    ratingPupil = false
-                }
+            if (ratingPupil === 'True') {
+                ratingPupil = true
+            } else {
+                ratingPupil = false
+            }
 
-                if (addWorker === 'True') {
-                    addWorker = true
-                }else{
-                    addWorker = false
-                }
+            if (addWorker === 'True') {
+                addWorker = true
+            } else {
+                addWorker = false
+            }
 
-                 if (editWorker === 'True') {
-                    editWorker = true
-                }else{
-                    editWorker = false
-                }
+            if (editWorker === 'True') {
+                editWorker = true
+            } else {
+                editWorker = false
+            }
 
 
             $('#checkbox_add_pupil').on('change', function () {
@@ -493,7 +494,51 @@
 
             })
 
+            $('#addAmountBtn').on('click', function (e) {
+                e.preventDefault()
+                const {value: formValues} = Swal.fire({
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    confirmButtonText: 'Keyingi',
+                    cancelButtonText: 'Bekor qilish',
+                    title: 'To\'lov summasini kiriting!',
+                    html:
+                        '<label style="float: left; margin-bottom: 0" class="label_required" for="amount">Summa</label>' +
+                        '<input style="margin-top: 4px" id="amount" class="form-control" placeholder="Masalan: 100000">',
 
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        return [
+                            document.getElementById('amount').value,
+
+                        ]
+                    },
+
+                }).then(function (confirm) {
+
+                    if (confirm.isConfirmed) {
+                        var amount = confirm.value[0]
+                        if (amount !== '') {
+
+                            window.location.href = "{% url 'click:create_order_url' %}?amount=12345".replace(/12345/, amount.toString());
+
+                        } else {
+                            error_toast()
+                        }
+
+
+                    } else {
+                        error_toast()
+                    }
+                });
+            })
         });
     </script>
 

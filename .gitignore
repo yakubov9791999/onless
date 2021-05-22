@@ -89,3 +89,4 @@ onless/sign/migrations/
 onless/onless/local_settings.py
 onless/practical/migrations/
 onless/static/
+onless/click/migrations/

@@ -29,18 +29,35 @@ def create_order_url(request):
 class OrderCheckAndPayment(ClickUz):
     def check_order(self, order_id: str, amount: str):
         send_message_to_developer('check   order_id ' + order_id + ' ' + 'amount ' + amount)
+
         if order_id:
+            print(order_id, 34)
             try:
-                get_object_or_404(Order, id=order_id)
-                return self.ORDER_FOUND
+                order = get_object_or_404(Order, id=order_id)
+                print(amount, 37)
+                print(str(order.amount), 38)
+
+                # send_message_to_developer('type ' + type(amount) + ' order-amount ' + type(order.amount))
+                if amount == str(order.amount):
+                    print(42)
+                    return self.ORDER_FOUND
+                    send_message_to_developer('ORDER_FOUND')
+                else:
+                    print(46)
+                    send_message_to_developer('INVALID_AMOUNT' + amount + ' ' + order.amount)
+                    return self.INVALID_AMOUNT
             except:
+                print(50)
+                send_message_to_developer('ORDER_NOT_FOUND')
                 return self.ORDER_NOT_FOUND
 
 
     def successfully_payment(self, order_id: str, transaction: object):
-        send_message_to_developer('successfully_payment  order_id ' + order_id + 'transaction '+ transaction)
+        # send_message_to_developer('successfully_payment  order_id ' + order_id + 'transaction '+ transaction)
+        print(transaction)
         order = get_object_or_404(Order, id=order_id)
-        send_message_to_developer('successfully_payment2  order' + order)
+        print(order)
+        # send_message_to_developer('successfully_payment2  order' + order)
 
 class TestView(ClickUzMerchantAPIView):
     VALIDATE_CLASS = OrderCheckAndPayment

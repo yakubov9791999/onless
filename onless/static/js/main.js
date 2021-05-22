@@ -318,3 +318,67 @@ function errorFunction() {
             '</svg> Xatolik yuz berdi! Sahifani yangilab qayta urinib ko\'ring'
     })
 }
+
+
+function success_toast(success_url) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        background: '#8ff8ac',
+        timer: 5000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
+        // willClose: (close) => {
+        //    window.location.href = success_url
+        // }
+    })
+    Toast.fire({
+        icon: 'success',
+        title: 'Muvaffaqiyatli saqlandi!'
+    })
+}
+
+function edit_toast() {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        background: '#8ff8ac',
+        timer: 5000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
+        // willClose: (close) => {
+        //    window.location.href = success_url
+        // }
+    })
+    Toast.fire({
+        icon: 'success',
+        title: 'Muvaffaqiyatli tahrirlandi!'
+    })
+}
+
+function error_toast() {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        background: '#ffa2a2',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+    Toast.fire({
+        icon: 'error',
+        title: 'Bekor qilindi!'
+    })
+}

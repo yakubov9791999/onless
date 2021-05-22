@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'payments',
     'click',
     'rest_framework',
-    'paycomuz',
-    'paycom',
     'landing',
     'django_summernote',
     'my_payme',
@@ -122,8 +120,8 @@ PAYMENT_VARIANTS = {
 }
 
 CLICK_SETTINGS = {
-    'service_id': '17367',
-    'merchant_id': '12584',
+    'service_id': 17367,
+    'merchant_id': 12584,
     'secret_key': 'tVhBORlLRo8AN',
     'merchant_user_id': 18969,
 }

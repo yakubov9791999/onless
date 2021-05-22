@@ -34,7 +34,7 @@ urlpatterns = [
                   # path('payments/', include('payments.urls')),
                   # path('payments/', include('click.urls')),
                   # path('paycom/', TestView.as_view()),
-                  # path('api/payme/', include('my_payme.urls')),
+                  path('payme/', include('my_payme.urls')),
                   path('click/', include('click.urls'))
                   # path('summernote/', include('django_summernote.urls')),
 

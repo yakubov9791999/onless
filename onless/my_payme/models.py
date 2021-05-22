@@ -1,34 +1,28 @@
 from django.db import models
 
 
-class Transaction(models.Model):
-    PROCESS = 0
-    PAID = 1
-    FAILED = 2
+class PaymeTransaction(models.Model):
+    PROCESSING = 'processing'
+    SUCCESS = 'success'
+    FAILED = 'failed'
+    CANCELED = 'canceled'
     STATUS = (
-        (PROCESS, 'processing'),
-        (PAID, 'paid'),
+        (PROCESSING, 'processing'),
+        (SUCCESS, 'success'),
         (FAILED, 'failed'),
+        (CANCELED, 'canceled')
     )
 
-    trans_id = models.CharField(max_length=255)
+    _id = models.CharField(max_length=255)
     request_id = models.IntegerField()
-    amount = models.DecimalField(decimal_places=2, default=0.00, max_digits=10)
-    account = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=10, default=PROCESS, choices=STATUS)
-    create_time = models.DateTimeField(auto_now_add=True)
-    pay_time = models.DateTimeField(auto_now=True)
+    order_key = models.CharField(max_length=255, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    state = models.IntegerField(blank=True, null=True)
+    status = models.CharField(choices=STATUS, default='processing', max_length=55)
+    perform_datetime = models.CharField(null=True, max_length=255)
+    cancel_datetime = models.CharField(null=True, max_length=255)
+    created_datetime = models.CharField(null=True, max_length=255)
+    reason = models.IntegerField(null=True)
 
-    def create_transaction(self, trans_id, request_id, amount, account, status):
-        Transaction.objects.create(
-            trans_id=trans_id,
-            request_id=request_id,
-            amount=amount / 100,
-            account=account,
-            status=status
-        )
-
-    def update_transaction(self, trans_id, status):
-        trans = Transaction.objects.get(trans_id=trans_id)
-        trans.status = status
-        trans.save()
+    def __str__(self):
+        return f"{self.id}"

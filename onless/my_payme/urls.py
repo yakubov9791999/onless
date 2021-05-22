@@ -1,9 +1,10 @@
 from django.urls import path
-from my_payme import views
 
+from .payme import PayMeView
+
+app_name = 'payme'
 urlpatterns = [
-    path('card/create/', views.CardCreateApiView.as_view(), name='card_create'),
-    path('card/verify/', views.CardVerifyApiView.as_view(), name='card_verify'),
-    path('payment/', views.PaymentApiView.as_view(), name='payment'),
+
+    path('', PayMeView.as_view()),
 
 ]

@@ -158,22 +158,11 @@ LOGIN_REDIRECT_URL = '/home/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 PAYCOM_SETTINGS = {
-    "PAYCOM_ENV": False,  # test host
-    "TOKEN": "token",  # token
-    "SECRET_KEY": "password",  # password
+    "KASSA_ID": "602a69da2f3eb10fc98597ee",  # token
+    "TOKEN": "602a69da2f3eb10fc98597ee",  # token
+    "SECRET_KEY": "dZp&k%s@Qm72ADXHdbK4EWnRrEf&R@xmnUvk",  # password
     "ACCOUNTS": {
-        "KEY_1": "order_id",
-        "KEY_2": None  # or "type"
-    }
-}
-
-PAYME_SETTINGS = {
-    'DEBUG': True,  # True - test mode, False - production mode
-    'ID': '',
-    'SECRET_KEY': '',
-    'ACCOUNTS': {
-        'KEY_1': 'order_id',
-        'KEY_2': '',
+        "KEY": "order"
     }
 }
 

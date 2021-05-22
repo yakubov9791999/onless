@@ -1,163 +1,225 @@
-from django.shortcuts import render
-from my_payme.models import Transaction
-import requests
-from rest_framework import permissions
+# rest_framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from my_payme.serializers import SubscribeSerializer
-from my_payme.config import *
+from rest_framework import serializers
+# django
+from datetime import datetime
+from django.conf import settings
+
+# project
+from .models import Transaction
+from .serializers.payme_operation import PaycomOperationSerialzer
+from .authentication import authentication
+from .status import *
+from rest_framework.permissions import AllowAny
+from . import Paycom
 
 
-# Create your views here.
+class MerchantAPIView(APIView):
+    permission_classes = [AllowAny]
+    CHECK_PERFORM_TRANSACTION = 'CheckPerformTransaction'
+    CREATE_TRANSACTION = 'CreateTransaction'
+    PERFORM_TRANSACTION = 'PerformTransaction'
+    CHECK_TRANSACTION = 'CheckTransaction'
+    CANCEL_TRANSACTION = 'CancelTransaction'
+    http_method_names = ['post']
+    authentication_classes = []
+    VALIDATE_CLASS: Paycom = None
+    reply = None
+    ORDER_KEY = KEY = settings.PAYCOM_SETTINGS['ACCOUNTS']['KEY']
 
-
-class PaymentApiView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request):
-        serializer = SubscribeSerializer(data=request.data, many=False)
-        serializer.is_valid(raise_exception=True)
-        token = serializer.validated_data['params']['token']
-        result = self.receipts_create(token, serializer.validated_data)
-        return Response(result)
-
-    def receipts_create(self, token, validated_data):
-        print(validated_data)
-        key_2 = validated_data['params']['account'][KEY_2] if KEY_2 else None
-        data = dict(
-            id=validated_data['id'],
-            method='receipts.create',
-            params=dict(
-                amount=validated_data['params']['amount'],
-                account=dict(
-                    KEY_1=validated_data['params']['account'][KEY_1],
-                    KEY_2=key_2,
-                )
-            )
-        )
-        print(AUTHORIZATION_PAY)
-        response = requests.post(URL, json=data, headers=AUTHORIZATION_PAY)
-        print('response', response)
-        result = response.json()
-        print(result)
-
-        if 'error' in result:
-            return result
-
-        trans_id = result['result']['receipt']['_id']
-        trans = Transaction()
-        print(result)
-        trans.create_transaction(
-            trans_id=trans_id,
-            request_id=result['id'],
-            amount=result['result']['receipt']['amount'],
-            account=result['result']['receipt']['account'],
-            status=trans.PROCESS,
-        )
-        result = self.receipts_pay(trans_id, token)
-        return result
-
-    def receipts_pay(self, trans_id, token):
-        data = dict(
-            method='receipts.pay',
-            params=dict(
-                id=trans_id,
-                token=token,
-            )
-        )
-        response = requests.post(URL, json=data, headers=AUTHORIZATION_PAY)
-        result = response.json()
-        trans = Transaction()
-
-        if 'error' in result:
-            trans.update_transaction(
-                trans_id=trans_id,
-                status=trans.FAILED,
-            )
-            return result
-
-        trans.update_transaction(
-            trans_id=result['result']['receipt']['_id'],
-            status=trans.PAID,
-        )
-
-        return result
-
-
-class CardCreateApiView(APIView):
-    permission_classes = [permissions.AllowAny]
+    def __init__(self):
+        self.METHODS = {
+            self.CHECK_PERFORM_TRANSACTION: self.check_perform_transaction,
+            self.CREATE_TRANSACTION: self.create_transaction,
+            self.PERFORM_TRANSACTION: self.perform_transaction,
+            self.CHECK_TRANSACTION: self.check_transaction,
+            self.CANCEL_TRANSACTION: self.cancel_transaction
+        }
+        self.REPLY_RESPONSE = {
+            ORDER_FOUND: self.order_found,
+            ORDER_NOT_FOND: self.order_not_found,
+            INVALID_AMOUNT: self.invalid_amount
+        }
+        super(MerchantAPIView, self).__init__()
 
     def post(self, request):
-        serializer = SubscribeSerializer(data=request.data, many=False)
+        check = authentication(request)
+        if check is False or not check:
+            return Response(AUTH_ERROR)
+        serializer = PaycomOperationSerialzer(data=request.data, many=False)
         serializer.is_valid(raise_exception=True)
-        result = self.card_create(serializer.validated_data)
-        print('post : ', result)
-        return Response(result)
+        method = serializer.validated_data['method']
+        self.METHODS[method](serializer.validated_data)
 
-    def card_create(self, validated_data):
-        print('cart_create_validate :', validated_data)
-        data = dict(
+        assert self.reply != None
+        return Response(self.reply)
+
+    def check_perform_transaction(self, validated_data):
+        """
+        >>> self.check_perform_transaction(validated_data)
+        """
+        assert self.VALIDATE_CLASS != None
+        validate_class: Paycom = self.VALIDATE_CLASS()
+        result: int = validate_class.check_order(**validated_data['params'])
+        assert result != None
+        self.REPLY_RESPONSE[result](validated_data)
+
+    def create_transaction(self, validated_data):
+        """
+        >>> self.create_transaction(validated_data)
+        """
+        order_key = validated_data['params']['account']['order']
+        if not order_key:
+            raise serializers.ValidationError(f"{self.ORDER_KEY} required field")
+
+        validate_class: Paycom = self.VALIDATE_CLASS
+        result = validate_class.check_order(self, amount=validated_data['params']['amount'],
+                                            account=validated_data['params']['account'])
+        # assert result != None
+        if result != ORDER_FOUND:
+            self.REPLY_RESPONSE[result](validated_data)
+            return
+
+        _id = validated_data['params']['id']
+        check_transaction = Transaction.objects.filter(order_key=order_key).order_by('-id')
+        if check_transaction.exists():
+            transaction = check_transaction.first()
+            if transaction.status != Transaction.CANCELED and transaction._id == _id:
+                self.reply = dict(result=dict(
+                    create_time=int(transaction.created_datetime),
+                    transaction=str(transaction.id),
+                    state=CREATE_TRANSACTION
+                ))
+            else:
+                self.reply = dict(error=dict(
+                    id=validated_data['id'],
+                    code=ORDER_NOT_FOND,
+                    message=ORDER_NOT_FOND_MESSAGE
+                ))
+        else:
+            current_time = datetime.now()
+            current_time_to_string = int(round(current_time.timestamp()) * 1000)
+            obj = Transaction.objects.create(
+                request_id=validated_data['id'],
+                _id=validated_data['params']['id'],
+                amount=validated_data['params']['amount'] / 100,
+                order_key=validated_data['params']['account']['order'],
+                state=CREATE_TRANSACTION,
+                created_datetime=current_time_to_string
+            )
+            self.reply = dict(result=dict(
+                create_time=current_time_to_string,
+                transaction=str(obj.id),
+                state=CREATE_TRANSACTION
+            ))
+
+    def perform_transaction(self, validated_data):
+        """
+        >>> self.perform_transaction(validated_data)
+        """
+        id = validated_data['params']['id']
+        request_id = validated_data['id']
+        try:
+            obj = Transaction.objects.get(_id=id)
+            if obj.state not in [CANCEL_TRANSACTION_CODE]:
+                obj.state = CLOSE_TRANSACTION
+                obj.status = Transaction.SUCCESS
+                if not obj.perform_datetime:
+                    current_time = datetime.now()
+                    current_time_to_string = int(round(current_time.timestamp()) * 1000)
+                    obj.perform_datetime = current_time_to_string
+                    self.VALIDATE_CLASS.successfully_payment(self, obj.order_key, obj)
+                self.reply = dict(result=dict(
+                    transaction=str(obj.id),
+                    perform_time=int(obj.perform_datetime),
+                    state=CLOSE_TRANSACTION
+                ))
+            else:
+                obj.status = Transaction.FAILED
+
+                self.reply = dict(error=dict(
+                    id=request_id,
+                    code=UNABLE_TO_PERFORM_OPERATION,
+                    message=UNABLE_TO_PERFORM_OPERATION_MESSAGE
+                ))
+            obj.save()
+        except Transaction.DoesNotExist:
+            self.reply = dict(error=dict(
+                id=request_id,
+                code=TRANSACTION_NOT_FOND,
+                message=TRANSACTION_NOT_FOND_MESSAGE
+            ))
+
+    def check_transaction(self, validated_data):
+        """
+        >>> self.check_transaction(validated_data)
+        """
+        id = validated_data['params']['id']
+        request_id = validated_data['id']
+
+        try:
+            transaction = Transaction.objects.get(_id=id)
+            self.response_check_transaction(transaction)
+        except Transaction.DoesNotExist:
+            self.reply = dict(error=dict(
+                id=request_id,
+                code=TRANSACTION_NOT_FOND,
+                message=TRANSACTION_NOT_FOND_MESSAGE
+            ))
+
+    def cancel_transaction(self, validated_data):
+        id = validated_data['params']['id']
+        reason = validated_data['params']['reason']
+        request_id = validated_data['id']
+
+        try:
+            transaction = Transaction.objects.get(_id=id)
+            if transaction.state == 1:
+                transaction.state = CANCEL_TRANSACTION_CODE
+            elif transaction.state == 2:
+                transaction.state = PERFORM_CANCELED_CODE
+                self.VALIDATE_CLASS.cancel_payment(self, validated_data['params'], transaction)
+            transaction.reason = reason
+            transaction.status = Transaction.CANCELED
+
+            current_time = datetime.now()
+            current_time_to_string = int(round(current_time.timestamp()) * 1000)
+            if not transaction.cancel_datetime:
+                transaction.cancel_datetime = current_time_to_string
+            transaction.save()
+
+            self.response_check_transaction(transaction)
+        except Transaction.DoesNotExist:
+            self.reply = dict(error=dict(
+                id=request_id,
+                code=TRANSACTION_NOT_FOND,
+                message=TRANSACTION_NOT_FOND_MESSAGE
+            ))
+
+    def order_found(self, validated_data):
+        self.reply = dict(result=dict(allow=True))
+
+    def order_not_found(self, validated_data):
+        self.reply = dict(error=dict(
             id=validated_data['id'],
-            method='cards.create',
-            params=dict(
-                card=dict(
-                    number=validated_data['params']['card']['number'],
-                    expire=validated_data['params']['card']['expire'],
-                ),
-                # amount=validated_data['params']['amount'],
-                save=validated_data['params']['save']
-            )
-        )
-        print('data', data)
-        response = requests.post(URL, json=data, headers=AUTHORIZATION_CARD)
-        result = response.json()
-        if 'error' in result:
-            return result
+            code=ORDER_NOT_FOND,
+            message=ORDER_NOT_FOND_MESSAGE
+        ))
 
-        token = result['result']['card']['token']
-        result = self.card_get_verify_code(token)
-
-        return result
-
-    def card_get_verify_code(self, token):
-        data = dict(
-            method='cards.get_verify_code',
-            params=dict(
-                token=token
-            )
-        )
-
-        print('verify code:', data)
-        response = requests.post(URL, json=data, headers=AUTHORIZATION_CARD)
-        result = response.json()
-        if 'error' in result:
-            return result
-
-        result.update(token=token)
-        print(result)
-        return result
-
-
-class CardVerifyApiView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request):
-        serializer = SubscribeSerializer(data=request.data, many=False)
-        serializer.is_valid(raise_exception=True)
-        result = self.card_verify(serializer.validated_data)
-
-        return Response(result)
-
-    def card_verify(self, validated_data):
-        data = dict(
+    def invalid_amount(self, validated_data):
+        self.reply = dict(error=dict(
             id=validated_data['id'],
-            method='cards.verify',
-            params=dict(
-                token=validated_data['params']['token'],
-                code=validated_data['params']['code']
-            )
-        )
-        response = requests.post(URL, json=data, headers=AUTHORIZATION_CARD)
-        result = response.json()
+            code=INVALID_AMOUNT,
+            message=INVALID_AMOUNT_MESSAGE
+        ))
 
-        return result
+    def response_check_transaction(self, transaction: Transaction):
+        self.reply = dict(result=dict(
+            create_time=int(transaction.created_datetime) if transaction.created_datetime else 0,
+            perform_time=int(transaction.perform_datetime) if transaction.perform_datetime else 0,
+            cancel_time=int(transaction.cancel_datetime) if transaction.cancel_datetime else 0,
+            transaction=str(transaction.id),
+            state=transaction.state,
+            reason=transaction.reason
+        ))

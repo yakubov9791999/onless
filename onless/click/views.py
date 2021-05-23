@@ -1,3 +1,4 @@
+from clickuz.models import Transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
@@ -9,7 +10,7 @@ from django.urls import reverse_lazy
 
 from click.models import Order
 from onless.telegram_bot import send_message_to_developer
-from user.models import User
+from user.models import User, School
 
 
 @login_required
@@ -54,10 +55,14 @@ class OrderCheckAndPayment(ClickUz):
 
     def successfully_payment(self, order_id: str, transaction: object):
         # send_message_to_developer('successfully_payment  order_id ' + order_id + 'transaction '+ transaction)
-        print(transaction)
-        order = get_object_or_404(Order, id=order_id)
-        print(order)
-        # send_message_to_developer('successfully_payment2  order' + order)
+        try:
+            order = get_object_or_404(Order, id=order_id)
+            school = get_object_or_404(School, id=order.user.school.id)
+            school.money += int(order.amount)
+            school.save()
+            send_message_to_developer('successfully add payment from click ' + school.title + ': ' + order.amount)
+        except Order.DoesNotExist:
+            send_message_to_developer('successfully add payment from click, no order object not found: ' + order_id)
 
 class TestView(ClickUzMerchantAPIView):
     VALIDATE_CLASS = OrderCheckAndPayment

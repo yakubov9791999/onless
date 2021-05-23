@@ -7,7 +7,7 @@ from datetime import datetime
 from django.conf import settings
 
 # project
-from .models import Transaction
+from .models import PaycomTransaction
 from .serializers.payme_operation import PaycomOperationSerialzer
 from .authentication import authentication
 from .status import *
@@ -59,11 +59,13 @@ class MerchantAPIView(APIView):
         """
         >>> self.check_perform_transaction(validated_data)
         """
+
         assert self.VALIDATE_CLASS != None
         validate_class: Paycom = self.VALIDATE_CLASS()
         result: int = validate_class.check_order(**validated_data['params'])
         assert result != None
         self.REPLY_RESPONSE[result](validated_data)
+
 
     def create_transaction(self, validated_data):
         """
@@ -82,10 +84,10 @@ class MerchantAPIView(APIView):
             return
 
         _id = validated_data['params']['id']
-        check_transaction = Transaction.objects.filter(order_key=order_key).order_by('-id')
+        check_transaction = PaycomTransaction.objects.filter(order_key=order_key).order_by('-id')
         if check_transaction.exists():
             transaction = check_transaction.first()
-            if transaction.status != Transaction.CANCELED and transaction._id == _id:
+            if transaction.status != PaycomTransaction.CANCELED and transaction._id == _id:
                 self.reply = dict(result=dict(
                     create_time=int(transaction.created_datetime),
                     transaction=str(transaction.id),
@@ -100,10 +102,10 @@ class MerchantAPIView(APIView):
         else:
             current_time = datetime.now()
             current_time_to_string = int(round(current_time.timestamp()) * 1000)
-            obj = Transaction.objects.create(
+            obj = PaycomTransaction.objects.create(
                 request_id=validated_data['id'],
                 _id=validated_data['params']['id'],
-                amount=validated_data['params']['amount'] / 100,
+                amount=validated_data['params']['amount'],
                 order_key=validated_data['params']['account']['order'],
                 state=CREATE_TRANSACTION,
                 created_datetime=current_time_to_string
@@ -121,10 +123,10 @@ class MerchantAPIView(APIView):
         id = validated_data['params']['id']
         request_id = validated_data['id']
         try:
-            obj = Transaction.objects.get(_id=id)
+            obj = PaycomTransaction.objects.get(_id=id)
             if obj.state not in [CANCEL_TRANSACTION_CODE]:
                 obj.state = CLOSE_TRANSACTION
-                obj.status = Transaction.SUCCESS
+                obj.status = PaycomTransaction.SUCCESS
                 if not obj.perform_datetime:
                     current_time = datetime.now()
                     current_time_to_string = int(round(current_time.timestamp()) * 1000)
@@ -136,7 +138,7 @@ class MerchantAPIView(APIView):
                     state=CLOSE_TRANSACTION
                 ))
             else:
-                obj.status = Transaction.FAILED
+                obj.status = PaycomTransaction.FAILED
 
                 self.reply = dict(error=dict(
                     id=request_id,
@@ -144,7 +146,7 @@ class MerchantAPIView(APIView):
                     message=UNABLE_TO_PERFORM_OPERATION_MESSAGE
                 ))
             obj.save()
-        except Transaction.DoesNotExist:
+        except PaycomTransaction.DoesNotExist:
             self.reply = dict(error=dict(
                 id=request_id,
                 code=TRANSACTION_NOT_FOND,
@@ -159,9 +161,9 @@ class MerchantAPIView(APIView):
         request_id = validated_data['id']
 
         try:
-            transaction = Transaction.objects.get(_id=id)
+            transaction = PaycomTransaction.objects.get(_id=id)
             self.response_check_transaction(transaction)
-        except Transaction.DoesNotExist:
+        except PaycomTransaction.DoesNotExist:
             self.reply = dict(error=dict(
                 id=request_id,
                 code=TRANSACTION_NOT_FOND,
@@ -174,14 +176,14 @@ class MerchantAPIView(APIView):
         request_id = validated_data['id']
 
         try:
-            transaction = Transaction.objects.get(_id=id)
+            transaction = PaycomTransaction.objects.get(_id=id)
             if transaction.state == 1:
                 transaction.state = CANCEL_TRANSACTION_CODE
             elif transaction.state == 2:
                 transaction.state = PERFORM_CANCELED_CODE
                 self.VALIDATE_CLASS.cancel_payment(self, validated_data['params'], transaction)
             transaction.reason = reason
-            transaction.status = Transaction.CANCELED
+            transaction.status = PaycomTransaction.CANCELED
 
             current_time = datetime.now()
             current_time_to_string = int(round(current_time.timestamp()) * 1000)
@@ -190,7 +192,7 @@ class MerchantAPIView(APIView):
             transaction.save()
 
             self.response_check_transaction(transaction)
-        except Transaction.DoesNotExist:
+        except PaycomTransaction.DoesNotExist:
             self.reply = dict(error=dict(
                 id=request_id,
                 code=TRANSACTION_NOT_FOND,
@@ -214,7 +216,7 @@ class MerchantAPIView(APIView):
             message=INVALID_AMOUNT_MESSAGE
         ))
 
-    def response_check_transaction(self, transaction: Transaction):
+    def response_check_transaction(self, transaction: PaycomTransaction):
         self.reply = dict(result=dict(
             create_time=int(transaction.created_datetime) if transaction.created_datetime else 0,
             perform_time=int(transaction.perform_datetime) if transaction.perform_datetime else 0,

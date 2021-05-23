@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class PaymeTransaction(models.Model):
+class PaycomTransaction(models.Model):
     PROCESSING = 'processing'
     SUCCESS = 'success'
     FAILED = 'failed'
@@ -24,5 +24,11 @@ class PaymeTransaction(models.Model):
     created_datetime = models.CharField(null=True, max_length=255)
     reason = models.IntegerField(null=True)
 
+
     def __str__(self):
         return f"{self.id}"
+
+    class Meta:
+        # db_table = 'payme_transaction'
+        verbose_name = 'Paycom Transaction'
+        verbose_name_plural = 'Paycom Transactions'

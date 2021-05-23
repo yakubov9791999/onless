@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class PaymentSystemConfig(AppConfig):
-    name = 'my_payme'
+    name = 'paycom'
     verbose_name = 'Платежная система'

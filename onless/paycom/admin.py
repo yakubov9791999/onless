@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Transaction
+from .models import PaycomTransaction
 
 
 # Register your models here.
@@ -12,4 +12,4 @@ class TransactionAdmin(admin.ModelAdmin):
     search_fields = ['request_id', 'status', 'id', '_id']
 
 
-admin.site.register(Transaction)
+admin.site.register(PaycomTransaction)

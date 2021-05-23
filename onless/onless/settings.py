@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'landing',
     'django_summernote',
-    'my_payme',
+    'paycom',
     'clickuz',
 
 ]

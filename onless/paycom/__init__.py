@@ -1,4 +1,4 @@
-from my_payme.methods_subscribe_api import PayComResponse
+from paycom.methods_subscribe_api import PayComResponse
 
 
 class Paycom(PayComResponse):

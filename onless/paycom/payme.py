@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 
 from click.models import Order
-from user.models import User
+from user.models import User, School
 from .views import MerchantAPIView
 from paycom import Paycom
 from paycom import status
@@ -36,19 +36,15 @@ class CheckOrder(Paycom):
             return status.ORDER_NOT_FOND
 
     def successfully_payment(self, account, transaction, *args, **kwargs):
-        send_message_to_developer(f'succes payed {transaction} \n {account}')
         order_id = int(account)
         try:
-            order = Order.objects.get(id=order_id)
-
-
+            order = get_object_or_404(Order, id=order_id)
+            school = get_object_or_404(School, id=order.user.school.id)
+            school.money += int(order.amount)
+            school.save()
+            send_message_to_developer('successfully add payment from payme ' + school.title + ': ' + order.amount)
         except Order.DoesNotExist:
-            send_message_to_developer(
-                f'order = {order_id}  \n transaction = {transaction} transaction be successfully but transaction model '
-                f'object not created because accepted wrong order id payme ')
-
-        message = f'transaction successfully #{order_id} trans {transaction} '
-        send_message_to_developer(message)
+            send_message_to_developer('successfully add payment from payme, no order object not found: ' + order_id)
 
     def cancel_payment(self, account, transaction, *args, **kwargs):
         pass

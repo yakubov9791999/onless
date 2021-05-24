@@ -116,7 +116,7 @@ class School(models.Model):
     send_sms_attendance = models.BooleanField(default=False)
     send_sms_rating = models.BooleanField(default=False)
     send_sms_payment = models.BooleanField(default=False)
-
+    is_capital = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

@@ -2159,3 +2159,13 @@ def personal_exam_doc_generate(request, id):
     doc.save(response)
     return response
 
+@login_required
+def again_send_sms(request, pupil_id):
+    pupil = get_object_or_404(User, id=pupil_id)
+    school = get_object_or_404(School, id=pupil.school.id)
+
+    msg = f"Hurmatli {pupil.name}! Siz {pupil.group.category}-{pupil.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {pupil.username}%0aParol: {pupil.turbo}%0aQo'shimcha ma'lumot uchun:%0a{pupil.school.phone}"
+    msg = msg.replace(" ", "+")
+    url = f"https://developer.apix.uz/index.php?app=ws&u=jj39k&h=cb547db5ce188f49c1e1790c25ca6184&op=pv&to=998{pupil.phone}&msg={msg}"
+    response = requests.get(url)
+    return HttpResponse(f"{pupil.group.category}-{pupil.group.number} {pupil.group.year}: {pupil.name}")

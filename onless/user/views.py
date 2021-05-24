@@ -2081,8 +2081,8 @@ def personal_exam_doc_generate(request, id):
 
     if user.group.category == 'B':
         if user.school.is_capital:
-            # doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
-            doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\capital\personal_exam_b.docx")
+            doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
+            # doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\capital\personal_exam_b.docx")
             context.update(
                 name=user.name,
                 year=now.year,
@@ -2107,8 +2107,8 @@ def personal_exam_doc_generate(request, id):
             )
 
         else:
-            # doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_b.docx")
-            doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\personal_exam_b.docx")
+            doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_b.docx")
+            # doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\personal_exam_b.docx")
         # doc = DocxTemplate("static/docs/personal_exam_b.docx")
 
     elif user.group.category == 'BC':

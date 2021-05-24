@@ -107,7 +107,7 @@
                                         </label>
                                     </td>
 
-                                          <td>  <a href="{% url 'user:personal_exam_doc_generate' pupil.id %} ">Hujjatlar na'munasi</a></td>
+                                          <td>  {% if request.user.role == '2' and pupil.place_of_birth != None and pupil.residence_address != None and pupil.region != None and pupil.district != None %}<a href="{% url 'user:personal_exam_doc_generate' pupil.id %} ">Hujjatlar namunasi {% else %}Ma'lumotlar to'ldirilmagan{% endif %}</a></td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
                                             &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}">

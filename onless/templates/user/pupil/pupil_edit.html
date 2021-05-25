@@ -414,6 +414,17 @@
                             $('#passport_issued_organization').val($("#region").children("option:selected").text() + ' ')
                         }
 
+                        if ($('#passport_issued_organization').val().split(" ").pop() != 'IIB') {
+
+                            let oldValue = $('#passport_issued_organization').val()
+                            let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                            $('#passport_issued_organization').val(oldValue + afterValue)
+                        } else {
+
+                            let oldValue = $('#passport_issued_organization').val().split(' ').slice(0, 2).join(' ');
+                            let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                            $('#passport_issued_organization').val(oldValue + ' ' + afterValue)
+                        }
 
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
@@ -429,9 +440,9 @@
                     let oldValue = $('#passport_issued_organization').val()
                     let afterValue = $("#district").children("option:selected").text() + ' IIB'
                     $('#passport_issued_organization').val(oldValue + afterValue)
-                }else{
+                } else {
 
-                    let oldValue = $('#passport_issued_organization').val().split(' ').slice(0,2).join(' ');
+                    let oldValue = $('#passport_issued_organization').val().split(' ').slice(0, 2).join(' ');
                     let afterValue = $("#district").children("option:selected").text() + ' IIB'
                     $('#passport_issued_organization').val(oldValue + ' ' + afterValue)
                 }

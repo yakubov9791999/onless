@@ -18,7 +18,8 @@
                     <div class="card-body">
 
                         <label for="name" class="label_required">F.I.O</label>
-                        <input type="text" id="name" name="name" class="form-control" {% if user.name %}value="{{ user.name }}"{% endif %}
+                        <input type="text" id="name" name="name" class="form-control"
+                               {% if user.name %}value="{{ user.name }}"{% endif %}
                                placeholder="Masalan: Yoqubov Sirojiddin Tojiddinovich">
 
                         <label for="group" class="label_required">Guruh</label>
@@ -47,7 +48,8 @@
 
                         <label for="passport" class="label_required">Passport/Login</label>
                         <input type="text" id="passport" name="passport" class="form-control"
-                               placeholder="Masalan: AB3870293" {% if user.pasport %}value="{{ user.pasport }}"{% endif %}>
+                               placeholder="Masalan: AB3870293"
+                               {% if user.pasport %}value="{{ user.pasport }}"{% endif %}>
 
                         <div class="password_div mt-2">
                             <label class="label_required" for="password">Parol</label>
@@ -142,7 +144,8 @@
                                 <label class="label_required not_copy" for="passport_issued_organization">Passport
                                     berilgan joy</label>
                                 <input type="text" id="passport_issued_organization"
-                                       class="form-control" {% if user.passport_issued_organization %}value="{{ user.passport_issued_organization }}"{% endif %}
+                                       class="form-control"
+                                       {% if user.passport_issued_organization %}value="{{ user.passport_issued_organization }}"{% endif %}
                                        placeholder="Masalan: BUXORO VILOYAT BUXORO SHAHAR IIB">
                             </div>
 
@@ -171,11 +174,13 @@
 
                             <label for="medical_series" class="label_required">Tibbiy ma'lumotnoma seriyasi (0.83 med
                                 spravka)</label>
-                            <input type="text"  class="form-control" {% if user.medical_series %}value="{{ user.medical_series }}"{% endif %}
+                            <input type="text" class="form-control"
+                                   {% if user.medical_series %}value="{{ user.medical_series }}"{% endif %}
                                    placeholder="Masalan: 00859545" id="medical_series">
                             <label for="medical_issued_organization" class="label_required">Tibbiy ma'lumotnoma bergan
                                 tashkilot (poliklinika)</label>
-                            <input type="text"  class="form-control" {% if user.medical_issued_organization %}value="{{ user.medical_issued_organization }}"{% endif %}
+                            <input type="text" class="form-control"
+                                   {% if user.medical_issued_organization %}value="{{ user.medical_issued_organization }}"{% endif %}
                                    placeholder="Masalan: Yunusobod tuman poliklinikasi"
                                    id="medical_issued_organization">
 
@@ -203,10 +208,12 @@
                         <div class="certificate_information" style="display: none; ">
 
                             <label for="certificate_series" class="label_required">Guvohnoma seriyasi</label>
-                            <input type="text"  class="form-control" {% if user.certificate_series %}value="{{ user.certificate_series }}"{% endif %}
+                            <input type="text" class="form-control"
+                                   {% if user.certificate_series %}value="{{ user.certificate_series }}"{% endif %}
                                    placeholder="Masalan: 20 AA" id="certificate_series">
                             <label for="certificate_number" class="label_required">Guvohnoma raqami</label>
-                            <input type="number"  class="form-control" {% if user.certificate_number %}value="{{ user.certificate_number }}"{% endif %}
+                            <input type="number" class="form-control"
+                                   {% if user.certificate_number %}value="{{ user.certificate_number }}"{% endif %}
                                    placeholder="Masalan: 326538"
                                    id="certificate_number">
 
@@ -369,6 +376,7 @@
             $('#medical_series').inputmask({casing: 'upper'})
             $('#medical_issued_organization').inputmask({casing: 'upper'})
 
+
             $('.show_password').on('click', function () {
                 var $Passwords = $('.show_password');
                 var data = $(this).data('password')
@@ -401,12 +409,34 @@
                     },
                     success: function (message) {
                         $('#district').empty().append(message)
+
+                        if ($('#passport_issued_organization').val().split(" ").pop() != 'IIB' || $('#passport_issued_organization').val().split(" ").pop() != 'ИИБ') {
+                            $('#passport_issued_organization').val($("#region").children("option:selected").text() + ' ')
+                        }
+
+
                         {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
                         {#$('#append').append(e);#}
                         {#e.attr('id', 'myid');#}
                     }
                 });
             });
+
+            $("#district").change(function () {
+
+                if ($('#passport_issued_organization').val().split(" ").pop() != 'IIB') {
+
+                    let oldValue = $('#passport_issued_organization').val()
+                    let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                    $('#passport_issued_organization').val(oldValue + afterValue)
+                }else{
+
+                    let oldValue = $('#passport_issued_organization').val().split(' ').slice(0,2).join(' ');
+                    let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                    $('#passport_issued_organization').val(oldValue + ' ' + afterValue)
+                }
+
+            })
 
             $('#address_information_checkbox').on('change', function () {
 

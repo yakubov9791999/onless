@@ -67,5 +67,5 @@ urlpatterns = [
     path('payment-payme/', payment_payme, name='payment_payme'),
     path('personal-exam-doc-generate/<int:id>/', personal_exam_doc_generate, name='personal_exam_doc_generate'),
 
-    path('again-send-sms/<int:id>/', again_send_sms, name='again_send_sms'),
+    path('again-send-sms/<int:pupil_id>/', again_send_sms, name='again_send_sms'),
 ]

@@ -2082,10 +2082,10 @@ def personal_exam_doc_generate(request, id):
 
     if user.group.category == 'B':
         if user.school.is_capital:
-            doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
-            # doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\capital\personal_exam_b.docx")
+            # doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
+            doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\capital\personal_exam_b.docx")
             context.update(
-                name=user.name,
+                pupil_name=user.name,
                 year=now.year,
                 birthday=birthday,
                 traffic_rules_teacher=user.group.teacher,
@@ -2093,8 +2093,8 @@ def personal_exam_doc_generate(request, id):
                 group_number=user.group.number,
                 group_category=user.group.category,
                 instructors=user.group.instructors,
-                place_of_birth=user.place_of_birth,
-                residence_address=user.residence_address,
+                birth_place=user.place_of_birth,
+                address=f"{user.region.title.split(' ', 1)[0] if user.region else ''} {user.district.title if user.district else ''} {user.residence_address if user.residence_address else ''}",
                 pass_seriya=user.pasport,
                 passport_issued_time=passport_issued_time,
                 passport_issued_organization=user.passport_issued_organization,
@@ -2141,8 +2141,8 @@ def personal_exam_doc_generate(request, id):
         group_category=user.group.category,
         place_of_birth=f"{user.place_of_birth.upper() if user.place_of_birth else ''}",
         residence_address=f"{user.region.title.split(' ', 1)[0] if user.region else ''} {user.district.title.upper() if user.district else ''} {user.residence_address.upper() if user.residence_address else ''}",
-        passport_series=f"{user.pasport if user.pasport else ''}",
-        passport_org_and_date=f"{f'{user.passport_issued_organization.upper()} {passport_issued_time}' if user.passport_issued_organization else ''}",
+        passport_series_and_date=f"{f'{user.pasport}  {passport_issued_time}' if user.pasport else ''}",
+        passport_org=f"{f'{user.passport_issued_organization.upper()}' if user.passport_issued_organization else ''}",
         medical_sery_and_date=f"{f'№{user.medical_series} {medical_issued_date}' if user.medical_series else ''}",
         medical_organization=f"{user.medical_issued_organization.upper() if user.medical_issued_organization else ''}",
         school=user.school,

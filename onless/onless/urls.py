@@ -20,7 +20,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.static import serve
 
-
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
                   path('yoz/', admin.site.urls),
@@ -35,10 +36,14 @@ urlpatterns = [
                   # path('payments/', include('click.urls')),
                   # path('paycom/', TestView.as_view()),
                   path('payme/', include('paycom.urls')),
-                  path('click/', include('click.urls'))
+                  path('click/', include('click.urls')),
                   # path('summernote/', include('django_summernote.urls')),
+                  path('sentry-debug/', trigger_error),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+

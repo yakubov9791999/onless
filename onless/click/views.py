@@ -21,15 +21,15 @@ def create_order_url(request):
             user = get_object_or_404(User, id=request.user.id)
             order = Order.objects.create(amount=amount,user=user)
             url = ClickUz.generate_url(order_id=order.id, amount=amount,return_url='http://onless.uz/user/sms-settings/')
-            send_message_to_developer('create url from: ' + user + ' ' + 'amount: ' + amount)
-        return redirect(url)
+            send_message_to_developer(f'create url from: {user},amount: {amount}')
+            return redirect(url)
     except:
         messages.error(request, 'Xatolik yuz berdi! Sahifani yangilab qayta urinib ko\'ring!')
         return redirect(reverse_lazy('user:sms_settings'))
 
 class OrderCheckAndPayment(ClickUz):
     def check_order(self, order_id: str, amount: str):
-        send_message_to_developer('check   order_id ' + order_id + ' ' + 'amount ' + amount)
+        send_message_to_developer(f'check   order_id: {order_id},amount: {amount}')
         if order_id:
             try:
                 order = get_object_or_404(Order, id=order_id)
@@ -39,7 +39,7 @@ class OrderCheckAndPayment(ClickUz):
                     return self.ORDER_FOUND
                     send_message_to_developer('ORDER_FOUND')
                 else:
-                    send_message_to_developer('INVALID_AMOUNT' + amount + ' ' + order.amount)
+                    send_message_to_developer(f'INVALID_AMOUNT, amount: {amount}')
                     return self.INVALID_AMOUNT
             except:
                 send_message_to_developer('ORDER_NOT_FOUND')
@@ -55,9 +55,9 @@ class OrderCheckAndPayment(ClickUz):
             school = get_object_or_404(School, id=order.user.school.id)
             school.money += int(order.amount)
             school.save()
-            send_message_to_developer('successfully add payment from click ' + school.title + ': ' + order.amount)
+            send_message_to_developer(f'successfully add payment from click, school: {school.title} ,amount:  {order.amount}')
         except Order.DoesNotExist:
-            send_message_to_developer('successfully add payment from click, no order object not found: ' + order_id)
+            send_message_to_developer(f'successfully add payment from click, no order object not found: {order_id}')
 
 class TestView(ClickUzMerchantAPIView):
     VALIDATE_CLASS = OrderCheckAndPayment

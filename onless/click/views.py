@@ -21,7 +21,7 @@ def create_order_url(request):
             user = get_object_or_404(User, id=request.user.id)
             order = Order.objects.create(amount=amount,user=user)
             url = ClickUz.generate_url(order_id=order.id, amount=amount,return_url='http://onless.uz/user/sms-settings/')
-
+            send_message_to_developer('create url from: ' + user + ' ' + 'amount: ' + amount)
         return redirect(url)
     except:
         messages.error(request, 'Xatolik yuz berdi! Sahifani yangilab qayta urinib ko\'ring!')
@@ -30,25 +30,18 @@ def create_order_url(request):
 class OrderCheckAndPayment(ClickUz):
     def check_order(self, order_id: str, amount: str):
         send_message_to_developer('check   order_id ' + order_id + ' ' + 'amount ' + amount)
-
         if order_id:
-            print(order_id, 34)
             try:
                 order = get_object_or_404(Order, id=order_id)
-                print(amount, 37)
-                print(str(order.amount), 38)
 
                 # send_message_to_developer('type ' + type(amount) + ' order-amount ' + type(order.amount))
                 if amount == str(order.amount):
-                    print(42)
                     return self.ORDER_FOUND
                     send_message_to_developer('ORDER_FOUND')
                 else:
-                    print(46)
                     send_message_to_developer('INVALID_AMOUNT' + amount + ' ' + order.amount)
                     return self.INVALID_AMOUNT
             except:
-                print(50)
                 send_message_to_developer('ORDER_NOT_FOUND')
                 return self.ORDER_NOT_FOUND
 
@@ -57,6 +50,8 @@ class OrderCheckAndPayment(ClickUz):
         # send_message_to_developer('successfully_payment  order_id ' + order_id + 'transaction '+ transaction)
         try:
             order = get_object_or_404(Order, id=order_id)
+            order.is_paid = True
+            order.save()
             school = get_object_or_404(School, id=order.user.school.id)
             school.money += int(order.amount)
             school.save()

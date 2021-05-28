@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'landing',
     'django_summernote',
-    'paycom',
     'clickuz',
 
 ]
@@ -173,15 +172,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 LOGIN_REDIRECT_URL = '/home/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-PAYCOM_SETTINGS = {
-    "KASSA_ID": "602a69da2f3eb10fc98597ee",  # token
-    "TOKEN": "602a69da2f3eb10fc98597ee",  # token
-    "SECRET_KEY": "dZp&k%s@Qm72ADXHdbK4EWnRrEf&R@xmnUvk",  # password
-    "ACCOUNTS": {
-        "KEY": "order"
-    }
-}
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'

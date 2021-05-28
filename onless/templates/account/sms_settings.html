@@ -495,30 +495,7 @@
             })
             $('#addAmountBtn').on('click', function (e) {
                 e.preventDefault()
-                Swal.fire({
-                    allowOutsideClick: false,
-                    showCancelButton: false,
-                    showConfirmButton: false,
-                    showLoaderOnConfirm: true,
-                    showClass: {
-                        popup: 'animate__animated animate__fadeInDown'
-                    },
-                    hideClass: {
-                        popup: 'animate__animated animate__fadeOutUp'
-                    },
-
-                    title: 'To\'lov turini tanlang!',
-                    html:
-                        '<a href="?payment_type=payme" ><img src="../../static/online/payme.png" style="border: 1px solid black; padding: 5px; border-radius: 5px" alt="payme" height="80" width="190"></a>' +
-                        '<a href="?payment_type=click"  ><img src="../../static/online/clickuz.png" style="margin-left: 20px;border: 1px solid black; padding: 5px; border-radius: 5px" alt="click" height="80" width="190"></a>',
-
-                    focusConfirm: false,
-                })
-            })
-
-            {% if request.GET.payment_type == 'click' or request.GET.payment_type == 'payme' %}
-
-                const {value: formValues} = Swal.fire({
+                 const {value: formValues} = Swal.fire({
                     allowOutsideClick: false,
                     showCancelButton: true,
                     showLoaderOnConfirm: true,
@@ -574,18 +551,19 @@
 
                     if (confirm.isConfirmed) {
                         var amount = confirm.value[0]
-                        {% if request.GET.payment_type == 'click' %}
-                            window.location.href = "{% url 'click:create_order_url' %}?amount=12345".replace(/12345/, amount.toString());
-                        {% elif request.GET.payment_type == 'payme' %}
-                            window.location.href = "{% url 'paycom:create_paycom_url_via_order' %}?amount=12345".replace(/12345/, amount.toString());
-                        {% else %}
-                            window.location.href = "{% url 'user:sms_settings' %}"
-                        {% endif %}
+
+                        window.location.href = "{% url 'click:create_order_url' %}?amount=12345".replace(/12345/, amount.toString());
+
                     } else {
                         window.location.href = "{% url 'user:sms_settings' %}"
                     }
                 });
-            {% endif %}
+            })
+
+
+
+
+
         });
     </script>
 

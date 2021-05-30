@@ -340,3 +340,13 @@ class Sms(models.Model):
 
 class Payment(BasePayment):
     pass
+
+class BuySms(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='buy_sms_school')
+    created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt',)
+    sms_count = models.IntegerField(default=0, null=True, blank=True)
+    money = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Sotib olingan sms'
+        verbose_name_plural = 'Sotib olingan smslar'

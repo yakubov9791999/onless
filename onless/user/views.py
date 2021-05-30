@@ -26,7 +26,7 @@ from openpyxl.utils import get_column_letter
 
 
 from onless import settings
-from onless.settings import BASE_DIR, ASIA_TASHKENT_TIMEZONE
+from onless.settings import *
 from quiz.models import *
 from sign.models import Material
 from user.decorators import *
@@ -1988,17 +1988,45 @@ def get_group_months(request):
 @login_required
 def sms_settings(request):
     if request.user.role == '2':
-
-        return render(request, 'account/sms_settings.html', )
+        context = {
+            'SMS_PRICE': SMS_PRICE,
+            'SMS_ADD_STEP': SMS_ADD_STEP
+        }
+        return render(request, 'account/sms_settings.html', context)
     else:
         return render(request, 'inc/404.html')
 
+@login_required
+def buy_sms(request):
+    try:
+        if request.user.role == '2':
+            school = get_object_or_404(School, id=request.user.school.id)
+            if request.user == school.director:
+                count = int(request.POST.get('count'))
+                if count >= SMS_ADD_STEP:
+                    money = count * SMS_PRICE
+                    if school.money >= money:
+                        school.money -= money
+                        school.sms_count += count
+                        school.save()
+
+                        BuySms.objects.create(school=school,money=money,sms_count=count)
+                        return HttpResponse(True)
+                    else:
+                        return HttpResponse(False)
+                else:
+                    return HttpResponse(False)
+            else:
+                return HttpResponse(False)
+        else:
+            return HttpResponse(False)
+    except:
+        return HttpResponse(False)
 
 @login_required
 def modify_checkbox_send_sms(request):
     if request.user.role == '2':
         if request.method == 'POST':
-            print(request.POST)
             school = get_object_or_404(School, id=request.user.school.id)
             addPupil = request.POST.get('addPupil')
             editPupil = request.POST.get('editPupil')

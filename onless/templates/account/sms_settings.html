@@ -61,12 +61,12 @@
                                 <div class="inner">
                                     <h3>{{ request.user.school.sms_count }} ta</h3>
 
-                                    <p>Sms: 150 so'm</p>
+                                    <p>Sms: {{ SMS_PRICE }} so'm</p>
                                 </div>
                                 <div class="icon">
                                     <i class="far fa-envelope"></i>
                                 </div>
-                                <a href="#" class="small-box-footer btn">Sms olish <i
+                                <a href="#" id="getSmsBtn" class="small-box-footer btn">Sms olish <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -493,9 +493,10 @@
                 })
 
             })
+
             $('#addAmountBtn').on('click', function (e) {
                 e.preventDefault()
-                 const {value: formValues} = Swal.fire({
+                const {value: formValues} = Swal.fire({
                     allowOutsideClick: false,
                     showCancelButton: true,
                     showLoaderOnConfirm: true,
@@ -507,6 +508,7 @@
                     },
                     confirmButtonText: 'Keyingi',
                     cancelButtonText: 'Bekor qilish',
+                    reverseButtons: true,
                     title: 'To\'lov summasini kiriting!',
                     html:
                         '<label style="float: left; margin-bottom: 0" class="label_required" for="amount">Summa</label>' +
@@ -560,10 +562,155 @@
                 });
             })
 
+            {% if request.GET.payment_status == '2' %}
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    background: '#8ff8ac',
+                    timer: 5000,
+                    timerProgressBar: false,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    },
+                    // willClose: (close) => {
+                    //    window.location.href = success_url
+                    // }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: `To'lov muvaffaqiyatli amalga oshirildi!`
+                })
+                setTimeout(function () {
+                    window.location.href = "{% url 'user:sms_settings' %}"
+                }, 5000)
+
+            {% endif %}
+
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+                }
+            })
+
+            $('#getSmsBtn').on('click', function (e) {
+                e.preventDefault()
+                const {value: addSmsValues} = Swal.fire({
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    confirmButtonText: 'Sotib olish',
+                    cancelButtonText: 'Bekor qilish',
+                    reverseButtons: true,
+                    title: '<h2 style="color: #001f3f" class="not_copy">Hisob: <span id="money"></span>&nbsp so\'m</h2>',
+                    html:
+
+                        '<hr><i style="font-size: 2em;color: grey" id="subSms" class="fas fa-minus-circle not_copy"></i>&nbsp&nbsp&nbsp&nbsp&nbsp<span style="font-size: 2em;" class="not_copy" id="smsCount"> 0 </span>&nbsp&nbsp&nbsp&nbsp&nbsp<i id="addSms" style="font-size: 2em; color: #389ff8" class="fas fa-plus-circle not_copy"></i><hr>',
 
 
+                    focusConfirm: false,
+                }).then(function (confirm) {
+
+                    if (confirm.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'user:buy_sms' %}",
+                            data: {
+                                'count': $('#smsCount').html()
+                            },
+                            success: function (res) {
+                                if (res == 'True'){
+                                    success_toast()
+                                    setTimeout(function () {
+                                        window.location.href = "{% url 'user:sms_settings' %}"
+                                    },1000)
+                                }else{
+                                    errorFunction()
+                                }
+                            }, error: function (err) {
+                                console.log(err.status)
+                                errorFunction()
+                            }
+                        })
+                    } else {
+                        window.location.href = "{% url 'user:sms_settings' %}"
+                    }
+                });
+
+                var money = '{{ request.user.school.money|intcomma }}'.replace(/\s+/g, '')
+                var smsPrice = parseInt('{{ SMS_PRICE }}')
+                var smsAddStep = parseInt('{{ SMS_ADD_STEP }}')
+
+                if (parseInt(money) == 0){
+                     $('#addSms').css('color', 'grey')
+                }
+
+                var smsCount = 0
+                $('#money').html(money)
 
 
+                $('#addSms').on('click', function () {
+
+                    if (smsCount >= 0) {
+                        smsCount += smsAddStep
+
+                        if ((smsAddStep * smsPrice) <= money) {
+                            //pul yetarli
+                            $('#smsCount').html(smsCount)
+                            money -= (smsAddStep * smsPrice)
+                            $('#money').html(money)
+
+                            $('#subSms').css('color', '#389ff8')
+                        } else {
+                            //pul yetarli emas
+                            smsCount -= smsAddStep
+                            $('#addSms').css('color', 'grey')
+                        }
+
+
+                    }
+
+                     if ((smsAddStep * smsPrice) <= money) {
+
+                            $('#addSms').css('color', '#389ff8')
+                    } else {
+
+                         $('#addSms').css('color', 'grey')
+                    }
+
+                })
+                $('#subSms').on('click', function () {
+
+                    if (smsCount > 0) {
+                        money += (smsAddStep * smsPrice)
+                        $('#money').html(money)
+                        smsCount -= smsAddStep
+                        $('#smsCount').html(smsCount)
+
+                        $('#addSms').css('color', '#389ff8')
+                    } else {
+                        $('#subSms').css('color', 'grey')
+                    }
+
+                    if (smsCount > 0) {
+                        $('#subSms').css('color', '#389ff8')
+                    } else {
+                        $('#subSms').css('color', 'grey')
+                    }
+                })
+
+
+            })
         });
     </script>
 

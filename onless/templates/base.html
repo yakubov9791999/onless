@@ -40,87 +40,90 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="google-site-verification" content="gagH8qOwZzXNERShxKP9ST89rJPPaHMtC1TqfTGQwvU"/>
 </head>
 <body class="hold-transition sidebar-mini">
-<div id="load"></div>
-<div class="wrapper">
+<div id="app">
+    <div id="load"></div>
+    <div class="wrapper">
 
-    {% include 'inc/navbar.html' %}
+        {% include 'inc/navbar.html' %}
 
-    {% include 'inc/sidebar.html' %}
+        {% include 'inc/sidebar.html' %}
 
 
-    <!-- Content Wrapper. Contains page content -->
+        <!-- Content Wrapper. Contains page content -->
 
-    <div class="content-wrapper">
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    {#                    <div class="col-sm-6">#}
-                    {#                        <nav aria-label="breadcrumb">#}
-                    {#                            <ol class="breadcrumb">#}
-                    {#                                <li class="breadcrumb-item"><a href="">Bosh sahifa</a></li>#}
-                    {#                                {% block breadcumb %}{% endblock %}#}
-                    {#                                <li class="breadcrumb-item " aria-current="page">Data</li>#}
-                    {##}
-                    {#                            </ol>#}
-                    {#                        </nav>#}
-                    {#                    </div>#}
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        {#                    <div class="col-sm-6">#}
+                        {#                        <nav aria-label="breadcrumb">#}
+                        {#                            <ol class="breadcrumb">#}
+                        {#                                <li class="breadcrumb-item"><a href="">Bosh sahifa</a></li>#}
+                        {#                                {% block breadcumb %}{% endblock %}#}
+                        {#                                <li class="breadcrumb-item " aria-current="page">Data</li>#}
+                        {##}
+                        {#                            </ol>#}
+                        {#                        </nav>#}
+                        {#                    </div>#}
 
-                    {% if request.user.school %}
+                        {% if request.user.school %}
 
-                        {% if request.user.school.logo %}
-                            <div class="col-2" style="margin-right: 17px"><img src="{{ request.user.school.logo.url }}"
-                                                                               height="50px"
-                                                                               width="50px" style="border-radius: 55px">
+                            {% if request.user.school.logo %}
+                                <div class="col-2" style="margin-right: 17px"><img
+                                        src="{{ request.user.school.logo.url }}"
+                                        height="50px"
+                                        width="50px" style="border-radius: 55px">
+                                </div>
+                            {% else %}
+                                <div class="col-2" style="margin-left: 17px"><img src="{% static 'online/car.jpg' %}"
+                                                                                  height="50px" width="50px"
+                                                                                  style="border-radius: 55px"></div>
+                            {% endif %}
+                            <div class="col-9 mt-2"><h3 class="text-dark">
+                                {% if request.user.school.title %}
+                                    {{ request.user.school.title|capfirst }}
+                                {% else %}AVTOMAKTAB{% endif %}</h3>
                             </div>
-                        {% else %}
-                            <div class="col-2" style="margin-left: 17px"><img src="{% static 'online/car.jpg' %}"
-                                                                              height="50px" width="50px"
-                                                                              style="border-radius: 55px"></div>
+
                         {% endif %}
-                        <div class="col-9 mt-2"><h3 class="text-dark">
-                            {% if request.user.school.title %}
-                                {{ request.user.school.title|capfirst }}
-                            {% else %}AVTOMAKTAB{% endif %}</h3>
-                        </div>
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
 
-                    {% endif %}
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
+            <!-- Main content -->
+
+            <div class="content">
+                {% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}
+                    {% if request.user.school.notification == True %}
+                        <div class="alert alert-primary text-center"><h3>{{ request.user.school.notification_text }}.
+                            Qo'shimcha savollar bo'lsa 972800809 / 919791999 / 906366264 raqamlariga qo'ng'iroq
+                            qiling</h3>
+                        </div>{% endif %}{% endif %}
+                {% block content %}
+
+                {% endblock content %}
+
+            </div>
+
+            <!-- /.content -->
         </div>
 
-        <!-- Main content -->
+        <!-- /.content-wrapper -->
 
-        <div class="content">
-            {% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}
-                {% if request.user.school.notification == True %}
-                    <div class="alert alert-primary text-center"><h3>{{ request.user.school.notification_text }}.
-                        Qo'shimcha savollar bo'lsa 972800809 / 919791999 / 906366264 raqamlariga qo'ng'iroq qiling</h3>
-                    </div>{% endif %}{% endif %}
-            {% block content %}
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+            <div class="p-3">
+                <h5>Title</h5>
+                <p>Sidebar content</p>
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
 
-            {% endblock content %}
-
-        </div>
-
-        <!-- /.content -->
+        {% include 'inc/footer.html' %}
     </div>
-
-    <!-- /.content-wrapper -->
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-        <div class="p-3">
-            <h5>Title</h5>
-            <p>Sidebar content</p>
-        </div>
-    </aside>
-    <!-- /.control-sidebar -->
-
-    {% include 'inc/footer.html' %}
+    <!-- ./wrapper -->
 </div>
-<!-- ./wrapper -->
-
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
@@ -134,6 +137,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{% static 'js/adminlte.min.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/bootstrap-notify.min.js' %}"></script>
+
+
 {% block bottom %}{% endblock bottom %}
 
 <!-- Yandex.Metrika counter -->
@@ -168,6 +173,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script type="text/javascript">
+
     {#if ($('body').hasClass('sidebar-open')) {#}
     {#    $(window).on('click', function () {#}
     {#        $("body").removeClass('sidebar-open').addClass('sidebar-close').animate({#}

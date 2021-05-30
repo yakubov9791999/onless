@@ -104,6 +104,12 @@ class SmsAdmin(admin.ModelAdmin):
     list_filter = ['school']
     save_on_top = True
 
+@admin.register(BuySms)
+class BuySmsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'school','sms_count', 'money']
+    list_display_links = ['school', ]
+    list_filter = ['school',]
+    save_on_top = True
 
 @admin.register(Referral)
 class ReferralAdmin(admin.ModelAdmin):

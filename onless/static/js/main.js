@@ -382,3 +382,74 @@ function error_toast() {
         title: 'Bekor qilindi!'
     })
 }
+
+
+function add_payment(create_url, success_url, e) {
+
+    e.preventDefault()
+    const {value: formValues} = Swal.fire({
+        allowOutsideClick: false,
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        },
+        confirmButtonText: 'Keyingi',
+        cancelButtonText: 'Bekor qilish',
+        reverseButtons: true,
+        title: 'To\'lov summasini kiriting!',
+        html:
+            '<label style="float: left; margin-bottom: 0" class="label_required" for="amount">Summa</label>' +
+            '<input style="margin-top: 4px" id="amount" class="form-control" type="number" placeholder="Masalan: 100000">',
+
+        focusConfirm: false,
+        preConfirm: (value) => {
+            if (value) {
+                if ($('#amount').val() == '') {
+                    Swal.showValidationMessage(
+                        'Summa kiritilmagan!'
+                    )
+                } else if ($('#amount').val() < 5000) {
+                    Swal.showValidationMessage(
+                        'Summa kamida 5000 so\'m bo\'lishi kerak!'
+                    )
+                } else {
+                    swal.resetValidationMessage();
+                    return [
+                        $('#amount').val()
+                    ]
+                }
+            }
+
+            $('#amount').on('keyup', function () {
+                if ($('#amount').val() == '') {
+                    Swal.showValidationMessage(
+                        'Summa kiritilmagan!'
+                    )
+                } else if ($('#amount').val() < 5000) {
+                    Swal.showValidationMessage(
+                        'Summa kamida 5000 so\'m bo\'lishi kerak!'
+                    )
+                } else {
+                    swal.resetValidationMessage();
+
+                }
+            })
+        },
+
+    }).then(function (confirm) {
+
+        if (confirm.isConfirmed) {
+            var amount = confirm.value[0]
+
+            window.location.href = create_url + "?amount=12345".replace(/12345/, amount.toString());
+
+        } else {
+            window.location.href = success_url
+        }
+
+    })
+}

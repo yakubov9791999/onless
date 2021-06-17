@@ -20,7 +20,7 @@ class ViewCompleteAdmin(admin.ModelAdmin):
     list_display_links = ['video']
     save_on_top = True
     list_filter = ['video', ]
-    search_fields = ['user__phone', 'user__name', 'user__username', 'video', ]
+    search_fields = ['user__phone', 'user__name', 'user__username', 'video__title', ]
 
     def get_school_name(self, obj):
         return obj.user.school

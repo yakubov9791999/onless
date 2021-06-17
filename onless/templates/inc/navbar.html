@@ -39,18 +39,20 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
                     <i style="font-size: 1.5em" class="fas fa-school"></i> <b id="school_name"
-                        style="height: auto">{{ request.user.school }}</b>
+                                                                              style="height: auto">{{ request.user.school }}</b>
                 </a>
                 <div style="width: 18rem !important;" class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <div class="text-left ml-2"><i class="fas fa-money-check ml-2 mr-2"></i>Hisob: <span
                             class="ml-2">{% if request.user.school.money %}
-                        {{ request.user.school.money|intcomma }} so'm{% else %}0 so'm{% endif %} <a href="{% url 'user:sms_settings' %}"><i style="font-size: 1.2em" class="fas fa-plus-circle ml-3 pt-2"></i></a></span>
+                        {{ request.user.school.money|intcomma }} so'm{% else %}0 so'm{% endif %} <a id="addAmountBtn"
+                                                                                                    href="#"><i
+                            style="font-size: 1.2em" class="fas fa-plus-circle ml-3 pt-2"></i></a></span>
                     </div>
                     <hr>
-{#                    <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Kiritish sms soni: <span#}
-{#                            class="ml-2">{% if request.user.school.add_pupil_sms_count %}#}
-{#                        {{ request.user.school.add_pupil_sms_count }}{% else %}0{% endif %}</span>#}
-{#                    </div>#}
+                    {#                    <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Kiritish sms soni: <span#}
+                    {#                            class="ml-2">{% if request.user.school.add_pupil_sms_count %}#}
+                    {#                        {{ request.user.school.add_pupil_sms_count }}{% else %}0{% endif %}</span>#}
+                    {#                    </div>#}
                     <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Smslar soni: <span
                             class="ml-2">{% if request.user.school.sms_count %}
                         {{ request.user.school.sms_count }} ta{% else %}0 ta{% endif %}</span>
@@ -149,4 +151,8 @@
     <a href="https://t.me/onless_support" style="color: #60c4f5; text-decoration: none"><i class="fab fa-telegram"></i>
         Telegram guruh </a>ga yozing</b></div>
 
+<script>
+    $(document).ready(function () {
 
+    })
+</script>

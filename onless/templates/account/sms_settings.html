@@ -17,24 +17,23 @@
                     <div class="row justify-content-around">
                         <div class="col-6">
                             <!-- small box -->
-                            <form action="#" method="POST">
-                                {% csrf_token %}
-                                <div class="small-box bg-gradient-navy">
-                                    <div class="inner">
-                                        <h3>{{ request.user.school.money|intcomma }} so'm</h3>
 
-                                        <p>Hisob</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-money-check"></i>
-                                    </div>
-                                    <button id="addAmountBtn" type="submit" style="width: 100%"
-                                            class="small-box-footer btn"> Hisobni
-                                        to'ldirish <i
-                                                class="fas fa-arrow-circle-right"></i></button>
+                            <div class="small-box bg-gradient-navy">
+                                <div class="inner">
+                                    <h3>{{ request.user.school.money|intcomma }} so'm</h3>
 
+                                    <p>Hisob</p>
                                 </div>
-                            </form>
+                                <div class="icon">
+                                    <i class="fas fa-money-check"></i>
+                                </div>
+                                <button id="addAmount" type="button" style="width: 100%"
+                                        class="small-box-footer btn"> Hisobni
+                                    to'ldirish <i
+                                            class="fas fa-arrow-circle-right"></i></button>
+
+                            </div>
+
 
                         </div>
 
@@ -324,6 +323,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
         $(document).ready(function () {
+
             var addPupil = '{{ request.user.school.send_sms_add_pupil }}',
                 editPupil = '{{ request.user.school.send_sms_edit_pupil  }}',
                 attendancePupil = '{{ request.user.school.send_sms_attendance  }}',
@@ -494,72 +494,12 @@
 
             })
 
-            $('#addAmountBtn').on('click', function (e) {
-                e.preventDefault()
-                const {value: formValues} = Swal.fire({
-                    allowOutsideClick: false,
-                    showCancelButton: true,
-                    showLoaderOnConfirm: true,
-                    showClass: {
-                        popup: 'animate__animated animate__fadeInDown'
-                    },
-                    hideClass: {
-                        popup: 'animate__animated animate__fadeOutUp'
-                    },
-                    confirmButtonText: 'Keyingi',
-                    cancelButtonText: 'Bekor qilish',
-                    reverseButtons: true,
-                    title: 'To\'lov summasini kiriting!',
-                    html:
-                        '<label style="float: left; margin-bottom: 0" class="label_required" for="amount">Summa</label>' +
-                        '<input style="margin-top: 4px" id="amount" class="form-control" type="number" placeholder="Masalan: 100000">',
+            $('#addAmount').on('click', function (e) {
+                var create_url = '{% url 'click:create_order_url' %}',
+                    success_url = '{% url 'user:sms_settings' %}'
 
-                    focusConfirm: false,
-                    preConfirm: (value) => {
-                        if (value) {
-                            if ($('#amount').val() == '') {
-                                Swal.showValidationMessage(
-                                    'Summa kiritilmagan!'
-                                )
-                            } else if ($('#amount').val() < 5000) {
-                                Swal.showValidationMessage(
-                                    'Summa kamida 5000 so\'m bo\'lishi kerak!'
-                                )
-                            } else {
-                                swal.resetValidationMessage();
-                                return [
-                                    $('#amount').val()
-                                ]
-                            }
-                        }
+                add_payment(create_url, success_url, e)
 
-                        $('#amount').on('keyup', function () {
-                            if ($('#amount').val() == '') {
-                                Swal.showValidationMessage(
-                                    'Summa kiritilmagan!'
-                                )
-                            } else if ($('#amount').val() < 5000) {
-                                Swal.showValidationMessage(
-                                    'Summa kamida 5000 so\'m bo\'lishi kerak!'
-                                )
-                            } else {
-                                swal.resetValidationMessage();
-
-                            }
-                        })
-                    },
-
-                }).then(function (confirm) {
-
-                    if (confirm.isConfirmed) {
-                        var amount = confirm.value[0]
-
-                        window.location.href = "{% url 'click:create_order_url' %}?amount=12345".replace(/12345/, amount.toString());
-
-                    } else {
-                        window.location.href = "{% url 'user:sms_settings' %}"
-                    }
-                });
             })
 
             {% if request.GET.payment_status == '2' %}
@@ -588,14 +528,6 @@
                 }, 5000)
 
             {% endif %}
-
-            var csrftoken = getCookie('csrftoken');
-
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
-                }
-            })
 
             $('#getSmsBtn').on('click', function (e) {
                 e.preventDefault()
@@ -629,12 +561,12 @@
                                 'count': $('#smsCount').html()
                             },
                             success: function (res) {
-                                if (res == 'True'){
+                                if (res == 'True') {
                                     success_toast()
                                     setTimeout(function () {
                                         window.location.href = "{% url 'user:sms_settings' %}"
-                                    },1000)
-                                }else{
+                                    }, 1000)
+                                } else {
                                     errorFunction()
                                 }
                             }, error: function (err) {
@@ -651,8 +583,8 @@
                 var smsPrice = parseInt('{{ SMS_PRICE }}')
                 var smsAddStep = parseInt('{{ SMS_ADD_STEP }}')
 
-                if (parseInt(money) == 0){
-                     $('#addSms').css('color', 'grey')
+                if (parseInt(money) == 0) {
+                    $('#addSms').css('color', 'grey')
                 }
 
                 var smsCount = 0
@@ -680,12 +612,12 @@
 
                     }
 
-                     if ((smsAddStep * smsPrice) <= money) {
+                    if ((smsAddStep * smsPrice) <= money) {
 
-                            $('#addSms').css('color', '#389ff8')
+                        $('#addSms').css('color', '#389ff8')
                     } else {
 
-                         $('#addSms').css('color', 'grey')
+                        $('#addSms').css('color', 'grey')
                     }
 
                 })

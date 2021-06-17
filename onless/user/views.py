@@ -1912,7 +1912,7 @@ def electronical_journal(request):
 def get_group_pupils_count(request):
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
-        pupils_count = User.objects.filter(Q(is_active=True) & Q(role=4) & Q(group=group)).count()
+        pupils_count = User.objects.filter(Q(is_active=True) & Q(role=4) & Q(group=group) & Q(phone__isnull=False)).count()
         return HttpResponse(pupils_count)
     else:
         return HttpResponse(False)

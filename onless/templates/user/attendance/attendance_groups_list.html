@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load user_tags %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Davomat" "user:attendance_groups_list" %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -9,7 +16,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Guruhlar ro'yhati</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <div class="card-body">
                     <div class="table-responsive">

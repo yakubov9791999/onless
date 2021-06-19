@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Xodimlar" "user:workers_list" %}
+{% endblock %}
+
+
 {% block content %}
+
     <div class="row">
         <!-- left column -->
         <div class="col-md-12 col-sm-12">
@@ -9,7 +17,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Xodimlar ro'yhati</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
@@ -37,7 +45,8 @@
                             {% for worker in workers %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><b><a id="{{ worker.name }}" href="{% url 'user:result' worker.id %}">{{ worker.name }}</a></b></td>
+                                    <td><b><a id="{{ worker.name }}"
+                                              href="{% url 'user:result' worker.id %}">{{ worker.name }}</a></b></td>
                                     <td><b>{% if worker.role == '5' %}Hisobchi{% elif worker.role == '3' %}
                                         O'qituvchi{% elif worker.role == '6' %}Instruktor{% endif %}</b></td>
                                     <td>{{ worker.birthday|date:'SHORT_DATE_FORMAT' }}</td>
@@ -68,12 +77,17 @@
                                         <td>
 
                                             &nbsp;&nbsp;
-                                            <a href="{% url 'user:worker_edit' worker.id %}"><button class="btn btn-primary"><i class="fa fa-edit"
-                                            ></i></button></a>
+                                            <a href="{% url 'user:worker_edit' worker.id %}">
+                                                <button class="btn btn-primary"><i class="fa fa-edit"
+                                                ></i></button>
+                                            </a>
 
-                                            &nbsp;&nbsp;<a href="#" onclick="delete_worker({{ worker.id }},`{{ worker.name }}`)"><button class="btn btn-danger"><i
-                                                class="fa fa-trash"
-                                        ></i></button></a>
+                                            &nbsp;&nbsp;<a href="#"
+                                                           onclick="delete_worker({{ worker.id }},`{{ worker.name }}`)">
+                                            <button class="btn btn-danger"><i
+                                                    class="fa fa-trash"
+                                            ></i></button>
+                                        </a>
 
                                         </td>
                                     {% endif %}

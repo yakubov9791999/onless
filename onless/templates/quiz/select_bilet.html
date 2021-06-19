@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load quiz_tags %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}
+    {% if request.GET.type == 'T' %}
+    {% breadcrumb "Mashg'ulot" "quiz:select_type" %}
+    {% elif request.GET.type == 'I' %}
+        {% breadcrumb "Imtihon" "quiz:select_type" %}
+    {% endif %}
+
+{% endblock %}
+
 {% block content %}
 
     <div class="container-fluid">
@@ -8,7 +21,7 @@
             <h3 class="card-title">{% if lang == 'ru' %}Выберите билет:{% elif lang == 'kr' %}Билетни танланг:{% else %}
                 Biletni tanlang:{% endif %}</h3>
         </div>
-        {% include 'inc/messages.html' %}
+        {% include 'inc/messages_part.html' %}
         <div class="row">
             {% for bilet in bilets %}
 

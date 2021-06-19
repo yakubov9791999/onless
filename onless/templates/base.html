@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
-{% load breadcumb_tags %}
+{% load django_bootstrap_breadcrumbs %}
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -93,12 +93,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Main content -->
 
             <div class="content">
+                {% block breadcrumbs %}
+                    {% clear_breadcrumbs %}
+                    {% breadcrumb "Bosh sahifa" "landing:home" %}
+                {% endblock %}
+
+                {% render_breadcrumbs "django_bootstrap_breadcrumbs/bootstrap4.html" %}
+
                 {% if request.user.role == '2' or request.user.role == '3' or request.user.role == '5' %}
                     {% if request.user.school.notification == True %}
                         <div class="alert alert-primary text-center"><h3>{{ request.user.school.notification_text }}.
                             Qo'shimcha savollar bo'lsa 972800809 / 919791999 / 906366264 raqamlariga qo'ng'iroq
                             qiling</h3>
                         </div>{% endif %}{% endif %}
+
+
+
                 {% block content %}
 
                 {% endblock content %}
@@ -221,7 +231,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var create_url = '{% url 'click:create_order_url' %}',
                 success_url = '{% url 'user:sms_settings' %}'
 
-            add_payment(create_url, success_url,e)
+            add_payment(create_url, success_url, e)
         })
     })
 

@@ -3,6 +3,29 @@
 {% load video_tags %}
 {% load sign_tags %}
 {% load quiz_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% load breadcrumb_tags %}
+{% block breadcrumbs %}
+    {{ block.super }}
+
+    {% breadcrumb "Videodarslar" "video:categories_list" %}
+    {{ video.category }}
+    {% if video.category.get_parents %}
+        {% for parent in video.category.get_parents %}
+             {% breadcrumb parent.title "video:category_detail" parent.id %}
+        {% endfor %}
+        {% breadcrumb video.category.title "video:videos_list" video.category.id %}
+        {% breadcrumb video.title "video:videos_list" video.category.id %}
+    {% else %}
+{#        {% breadcrumb video.category.title "video:category_detail" video.category.id %}#}
+        {% breadcrumb video.category.title "video:videos_list" video.category.id %}
+        {% breadcrumb video.title "video:videos_list" video.category.id %}
+    {% endif %}
+
+
+{% endblock %}
+
+
 {% block content %}
 
     <style>

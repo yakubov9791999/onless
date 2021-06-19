@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
-
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Kiritishlar" "user:add_list" %}
+    {% breadcrumb "Guruh qo'shish" "user:add_group" %}
+{% endblock %}
 {% block content %}
     <div class="row" style="margin: auto">
         <!-- left column -->
@@ -9,7 +14,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Guruh qo'shish</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" method="POST" action="{% url 'user:add_group' %}">

@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load quiz_tags %}
+{% load i18n %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Ko'rishlar tarixi" "user:history_view_video_all" %}
+{% endblock %}
+
 {% block top %}
     <link rel="stylesheet" href="{% static "plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" %}">
 {% endblock top %}
@@ -13,7 +21,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Ko'rilgan videolar tarixi</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
@@ -35,7 +43,6 @@
                             </div>
 
 
-
                             <div class="col-md-3">
                                 <label class="text-dark" style="width: 100%" for="date">Guruh:</label>
                                 <select name="group"
@@ -50,7 +57,8 @@
                             <div class="col-md-3" style="margin-top: 1.9rem; text-align: center">
                                 <button type="submit" class="btn btn-info"
                                         style="padding: 1.5% 10% 1.5% 10% !important;">
-                                    Filtrlash</button>
+                                    Filtrlash
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -111,7 +119,32 @@
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
-            });
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "{% trans 'Qidiruv...' %}",
+                    "emptyTable": `{% trans "Ma'lumot topilmadi!" %}`,
+                    {#"info": "Ko'rsatilgan _END_ dan _START_. Jami: _TOTAL_ ta ma'lumot",#}
+                    "info": `{% trans "Jami: _TOTAL_ ta ariza" %}`,
+                    "infoEmpty": `{% trans "Jami: _TOTAL_ ta ariza" %}`,
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "_MENU_",
+                    "loadingRecords": "{% trans 'Yuklanmoqda...' %}",
+                    "processing": "{% trans 'Qayta ishlanmoqda...' %}",
+                    "zeroRecords": `{% trans "Ma'lumot topilmadi!" %}`,
+                    "paginate": {
+                        "first": "{% trans 'Birinchi' %}",
+                        "last": "{% trans 'Oxirgi' %}",
+                        "next": "{% trans 'Keyingi' %}",
+                        "previous": "{% trans 'Oldingi' %}"
+                    },
+                    "aria": {
+                        "sortAscending": `{% trans ": o'sish tartibi faollashtirildi" %}`,
+                        "sortDescending": `{% trans ": kamayish tartibi faollashtirildi" %}`,
+                    }
+                }
+                });
         });
     </script>
 {% endblock bottom %}

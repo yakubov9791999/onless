@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Xabarlar" "user:news_messages" %}
+{% endblock %}
+
 {% block content %}
 
     <div class="row">

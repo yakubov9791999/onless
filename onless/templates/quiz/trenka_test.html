@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
 {% load static %}
+
+
+
 {% block content %}
     <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Bilet{% elif lang == 'kr' %}
         Билет{% elif lang == 'ru' %}Билеть{% endif %} № {{ bilet }}</b></div>

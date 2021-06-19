@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
-
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Kiritishlar" "user:add_list" %}
+    {% breadcrumb "Material qo'shish" "sign:add_material" %}
+{% endblock %}
 {% block content %}
 
     <div class="row" style="margin: auto">
@@ -10,7 +15,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Material qo'shish</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

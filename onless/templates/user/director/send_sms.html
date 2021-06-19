@@ -6,6 +6,13 @@
         }
     </style>
 {% endblock top %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Sms jo'natish" "user:send_sms" %}
+{% endblock %}
+
 {% block content %}
     <div class="row" style="margin: auto">
         <!-- left column -->
@@ -17,7 +24,7 @@
 
                 </div>
 
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

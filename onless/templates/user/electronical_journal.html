@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Elektron jurnal" "user:electronical_journal" %}
+{% endblock %}
+
 {% block content %}
 
     <div class="row">

@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
+
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Baholar" "user:rating_groups_list" %}
+    {% get_fullname_group group.id as get_group %}
+    {% breadcrumb get_group "user:rating_set_by_group" group.id %}
+
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -10,7 +21,7 @@
                     <h3 class="card-title">{{ group.category }}-{{ group.number }} {{ group.year }} guruhi {% now "SHORT_DATE_FORMAT" %} sanadagi davomat belgilangan fanlar ro'yhati</h3>
                 </div>
 
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

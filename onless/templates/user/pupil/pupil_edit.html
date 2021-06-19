@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+
+        {% breadcrumb "Guruhlar" "user:groups_list" %}
+        {% get_fullname_group user.group.id as get_group %}
+        {% breadcrumb get_group "user:group_detail" user.group.id %}
+        {% breadcrumb user.name "user:result" user.id %}
+
+{% endblock %}
+
 {% block content %}
     <div class="row" style="margin: auto">
         <!-- left column -->
@@ -9,7 +21,7 @@
                 <div class="card-header">
                     <h3 class="card-title">O'quvchini tahrirlash</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form method="POST" id="edit_pupil_form" action="{% url 'user:edit_pupil' user.id %}"

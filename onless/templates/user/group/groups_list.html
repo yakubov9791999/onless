@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Guruhlar" "user:groups_list" %}
+{% endblock %}
 {% block content %}
+
     <style>
         .card-header:hover {
             cursor: pointer;
@@ -16,12 +22,13 @@
     <div class="row">
         <!-- left column -->
         <div class="col-md-12">
+
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Guruhlar ro'yhati</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <div class="card-body">
 
@@ -81,7 +88,8 @@
                                                             </td>
                                                             <td>{% if group.teacher %}
                                                                 {{ group.teacher }}{% else %}{% endif %}</td>
-                                                            <td>{% if group.teacher %}{% if group.teacher.phone %}+998{{ group.teacher.phone }}{% else %}-
+                                                            <td>{% if group.teacher %}{% if group.teacher.phone %}+998
+                                                                {{ group.teacher.phone }}{% else %}-
                                                             {% endif %}{% else %}{% endif %}</td>
                                                             <td>{{ group.start|date:'SHORT_DATE_FORMAT' }}</td>
                                                             <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>

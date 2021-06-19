@@ -11,6 +11,18 @@ class Category(models.Model):
     sort = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True)
 
+    def get_parents(self):
+        parents = []
+        p = self.categories
+        while p:
+            parents.append(p)
+            p = p.categories
+        parents.reverse()
+        return parents
+
+    def get_absolute_url(self):
+        return reverse('video:category_detail', kwargs={'id': self.id,})
+
     def __str__(self):
         return self.title
 

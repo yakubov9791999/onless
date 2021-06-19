@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load sign_tags %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Dars jadvali" "sign:schedules_list" %}
+{% endblock %}
+
 {% block content %}
     <style>
         .schedule_datepicker_icon {
@@ -16,7 +23,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Dars jadvali</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">

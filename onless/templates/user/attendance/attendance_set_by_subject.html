@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
 {% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Davomat" "user:attendance_groups_list" %}
+    {% get_fullname_group group.id as get_group %}
+    {% breadcrumb get_group "user:attendance_set_by_group" group.id %}
+    {% breadcrumb subject.long_title "user:attendance_set_by_subject" group.id subject.id %}
+
+{% endblock %}
+
+
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -14,7 +25,7 @@
                         Sana: <b>{% now "SHORT_DATE_FORMAT" %}</b></h3>
                 </div>
 
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

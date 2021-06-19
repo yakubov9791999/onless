@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Aloqa" "user:contact" %}
+{% endblock %}
+
 {% block content %}
     <div class="row" style="margin: auto">
         <!-- left column -->
@@ -9,7 +15,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Fikringizni qoldiring</h3>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

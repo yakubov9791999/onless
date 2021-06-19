@@ -5,11 +5,11 @@
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Test savollari" "quiz:select_lang" %}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}?lang=kr
     {% if request.GET.type == 'T' %}
-    {% breadcrumb "Mashg'ulot" "quiz:select_type" %}
+    {% breadcrumb "Mashg'ulot" "quiz:select_lang"  %}
     {% elif request.GET.type == 'I' %}
-        {% breadcrumb "Imtihon" "quiz:select_type" %}
+        {% breadcrumb "Imtihon" "quiz:select_lang" %}
     {% endif %}
 
 {% endblock %}

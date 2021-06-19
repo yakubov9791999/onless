@@ -3,7 +3,9 @@
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
+
     {% breadcrumb "Aloqa" "user:contact" %}
+
 {% endblock %}
 
 {% block content %}

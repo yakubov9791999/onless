@@ -2,7 +2,16 @@
 {% load quiz_tags %}
 {% load static %}
 
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}
 
+    {% breadcrumb "Mashg'ulot" "quiz:select_lang" %}
+    {% with bilet.number|stringformat:"s" as bilet_number %}
+        {% breadcrumb bilet_number|add:'-bilet' "quiz:select_bilet" %}
+    {% endwith %}
+{% endblock %}
 
 {% block content %}
     <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Bilet{% elif lang == 'kr' %}
@@ -35,7 +44,8 @@
                         <div class="col-6">
                             {% if bilet.number is not 1 %}
                                 <a href="?lang={{ lang }}&bilet={{ bilet.number|add:-1 }}"
-                                   class="btn btn-outline-primary btn-block text-capitalize"><i class="fas fa-angle-double-left"></i> {{ bilet.number|add:-1 }}-bilet
+                                   class="btn btn-outline-primary btn-block text-capitalize"><i
+                                        class="fas fa-angle-double-left"></i> {{ bilet.number|add:-1 }}-bilet
                                     <span aria-hidden="true"></span></a>
                             {% endif %}
                         </div>
@@ -45,14 +55,16 @@
                                 {% if bilet.number is not last_bilet %}
                                     <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
                                        class="btn btn-outline-primary btn-block text-capitalize"><span
-                                            aria-hidden="true"></span> {{ bilet.number|add:1 }}-bilet <i class="fas fa-angle-double-right"></i></a>
+                                            aria-hidden="true"></span> {{ bilet.number|add:1 }}-bilet <i
+                                            class="fas fa-angle-double-right"></i></a>
                                 {% endif %}
                             {% else %}
 
                                 {% if bilet.number is not last_bilet %}
                                     <a href="?lang={{ lang }}&bilet={{ bilet.number|add:1 }}"
                                        class="btn btn-outline-danger btn-block text-capitalize bilet-btn"><span
-                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet <i class="fas fa-angle-double-right"></i></a>
+                                            aria-hidden="true">&raquo;&raquo;</span> {{ bilet.number|add:1 }}-bilet <i
+                                            class="fas fa-angle-double-right"></i></a>
                                 {% endif %}
                             {% endif %}
                         </div>

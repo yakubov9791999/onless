@@ -21,7 +21,7 @@ urlpatterns = [
     path('search/', search, name='search'),
     path('pupil-delete/<int:id>/', pupil_delete, name='pupil_delete'),
     path('workers/', workers_list, name='workers_list'),
-    path('worker-update/<int:id>/', worker_edit, name='worker_edit'),
+    path('worker-edit/<int:id>/', worker_edit, name='worker_edit'),
     path('worker-delete/<int:id>/', worker_delete, name='worker_delete'),
     path('upload-file/', upload_file, name='upload_file'),
     path('bugalter/groups/', bugalter_groups_list, name='bugalter_groups_list'),
@@ -38,7 +38,7 @@ urlpatterns = [
     path('school-group/<int:id>/', school_group_detail, name='school_group_detail'),
     path('support/', support, name='support'),
     path('result/<int:id>/', result, name='result'),
-    path('messeges/', messeges, name='messeges'),
+    path('news-messages/', news_messages, name='news_messages'),
     path('get-learning-type/', get_learning_type, name='get_learning_type'),
 
     path('attendance-groups-list/', attendance_groups_list, name='attendance_groups_list'),

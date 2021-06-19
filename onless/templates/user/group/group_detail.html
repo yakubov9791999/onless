@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Guruhlar" "user:groups_list" %}
+    {% get_fullname_group group.id as get_group %}
+    {% breadcrumb get_group "user:group_detail" group.id %}
+{% endblock %}
+
 {% block content %}
     <style>
         .offline_checkbox:hover {
@@ -16,7 +25,7 @@
                         ro'yhati</h3>
                 </div>
 
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <div class="row">
                     <a id="button_add_pupil" onclick="add_pupil()"

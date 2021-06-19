@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Fanlar" "sign:subjects_list" %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -10,7 +17,7 @@
                     <h3 class="card-title">Fanlar ro'yhati</h3>
                 </div>
 
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <!-- /.card-header -->
                 <!-- form start -->

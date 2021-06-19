@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
 {% load static %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}
+       {% if request.GET.type == 'T' %}
+    {% breadcrumb "Mashg'ulot" "quiz:select_type" %}
+    {% elif request.GET.type == 'I' %}
+        {% breadcrumb "Imtihon" "quiz:select_type" %}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="alert alert-light text-center fixed-top"><b>{% if lang == 'uz' %}Imtihon {% elif lang == 'kr' %}
         Имтихон {% elif lang == 'ru' %}Экзамен {% endif %}<span id='countDown'>

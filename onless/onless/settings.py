@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'landing',
     'django_summernote',
     'clickuz',
+    'django_bootstrap_breadcrumbs',
 
 ]
 
@@ -187,3 +188,6 @@ import pytz
 ASIA_TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")
 SMS_PRICE = 150
 SMS_ADD_STEP = 10
+
+
+BREADCRUMBS_TEMPLATE = "django_bootstrap_breadcrumbs/bootstrap4.html"

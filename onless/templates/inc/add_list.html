@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% load user_tags %}
 {% load sign_tags %}
-
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Kiritishlar" "user:add_list" %}
+{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-12">
-            {% include 'inc/messages.html' %}
+            {% include 'inc/messages_part.html' %}
         </div>
         {% get_count request.user.school.id as count %}
         {% if request.user.role == '2' %}

@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
 {% load humanize %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Sms sozlamalar" "user:sms_settings" %}
+{% endblock %}
+
+
 {% block content %}
     <div class="row" style="margin: auto">
 
         <!-- left column -->
         <div class="col-12" style="margin: auto">
-            {% include 'inc/messages.html' %}
+            {% include 'inc/messages_part.html' %}
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">

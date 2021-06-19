@@ -2,6 +2,17 @@
 {% load humanize %}
 {% load user_tags %}
 {% load static %}
+
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Guruhlar" "user:bugalter_groups_list" %}
+    {% get_fullname_group group.id as get_group %}
+    {% breadcrumb get_group "user:bugalter_group_detail" group.id %}
+    {% breadcrumb pupil.name "user:pay_history" pupil.id pupil.group.id %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <!-- left column -->
@@ -10,10 +21,10 @@
             <div class="card card">
                 <div class="card-header"> {% get_payments pupil.id group.id as result %}
                     <h3 style="font-weight: bold; text-align: center">{{ pupil.name }}ning to'lovlari tarixi</h3>
-                    <h4 style="font-weight: bold; text-align: center">Kategoriya bo'yicha summa: <span
+                    <h4 style="font-weight: bold; text-align: center">Toifa bo'yicha summa: <span
                             class="text-success">{{ group.price|intcomma }}</span> so'm</h4>
                 </div>
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
 
                 <div class="card-body">
                     <div class="table-responsive">

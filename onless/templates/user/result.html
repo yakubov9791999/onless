@@ -1,6 +1,23 @@
 {% extends 'base.html' %}
 {% load quiz_tags %}
 {% load video_tags %}
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if pupil.group %}
+        {% breadcrumb "Guruhlar" "user:groups_list" %}
+        {% get_fullname_group pupil.group.id as get_group %}
+        {% breadcrumb get_group "user:group_detail" pupil.group.id %}
+        {% breadcrumb pupil.name "user:result" pupil.id %}
+    {% else %}
+        {% if pupil %}
+            {% breadcrumb "Xodimlar" "user:workers_list" %}
+        {% endif %}
+        {% breadcrumb request.user.name "user:result" request.user.id %}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 
     {% if pupil %}
@@ -9,7 +26,7 @@
             <div class="col-12">
                 {#                <div class="alert alert-danger text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan#}
                 {#                    natijalarda xatoliklar yuzaga kelishi mumkin!</b></div>#}
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 {% if pupil %}
                     <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">{{ pupil.name }}ning
                         o'zlashtirish
@@ -85,7 +102,7 @@
                         </tr>
                         <tr>
                             <th>So'nggi tashrif:</th>
-                              <td>{{ pupil.last_login }}</td>
+                            <td>{{ pupil.last_login }}</td>
 
                         </tr>
                         </tbody>
@@ -170,7 +187,7 @@
     {% else %}
         <div class="row">
             <div class="col-12">
-                {% include 'inc/messages.html' %}
+                {% include 'inc/messages_part.html' %}
                 {% if pupil %}
                     <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">{{ pupil.name }}ning
                         o'zlashtirish

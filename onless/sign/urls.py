@@ -4,7 +4,7 @@ from .views import *
 app_name = 'sign'
 
 urlpatterns = [
-    path("belgilar/", sign, name='sign'),
+    path("signs/", sign, name='sign'),
     # path('add-subject/', add_subject, name='add_subject'),
     path('update-schedule/<int:id>/', update_schedule, name='update_schedule'),
     # path('update-subject/<int:id>/', update_subject, name='update_subject'),

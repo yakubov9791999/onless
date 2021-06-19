@@ -1015,8 +1015,7 @@ def bugalter_group_detail(request, id):
         pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
         total_pay = group.price * pupils.count()
         payments = Pay.objects.filter(pupil__in=pupils, is_active=True)
-        if not payments.exists():
-            messages.error(request, "To'lovlar mavjud emas !")
+
         total_payments = 0
         for pay in payments:
             total_payments += pay.payment
@@ -1105,8 +1104,7 @@ def pay_history(request, user_id, group_id):
 
     if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (request.user.school == school and request.user == pupil and request.user.role == '4'):
         payments = Pay.objects.filter(pupil=pupil, is_active=True)
-        if not payments.exists():
-            messages.error(request, "To'lov amalga oshirilmagan !")
+
         group = get_object_or_404(Group, id=group_id)
 
         if request.user.role == '2' or request.user.role == '5':
@@ -1160,22 +1158,19 @@ def history_view_video_all(request):
                 pupils = User.objects.filter(group=group)
                 views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(
                     time__range=[startdate, stopdate])).order_by('-time')
-                if not views.exists():
-                    messages.error(request, "Ko'rishlar mavjud emas !")
+
                 context.update(views=views, guruh=group)
             else:
                 views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__role=4) & Q(
                     time__range=[startdate, stopdate])).order_by('-time')
-                if not views.exists():
-                    messages.error(request, "Ko'rishlar mavjud emas !")
+
                 context.update(views=views)
             return render(request, 'user/view_video_history_all.html', context)
         else:
             views = ViewComplete.objects.filter(
                 Q(user__school=request.user.school, ) & Q(user__role=4) & Q(user__is_active=True)).order_by(
                 '-time')
-            if not views.exists():
-                messages.error(request, "Ko'rishlar mavjud emas !")
+
             context.update(views=views)
             return render(request, 'user/view_video_history_all.html', context)
 
@@ -1215,21 +1210,18 @@ def history_view_video_all(request):
                 pupils = User.objects.filter(group=group)
                 views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(
                     time__range=[startdate, stopdate])).order_by('-time')
-                if not views.exists():
-                    messages.error(request, "Ko'rishlar mavjud emas !")
+
                 context.update(views=views)
                 return render(request, 'user/view_video_history_all.html', context)
             views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils) & Q(
                 time__range=[startdate, stopdate])).order_by('-time')
-            if not views.exists():
-                messages.error(request, "Ko'rishlar mavjud emas !")
+
             context.update(views=views)
             return render(request, 'user/view_video_history_all.html', context)
         else:
             views = ViewComplete.objects.filter(Q(user__school=request.user.school) & Q(user__in=pupils)).order_by(
                 '-time')
-            if not views.exists():
-                messages.error(request, "Ko'rishlar mavjud emas !")
+
             context.update(views=views)
             return render(request, 'user/view_video_history_all.html', context)
     else:
@@ -1243,8 +1235,7 @@ def history_pupil_view_video(request, id):
     if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (request.user.school == school and request.user == pupil and request.user.role == '4'):
 
         videos = Video.objects.filter(is_active=True).order_by('id')
-        if not videos.exists():
-            messages.error(request, "Ko'rishlar mavjud emas !")
+
         context = {
             'videos': videos,
             'pupil': pupil
@@ -1300,7 +1291,7 @@ def school_group_detail(request, id):
 
 @login_required
 def support(request):
-    return render(request, 'user/messeges.html')
+    return render(request, 'user/messages_part.html')
 
 
 @login_required
@@ -1334,8 +1325,8 @@ def result(request, id):
 
 
 @login_required
-def messeges(request):
-    return render(request, 'user/messeges.html')
+def news_messages(request):
+    return render(request, 'user/news_messages.html')
 
 
 @login_required
@@ -1992,7 +1983,7 @@ def sms_settings(request):
             'SMS_PRICE': SMS_PRICE,
             'SMS_ADD_STEP': SMS_ADD_STEP
         }
-        return render(request, 'account/sms_settings.html', context)
+        return render(request, 'user/director/sms_settings.html', context)
     else:
         return render(request, 'inc/404.html')
 

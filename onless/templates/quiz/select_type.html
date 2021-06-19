@@ -3,6 +3,14 @@
 {% block top %}
 <link href="https://fonts.googleapis.com/css2?family=Rowdies&display=swap" rel="stylesheet">
 {% endblock %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}
+
+{% endblock %}
+
 {% block content %}
 
     <div class="container-fluid">

@@ -30,6 +30,8 @@ urlpatterns = [
     path('remove-pay/<int:id>/', remove_pay, name='remove_pay'),
     path('pay-history/<int:user_id>/<int:group_id>/', pay_history, name='pay_history'),
     path('history/view-video/all/', history_view_video_all, name='history_view_video_all'),
+    path('history-view-video-all/', HistoryViewVideoAll.as_view(), name='HistoryViewVideoAll'),
+
     path('history/pupil-view-video/<int:id>/', history_pupil_view_video, name='history_pupil_view_video'),
     path('get-district/', get_district, name='get_district'),
     path('getDistrict/', getDistrict, name='getDistrict'),

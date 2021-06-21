@@ -27,8 +27,7 @@
             {% for video in videos %}
                 <a href="{% url 'video:video_detail' video.id %}">
                     <div class="col-lg-4 col-md-6 col-sm-6 mb-5">
-                        <div class="thumbnail img-thumb-bg" style="background: url('
-                                {% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: cover; background-repeat: no-repeat">
+                        <div class="thumbnail img-thumb-bg" style="background: url('{% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: cover; background-repeat: no-repeat">
                             {% get_view_video request.user.id video.id as view_video_complete %}
                             {% if view_video_complete.exists %}
                                 <div class="overlay-exists"></div>

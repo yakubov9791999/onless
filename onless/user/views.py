@@ -1,5 +1,6 @@
 import json
 import random
+import re
 import shutil
 from random import randrange
 from datetime import datetime as dt
@@ -19,11 +20,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.generic import UpdateView
+from django.views.generic import *
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
-
 
 from onless import settings
 from onless.settings import *
@@ -31,9 +31,9 @@ from quiz.models import *
 from sign.models import Material
 from user.decorators import *
 
-from .decorators import get_name, get_pasport
+from .decorators import *
 from .forms import *
-from user.models import User, Group, CATEGORY_CHOICES, School
+from user.models import *
 from video.views import *
 from video.models import *
 from sign.models import *
@@ -46,6 +46,7 @@ from calendar import month_name
 #
 from .utils import render_to_pdf
 from docxtpl import DocxTemplate
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -198,7 +199,7 @@ def add_pupil(request):
                         user.birthday = birthday
 
                     # Hujjatlar uchun qo'shimcha ma'lumotlar
-                    
+
                     # if request.POST['place_of_birth']:
                     #     place_of_birth = request.POST.get('place_of_birth')
                     #     user.place_of_birth = place_of_birth
@@ -356,7 +357,8 @@ def group_detail(request, id):
             return render(request, 'inc/404.html')
 
     school = get_object_or_404(School, id=group.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         pupils_list = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by(
             'name')
         # pupils = []
@@ -523,7 +525,8 @@ def school_edit(request):
 def pupil_edit(request, id):
     user = get_object_or_404(User, id=id)
     school = get_object_or_404(School, id=user.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')):
         groups = Group.objects.filter(is_active=True, school=request.user.school)
         regions = Region.objects.all()
         if request.POST:
@@ -532,7 +535,7 @@ def pupil_edit(request, id):
                 name = get_name(request.POST.get('name'))
                 passport = get_pasport(request.POST['passport'])
                 group = get_object_or_404(Group, id=request.POST.get('group'))
-                phone = request.POST.get('phone').replace('(', '').replace(')','').replace('-','').replace(' ','')
+                phone = request.POST.get('phone').replace('(', '').replace(')', '').replace('-', '').replace(' ', '')
                 password = request.POST.get('password')
                 #
                 user.name = name
@@ -557,7 +560,8 @@ def pupil_edit(request, id):
                 if request.POST.get('passport_issued_organization'):
                     user.passport_issued_organization = request.POST.get('passport_issued_organization')
                 if request.POST.get('passport_issued_time'):
-                    user.passport_issued_time = datetime.datetime.strptime(request.POST.get('passport_issued_time', None), '%d.%m.%Y')
+                    user.passport_issued_time = datetime.datetime.strptime(
+                        request.POST.get('passport_issued_time', None), '%d.%m.%Y')
                 #
                 if request.POST.get('medical_series'):
                     user.medical_series = request.POST.get('medical_series')
@@ -572,7 +576,6 @@ def pupil_edit(request, id):
                 if request.POST.get('certificate_number'):
                     user.certificate_number = request.POST.get('certificate_number')
                 user.save()
-
 
                 if school.send_sms_edit_pupil:
                     if school.sms_count >= 2:
@@ -595,7 +598,7 @@ def pupil_edit(request, id):
 
         context = {
             'user': user,
-            'groups':groups,
+            'groups': groups,
             'regions': regions
         }
         return render(request, 'user/pupil/pupil_edit.html', context)
@@ -636,9 +639,10 @@ def search(request):
 
         if query:
             try:
-                teachers = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
-                                               Q(name__icontains=query)).filter(role=3, school=request.user.school,
-                                                                                is_active=True).order_by('name')
+                teachers = User.objects.filter(
+                    Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
+                    Q(name__icontains=query)).filter(role=3, school=request.user.school,
+                                                     is_active=True).order_by('name')
                 context.update(teachers=teachers)
 
                 count += teachers.count()
@@ -646,29 +650,32 @@ def search(request):
                 pass
 
             try:
-                bugalters = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
-                                                Q(name__icontains=query)).filter(role=5, school=request.user.school,
-                                                                                 is_active=True).order_by('name')
+                bugalters = User.objects.filter(
+                    Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
+                    Q(name__icontains=query)).filter(role=5, school=request.user.school,
+                                                     is_active=True).order_by('name')
                 context.update(bugalters=bugalters)
                 count += bugalters.count()
             except ValueError:
                 pass
 
             try:
-                instructors = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
-                                                  Q(name__icontains=query)).filter(role=6, school=request.user.school,
-                                                                                   is_active=True).order_by('name')
+                instructors = User.objects.filter(
+                    Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
+                    Q(name__icontains=query)).filter(role=6, school=request.user.school,
+                                                     is_active=True).order_by('name')
                 context.update(instructors=instructors)
                 count += instructors.count()
             except ValueError:
                 pass
 
             try:
-                pupils = User.objects.filter(Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
-                                             Q(name__icontains=query) &
-                                             Q(group__isnull=False)).filter(role=4,
-                                                                            school=request.user.school,
-                                                                            is_active=True).order_by('name')
+                pupils = User.objects.filter(
+                    Q(pasport__icontains=query) | Q(phone__icontains=query) | Q(username__icontains=query) |
+                    Q(name__icontains=query) &
+                    Q(group__isnull=False)).filter(role=4,
+                                                   school=request.user.school,
+                                                   is_active=True).order_by('name')
 
                 context.update(pupils=pupils)
                 count += pupils.count()
@@ -717,7 +724,8 @@ def search(request):
 def pupil_delete(request, id):
     pupil = get_object_or_404(User, id=id)
     school = get_object_or_404(School, id=pupil.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         pupil.delete()
     else:
         return render(request, 'inc/404.html')
@@ -746,7 +754,8 @@ def workers_list(request):
 def worker_edit(request, id):
     worker = get_object_or_404(User, id=id)
     school = get_object_or_404(School, id=worker.school.id)
-    if (request.user.school == school and request.user.role == '2' and (worker.role == '3' or worker.role == '5' or worker.role == '6')):
+    if (request.user.school == school and request.user.role == '2' and (
+            worker.role == '3' or worker.role == '5' or worker.role == '6')):
         form = EditWorkerForm(instance=worker)
         if request.POST:
             pasport = get_pasport(request.POST['pasport'])
@@ -967,7 +976,8 @@ def bugalter_groups_list(request):
         }
 
         try:
-            if request.GET.get('startdate') and request.GET.get('startdate') != 'None' and request.GET.get('startdate') != '':
+            if request.GET.get('startdate') and request.GET.get('startdate') != 'None' and request.GET.get(
+                    'startdate') != '':
                 context.update(startdate=request.GET.get('startdate'))
                 startdate = dt.strptime(request.GET['startdate'], "%Y-%m-%d").replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
                 if startdate > timezone.now():
@@ -978,7 +988,8 @@ def bugalter_groups_list(request):
             pass
 
         try:
-            if request.GET.get('stopdate') and request.GET.get('stopdate') != 'None' and request.GET.get('stopdate') != '':
+            if request.GET.get('stopdate') and request.GET.get('stopdate') != 'None' and request.GET.get(
+                    'stopdate') != '':
                 context.update(stopdate=request.GET.get('stopdate'))
                 stopdate = dt.strptime(request.GET['stopdate'], "%Y-%m-%d").replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
                 if stopdate > timezone.now():
@@ -1006,11 +1017,13 @@ def bugalter_groups_list(request):
         messages.error(request, "Xatolik yuz berdi! Sahifani yangilab qayta urinib ko'ring!")
         return redirect(reverse_lazy('user:bugalter_groups_list'))
 
+
 @login_required
 def bugalter_group_detail(request, id):
     group = get_object_or_404(Group, id=id)
     school = get_object_or_404(School, id=group.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
 
         pupils = User.objects.filter(role=4, school=request.user.school, group=group, is_active=True).order_by('name')
         total_pay = group.price * pupils.count()
@@ -1080,7 +1093,8 @@ def set_pay(request):
 def remove_pay(request, id):
     pay = Pay.objects.get(id=id)
     school = get_object_or_404(School, id=pay.pupil.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '5') and (pay.pupil.role == '4')):
+    if (request.user.school == school and (request.user.role == '2' or request.user.role == '5') and (
+            pay.pupil.role == '4')):
         try:
             payment = pay.payment
             if request.POST.get('removed_reason'):
@@ -1102,7 +1116,9 @@ def pay_history(request, user_id, group_id):
     pupil = get_object_or_404(User, id=user_id)
     school = get_object_or_404(School, id=pupil.school.id)
 
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (request.user.school == school and request.user == pupil and request.user.role == '4'):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (
+            request.user.school == school and request.user == pupil and request.user.role == '4'):
         payments = Pay.objects.filter(pupil=pupil, is_active=True)
 
         group = get_object_or_404(Group, id=group_id)
@@ -1228,11 +1244,133 @@ def history_view_video_all(request):
         return render(request, 'inc/404.html')
 
 
+class HistoryViewVideoAll(View):
+    model = ViewComplete
+    template_name = 'user/view_video_history_all2.html'
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        return self.get_template()
+
+    def post(self, request, *args, **kwargs):
+        return self.get_json_data()
+
+    def get_template(self):
+        return render(self.request, self.template_name, self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'groups': Group.objects.filter(Q(is_active=True) & Q(school=self.request.user.school))
+        }
+        return context
+
+    def get_json_data(self):
+        start = int(self.request.POST.get('start'))
+        finish = int(self.request.POST.get('limit'))
+
+        qs = self.get_queryset()
+        data = self.get_values(qs)
+
+        list_data = []
+        for index, item in enumerate(data[start:start + finish], start):
+            view = get_object_or_404(self.model, id=item['id'])
+            item['id'] = index + 1
+
+            item['time'] = self.MyStrConverter(item['time'])
+            if item['user__group']:
+                group = get_object_or_404(Group, id=item['user__group'])
+                item['user__group'] = f"{group.category}-{group.number} {group.year}"
+
+            if item['video']:
+                item['video'] = get_object_or_404(Video, id=item['video']).title
+            list_data.append(item)
+
+        context = {
+            'length': data.count(),
+            'objects': list_data
+        }
+
+        data = json.dumps(context)
+        return HttpResponse(data, content_type='json')
+
+    def get_queryset(self):
+        q = self.request.POST.get('q', '').lower()
+        order_by = self.request.POST.get('order_by', 'id')
+        qs = self.model.objects.filter(user__school=self.request.user.school)
+
+        # regex
+        full_group_pattern = '^[a-z]-[0-9]\s[0-9]{4}$'
+        group_category_and_number_pattern = '^[a-z]-[0-9]$|^[a-z]-[0-9]\s$'
+        group_category_pattern_unfinished = '^[a-z]-$'
+        group_year_pattern = '^[0-9]{4}$'
+        group_number_pattern = '^[0-9]$'
+
+        date_pattern = '^[0-9]{2}.[0-9]{2}.[0-9]{4}$'
+        day_pattern = '^[0-9]{2}$|^[0-9]{2}.$'
+        day_and_month_pattern = '^[0-9]{2}.[0-9]{2}$|^[0-9]{2}.[0-9]{2}.$'
+
+        if re.match(full_group_pattern, q):
+            # print('full_group_pattern')
+            category = q[0:1]
+            number = q[2:3]
+            year = q[4:8]
+            qs = qs.filter(
+                Q(user__group__category=category) & Q(user__group__number=number) & Q(user__group__year=year))
+        elif re.match(group_category_and_number_pattern, q):
+            # print('group_category_and_number_pattern')
+            category = q[0:1]
+            number = q[2:3]
+            qs = qs.filter(Q(user__group__category__icontains=category) & Q(user__group__number=number))
+        elif re.match(group_category_pattern_unfinished, q):
+            # print('group_category_pattern_unfinished')
+            category = q[0:1]
+            qs = qs.filter(Q(user__group__category__icontains=category))
+        elif re.match(group_year_pattern, q):
+            # print('group_year_pattern')
+            qs = qs.filter(user__group__year=q)
+        elif re.match(group_number_pattern, q):
+            # print('group_number_pattern')
+            qs = qs.filter(user__group__number=q)
+        elif re.match(date_pattern, q):
+            # print('date_pattern')
+            date = q[0:10]
+            # time = q[11:16]
+            # print(date)
+            full_date = dt.strptime(q, '%d.%m.%Y').replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
+            # print(full_date)
+            qs = qs.filter(Q(time__date=full_date.date()))
+        elif re.match(day_pattern, q):
+            # print('day_pattern')
+            day = q[0:2]
+            qs = qs.filter(Q(time__day=day))
+        elif re.match(day_and_month_pattern, q):
+            # print('day_and_month_pattern')
+            day = q[0:2]
+            month = q[3:5]
+            qs = qs.filter(Q(time__day=day) & Q(time__month=month))
+        else:
+            qs = qs.filter(Q(user__name__icontains=q) | Q(video__title__icontains=q) | Q(user__group__category=q))
+        return qs
+
+    def get_values(self, qs):
+        qs = qs.values('id', 'user__name', 'user__group',
+                       'video', 'time', )
+        return qs
+
+    def MyStrConverter(self, obj):
+        if isinstance(obj, (datetime.datetime)):
+            return obj.strftime("%d.%m.%Y %H:%M").__str__()
+        elif isinstance(obj, (datetime.date)):
+            return obj.strftime("%d.%m.%Y").__str__()
+
+
 @login_required
 def history_pupil_view_video(request, id):
     pupil = get_object_or_404(User, id=id)
     school = get_object_or_404(School, id=pupil.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (request.user.school == school and request.user == pupil and request.user.role == '4'):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '6' or request.user.role == '5')) or (
+            request.user.school == school and request.user == pupil and request.user.role == '4'):
 
         videos = Video.objects.filter(is_active=True).order_by('id')
 
@@ -1245,6 +1383,7 @@ def history_pupil_view_video(request, id):
         return render(request, 'user/pupil/history_pupil_view_video.html', context)
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def get_district(request):
@@ -1260,12 +1399,11 @@ def get_district(request):
 
 @login_required
 def getDistrict(request):
-    id = request.GET.get('id','')
+    id = request.GET.get('id', '')
     print(id)
     result = list(District.objects.filter(region_id=int(id)).values('id', 'title'))
 
     return HttpResponse(json.dumps(result), content_type="application/json")
-
 
 
 @login_required
@@ -1381,7 +1519,8 @@ def attendance_groups_list(request):
 def attendance_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
     school = get_object_or_404(School, id=group.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
 
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
@@ -1407,6 +1546,7 @@ def attendance_set_by_group(request, id):
             return redirect(reverse_lazy('user:attendance_groups_list'))
     else:
         return render(request, 'inc/404.html')
+
 
 @login_required
 def attendance_set_by_subject(request, group_id, subject_id):
@@ -1462,7 +1602,8 @@ def attendance_set_visited(request):
                                                        created_date__range=(today_min, today_max))
 
                 if not attendance.exists():
-                    atten = Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject, is_visited=visited)
+                    atten = Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject,
+                                                      is_visited=visited)
 
                     new_timezone_timestamp = atten.created_date.astimezone(new_timezone)
                     get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
@@ -1483,7 +1624,6 @@ def attendance_set_visited(request):
                                     url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
                                     response = requests.get(url)
 
-
                         new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
                         get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
                         return HttpResponse(get_datetime)
@@ -1492,6 +1632,7 @@ def attendance_set_visited(request):
         return HttpResponse(False)
     except:
         return HttpResponse(False)
+
 
 @login_required
 def send_sms(request):
@@ -1657,7 +1798,8 @@ def rating_groups_list(request):
 def rating_set_by_group(request, id):
     group = get_object_or_404(Group, id=id)
     school = get_object_or_404(School, id=group.school.id)
-    if (request.user.school == school and (request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
+    if (request.user.school == school and (
+            request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
 
@@ -1683,6 +1825,7 @@ def rating_set_by_group(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def rating_set_by_subject(request, group_id, subject_id):
     group = get_object_or_404(Group, id=group_id)
@@ -1700,7 +1843,8 @@ def rating_set_by_subject(request, group_id, subject_id):
     if request.user == group.teacher or request.user == director:
         pupils = User.objects.filter(
             Q(school=request.user.school) & Q(is_active=True) & Q(is_offline=True) & Q(group=group) & Q(
-                pupil_attendance__subject=subject) & Q(pupil_attendance__is_visited=True) & Q(pupil_attendance__updated_date__range=(today_min, today_max)))
+                pupil_attendance__subject=subject) & Q(pupil_attendance__is_visited=True) & Q(
+                pupil_attendance__updated_date__range=(today_min, today_max)))
 
         if not pupils.exists():
             messages.error(request, f'O\'quvchilar mavjud emas!')
@@ -1903,7 +2047,8 @@ def electronical_journal(request):
 def get_group_pupils_count(request):
     if request.POST:
         group = get_object_or_404(Group, id=request.POST.get('group'))
-        pupils_count = User.objects.filter(Q(is_active=True) & Q(role=4) & Q(group=group) & Q(phone__isnull=False)).count()
+        pupils_count = User.objects.filter(
+            Q(is_active=True) & Q(role=4) & Q(group=group) & Q(phone__isnull=False)).count()
         return HttpResponse(pupils_count)
     else:
         return HttpResponse(False)
@@ -1987,6 +2132,7 @@ def sms_settings(request):
     else:
         return render(request, 'inc/404.html')
 
+
 @login_required
 def buy_sms(request):
     try:
@@ -2001,7 +2147,7 @@ def buy_sms(request):
                         school.sms_count += count
                         school.save()
 
-                        BuySms.objects.create(school=school,money=money,sms_count=count)
+                        BuySms.objects.create(school=school, money=money, sms_count=count)
                         return HttpResponse(True)
                     else:
                         return HttpResponse(False)
@@ -2013,6 +2159,7 @@ def buy_sms(request):
             return HttpResponse(False)
     except:
         return HttpResponse(False)
+
 
 @login_required
 def modify_checkbox_send_sms(request):
@@ -2075,8 +2222,9 @@ def payment_payme(request):
     from clickuz import ClickUz
     from click.models import Order
 
-    order = Order.objects.create(amount=1000,user=request.user)
-    url = ClickUz.generate_url(order_id=order.id, amount=order.amount,return_url='http://127.0.0.1:8000/user/payment-payme/')
+    order = Order.objects.create(amount=1000, user=request.user)
+    url = ClickUz.generate_url(order_id=order.id, amount=order.amount,
+                               return_url='http://127.0.0.1:8000/user/payment-payme/')
     print(url)
     if request.POST:
         print('POST')
@@ -2090,7 +2238,6 @@ def payment_payme(request):
 @login_required
 def personal_exam_doc_generate(request, id):
     user = get_object_or_404(User, id=id)
-  
 
     context = {}
 
@@ -2101,7 +2248,8 @@ def personal_exam_doc_generate(request, id):
 
     if user.group.category == 'B':
         if user.school.is_capital:
-            doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
+            doc = DocxTemplate(
+                "/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
             # doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\capital\personal_exam_b.docx")
             context.update(
                 pupil_name=user.name,
@@ -2167,17 +2315,16 @@ def personal_exam_doc_generate(request, id):
         school=user.school,
         certificate_sery_and_number=f"{f'{user.certificate_series.upper()} {user.certificate_number}' if user.certificate_series and user.certificate_number else ''}",
 
-
     )
-
 
     doc.render(context)
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-    filename = "{0} - imtihon varaqa.docx".format(user.name.replace('’',"'"))
+    filename = "{0} - imtihon varaqa.docx".format(user.name.replace('’', "'"))
     content = "attachment; filename=%s" % (filename)
     response['Content-Disposition'] = content
     doc.save(response)
     return response
+
 
 @login_required
 def again_send_sms(request, pupil_id):
@@ -2191,4 +2338,4 @@ def again_send_sms(request, pupil_id):
         response = requests.get(url)
         return HttpResponse(f"{pupil.group.category}-{pupil.group.number} {pupil.group.year}: {pupil.name}")
     except:
-        return HttpResponse('Error send again sms. PupilId: '+ pupil_id)
+        return HttpResponse('Error send again sms. PupilId: ' + pupil_id)

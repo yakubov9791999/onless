@@ -7,9 +7,9 @@
     {{ block.super }}
     {% breadcrumb "Test savollari" "quiz:select_lang" %}
        {% if request.GET.type == 'T' %}
-    {% breadcrumb "Mashg'ulot" "quiz:select_type" %}
+    {% breadcrumb "Mashg'ulot" "quiz:select_lang" %}
     {% elif request.GET.type == 'I' %}
-        {% breadcrumb "Imtihon" "quiz:select_type" %}
+        {% breadcrumb "Imtihon" "quiz:select_lang" %}
     {% endif %}
 {% endblock %}
 

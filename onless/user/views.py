@@ -11,6 +11,7 @@ import requests
 import xlrd
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
@@ -1244,15 +1245,20 @@ def history_view_video_all(request):
         return render(request, 'inc/404.html')
 
 
-class HistoryViewVideoAll(View):
+class HistoryViewVideoAll(LoginRequiredMixin,View):
     model = ViewComplete
     template_name = 'user/view_video_history_all2.html'
+
+    @allowed_users(allowed_roles=[DIRECTOR,TEACHER,INSPECTION,INSTRUCTOR,ACCOUNTANT])
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
         return self.get_template()
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         return self.get_json_data()
 
     def get_template(self):
@@ -1295,62 +1301,68 @@ class HistoryViewVideoAll(View):
 
     def get_queryset(self):
         q = self.request.POST.get('q', '').lower()
-        order_by = self.request.POST.get('order_by', 'id')
-        qs = self.model.objects.filter(user__school=self.request.user.school)
+        order_by = self.request.POST.get('order_by')
+        qs = self.model.objects.filter(Q(user__school=self.request.user.school) & Q(user__role=4)).order_by(f"-{order_by}")
 
         # regex
-        full_group_pattern = '^[a-z]-[0-9]\s[0-9]{4}$'
-        group_category_and_number_pattern = '^[a-z]-[0-9]$|^[a-z]-[0-9]\s$'
-        group_category_pattern_unfinished = '^[a-z]-$'
+        full_group_pattern = '^[a-z]{1,}-[0-9]{1,}\s[0-9]{4}$'
+        group_category_and_number_pattern = '^[a-z]{1,}-[0-9]{1,}$|^[a-z]{1,}-[0-9]{1,}\s$'
+        group_category_pattern_unfinished = '^[a-z]{1,}-$'
         group_year_pattern = '^[0-9]{4}$'
-        group_number_pattern = '^[0-9]$'
+        group_number_pattern = '^[0-9]{1,}$'
 
         date_pattern = '^[0-9]{2}.[0-9]{2}.[0-9]{4}$'
         day_pattern = '^[0-9]{2}$|^[0-9]{2}.$'
         day_and_month_pattern = '^[0-9]{2}.[0-9]{2}$|^[0-9]{2}.[0-9]{2}.$'
 
-        if re.match(full_group_pattern, q):
-            # print('full_group_pattern')
-            category = q[0:1]
-            number = q[2:3]
-            year = q[4:8]
-            qs = qs.filter(
-                Q(user__group__category=category) & Q(user__group__number=number) & Q(user__group__year=year))
-        elif re.match(group_category_and_number_pattern, q):
-            # print('group_category_and_number_pattern')
-            category = q[0:1]
-            number = q[2:3]
-            qs = qs.filter(Q(user__group__category__icontains=category) & Q(user__group__number=number))
-        elif re.match(group_category_pattern_unfinished, q):
-            # print('group_category_pattern_unfinished')
-            category = q[0:1]
-            qs = qs.filter(Q(user__group__category__icontains=category))
-        elif re.match(group_year_pattern, q):
-            # print('group_year_pattern')
-            qs = qs.filter(user__group__year=q)
-        elif re.match(group_number_pattern, q):
-            # print('group_number_pattern')
-            qs = qs.filter(user__group__number=q)
-        elif re.match(date_pattern, q):
-            # print('date_pattern')
-            date = q[0:10]
-            # time = q[11:16]
-            # print(date)
-            full_date = dt.strptime(q, '%d.%m.%Y').replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
-            # print(full_date)
-            qs = qs.filter(Q(time__date=full_date.date()))
-        elif re.match(day_pattern, q):
-            # print('day_pattern')
-            day = q[0:2]
-            qs = qs.filter(Q(time__day=day))
-        elif re.match(day_and_month_pattern, q):
-            # print('day_and_month_pattern')
-            day = q[0:2]
-            month = q[3:5]
-            qs = qs.filter(Q(time__day=day) & Q(time__month=month))
-        else:
-            qs = qs.filter(Q(user__name__icontains=q) | Q(video__title__icontains=q) | Q(user__group__category=q))
-        return qs
+
+        try:
+            if re.match(full_group_pattern, q):
+                # print('full_group_pattern')
+                category = q.split('-')[0]
+                number = q.split('-')[1].split(' ')[0]
+                year = q.split('-')[1].split(' ')[1]
+
+                qs = qs.filter(
+                    Q(user__group__category=category) & Q(user__group__number=number) & Q(user__group__year=year))
+            elif re.match(group_category_and_number_pattern, q):
+                # print('group_category_and_number_pattern')
+                category = q.split('-')[0]
+                number = q.split('-')[1]
+
+                qs = qs.filter(Q(user__group__category__icontains=category) & Q(user__group__number=number))
+            elif re.match(group_category_pattern_unfinished, q):
+                # print('group_category_pattern_unfinished')
+                category = q.split('-')[0]
+                qs = qs.filter(Q(user__group__category__icontains=category))
+            elif re.match(group_year_pattern, q):
+                # print('group_year_pattern')
+                qs = qs.filter(user__group__year=q)
+            elif re.match(group_number_pattern, q):
+                # print('group_number_pattern')
+                qs = qs.filter(user__group__number=q)
+            elif re.match(date_pattern, q):
+                # print('date_pattern')
+                date = q[0:10]
+                # time = q[11:16]
+                # print(date)
+                full_date = dt.strptime(q, '%d.%m.%Y').replace(tzinfo=ASIA_TASHKENT_TIMEZONE)
+                # print(full_date)
+                qs = qs.filter(Q(time__date=full_date.date()))
+            elif re.match(day_pattern, q):
+                # print('day_pattern')
+                day = q[0:2]
+                qs = qs.filter(Q(time__day=day))
+            elif re.match(day_and_month_pattern, q):
+                # print('day_and_month_pattern')
+                day = q[0:2]
+                month = q[3:5]
+                qs = qs.filter(Q(time__day=day) & Q(time__month=month))
+            else:
+                qs = qs.filter(Q(user__name__icontains=q) | Q(video__title__icontains=q) | Q(user__group__category=q))
+            return qs
+        except:
+            return ViewComplete.objects.none()
 
     def get_values(self, qs):
         qs = qs.values('id', 'user__name', 'user__group',
@@ -2339,3 +2351,7 @@ def again_send_sms(request, pupil_id):
         return HttpResponse(f"{pupil.group.category}-{pupil.group.number} {pupil.group.year}: {pupil.name}")
     except:
         return HttpResponse('Error send again sms. PupilId: ' + pupil_id)
+
+
+def error_403(request):
+    return render(request, 'inc/404.html')

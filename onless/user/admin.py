@@ -6,6 +6,8 @@ from sign.models import *
 from .models import *
 from django.contrib import admin
 from .models import Payment
+
+
 @admin.register(EducationCategory)
 class EducationCategoryAdmin(admin.ModelAdmin):
     list_display = ('title','sort')

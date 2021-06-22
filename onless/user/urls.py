@@ -51,7 +51,6 @@ urlpatterns = [
     path('attendance-set-visited/', attendance_set_visited, name='attendance_set_visited'),
     path('send-sms/', send_sms, name='send_sms'),
 
-
     path('referral-list/<int:id>/', referral_list, name='referral_list'),
 
     path('rating-groups-list/', rating_groups_list, name='rating_groups_list'),
@@ -71,4 +70,6 @@ urlpatterns = [
     path('personal-exam-doc-generate/<int:id>/', personal_exam_doc_generate, name='personal_exam_doc_generate'),
 
     path('again-send-sms/<int:pupil_id>/', again_send_sms, name='again_send_sms'),
+
+    path('error/403/', error_403, name='error_403'),
 ]

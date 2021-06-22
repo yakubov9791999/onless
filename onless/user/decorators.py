@@ -1,3 +1,8 @@
+from django.shortcuts import redirect
+
+from user.models import *
+
+
 def makename(name):
     def wrapped(self):
         names = self.split(' ')
@@ -99,3 +104,24 @@ def get_pasport(pasport):
 @makesms
 def get_sms(sms):
     return sms
+
+
+
+def allowed_users(allowed_roles=[]):
+    def decorator(view_func):
+        def wrapper_func(obj, *args, **kwargs):
+            group = None
+
+            # if obj.request.user.role == DIRECTOR:
+            #     print(dir(obj))
+            # if obj.request.user.groups.exists():
+            #     group = obj.request.user.groups.all()[0].name
+
+            if obj.request.user.role in allowed_roles:
+                return view_func(obj, *args, **kwargs)
+            else:
+                return redirect('user:error_403')
+
+        return wrapper_func
+
+    return decorator

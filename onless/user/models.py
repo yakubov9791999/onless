@@ -170,13 +170,20 @@ class Group(models.Model):
         verbose_name_plural = 'Guruhlar'
 
 
+INSPECTION = '1'
+DIRECTOR = '2'
+TEACHER = '3'
+PUPIL = '4'
+ACCOUNTANT = '5'
+INSTRUCTOR = '6'
+
 ROLE_CHOICES = (
-    ("1", "Inspeksiya"),
-    ("2", "Direktor"),
-    ("3", "O'qituvchi"),
-    ("4", "O'quvchi"),
-    ("5", "Bugalter"),
-    ("6", "Instructor"),
+    (INSPECTION, "Inspeksiya"),
+    (DIRECTOR, "Direktor"),
+    (TEACHER, "O'qituvchi"),
+    (PUPIL, "O'quvchi"),
+    (ACCOUNTANT, "Bugalter"),
+    (INSTRUCTOR, "Instructor"),
 )
 
 GENDER_CHOICES = (

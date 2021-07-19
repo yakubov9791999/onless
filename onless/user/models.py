@@ -338,6 +338,7 @@ class Sms(models.Model):
     created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt', editable=False)
     text = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='sms_school')
+    sms_id = models.BigIntegerField(default=0)
 
     class Meta:
         verbose_name = 'Sms'

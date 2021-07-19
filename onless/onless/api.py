@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponse, JsonResponse
 from onless.telegram_bot import send_message_to_developer
 
+
 SUCCESS = 200
 PROCESSING = 102
 FAILED = 400
@@ -40,10 +41,10 @@ class SendSmsWithApi:
         status_code = self.custom_validation()
         if status_code == SUCCESS:
             message = self.clean_message(self.make_messages())
-            print(message)
+            # print(message)
             result = self.calculation_send_sms(message)
             if result == SUCCESS:
-                print(result, 43)
+                # print(result, 43)
                 return self.send_message(message)
             else:
                 return result
@@ -104,7 +105,7 @@ class SendSmsWithApi:
 
     def send_message(self, message):
         token = self.authorization()
-        print(f"Token: {token}")
+        # print(f"Token: {token}")
         if token == FAILED:
             return FAILED
 
@@ -115,7 +116,7 @@ class SendSmsWithApi:
             'mobile_phone': '998' + str(self.phone),
             'message': message,
             'from': '4546',
-            'callback_url': 'http://59de742ed35d.ngrok.io/sms-api-result/'}
+            'callback_url': 'http://afbaf9e5a0a6.ngrok.io/sms-api-result/'}
 
         FILES = [
 
@@ -128,9 +129,15 @@ class SendSmsWithApi:
         if r.json()['status'] == 'error':
             self.user.school.sms_count = self.user.school.sms_count + self.spend
             self.user.school.save()
-        print(f"Eskiz: {r.json()}" )
+        # print(f"Eskiz: {r.json()}" )
+        try:
+            from user.models import Sms
+            Sms.objects.create(school=self.user.school, sms_id=r.json()['id'], sms_count=self.spend, text=self.message)
+        except:
+            pass
         return r.status_code
         # return SUCCESS
+
 
     def clean_message(self, message):
         message = message.replace('ц', 'ts').replace('ч', 'ch').replace('ю',
@@ -203,11 +210,11 @@ class SendSmsWithApi:
     def calculation_send_sms(self, message):
         try:
             length = len(message)
-            print(f"length: {length}")
+            # print(f"length: {length}")
             if length:
                 if length >= 0 and length <= 160:
                     self.spend = 1
-                elif length > 161 and length <= 306:
+                elif length > 160 and length <= 306:
                     self.spend = 2
                 elif length > 306 and length <= 459:
                     self.spend = 3
@@ -224,7 +231,7 @@ class SendSmsWithApi:
                 else:
                     self.spend = 30
 
-                print(f"spend: {self.spend}")
+                # print(f"spend: {self.spend}")
 
                 if self.user.school.sms_count >= self.spend:
                     self.user.school.sms_count = self.user.school.sms_count - self.spend
@@ -235,4 +242,8 @@ class SendSmsWithApi:
             return FAILED
 
 def sms_api_result(request):
-    print(request, 138)
+    try:
+        send_message_to_developer(f"{request}")
+    except:
+        if request:
+            send_message_to_developer('sms from SmsApi, Eskiz.uz send sms')

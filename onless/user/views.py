@@ -837,10 +837,9 @@ def upload_file(request):
             sheet = wb.sheet_by_index(0)
             number_of_rows = sheet.nrows
             number_of_columns = sheet.ncols
-
+            i = 0
             for row in range(1, number_of_rows):
-                i = 2
-                i = i + 1
+
                 name = str((sheet.cell(row, 1).value))
                 name = get_name(name)
 
@@ -886,21 +885,27 @@ def upload_file(request):
                             user.email = ''
 
                             if school.send_sms_add_pupil:
-                                if school.sms_count >= 2:
-                                    school.sms_count = school.sms_count - 2
-                                    school.save()
+                                r = SendSmsWithApi(user=user, is_add_pupil=True).get()
+                                print(f"response: {r}")
+                                if r == SUCCESS:
+                                    i = i + 1
                                     user.save()
-                                    msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
-                                    msg = msg.replace(" ", "+")
-                                    url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                                    response = requests.get(url)
-                                    messages.success(request,
-                                                     "O'quvchi(lar) muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                                    messages.success(request, f"{i} ta o'quvchiga sms muvaffaqiyatli jo'natildi!")
+                                elif r == INVALID_NUMBER:
+                                    user.delete()
+                                    messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
+                                elif r == MESSAGE_IS_EMPTY:
+                                    user.delete()
+                                    messages.error(request, "Xabar matni kiritilmagan!")
+                                elif r == SMS_NOT_FOUND:
+                                    user.delete()
+                                    messages.error(request, "Sizda sms to'plami mavjud emas!")
+                                elif r == SMS_SERVICE_NOT_TURNED:
+                                    user.delete()
+                                    messages.error(request, "Sms xizmati faollashtirilmagan!")
                                 else:
                                     user.delete()
-                                    messages.error(request,
-                                                   f"{row + 1}-ustundagi o'quvchini qo'shish uchun sms yetarli emas!")
-                                    return redirect(reverse_lazy('user:group_detail', kwargs={'id': group.id}))
+                                    messages.error(request, "SMS yuborishda xatolik yuz berdi!")
                             else:
                                 user.save()
                                 messages.success(request,
@@ -960,7 +965,7 @@ def upload_file(request):
                         messages.error(request, "Formani to'liq to'ldiring !")
                         next = request.META['HTTP_REFERER']
                         return HttpResponseRedirect(next)
-
+            print(i, 973)
             next = request.META['HTTP_REFERER']
             return HttpResponseRedirect(next)
         else:
@@ -1735,8 +1740,7 @@ def send_sms(request):
                     messages.error(request, "Sizda sms to'plam mavjud emas!")
                     return render(request, 'user/director/send_sms.html', context)
                 text = form.cleaned_data['text']
-                text = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
-                text = get_sms(text)
+                message = text.replace('\n', '')  # oxiridagi ortiqcha probellar o'chadi
 
                 try:
                     group = get_object_or_404(Group, id=int(request.POST['group']))
@@ -1754,35 +1758,57 @@ def send_sms(request):
                 """
                 SMS xabarnoma soni, 160 belgidan ko'p bo'lgan hollarda ko'p SMS sarflash tizimi
                 """
-                if len(text) >= 0 and len(text) <= 159:
-                    new_sms_count = sms_count - users.count()
-                elif len(text) >= 160 and len(text) <= 316:
-                    new_sms_count = sms_count - (users.count() * 2)
-                elif len(text) >= 317 and len(text) <= 476:
-                    new_sms_count = sms_count - (users.count() * 3)
-                elif len(text) >= 477 and len(text) <= 634:
-                    new_sms_count = sms_count - (users.count() * 4)
-                elif len(text) >= 635 and len(text) <= 794:
-                    new_sms_count = sms_count - (users.count() * 5)
-                else:
-                    new_sms_count = sms_count - (users.count() * 30)
-                if new_sms_count >= 0:
-                    Sms.objects.create(sms_count=sms_count - new_sms_count, school=request.user.school, text=text)
+                # if len(text) >= 0 and len(text) <= 160:
+                #     new_sms_count = sms_count - users.count()
+                # elif len(text) > 160 and len(text) <= 306:
+                #     new_sms_count = sms_count - (users.count() * 2)
+                # elif len(text) > 306 and len(text) <= 459:
+                #     new_sms_count = sms_count - (users.count() * 3)
+                # elif len(text) > 459 and len(text) <= 612:
+                #     new_sms_count = sms_count - (users.count() * 4)
+                # elif len(text) > 612 and len(text) <= 765:
+                #     new_sms_count = sms_count - (users.count() * 5)
+                # elif len(text) > 765 and len(text) <= 918:
+                #     new_sms_count = sms_count - (users.count() * 6)
+                # elif len(text) > 918 and len(text) <= 1071:
+                #     new_sms_count = sms_count - (users.count() * 7)
+                # elif len(text) > 1071 and len(text) <= 1224:
+                #     new_sms_count = sms_count - (users.count() * 8)
+                # else:
+                #     new_sms_count = sms_count - (users.count() * 30)
+                # if new_sms_count >= 0:
+                #     Sms.objects.create(sms_count=sms_count - new_sms_count, school=request.user.school, text=text)
 
-                    for user in users:
-                        msg = text.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                        response = requests.get(url)
+                for user in users:
+                    r = SendSmsWithApi(user=user, message=message).get()
+                    print(f"response: {r}")
+                    if r == SUCCESS:
+                        user.save()
+                        messages.success(request, f"{users.count()} kishiga sms muvaffaqiyatli jo'natildi!")
+                    elif r == INVALID_NUMBER:
+                        user.delete()
+                        messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
+                    elif r == MESSAGE_IS_EMPTY:
+                        user.delete()
+                        messages.error(request, "Xabar matni kiritilmagan!")
+                    elif r == SMS_NOT_FOUND:
+                        user.delete()
+                        messages.error(request, "Sizda sms to'plami mavjud emas!")
+                    elif r == SMS_SERVICE_NOT_TURNED:
+                        user.delete()
+                        messages.error(request, "Sms xizmati faollashtirilmagan!")
+                    else:
+                        user.delete()
+                        messages.error(request, "SMS yuborishda xatolik yuz berdi!")
                     # Sarflangan smslarni  bazaga yozish
-                    this_user = School.objects.get(school_user=request.user)
-                    this_user.sms_count = new_sms_count
-                    this_user.save()
+                    # this_user = School.objects.get(school_user=request.user)
+                    # this_user.sms_count = new_sms_count
+                    # this_user.save()
 
                     messages.success(request,
                                      f"Sizning SMS xabarnomangiz {users.count()} ta o'quvchiga muvaffaqiyatli yetkazildi!")
-                    context.update(school_sms_count=new_sms_count)
-                else:
-                    messages.error(request, "Kechirasiz, SMSlar soni guruhdagi o'quvchilar sonidan kam")
+                    context.update(school_sms_count=user.school.sms_count)
+
             else:
                 messages.error(request, "Xabar matni kiritilmagan yoki guruh tanlanmagan!")
         else:

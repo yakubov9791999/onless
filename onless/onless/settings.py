@@ -187,7 +187,7 @@ CKEDITOR_CONFIGS = {
 import pytz
 
 ASIA_TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")
-SMS_PRICE = 150
+SMS_PRICE = 180
 SMS_ADD_STEP = 10
 
 

@@ -116,7 +116,10 @@
                                         </label>
                                     </td>
 
-                                          <td> {% if request.user.role == '2' and pupil.place_of_birth != None and pupil.residence_address != None and pupil.place_of_birth != '' and pupil.residence_address != '' and pupil.region != None and pupil.district != None %}<a href="{% url 'user:personal_exam_doc_generate' pupil.id %} ">Hujjatlar namunasi {% else %}Ma'lumotlar to'ldirilmagan{% endif %}</a></td>
+                                    <td>
+                                        {% if request.user.role == '2' and pupil.place_of_birth != None and pupil.residence_address != None and pupil.place_of_birth != '' and pupil.residence_address != '' and pupil.region != None and pupil.district != None %}
+                                            <a href="{% url 'user:personal_exam_doc_generate' pupil.id %} ">Hujjatlar
+                                            namunasi {% else %}Ma'lumotlar to'ldirilmagan{% endif %}</a></td>
                                     {% if request.user.role == '2' or request.user.role == '3' %}
                                         <td>
                                             &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}">
@@ -168,6 +171,8 @@
 
 
         function delete_pupil(group_id, pupil_id, pupil_name) {
+
+
             var pupilId = pupil_id;
             var pupilName = pupil_name;
 
@@ -195,11 +200,16 @@
                             url: '/user/pupil-delete/' + pupilId,
                         });
                         {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
-                        window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
+                        setTimeout(function () {
+                            window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
+                        }, 1000);
+
+
                     });
                 } else {
                     swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
                 }
+
             });
 
         }

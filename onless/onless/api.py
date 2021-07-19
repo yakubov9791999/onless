@@ -124,7 +124,7 @@ class SendSmsWithApi:
         HEADERS = {
             'Authorization': f'Bearer {token}'
         }
-
+        # print(f'message: {self.message}')
         r = requests.request("POST", SEND_SMS_URL, headers=HEADERS, data=PAYLOAD, files=FILES)
         if r.json()['status'] == 'error':
             self.user.school.sms_count = self.user.school.sms_count + self.spend
@@ -134,7 +134,7 @@ class SendSmsWithApi:
             from user.models import Sms
             Sms.objects.create(school=self.user.school, sms_id=r.json()['id'], sms_count=self.spend, text=self.message)
         except:
-            pass
+            send_message_to_developer("sms object create error")
         return r.status_code
         # return SUCCESS
 
@@ -174,11 +174,11 @@ class SendSmsWithApi:
 
     def make_messages(self):
         if self.is_add_pupil:
-            message = f"Hurmatli {self.user.name}! Siz {self.user.group.category}-{self.user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-            return message
+            self.message = f"Hurmatli {self.user.name}! Siz {self.user.group.category}-{self.user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
         elif self.is_edit_pupil:
-            message = f"Hurmatli {self.user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-            return message
+            self.message = f"Hurmatli {self.user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
         elif self.is_add_worker:
             if self.user.role == '6':
                 role = 'instruktor'
@@ -187,23 +187,23 @@ class SendSmsWithApi:
             else:
                 role = "o'qituvchi"
 
-            message = f"Hurmatli {self.user.name}! Siz {self.user.school.title} da {role} lavozimida ro'yhatga olindingiz. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-            return message
+            self.message = f"Hurmatli {self.user.name}! Siz {self.user.school.title} da {role} lavozimida ro'yhatga olindingiz. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
         elif self.is_edit_worker:
-            message = f"Hurmatli {self.user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-            return message
+            self.message = f"Hurmatli {self.user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
         elif self.is_attendance:
             if self.subject:
-                message = f"Hurmatli {self.user.name}! Bugun {self.subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-                return message
+                self.message = f"Hurmatli {self.user.name}! Bugun {self.subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+                return self.message
         elif self.is_rating:
             if self.subject and self.score:
-                message = f"Hurmatli {self.user.name}! Bugun {self.subject.short_title} fanidan {self.score} bahosini oldingiz!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-                return message
+                self.message = f"Hurmatli {self.user.name}! Bugun {self.subject.short_title} fanidan {self.score} bahosini oldingiz!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+                return self.message
         elif self.is_payment:
             if self.pay and self.payment:
-                message = f"Hurmatli {self.user.name}! Avtomaktabga {self.pay} so’m to’lov qildingiz! Jami to’lovingiz {self.payment} so’m. Toifa bo’yicha {self.user.group.price - int(self.payment)} so’m qarzdorligingiz qoldi!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
-                return message
+                self.message = f"Hurmatli {self.user.name}! Avtomaktabga {self.pay} so’m to’lov qildingiz! Jami to’lovingiz {self.payment} so’m. Toifa bo’yicha {self.user.group.price - int(self.payment)} so’m qarzdorligingiz qoldi!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+                return self.message
         else:
             return self.message
 

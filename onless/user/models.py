@@ -12,6 +12,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator, MinLeng
 
 from payments.models import BasePayment
 
+from onless.api import SUCCESS, PROCESSING, FAILED
+
+
 def path_and_rename(instance, filename):
     upload_to = 'user_avatars/'
     ext = filename.split('.')[-1]
@@ -333,12 +336,18 @@ class Rating(models.Model):
         verbose_name_plural = 'Baholar'
 
 
+status = (
+    (SUCCESS, 'Muvaffaqiyatli'),
+    (PROCESSING, 'Kutilmoqda'),
+    (FAILED, 'Yuborilmagan'),
+)
 class Sms(models.Model):
     sms_count = models.IntegerField(default=0, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt', editable=False)
     text = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='sms_school')
     sms_id = models.BigIntegerField(default=0)
+    status = models.IntegerField(choices=status, default=PROCESSING)
 
     class Meta:
         verbose_name = 'Sms'

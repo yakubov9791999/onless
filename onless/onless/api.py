@@ -247,3 +247,41 @@ def sms_api_result(request):
     except:
         if request:
             send_message_to_developer('sms from SmsApi, Eskiz.uz send sms')
+
+
+class GetStatusSms:
+    def __init__(self, id):
+        self.id = id
+
+    def authorization(self):
+        data = {
+            'email': 'bcloudintelekt@gmail.com',
+            'password': 'ddMFQPXTfQRuhj8nmNSyfLv6mniuSpBHxGj3ZEY5',
+        }
+
+        AUTHORIZATION_URL = 'http://notify.eskiz.uz/api/auth/login'
+
+        r = requests.request('POST', AUTHORIZATION_URL, data=data)
+        if r.json()['data']['token']:
+            return r.json()['data']['token']
+        else:
+            return FAILED
+
+    def get(self):
+
+        token = self.authorization()
+        print(self.id)
+        CHECK_STATUS_URL = 'http://notify.eskiz.uz/api/message/sms/status/' + str(self.id)
+
+        HEADERS = {
+            'Authorization': f'Bearer {token}'
+        }
+
+        r = requests.request("GET", CHECK_STATUS_URL, headers=HEADERS)
+        if r.json()['status'] == 'success':
+            if r.json()['message']['status'] == 'DELIVRD':
+                return SUCCESS
+            elif r.json()['message']['status'] == 'EXPIRED':
+                return FAILED
+            else:
+                return PROCESSING

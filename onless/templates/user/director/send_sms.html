@@ -85,7 +85,7 @@
 
             function accept_send_sms() {
                 var html = `<p style="text-align:left">Onless.uz tizimidagi guruh kesimida SMS jo'natish funksiyasi sizga har bir guruh o'quvchilariga bir necha soniyalar ichida SMS xabarnomangizni yetkazish vazifasini bajaradi.</p><p style="text-align:left"> Siyosatga qarshi, mafkuraga zid va O'zbekiston Respublikasi qonunchiligiga qarshi harakatlarni targ'ib qiluvchi SMS xabarnomalar tarqatish qat'iyan man etiladi. Shunday holatlar yuz berganida, SMS xabarnoma matni uchun avtomaktab javobgar hisoblanadi. Onless.uz ma'muriyatini javobgarligi mavjud emas.</p>
-<p style="text-align:left">SMS jo'natishda faqat lotin harflari kiritish maqsadga muvofiq. 159 tagacha belgidan iborat matnli sms jo'natish uchun har bitta o'quvchiga 1 ta sms sarflanadi. Sms matnidagi belgilar soni oshib borishi bilan smslar soni ham oshib boradi. Agarda belgilar 159 tadan ortiq 317 tadan kam bo'lsa har bir o'quvchiga ketadigan sms 2 ta hisoblaniladi. Belgilar 317 tadan ko'p 477 tadan kam bo'lsa har bir o'quvchiga ketadigan sms 3 ta hisoblaniladi. Belgilar 477 tadan ko'p 635 tadan kam bo'lsa har bir o'quvchiga ketadigan sms 4 ta hisoblaniladi. Belgilar 635 tadan ko'p 795 tadan kam bo'lsa har bir o'quvchiga ketadigan sms 5 ta hisoblaniladi. Agarda belgilar 795 tadan ko'p bo'lsa har bir o'quvchiga ketadigan sms 30 ta hisoblaniladi.</p>
+<p style="text-align:left">SMS jo'natishda faqat lotin harflari kiritish maqsadga muvofiq. 160 tagacha belgidan iborat matnli sms jo'natish uchun har bitta o'quvchiga 1 ta sms sarflanadi. Sms matnidagi belgilar soni oshib borishi bilan smslar soni ham oshib boradi. Agarda belgilar 160 tadan ortiq 306 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 2 ta hisoblaniladi. Belgilar 306 tadan ko'p 459 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 3 ta hisoblaniladi. Belgilar 459 tadan ko'p 612 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 4 ta hisoblaniladi. Belgilar 612 tadan ko'p 765 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 5 ta hisoblaniladi. Belgilar 765 tadan ko'p 918 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 6 ta hisoblaniladi. Belgilar 918 tadan ko'p 1071 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 7 ta hisoblaniladi. Belgilar 1071 tadan ko'p 1224 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 8 ta hisoblaniladi. Agarda belgilar 1224 tadan ko'p bo'lsa har bir o'quvchiga ketadigan sms 30 ta hisoblaniladi.</p>
 <br><h3 style="text-align:left">Hisobingizdagi smslar soni: ${SchoolSmsCount} ta</h3></p>
 <p style="text-align:left">1 ta SMS narxi 150 so'mni tashkil etadi.
 SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms sozlamalar</a> bo'limiga o\'ting</p>`
@@ -138,13 +138,12 @@ SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms s
                 accept_send_sms()
             })
 
-            $("#textLabel").keypress(LotinInputFilter);
 
             $("form").submit(function (e) {
                 var SelectedGroup = $('#selectedGroup').children("option:selected").val()
 
                 if (SchoolSmsCount <= 0) {
-                     e.preventDefault();
+                    e.preventDefault();
                     $.notifyDefaults({
                         type: 'danger',
                         allow_dismiss: false,
@@ -226,24 +225,24 @@ SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms s
                 var length = $(this).val().length
 
                 $('#counter').empty().append(length)
-                if (length >= 0 && length <= 159) {
+                if (length >= 0 && length <= 160) {
                     SmsCount = 1
                     $('#spent_sms').empty().text(Count * SmsCount)
-                } else if (length >= 160 && length <= 316) {
+                } else if (length > 160 && length <= 306) {
                     SmsCount = 2
                     $('#spent_sms').siblings('b').css('color', 'red')
                     $('#spent_sms').empty().text(Count * SmsCount)
                     setTimeout(function () {
                         $('#spent_sms').siblings('b').css('color', 'blue')
                     }, 200)
-                } else if (length >= 317 && length <= 476) {
+                } else if (length > 306 && length <= 459) {
                     SmsCount = 3
                     $('#spent_sms').siblings('b').css('color', 'red')
                     $('#spent_sms').empty().text(Count * SmsCount)
                     setTimeout(function () {
                         $('#spent_sms').siblings('b').css('color', 'blue')
                     }, 200)
-                } else if (length >= 477 && length <= 634) {
+                } else if (length > 459 && length <= 612) {
                     SmsCount = 4
                     $('#spent_sms').siblings('b').css('color', 'red')
                     console.log(Count, SmsCount)
@@ -251,8 +250,29 @@ SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms s
                     setTimeout(function () {
                         $('#spent_sms').siblings('b').css('color', 'blue')
                     }, 200)
-                } else if (length >= 635 && length <= 794) {
+                } else if (length > 612 && length <= 765) {
                     SmsCount = 5
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 765 && length <= 918) {
+                    SmsCount = 6
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 918 && length <= 1071) {
+                    SmsCount = 7
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 1071 && length <= 1224) {
+                    SmsCount = 8
                     $('#spent_sms').siblings('b').css('color', 'red')
                     $('#spent_sms').empty().text(Count * SmsCount)
                     setTimeout(function () {
@@ -293,20 +313,29 @@ SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms s
                             $('#selectedGroup').css('border-color', 'green')
                             var length = $('#textLabel').val().length
                             Count = response
-                            if (length >= 0 && length <= 159) {
+                            if (length >= 0 && length <= 160) {
                                 SmsCount = 1
                                 $('#spent_sms').empty().text(response)
-                            } else if (length >= 160 && length <= 316) {
+                            } else if (length > 160 && length <= 306) {
                                 SmsCount = 2
                                 $('#spent_sms').empty().text(response * SmsCount)
-                            } else if (length >= 317 && length <= 476) {
+                            } else if (length > 306 && length <= 459) {
                                 SmsCount = 3
                                 $('#spent_sms').empty().text(response * SmsCount)
-                            } else if (length >= 477 && length <= 634) {
+                            } else if (length > 459 && length <= 612) {
                                 SmsCount = 4
                                 $('#spent_sms').empty().text(response * SmsCount)
-                            } else if (length >= 635 && length <= 794) {
+                            } else if (length > 612 && length <= 765) {
                                 SmsCount = 5
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 765 && length <= 918) {
+                                SmsCount = 6
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 918 && length <= 1071) {
+                                SmsCount = 7
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 1071 && length <= 1224) {
+                                SmsCount = 8
                                 $('#spent_sms').empty().text(response * SmsCount)
                             } else {
                                 SmsCount = 30

@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
+from .api import SendSmsWithApi
 
 try:
     from .local_settings import *
@@ -186,8 +187,9 @@ CKEDITOR_CONFIGS = {
 import pytz
 
 ASIA_TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")
-SMS_PRICE = 150
+SMS_PRICE = 180
 SMS_ADD_STEP = 10
 
 
 BREADCRUMBS_TEMPLATE = "django_bootstrap_breadcrumbs/bootstrap4.html"
+

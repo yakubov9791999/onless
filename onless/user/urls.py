@@ -33,6 +33,7 @@ urlpatterns = [
     path('history-view-video-all/', HistoryViewVideoAll.as_view(), name='HistoryViewVideoAll'),
 
     path('history/pupil-view-video/<int:id>/', history_pupil_view_video, name='history_pupil_view_video'),
+    path('history-pupil-view-video/<int:id>/', HistoryPupilViewVideo.as_view(), name='HistoryPupilViewVideo'),
     path('get-district/', get_district, name='get_district'),
     path('getDistrict/', getDistrict, name='getDistrict'),
 

@@ -134,7 +134,10 @@
                             type: 'GET',
                             url: '/user/worker-delete/' + workerId,
                         });
-                        window.location.href = '{% url "user:workers_list" %}';
+                        setTimeout(function () {
+                             window.location.href = '{% url "user:workers_list" %}';
+                        },1000)
+
                     });
                 } else {
                     swal("Bekor qilindi", workerName + " ro'yhatda turibti !", "error");

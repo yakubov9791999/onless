@@ -270,7 +270,7 @@ class GetStatusSms:
     def get(self):
 
         token = self.authorization()
-        print(self.id)
+
         CHECK_STATUS_URL = 'http://notify.eskiz.uz/api/message/sms/status/' + str(self.id)
 
         HEADERS = {

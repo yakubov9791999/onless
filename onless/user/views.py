@@ -2233,8 +2233,11 @@ def get_group_months(request):
 def sms_settings(request):
     if request.user.role == '2':
         send_sms = Sms.objects.filter(school=request.user.school)
-        for sms in send_sms:
+        if request.method == 'GET':
+            if request.GET.get('q', None):
+                send_sms = send_sms.filter(text__icontains=request.GET.get('q'))
 
+        for sms in send_sms:
             r = GetStatusSms(id=sms.sms_id).get()
             if r == SUCCESS:
                 sms.status = SUCCESS
@@ -2242,13 +2245,14 @@ def sms_settings(request):
                 sms.status = FAILED
             else:
                 sms.status = PROCESSING
-            print(f"status: {sms.status}")
             sms.save()
         context = {
             'SMS_PRICE': SMS_PRICE,
             'SMS_ADD_STEP': SMS_ADD_STEP,
             'send_sms': send_sms
         }
+
+
         return render(request, 'user/director/sms_settings.html', context)
     else:
         return render(request, 'inc/404.html')

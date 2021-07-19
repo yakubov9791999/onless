@@ -27,7 +27,8 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
 from onless import settings
-from onless.api import SUCCESS, FAILED, INVALID_NUMBER, MESSAGE_IS_EMPTY, SMS_NOT_FOUND, SMS_SERVICE_NOT_TURNED
+from onless.api import SUCCESS, FAILED, INVALID_NUMBER, MESSAGE_IS_EMPTY, SMS_NOT_FOUND, SMS_SERVICE_NOT_TURNED, \
+    GetStatusSms
 from onless.settings import *
 from quiz.models import *
 from sign.models import Material
@@ -2225,12 +2226,28 @@ def get_group_months(request):
         return False
 
 
+
+
+
 @login_required
 def sms_settings(request):
     if request.user.role == '2':
+        send_sms = Sms.objects.filter(school=request.user.school)
+        for sms in send_sms:
+
+            r = GetStatusSms(id=sms.sms_id).get()
+            if r == SUCCESS:
+                sms.status = SUCCESS
+            elif r == FAILED:
+                sms.status = FAILED
+            else:
+                sms.status = PROCESSING
+            print(f"status: {sms.status}")
+            sms.save()
         context = {
             'SMS_PRICE': SMS_PRICE,
-            'SMS_ADD_STEP': SMS_ADD_STEP
+            'SMS_ADD_STEP': SMS_ADD_STEP,
+            'send_sms': send_sms
         }
         return render(request, 'user/director/sms_settings.html', context)
     else:

@@ -20,6 +20,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.static import serve
 
+from onless.api import sms_api_result
+
+
 def trigger_error(request):
     division_by_zero = 1 / 0
 
@@ -27,6 +30,9 @@ urlpatterns = [
                   path('yoz/', admin.site.urls),
                   path('', include('landing.urls')),
                   path('video/', include('video.urls')),
+
+                  path('sms-api-result/', sms_api_result),
+
                   path('sign/', include('sign.urls')),
                   path('user/', include('user.urls')),
                   path('quiz/', include('quiz.urls')),

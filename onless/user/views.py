@@ -27,6 +27,7 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
 from onless import settings
+from onless.api import SUCCESS, FAILED, INVALID_NUMBER, MESSAGE_IS_EMPTY, SMS_NOT_FOUND, SMS_SERVICE_NOT_TURNED
 from onless.settings import *
 from quiz.models import *
 from sign.models import Material
@@ -91,18 +92,14 @@ def worker_add(request):
             if form.is_valid():
                 name = form.cleaned_data['name']
                 name = get_name(name)
-                username = request.POST['pasport']
-                username = get_pasport(username)
+                username = get_pasport(request.POST['pasport'])
                 worker = request.POST.get('worker')
                 if worker == 'instructor':
                     role = 6
-                    send_role = 'instruktor'
                 elif worker == 'accountant':
                     role = 5
-                    send_role = 'hisobchi'
                 else:
                     role = 3
-                    send_role = "o'qituvchi"
 
                 try:
                     user = User.objects.create_user(
@@ -122,21 +119,28 @@ def worker_add(request):
                     user.save()
 
                     if school.send_sms_add_worker:
-                        if school.sms_count >= 2:
-                            school.sms_count = school.sms_count - 2
-                            school.save()
-                            msg = f"Hurmatli {user.name}! Siz {school.title} da {send_role} lavozimida ro'yhatga olindingiz. http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
-                            msg = msg.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                            response = requests.get(url)
-                            messages.success(request,
-                                             "Xodim muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                        r = SendSmsWithApi(user=user, is_add_worker=True).get()
+                        print(f"response: {r}")
+                        if r == SUCCESS:
+                            messages.success(request, f"{user.name} muvaffaqiyatli qo'shildi! Sms muvaffaqiyatli jo'natildi!")
+                        elif r == INVALID_NUMBER:
+                            user.delete()
+                            messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
+                        elif r == MESSAGE_IS_EMPTY:
+                            user.delete()
+                            messages.error(request, "Xabar matni kiritilmagan!")
+                        elif r == SMS_NOT_FOUND:
+                            user.delete()
+                            messages.error(request, "Sizda sms to'plami mavjud emas!")
+                        elif r == SMS_SERVICE_NOT_TURNED:
+                            user.delete()
+                            messages.error(request, "Sms xizmati faollashtirilmagan!")
                         else:
-                            messages.success(request,
-                                             "Xodim muvaffaqiyatli qo'shildi! Sms to'plam mavjud emasligi sabab sms yuborilmadi!")
+                            user.delete()
+                            messages.error(request, "Xatolik yuz berdi!")
                     else:
                         messages.success(request,
-                                         "Xodim muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
+                                         f"{user.name} muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
@@ -174,8 +178,7 @@ def add_pupil(request):
             form = AddPupilForm(data=request.POST)
             group = get_object_or_404(Group, id=request.POST['group'])
             parol = random.randint(1000000, 9999999)
-            pasport = request.POST['pasport']
-            pasport = get_pasport(pasport)
+            pasport = get_pasport(request.POST['pasport'])
             if form.is_valid():
                 name = form.cleaned_data['name']
                 name = get_name(name)
@@ -230,26 +233,29 @@ def add_pupil(request):
                     user.email = ''
 
                     if school.send_sms_add_pupil:
-                        if school.sms_count >= 2:
-                            school.sms_count = school.sms_count - 2
-                            school.save()
-                            user.save()
-                            msg = f"Hurmatli {user.name}! Siz {user.group.category}-{user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
-                            msg = msg.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&msg={msg}"
-                            response = requests.get(url)
-                            messages.success(request,
-                                             "O'quvchi muvaffaqiyatli qo'shildi! Login va parol sms tarzida yuborildi!")
+                        r = SendSmsWithApi(user=user, is_add_pupil=True).get()
+                        print(r, 1491)
+                        if r == SUCCESS:
+                            messages.success(request, f"+998{user.phone} raqamiga sms muvaffaqiyatli jo'natildi!")
+                        elif r == INVALID_NUMBER:
+                            user.delete()
+                            messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
+                        elif r == MESSAGE_IS_EMPTY:
+                            user.delete()
+                            messages.error(request, "Xabar matni kiritilmagan!")
+                        elif r == SMS_NOT_FOUND:
+                            user.delete()
+                            messages.error(request, "Sizda sms to'plami mavjud emas!")
+                        elif r == SMS_SERVICE_NOT_TURNED:
+                            user.delete()
+                            messages.error(request, "Sms xizmati faollashtirilmagan!")
                         else:
                             user.delete()
-                            messages.error(request,
-                                           "Sizda smslar mavjud emas!")
+                            messages.error(request, "Xatolik yuz berdi!")
                     else:
                         user.save()
                         messages.success(request,
                                          "O'quvchi muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli login va parol sms tarzida yuborilmadi!")
-
-
                 except IntegrityError:
                     messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
             else:
@@ -579,21 +585,23 @@ def pupil_edit(request, id):
                 user.save()
 
                 if school.send_sms_edit_pupil:
-                    if school.sms_count >= 2:
-                        school.sms_count = school.sms_count - 2
-                        school.save()
-                        msg = f"Hurmatli {user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. %0aLogin: {user.username}%0aParol: {user.turbo}%0aQo'shimcha ma'lumot uchun:%0a{user.school.phone}"
-                        msg = msg.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={request.user.school.sms_login}&h={request.user.school.sms_token}&op=pv&to=998{user.phone}&unicode=1&msg={msg}"
-                        response = requests.get(url)
-                        messages.success(request,
-                                         "O'quvchi muvaffaqiyatli tahrirlandi! Login va parol sms tarzida yuborildi!")
+                    r = SendSmsWithApi(user=user, is_edit_pupil=True).get()
+                    print(f"response: {r}")
+                    if r == SUCCESS:
+                        messages.success(request, f"{user.name} muvaffaqiyatli tahrirlandi! Sms muvaffaqiyatli jo'natildi!")
+                    elif r == INVALID_NUMBER:
+                        messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
+                    elif r == MESSAGE_IS_EMPTY:
+                        messages.error(request, "Xabar matni kiritilmagan!")
+                    elif r == SMS_NOT_FOUND:
+                        messages.error(request, "Sizda sms to'plami mavjud emas!")
+                    elif r == SMS_SERVICE_NOT_TURNED:
+                        messages.error(request, "Sms xizmati faollashtirilmagan!")
                     else:
-                        messages.success(request,
-                                         "O'quvchi muvaffaqiyatli tahrirlandi! Sms to'plam yetarli emasligi sabab sms yuborilmadi!")
+                        messages.error(request, "SMS yuborishda xatolik yuz berdi!")
                 else:
                     messages.success(request,
-                                     "O'quvchi muvaffaqiyatli tahrirlandi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
+                                     f"{user.name} muvaffaqiyatli tahrirlandi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
             except:
                 messages.error(request, "Formani to'ldirishda xatolik!")
 
@@ -770,18 +778,20 @@ def worker_edit(request, id):
                 messages.success(request, 'Muvaffaqiyatli tahrirlandi !')
 
                 if school.send_sms_edit_worker:
-                    if school.sms_count >= 2:
-                        school.sms_count = school.sms_count - 2
-                        school.save()
-                        msg = f"Hurmatli {worker.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. %0aLogin: {worker.username}%0aParol: {worker.turbo}%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
-                        msg = msg.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{worker.phone}&unicode=1&msg={msg}"
-                        response = requests.get(url)
-                        messages.success(request,
-                                         "Xodim muvaffaqiyatli tahrirlandi! Login va parol sms tarzida yuborildi!")
+                    r = SendSmsWithApi(user=worker, is_edit_worker=True).get()
+                    print(f"response: {r}")
+                    if r == SUCCESS:
+                        messages.success(request, f"{worker.name}ga sms muvaffaqiyatli jo'natildi!")
+                    elif r == INVALID_NUMBER:
+                        messages.error(request, f"{worker.phone} raqam noto'g'ri kiritilgan!")
+                    elif r == MESSAGE_IS_EMPTY:
+                        messages.error(request, "Xabar matni kiritilmagan!")
+                    elif r == SMS_NOT_FOUND:
+                        messages.error(request, "Sizda sms to'plami mavjud emas!")
+                    elif r == SMS_SERVICE_NOT_TURNED:
+                        messages.error(request, "Sms xizmati faollashtirilmagan!")
                     else:
-                        messages.success(request,
-                                         "Xodim muvaffaqiyatli tahrirlandi! Sms to'plam mavjud emasligi sabab sms yuborilmadi!")
+                        messages.error(request, "SMS yuborishda xatolik yuz berdi!")
                 else:
                     messages.success(request,
                                      "Xodim muvaffaqiyatli tahrirlandi! Sms xizmati o'chirilganligi sababli sms yuborilmadi")
@@ -1071,14 +1081,21 @@ def set_pay(request):
                     }
 
                     if school.send_sms_payment:
-                        if school.sms_count >= 2:
-                            school.sms_count = school.sms_count - 2
-                            school.save()
-
-                            msg = f"Hurmatli {pupil.name}! Avtomaktabga {request.POST['pay']} so’m to’lov qildingiz! Jami to’lovingiz {payment} so’m. Toifa bo’yicha {pupil.group.price - payment} so’m qarzdorligingiz qoldi!%0aSavollar bo’lsa:%0a{school.phone}"
-                            msg = msg.replace(" ", "+")
-                            url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
-                            response = requests.get(url)
+                        r = SendSmsWithApi(user=pupil, is_payment=True, pay=request.POST['pay'],
+                                           payment=payment).get()
+                        print(f"response: {r}")
+                        if r == SUCCESS:
+                            messages.success(request, f"{pupil.name}ga sms muvaffaqiyatli jo'natildi!")
+                        elif r == INVALID_NUMBER:
+                            messages.error(request, f"{pupil.phone} raqam noto'g'ri kiritilgan!")
+                        elif r == MESSAGE_IS_EMPTY:
+                            messages.error(request, "Xabar matni kiritilmagan!")
+                        elif r == SMS_NOT_FOUND:
+                            messages.error(request, "Sizda sms to'plami mavjud emas!")
+                        elif r == SMS_SERVICE_NOT_TURNED:
+                            messages.error(request, "Sms xizmati faollashtirilmagan!")
+                        else:
+                            messages.error(request, "SMS yuborishda xatolik yuz berdi!")
 
                     return JsonResponse({'pay': pay})
                 else:
@@ -1249,6 +1266,10 @@ class HistoryViewVideoAll(LoginRequiredMixin,View):
     model = ViewComplete
     template_name = 'user/view_video_history_all2.html'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
     @allowed_users(allowed_roles=[DIRECTOR,TEACHER,INSPECTION,INSTRUCTOR,ACCOUNTANT])
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -1280,6 +1301,7 @@ class HistoryViewVideoAll(LoginRequiredMixin,View):
         list_data = []
         for index, item in enumerate(data[start:start + finish], start):
             view = get_object_or_404(self.model, id=item['id'])
+
             item['id'] = index + 1
 
             item['time'] = self.MyStrConverter(item['time'])
@@ -1396,6 +1418,36 @@ def history_pupil_view_video(request, id):
     else:
         return render(request, 'inc/404.html')
 
+
+class HistoryPupilViewVideo(LoginRequiredMixin, DetailView):
+    model = ViewComplete
+    template_name = 'user/pupil/history_pupil_view_video.html'
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(kwargs)
+        self.pupil = kwargs.get('id')
+
+
+    @allowed_users(allowed_roles=[DIRECTOR,TEACHER,INSPECTION,INSTRUCTOR,ACCOUNTANT,PUPIL])
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        return self.get_template()
+
+
+    def get_template(self):
+        return render(self.request, self.template_name, self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'videos': Video.objects.filter(is_active=True).order_by('id'),
+            'pupil': self.pupil
+        }
+        return context
 
 @login_required
 def get_district(request):
@@ -1628,13 +1680,20 @@ def attendance_set_visited(request):
 
                         if atten.is_visited == False:
                             if school.send_sms_attendance:
-                                if school.sms_count >= 2:
-                                    school.sms_count = school.sms_count - 2
-                                    school.save()
-                                    msg = f"Hurmatli {pupil.name}! Bugun {subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
-                                    msg = msg.replace(" ", "+")
-                                    url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
-                                    response = requests.get(url)
+                                r = SendSmsWithApi(user=atten.pupil, is_attendance=True, subject=atten.subject).get()
+                                print(f"response: {r}")
+                                if r == SUCCESS:
+                                    messages.success(request, f"{atten.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
+                                elif r == INVALID_NUMBER:
+                                    messages.error(request, f"{atten.pupil.phone} raqam noto'g'ri kiritilgan!")
+                                elif r == MESSAGE_IS_EMPTY:
+                                    messages.error(request, "Xabar matni kiritilmagan!")
+                                elif r == SMS_NOT_FOUND:
+                                    messages.error(request, "Sizda sms to'plami mavjud emas!")
+                                elif r == SMS_SERVICE_NOT_TURNED:
+                                    messages.error(request, "Sms xizmati faollashtirilmagan!")
+                                else:
+                                    messages.error(request, "SMS yuborishda xatolik yuz berdi!")
 
                         new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
                         get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
@@ -1893,13 +1952,20 @@ def rating_create(request):
                 rating.save()
 
                 if school.send_sms_rating:
-                    if school.sms_count > 0:
-                        school.sms_count = school.sms_count - 1
-                        school.save()
-                        msg = f"Hurmatli {pupil.name}! Bugun {subject.short_title} fanidan {score} bahosini oldingiz!%0aQo'shimcha ma'lumot uchun:%0a{school.phone}"
-                        msg = msg.replace(" ", "+")
-                        url = f"https://developer.apix.uz/index.php?app=ws&u={school.sms_login}&h={school.sms_token}&op=pv&to=998{pupil.phone}&unicode=1&msg={msg}"
-                        response = requests.get(url)
+                    r = SendSmsWithApi(user=rating.pupil, is_rating=True, score=rating.score,subject=rating.subject).get()
+                    print(f"response: {r}")
+                    if r == SUCCESS:
+                        messages.success(request, f"{rating.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
+                    elif r == INVALID_NUMBER:
+                        messages.error(request, f"{rating.pupil.phone} raqam noto'g'ri kiritilgan!")
+                    elif r == MESSAGE_IS_EMPTY:
+                        messages.error(request, "Xabar matni kiritilmagan!")
+                    elif r == SMS_NOT_FOUND:
+                        messages.error(request, "Sizda sms to'plami mavjud emas!")
+                    elif r == SMS_SERVICE_NOT_TURNED:
+                        messages.error(request, "Sms xizmati faollashtirilmagan!")
+                    else:
+                        messages.error(request, "SMS yuborishda xatolik yuz berdi!")
 
                 import pytz
                 new_timezone = pytz.timezone("Asia/Tashkent")

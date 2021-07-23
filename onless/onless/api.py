@@ -132,7 +132,7 @@ class SendSmsWithApi:
         # print(f"Eskiz: {r.json()}" )
         try:
             from user.models import Sms
-            Sms.objects.create(school=self.user.school, sms_id=r.json()['id'], sms_count=self.spend, text=self.message)
+            Sms.objects.create(school=self.user.school, sms_id=r.json()['id'], sms_count=self.spend, text=self.message, phone=self.phone)
         except:
             send_message_to_developer("sms object create error")
         return r.status_code
@@ -279,7 +279,7 @@ class GetStatusSms:
 
         r = requests.request("GET", CHECK_STATUS_URL, headers=HEADERS)
         if r.json()['status'] == 'success':
-            if r.json()['message']['status'] == 'DELIVRD':
+            if r.json()['message']['status'] == 'DELIVRD' or r.json()['message']['status'] == 'TRANSMTD':
                 return SUCCESS
             elif r.json()['message']['status'] == 'EXPIRED':
                 return FAILED

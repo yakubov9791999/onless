@@ -107,6 +107,7 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Tel raqam</th>
                                         <th>Soni</th>
                                         <th>Vaqti</th>
                                         <th>Mazmuni</th>
@@ -119,6 +120,7 @@
                                             <td><span class="tag tag-success"><i
                                                     class="fas fa-square {% if sms.status == 200 %}text-success{% elif sms.status == 400 %} text-danger {% else %} text-warning {% endif %}"></i></span>
                                             </td>
+                                            <td>+998{{ sms.phone }}</td>
                                             <td>{{ sms.sms_count }}</td>
                                             <td>{{ sms.created_date|date:"SHORT_DATETIME_FORMAT" }}</td>
                                             <td>{{ sms.text }}

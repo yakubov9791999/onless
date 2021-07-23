@@ -348,6 +348,7 @@ class Sms(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='sms_school')
     sms_id = models.BigIntegerField(default=0)
     status = models.IntegerField(choices=status, default=PROCESSING)
+    phone = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = 'Sms'

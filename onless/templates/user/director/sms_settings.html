@@ -78,7 +78,61 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-gradient-lightblue">
+                                <h3 class="card-title">Yuborilgan smslar</h3>
 
+                                <div class="card-tools">
+                                    <form id="search_form" action="{% url 'user:sms_settings' %}" method="get">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+
+                                            <input type="text" name="q" class="form-control float-right"
+                                                   placeholder="Qidiruv...">
+
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0" style="height: 300px;">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Soni</th>
+                                        <th>Vaqti</th>
+                                        <th>Mazmuni</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for sms in send_sms %}
+
+                                        <tr>
+                                            <td><span class="tag tag-success"><i
+                                                    class="fas fa-square {% if sms.status == 200 %}text-success{% elif sms.status == 400 %} text-danger {% else %} text-warning {% endif %}"></i></span>
+                                            </td>
+                                            <td>{{ sms.sms_count }}</td>
+                                            <td>{{ sms.created_date|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                            <td>{{ sms.text }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
                     <ul class="list-group list-group-flush">
                         {#                        <li class="list-group-item text-lg">O'quvchi qo'shishda sms jo'natish#}
                         {#                            <label class="switch float-right">#}
@@ -319,61 +373,7 @@
 
                     </ul>
 
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header bg-gradient-lightblue">
-                                <h3 class="card-title">Yuborilgan smslar</h3>
 
-                                <div class="card-tools">
-                                    <form id="search_form" action="{% url 'user:sms_settings' %}" method="get">
-                                        <div class="input-group input-group-sm" style="width: 150px;">
-
-                                            <input type="text" name="q" class="form-control float-right"
-                                                   placeholder="Qidiruv...">
-
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0" style="height: 300px;">
-                                <table class="table table-head-fixed text-nowrap">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Soni</th>
-                                        <th>Vaqti</th>
-                                        <th>Mazmuni</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for sms in send_sms %}
-
-                                        <tr>
-                                            <td><span class="tag tag-success"><i
-                                                    class="fas fa-square {% if sms.status == 200 %}text-success{% elif sms.status == 400 %} text-danger {% else %} text-warning {% endif %}"></i></span>
-                                            </td>
-                                            <td>{{ sms.sms_count }}</td>
-                                            <td>{{ sms.created_date|date:"SHORT_DATETIME_FORMAT" }}</td>
-                                            <td>{{ sms.text }}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
                 </div>
             </div>
         </div>

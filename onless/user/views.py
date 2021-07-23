@@ -203,36 +203,8 @@ def add_pupil(request):
                         birthday = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
                         user.birthday = birthday
 
-                    # Hujjatlar uchun qo'shimcha ma'lumotlar
-
-                    # if request.POST['place_of_birth']:
-                    #     place_of_birth = request.POST.get('place_of_birth')
-                    #     user.place_of_birth = place_of_birth
-                    # if request.POST['residence_address']:
-                    #     residence_address = request.POST.get('residence_address')
-                    #     user.residence_address = residence_address
-                    # if request.POST['passport_issued_time']:
-                    #     passport_issued_time = request.POST.get('passport_issued_time')
-                    #     user.passport_issued_time = passport_issued_time
-                    # if request.POST['passport_issued_organization']:
-                    #     passport_issued_organization = request.POST.get('passport_issued_organization')
-                    #     user.passport_issued_organization = passport_issued_organization
-
-                    # if request.POST['medical_series']:
-                    #     medical_series = request.POST.get('medical_series')
-                    #     user.medical_series = medical_series
-                    # if request.POST['medical_issued_organization']:
-                    #     medical_issued_organization = request.POST.get('medical_issued_organization')
-                    #     user.medical_issued_organization = medical_issued_organization
-                    # if request.POST['certificate_series']:
-                    #     certificate_series = request.POST.get('certificate_series')
-                    #     user.certificate_series = certificate_series
-                    # if request.POST['certificate_number']:
-                    #     certificate_number = request.POST.get('certificate_number')
-                    #     user.certificate_number = certificate_number
-
                     user.email = ''
-
+                    user.save()
                     if school.send_sms_add_pupil:
                         r = SendSmsWithApi(user=user, is_add_pupil=True).get()
                         print(r, 1491)
@@ -254,7 +226,6 @@ def add_pupil(request):
                             user.delete()
                             messages.error(request, "Xatolik yuz berdi!")
                     else:
-                        user.save()
                         messages.success(request,
                                          "O'quvchi muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli login va parol sms tarzida yuborilmadi!")
                 except IntegrityError:
@@ -884,13 +855,12 @@ def upload_file(request):
                             user.set_password(parol)
                             user.username = pasport
                             user.email = ''
-
+                            user.save()
                             if school.send_sms_add_pupil:
                                 r = SendSmsWithApi(user=user, is_add_pupil=True).get()
                                 print(f"response: {r}")
                                 if r == SUCCESS:
                                     i = i + 1
-                                    user.save()
                                     messages.success(request, f"{i} ta o'quvchiga sms muvaffaqiyatli jo'natildi!")
                                 elif r == INVALID_NUMBER:
                                     user.delete()
@@ -908,7 +878,6 @@ def upload_file(request):
                                     user.delete()
                                     messages.error(request, "SMS yuborishda xatolik yuz berdi!")
                             else:
-                                user.save()
                                 messages.success(request,
                                                  "O'quvchi(lar) muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli login va parol sms tarzida yuborilmadi!")
 
@@ -1779,13 +1748,14 @@ def send_sms(request):
                 #     new_sms_count = sms_count - (users.count() * 30)
                 # if new_sms_count >= 0:
                 #     Sms.objects.create(sms_count=sms_count - new_sms_count, school=request.user.school, text=text)
-
+                i = 0
                 for user in users:
+                    i = i + 1
                     r = SendSmsWithApi(user=user, message=message).get()
                     print(f"response: {r}")
                     if r == SUCCESS:
                         user.save()
-                        messages.success(request, f"{users.count()} kishiga sms muvaffaqiyatli jo'natildi!")
+                        messages.success(request, f"{i} kishiga sms muvaffaqiyatli jo'natildi!")
                     elif r == INVALID_NUMBER:
                         user.delete()
                         messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
@@ -1807,7 +1777,7 @@ def send_sms(request):
                     # this_user.save()
 
                     messages.success(request,
-                                     f"Sizning SMS xabarnomangiz {users.count()} ta o'quvchiga muvaffaqiyatli yetkazildi!")
+                                     f"Sizning SMS xabarnomangiz {i} ta o'quvchiga muvaffaqiyatli yetkazildi!")
                     context.update(school_sms_count=user.school.sms_count)
 
             else:

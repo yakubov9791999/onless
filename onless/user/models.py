@@ -352,7 +352,7 @@ class Sms(models.Model):
     class Meta:
         verbose_name = 'Sms'
         verbose_name_plural = 'Smslar'
-
+        ordering = ['-id']
 
 
 class Payment(BasePayment):

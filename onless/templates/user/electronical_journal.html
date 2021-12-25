@@ -333,24 +333,27 @@
 
 
         $("#group").change(function () {
-            var selectedGroup = $(this).children("option:selected").val();
-            $.ajax({
-                type: "POST",
-                url: "{% url 'user:get_group_months' %}",
-                data: {
-                    'group': selectedGroup, // from form
-                },
-                success: function (message) {
-                    if (message) {
-                        $('#month').empty().append(message)
+            $('#filter_top').submit()
 
-                        $('#month').css('border-color', '#007bff')
-                        setTimeout(function () {
-                            $('#month').css('border-color', '#ced4da')
-                        }, 2000)
-                    }
-                }
-            });
+            {#var selectedGroup = $(this).children("option:selected").val();#}
+            {#$.ajax({#}
+            {#    type: "POST",#}
+            {#    url: "{% url 'user:get_group_months' %}",#}
+            {#    data: {#}
+            {#        'group': selectedGroup, // from form#}
+            {#    },#}
+            {#    success: function (message) {#}
+            {#        if (message) {#}
+            {#            $('#month').empty().append(message)#}
+            {##}
+            {#            $('#month').css('border-color', '#007bff')#}
+            {#            setTimeout(function () {#}
+            {#                $('#month').css('border-color', '#ced4da')#}
+            {#                $('#filter_top').submit()#}
+            {#            }, 2000)#}
+            {#        }#}
+            {#    }#}
+            //{#});#}
 
             $('#filter_top').submit()
         });

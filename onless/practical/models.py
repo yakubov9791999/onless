@@ -23,7 +23,7 @@ class Car(models.Model):
     instructor = models.ForeignKey(User, verbose_name="Instruktor", on_delete=models.CASCADE, null=True)
     is_rental = models.BooleanField(default=False,
                                     verbose_name="Ijara avtomobil")  # agarda avtomobil ijara shartnoma asosida olingan bo'lsa
-    price = models.IntegerField("Avtomobil narxi", max_length=30)
+    price = models.IntegerField("Avtomobil narxi")
 
     class Meta:
         verbose_name_plural = 'Avtomobillar'
@@ -72,7 +72,7 @@ class DayOfWeek(models.Model):  # dam olish kunlari yoki instruktorni ishi chiqi
 
 
 class PaymentForPractical(models.Model):
-    sum = models.IntegerField("To'lov summasi", max_length=12)
+    sum = models.IntegerField("To'lov summasi")
     created_date = models.DateTimeField(default=timezone.now)
     pupil = models.ForeignKey(User, verbose_name="O'quvchi", null=True, on_delete=models.CASCADE,
                               related_name='practical_payment_pupil')

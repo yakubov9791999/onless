@@ -123,7 +123,8 @@ def worker_add(request):
                         r = SendSmsWithApi(user=user, is_add_worker=True).get()
                         print(f"response: {r}")
                         if r == SUCCESS:
-                            messages.success(request, f"{user.name} muvaffaqiyatli qo'shildi! Sms muvaffaqiyatli jo'natildi!")
+                            messages.success(request,
+                                             f"{user.name} muvaffaqiyatli qo'shildi! Sms muvaffaqiyatli jo'natildi!")
                         elif r == INVALID_NUMBER:
                             user.delete()
                             messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
@@ -560,7 +561,8 @@ def pupil_edit(request, id):
                     r = SendSmsWithApi(user=user, is_edit_pupil=True).get()
                     print(f"response: {r}")
                     if r == SUCCESS:
-                        messages.success(request, f"{user.name} muvaffaqiyatli tahrirlandi! Sms muvaffaqiyatli jo'natildi!")
+                        messages.success(request,
+                                         f"{user.name} muvaffaqiyatli tahrirlandi! Sms muvaffaqiyatli jo'natildi!")
                     elif r == INVALID_NUMBER:
                         messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
                     elif r == MESSAGE_IS_EMPTY:
@@ -1237,15 +1239,14 @@ def history_view_video_all(request):
         return render(request, 'inc/404.html')
 
 
-class HistoryViewVideoAll(LoginRequiredMixin,View):
+class HistoryViewVideoAll(LoginRequiredMixin, View):
     model = ViewComplete
     template_name = 'user/view_video_history_all2.html'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
-    @allowed_users(allowed_roles=[DIRECTOR,TEACHER,INSPECTION,INSTRUCTOR,ACCOUNTANT])
+    @allowed_users(allowed_roles=[DIRECTOR, TEACHER, INSPECTION, INSTRUCTOR, ACCOUNTANT])
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -1299,7 +1300,8 @@ class HistoryViewVideoAll(LoginRequiredMixin,View):
     def get_queryset(self):
         q = self.request.POST.get('q', '').lower()
         order_by = self.request.POST.get('order_by')
-        qs = self.model.objects.filter(Q(user__school=self.request.user.school) & Q(user__role=4)).order_by(f"-{order_by}")
+        qs = self.model.objects.filter(Q(user__school=self.request.user.school) & Q(user__role=4)).order_by(
+            f"-{order_by}")
 
         # regex
         full_group_pattern = '^[a-z]{1,}-[0-9]{1,}\s[0-9]{4}$'
@@ -1311,7 +1313,6 @@ class HistoryViewVideoAll(LoginRequiredMixin,View):
         date_pattern = '^[0-9]{2}.[0-9]{2}.[0-9]{4}$'
         day_pattern = '^[0-9]{2}$|^[0-9]{2}.$'
         day_and_month_pattern = '^[0-9]{2}.[0-9]{2}$|^[0-9]{2}.[0-9]{2}.$'
-
 
         try:
             if re.match(full_group_pattern, q):
@@ -1398,21 +1399,18 @@ class HistoryPupilViewVideo(LoginRequiredMixin, DetailView):
     model = ViewComplete
     template_name = 'user/pupil/history_pupil_view_video.html'
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print(kwargs)
         self.pupil = kwargs.get('id')
 
-
-    @allowed_users(allowed_roles=[DIRECTOR,TEACHER,INSPECTION,INSTRUCTOR,ACCOUNTANT,PUPIL])
+    @allowed_users(allowed_roles=[DIRECTOR, TEACHER, INSPECTION, INSTRUCTOR, ACCOUNTANT, PUPIL])
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
         return self.get_template()
-
 
     def get_template(self):
         return render(self.request, self.template_name, self.get_context_data())
@@ -1423,6 +1421,7 @@ class HistoryPupilViewVideo(LoginRequiredMixin, DetailView):
             'pupil': self.pupil
         }
         return context
+
 
 @login_required
 def get_district(request):
@@ -1619,65 +1618,52 @@ def attendance_set_by_subject(request, group_id, subject_id):
 
 @login_required
 def attendance_set_visited(request):
-    try:
-        if request.is_ajax():
-            if request.GET:
-                pupil = get_object_or_404(User, id=request.GET.get('pupil'))
-                subject = get_object_or_404(Subject, id=request.GET.get('subject'))
-                school = get_object_or_404(School, id=pupil.school.id)
-                today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-                today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-                import pytz
-                new_timezone = pytz.timezone("Asia/Tashkent")
+    if request.POST:
+        pupil = User.objects.get(id=request.POST.get('visited_pupil'))
+        subject = Subject.objects.get(id=request.POST.get('visited_subject'))
+        date = datetime.datetime.strptime(request.POST.get('visited_date'), "%d.%m.%Y")
+        school = School.objects.get(id=pupil.school.id)
 
-                if request.GET.get('visited') == 'true':
-                    visited = True
-                elif request.GET.get('visited') == 'false':
-                    visited = False
-                else:
-                    return HttpResponse(False)
+        if request.POST.get('visited') == 'False':
+            visited = False
+        else:
+            visited = True
 
-                attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
-                                                       created_date__range=(today_min, today_max))
+        attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
+                                               date=date)
 
-                if not attendance.exists():
-                    atten = Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject,
-                                                      is_visited=visited)
+        if not attendance.exists():
+            if visited == False:
+                Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject,
+                                          is_visited=visited, date=date)
+        else:
+            for atten in attendance:
+                atten.is_visited = visited
+                atten.updated_date = timezone.now()
+                atten.save()
 
-                    new_timezone_timestamp = atten.created_date.astimezone(new_timezone)
-                    get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
-                    return HttpResponse(get_datetime)
-                else:
-                    for atten in attendance:
-                        atten.is_visited = visited
-                        atten.updated_date = timezone.now()
-                        atten.save()
+                if atten.is_visited == False:
+                    if school.send_sms_attendance:
+                        r = SendSmsWithApi(user=atten.pupil, is_attendance=True, subject=atten.subject).get()
+                        print(f"response: {r}")
+                        if r == SUCCESS:
+                            messages.success(request, f"{atten.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
+                        elif r == INVALID_NUMBER:
+                            messages.error(request, f"{atten.pupil.phone} raqam noto'g'ri kiritilgan!")
+                        elif r == MESSAGE_IS_EMPTY:
+                            messages.error(request, "Xabar matni kiritilmagan!")
+                        elif r == SMS_NOT_FOUND:
+                            messages.error(request, "Sizda sms to'plami mavjud emas!")
+                        elif r == SMS_SERVICE_NOT_TURNED:
+                            messages.error(request, "Sms xizmati faollashtirilmagan!")
+                        else:
+                            messages.error(request, "SMS yuborishda xatolik yuz berdi!")
 
-                        if atten.is_visited == False:
-                            if school.send_sms_attendance:
-                                r = SendSmsWithApi(user=atten.pupil, is_attendance=True, subject=atten.subject).get()
-                                print(f"response: {r}")
-                                if r == SUCCESS:
-                                    messages.success(request, f"{atten.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
-                                elif r == INVALID_NUMBER:
-                                    messages.error(request, f"{atten.pupil.phone} raqam noto'g'ri kiritilgan!")
-                                elif r == MESSAGE_IS_EMPTY:
-                                    messages.error(request, "Xabar matni kiritilmagan!")
-                                elif r == SMS_NOT_FOUND:
-                                    messages.error(request, "Sizda sms to'plami mavjud emas!")
-                                elif r == SMS_SERVICE_NOT_TURNED:
-                                    messages.error(request, "Sms xizmati faollashtirilmagan!")
-                                else:
-                                    messages.error(request, "SMS yuborishda xatolik yuz berdi!")
+        #         new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
+        #         get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+        # #         return HttpResponse(get_datetime)
 
-                        new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
-                        get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
-                        return HttpResponse(get_datetime)
-
-                    return HttpResponse(True)
-        return HttpResponse(False)
-    except:
-        return HttpResponse(False)
+        return HttpResponseRedirect(reverse('user:electronical_journal') + "?%s" % request.META['QUERY_STRING'])
 
 
 @login_required
@@ -1928,129 +1914,129 @@ def rating_set_by_subject(request, group_id, subject_id):
 
 @login_required
 def rating_create(request):
-    if request.is_ajax():
-        if request.POST:
-            pupil = get_object_or_404(User, id=request.POST.get('pupil'))
-            subject = get_object_or_404(Subject, id=request.POST.get('subject'))
-            school = get_object_or_404(School, id=pupil.school.id)
-            score = request.POST.get('score')
-            today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-            today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    if request.POST:
+        pupil = get_object_or_404(User, id=request.POST.get('rating_pupil'))
+        subject = get_object_or_404(Subject, id=request.POST.get('rating_subject'))
+        school = get_object_or_404(School, id=pupil.school.id)
+        date = datetime.datetime.strptime(request.POST.get('rating_date'), "%d.%m.%Y")
+        score = request.POST.get('rating')
 
-            rating = Rating.objects.filter(pupil=pupil, subject=subject, created_date__range=(today_min, today_max))
-            if not rating.exists():
-                rating = Rating.objects.create(created_date=timezone.now())
-                rating.score = score
-                rating.teacher = request.user
-                rating.subject = subject
-                rating.pupil = pupil
-                rating.score = score
-                rating.updated_date = timezone.now()
-                rating.save()
+        ratings = Rating.objects.filter(pupil=pupil, subject=subject, date=date)
 
-                if school.send_sms_rating:
-                    r = SendSmsWithApi(user=rating.pupil, is_rating=True, score=rating.score,subject=rating.subject).get()
-                    print(f"response: {r}")
-                    if r == SUCCESS:
-                        messages.success(request, f"{rating.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
-                    elif r == INVALID_NUMBER:
-                        messages.error(request, f"{rating.pupil.phone} raqam noto'g'ri kiritilgan!")
-                    elif r == MESSAGE_IS_EMPTY:
-                        messages.error(request, "Xabar matni kiritilmagan!")
-                    elif r == SMS_NOT_FOUND:
-                        messages.error(request, "Sizda sms to'plami mavjud emas!")
-                    elif r == SMS_SERVICE_NOT_TURNED:
-                        messages.error(request, "Sms xizmati faollashtirilmagan!")
-                    else:
-                        messages.error(request, "SMS yuborishda xatolik yuz berdi!")
+        if not ratings.exists():
+            rating = Rating.objects.create(score=score, teacher=request.user, subject=subject, pupil=pupil, date=date,
+                                           updated_date=timezone.now())
 
-                import pytz
-                new_timezone = pytz.timezone("Asia/Tashkent")
-                new_timezone_timestamp = rating.updated_date.astimezone(new_timezone)
-                get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
+            if school.send_sms_rating:
+                r = SendSmsWithApi(user=rating.pupil, is_rating=True, score=rating.score,
+                                   subject=rating.subject).get()
+                print(f"response: {r}")
+                if r == SUCCESS:
+                    messages.success(request, f"{rating.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
+                elif r == INVALID_NUMBER:
+                    messages.error(request, f"{rating.pupil.phone} raqam noto'g'ri kiritilgan!")
+                elif r == MESSAGE_IS_EMPTY:
+                    messages.error(request, "Xabar matni kiritilmagan!")
+                elif r == SMS_NOT_FOUND:
+                    messages.error(request, "Sizda sms to'plami mavjud emas!")
+                elif r == SMS_SERVICE_NOT_TURNED:
+                    messages.error(request, "Sms xizmati faollashtirilmagan!")
+                else:
+                    messages.error(request, "SMS yuborishda xatolik yuz berdi!")
+        else:
+            rating = ratings.first()
+            rating.score = score
+            rating.updated_date = timezone.now()
+            rating.save()
 
-                rating = {
-                    'date': get_datetime,
-                    'score': score
-                }
-                return JsonResponse({'rating': rating})
-        return HttpResponse(False)
-    return HttpResponse(False)
+        return HttpResponseRedirect(reverse('user:electronical_journal') + "?%s" % request.META['QUERY_STRING'])
 
 
 @login_required
 def electronical_journal(request):
-    groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True)).order_by('id')
-    if not groups.exists():
-        messages.error(request, 'Guruhlar mavjud emas!')
-        return render(request, 'user/electronical_journal.html')
-    subjects = Subject.objects.filter(Q(is_active=True)).distinct()
-    if not subjects.exists():
-        messages.error(request, 'Fanlar mavjud emas!')
-        return render(request, 'user/electronical_journal.html')
-
-    # o'quv oylari yili bilan selectga chiqarish uchun
-    get_months_and_years_list = [i.strftime("%m.%Y") for i in
-                                 pd.date_range(start=groups[0].start, end=groups[0].stop).tolist()]
-    month_list = list(set(get_months_and_years_list))
-    month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
-    # o'quv oylari yili bilan selectga chiqarish uchun oxiri
-
-    # filtered_date = datetime.datetime.strptime(f"01.{month_list[0]}", "%d.%m.%Y")
-    # firstdayofmonth = datetime.datetime.combine(filtered_date, datetime.time.min)
-
-    # o'quv oyining eng oxirgi kuni
-    endmonth = calendar.monthrange(groups[0].start.year, groups[0].start.month)
-    lastdayofmonth = datetime.datetime(groups[0].start.year, groups[0].start.month, endmonth[1])
-
-    # last_day = calendar.monthrange(groups[0].stop.year, groups[0].stop.month)
-    # if last_day[1] > groups[0].stop.month:
-    #     lastdayofmonth = groups[0].stop
-    # print(endmonth)
-    # print(lastdayofmonth)
-
-    group_stop_month = groups[0].stop.strftime("%m")
-    group_stop_day = groups[0].stop.strftime("%d")
-    stop_month = lastdayofmonth.strftime("%m")
-    stop_day = lastdayofmonth.strftime("%d")
-
-    if group_stop_month == stop_month:
-        if group_stop_day < stop_day:
-            lastdayofmonth = groups[0].stop
-
+    # # filtered_date = datetime.datetime.strptime(f"01.{month_list[0]}", "%d.%m.%Y")
+    # # firstdayofmonth = datetime.datetime.combine(filtered_date, datetime.time.min)
+    #
+    # # o'quv oyining eng oxirgi kuni
+    # endmonth = calendar.monthrange(groups[0].start.year, groups[0].start.month)
+    # lastdayofmonth = datetime.datetime(groups[0].start.year, groups[0].start.month, endmonth[1])
+    #
+    # # last_day = calendar.monthrange(groups[0].stop.year, groups[0].stop.month)
+    # # if last_day[1] > groups[0].stop.month:
+    # #     lastdayofmonth = groups[0].stop
+    # # print(endmonth)
+    # # print(lastdayofmonth)
+    #
+    # group_stop_month = groups[0].stop.strftime("%m")
+    # group_stop_day = groups[0].stop.strftime("%d")
+    # stop_month = lastdayofmonth.strftime("%m")
+    # stop_day = lastdayofmonth.strftime("%d")
+    #
+    # if group_stop_month == stop_month:
+    #     if group_stop_day < stop_day:
+    #         lastdayofmonth = groups[0].stop
+    #
+    # # # guruh o'quv kunlarini olish
+    # # get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
+    # # # get_days = get_days.apply(lambda x: x[x.dayofweek <= 4])
+    # # days_list = list(set(get_days))
+    # # days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
+    # # # # guruh o'quv kunlarini olishni oxiri
+    #
     # # guruh o'quv kunlarini olish
-    # get_days = [i.strftime("%d.%m.%Y") for i in pd.date_range(start=groups[0].start, end=lastdayofmonth).tolist()]
-    # # get_days = get_days.apply(lambda x: x[x.dayofweek <= 4])
-    # days_list = list(set(get_days))
-    # days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
-    # # # guruh o'quv kunlarini olishni oxiri
+    # def daterange(date1, date2):
+    #     for n in range(int((date2 - date1).days) + 1):
+    #         yield date1 + datetime.timedelta(n)
+    #
+    # days = []
+    # weekdays = [6]
+    #
+    # for dt in daterange(groups[0].start, lastdayofmonth.date()):
+    #     if dt.weekday() not in weekdays:  # to print only the weekdates
+    #         days.append(dt.strftime("%d.%m.%Y"))
+    # # guruh o'quv kunlarini olishni oxiri
+    #
+    # users = User.objects.filter(Q(school=request.user.school) & Q(group=groups[0]) & Q(is_active=True))
+    #
+    # context = {
+    #     'groups': groups,
+    #     'subjects': subjects,
+    #     'cols': days,
+    #     'rows': users,
+    #     'months_and_years': month_list
+    # }
+    if request.method == 'GET':
+        groups = Group.objects.filter(Q(school=request.user.school) & Q(is_active=True)).order_by('id')
+        if not groups.exists():
+            messages.error(request, 'Guruhlar mavjud emas!')
+            return render(request, 'user/electronical_journal.html')
+        subjects = Subject.objects.filter(Q(is_active=True)).distinct()
+        if not subjects.exists():
+            messages.error(request, 'Fanlar mavjud emas!')
+            return render(request, 'user/electronical_journal.html')
 
-    # guruh o'quv kunlarini olish
-    def daterange(date1, date2):
-        for n in range(int((date2 - date1).days) + 1):
-            yield date1 + datetime.timedelta(n)
+        # o'quv oylari yili bilan selectga chiqarish uchun
+        get_months_and_years_list = [i.strftime("%m.%Y") for i in
+                                     pd.date_range(start=groups[0].start, end=groups[0].stop).tolist()]
+        month_list = list(set(get_months_and_years_list))
+        month_list.sort(key=lambda date: datetime.datetime.strptime(date, "%m.%Y"))
+        # o'quv oylari yili bilan selectga chiqarish uchun oxiri
 
-    days = []
-    weekdays = [6]
+        if request.GET.get('group'):
+            group = get_object_or_404(Group, id=request.GET.get('group'))
+        else:
+            group = groups.first()
 
-    for dt in daterange(groups[0].start, lastdayofmonth.date()):
-        if dt.weekday() not in weekdays:  # to print only the weekdates
-            days.append(dt.strftime("%d.%m.%Y"))
-    # guruh o'quv kunlarini olishni oxiri
+        if request.GET.get('subject'):
+            subject = get_object_or_404(Subject, id=request.GET.get('subject'))
+        else:
+            subject = subjects.first()
 
-    users = User.objects.filter(Q(school=request.user.school) & Q(group=groups[0]) & Q(is_active=True))
+        if request.GET.get('month'):
+            month_and_year = request.GET.get('month')
+        else:
+            month_and_year = month_list[0]
 
-    context = {
-        'groups': groups,
-        'subjects': subjects,
-        'cols': days,
-        'rows': users,
-        'months_and_years': month_list
-    }
-    if request.method == 'POST':
-        group = get_object_or_404(Group, id=request.POST.get('group'))
-        subject = get_object_or_404(Subject, id=request.POST.get('subject'))
-        month_and_year = request.POST.get('month')
         users = User.objects.filter(Q(school=request.user.school) & Q(group=group) & Q(is_active=True))
 
         # o'quv oylari yili bilan selectga chiqarish uchun
@@ -2092,6 +2078,10 @@ def electronical_journal(request):
         # days_list.sort(key=lambda date: datetime.datetime.strptime(date, "%d.%m.%Y"))
         # # guruh o'quv kunlarini olishni oxiri
 
+        def daterange(date1, date2):
+            for n in range(int((date2 - date1).days) + 1):
+                yield date1 + datetime.timedelta(n)
+
         # guruh o'quv kunlarini olish
         days = []
         weekdays = [6]
@@ -2102,10 +2092,9 @@ def electronical_journal(request):
         # guruh o'quv kunlarini olishni oxiri
 
         context = {
-            'render_subject': subject,
-            'render_group': group,
             'rows': users,
             'cols': days,
+            'group': group,
             'subject': subject,
             'subjects': subjects,
             'groups': groups,
@@ -2114,8 +2103,6 @@ def electronical_journal(request):
         }
 
         return render(request, 'user/electronical_journal.html', context)
-
-    return render(request, 'user/electronical_journal.html', context)
 
 
 @login_required
@@ -2196,9 +2183,6 @@ def get_group_months(request):
         return False
 
 
-
-
-
 @login_required
 def sms_settings(request):
     if request.user.role == '2':
@@ -2221,7 +2205,6 @@ def sms_settings(request):
             'SMS_ADD_STEP': SMS_ADD_STEP,
             'send_sms': send_sms
         }
-
 
         return render(request, 'user/director/sms_settings.html', context)
     else:

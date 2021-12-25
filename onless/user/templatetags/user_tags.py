@@ -200,18 +200,20 @@ def get_pupil_rating_or_attendance(pupil_id, date, subject_id):
     pupil = get_object_or_404(User, id=pupil_id)
     subject = get_object_or_404(Subject, id=subject_id)
     date = datetime.datetime.strptime(date, "%d.%m.%Y")
-    date_min = datetime.datetime.combine(date, datetime.time.min)
-    date_max = datetime.datetime.combine(date, datetime.time.max)
-    attendances = Attendance.objects.filter(pupil=pupil, subject=subject, updated_date__range=(date_min, date_max))
+    attendances = Attendance.objects.filter(pupil=pupil, subject=subject, date=date)
+
     context = {}
-    for attendance in attendances:
-        if attendance.is_visited == True:
-            context.update(attendance=True)
-        elif attendance.is_visited == False:
-            context.update(attendance=False)
-        else:
-            pass
-    ratings = Rating.objects.filter(pupil=pupil, subject=subject, updated_date__range=(date_min, date_max))
+    if attendances.exists():
+        for attendance in attendances:
+            if attendance.is_visited == False:
+                context.update(attendance=False)
+            else:
+                context.update(attendance=True)
+    else:
+        context.update(attendance=True)
+
+    ratings = Rating.objects.filter(pupil=pupil, subject=subject, date=date)
+
     for rating in ratings:
         context.update(rating=rating.score)
     return context

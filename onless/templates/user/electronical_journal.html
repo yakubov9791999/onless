@@ -6,6 +6,15 @@
     {% breadcrumb "Elektron jurnal" "user:electronical_journal" %}
 {% endblock %}
 
+{% block top %}
+    <style>
+        .rating_attendance {
+            cursor: pointer;
+        }
+    </style>
+
+{% endblock top %}
+
 {% block content %}
 
     <div class="row">
@@ -18,30 +27,29 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{% url 'user:electronical_journal' %}" method="post">
-                        {% csrf_token %}
+                    <form action="{% url 'user:electronical_journal' %}" method="get" id="filter_top">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label for="">Guruh: </label>
                                 <select name="group" id="group" class="form-control"
                                         style="cursor: pointer;">
-                                    {% for group in groups %}
-                                        <option {% if render_group.id == group.id %}selected{% endif %}
-                                                value="{{ group.id }}">{{ group.category }}-{{ group.number }}-{{ group.year }}</option>
+                                    {% for gr in groups %}
+                                        <option {% if group.id == gr.id %}selected{% endif %}
+                                                value="{{ gr.id }}">{{ gr.category }}-{{ gr.number }}-{{ gr.year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label for="">Fan: </label>
                                 <select name="subject" id="subject" class="form-control"
                                         style="cursor: pointer;">
-                                    {% for subject in subjects %}
-                                        <option {% if render_subject.id == subject.id %}selected{% endif %}
-                                                value="{{ subject.id }}">{{ subject.long_title }}</option>
+                                    {% for sub in subjects %}
+                                        <option {% if subject.id == sub.id %}selected{% endif %}
+                                                value="{{ sub.id }}">{{ sub.long_title }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label for="">O'quv oyi: </label>
                                 <select name="month" id="month" class="form-control"
                                         style="cursor: pointer;">
@@ -51,9 +59,9 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-2" style="margin-top: 1.9rem; text-align: center">
-                                <button class="btn btn-info">Yangilash</button>
-                            </div>
+{#                            <div class="col-md-2" style="margin-top: 1.9rem; text-align: center">#}
+{#                                <button class="btn btn-info">Yangilash</button>#}
+{#                            </div>#}
                         </div>
                     </form>
                     <br>
@@ -62,20 +70,14 @@
                                class="table table-bordered table-hovered table-hover">
                             <thead>
                             <tr style="background-color: #faf7f7">
-                                {% if render_group and render_subject %}
-                                    {% get_fullname_group render_group.id as group_name %}
-                                    <th style="text-align: center; font-size: xx-large; color: #5353d5"
-                                        colspan="{{ cols|length|add:2 }}">
-                                        Guruh: {{ group_name }} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                        Fan: {{ render_subject.long_title }}
-                                    </th>
-                                {% else %}
-                                    {% get_fullname_group groups.first.id as group_name %}
+
+                                {% if group and subject %}
+                                    {% get_fullname_group group.id as group_name %}
 
                                     <th style="text-align: center; font-size: xx-large; color: #737399"
                                         colspan="{{ cols|length|add:2 }}">
                                         Guruh: {{ group_name }} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                        Fan: {{ subjects.first.long_title }}
+                                        Fan: {{ subject.long_title }}
                                     </th>
                                 {% endif %}
                             </tr>
@@ -113,16 +115,21 @@
                                     <th>{{ row.name }}</th>
 
                                     {% for col in cols %}
-                                        {% if subject %}
-                                            {% get_pupil_rating_or_attendance row.id col subject.id as rating_or_attendance %}
-                                        {% else %}
-                                            {% get_pupil_rating_or_attendance row.id col subjects.first.id as rating_or_attendance %}
+
+                                        {% get_pupil_rating_or_attendance row.id col subject.id as rating_or_attendance %}
+
+                                        <th {% if request.user.role == '2' or request.user.role == '3' %}class="rating_attendance" data-pupil="{{ row.id }}" data-date="{{ col }}"
+                                            data-pupilName="{{ row.name }}"
                                         {% endif %}
-                                        <th>
+                                        >
+
                                             {% if rating_or_attendance.attendance == False %}
                                                 <span style="color: red">dk</span>
                                             {% elif rating_or_attendance.attendance == True %}
+
                                                 <span>{{ rating_or_attendance.rating }}</span>
+{#                                            {% else %}#}
+{#                                                <i class="fas fa-compress-arrows-alt"></i>#}
                                             {% endif %}
                                         </th>
 
@@ -151,6 +158,129 @@
     </div>
 
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Baho qo'yishni hohlaysizmi yoki davomatni
+                        belgilaysizmi?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>O'quvchi:</strong> <span class="pupil_name"></span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Sana:</strong> <span class="span_date"></span>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-info" id="rating">Baho</button>
+                    <button type="button" class="btn btn-primary" id="attendance">Davomat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ratingModalLabel">O'quvchi olgan bahoni kiriting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'user:rating_create' %}?{{ request.META.QUERY_STRING }}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="rating_pupil">
+                    <input type="hidden" name="rating_date">
+                    <input type="hidden" name="rating_subject">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>O'quvchi:</strong> <span class="pupil_name"></span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Sana:</strong> <span class="span_date"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-3">
+                                <label for="rating">Baho<span style="color: red">*</span></label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" max="5" min="2" class="form-control" name="rating" id="rating"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog" aria-labelledby="attendanceModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attendanceModalLabel">O'quvchi davomatini kiriting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'user:attendance_set_visited' %}?{{ request.META.QUERY_STRING }}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="visited_pupil" value="">
+                    <input type="hidden" name="visited_date">
+                    <input type="hidden" name="visited_subject">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>O'quvchi:</strong> <span class="pupil_name">Eshonov Bahodir</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Sana:</strong> <span class="span_date"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="visited" id="visited"
+                                   value="True" checked>
+                            <label class="form-check-label" for="visited" style="color: green">Kelgan</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="visited" id="not_visited"
+                                   value="False">
+                            <label class="form-check-label" for="not_visited" style="color: red">Kelmagan</label>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 {% block bottom %}
 
@@ -163,6 +293,44 @@
                 xhr.setRequestHeader('X-CSRFToken', csrftoken)
             }
         })
+        var pupilId,
+            date,
+            pupilName
+        $('.rating_attendance').on('click', function () {
+            $('#exampleModal').modal('show')
+
+            pupilId = $(this).data('pupil')
+            date = $(this).data('date')
+            pupilName = $(this).data('pupilname')
+
+            $('.pupil_name').text(pupilName)
+            $('.span_date').text(date)
+        })
+
+        $(document).on('click', '#rating', function () {
+            $('#exampleModal').modal('hide')
+            $('#ratingModal').modal('show')
+
+
+            $('input[name=rating_pupil]').val(pupilId)
+            $('input[name=rating_date]').val(date)
+
+
+            $('input[name=rating_subject]').val("{{subject.id}}")
+
+        })
+
+
+        $(document).on('click', '#attendance', function () {
+            $('#exampleModal').modal('hide')
+            $('#attendanceModal').modal('show')
+
+            $('input[name=visited_pupil]').val(pupilId)
+            $('input[name=visited_date]').val(date)
+            $('input[name=visited_subject]').val("{{subject.id}}")
+        })
+
+
 
         $("#group").change(function () {
             var selectedGroup = $(this).children("option:selected").val();
@@ -183,7 +351,17 @@
                     }
                 }
             });
+
+            $('#filter_top').submit()
         });
+
+        $('#month').on('change', function () {
+            $('#filter_top').submit()
+        })
+
+        $('#subject').on('change', function () {
+            $('#filter_top').submit()
+        })
     </script>
 
 {% endblock bottom %}

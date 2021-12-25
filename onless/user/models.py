@@ -150,8 +150,9 @@ class Group(models.Model):
     year = models.IntegerField(verbose_name="O'quv yili", null=True, default=datetime.date.today().year)
     teacher = models.ForeignKey('User', verbose_name="O'qituvchi", on_delete=models.SET_NULL,
                                 related_name='group_teacher', null=True)
-    car_structure_teacher = models.ForeignKey('User', verbose_name="Avtomobil tuzilishi o'qituvchisi", on_delete=models.SET_NULL,
-                                related_name='car_structure_teacher', null=True)
+    car_structure_teacher = models.ForeignKey('User', verbose_name="Avtomobil tuzilishi o'qituvchisi",
+                                              on_delete=models.SET_NULL,
+                                              related_name='car_structure_teacher', null=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, verbose_name="Avtomaktab", related_name='groups',
                                null=True)
     start = models.DateField(verbose_name="O'qish boshlanishi", auto_now=False)
@@ -197,13 +198,15 @@ GENDER_CHOICES = (
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(verbose_name="F.I.O", max_length=255)
-    initsatial =  models.CharField(verbose_name="F.I.O qisqartirilgani (Masalan S.T.Yoqubov)", blank=True,  max_length=255)
-    role = models.CharField(verbose_name="Foydalanuvchi roli",choices=ROLE_CHOICES, max_length=15, default="2")
-    school = models.ForeignKey(School,verbose_name="Avtomaktab", on_delete=models.SET_NULL, null=True, related_name='school_user', blank=True)
+    initsatial = models.CharField(verbose_name="F.I.O qisqartirilgani (Masalan S.T.Yoqubov)", blank=True,
+                                  max_length=255)
+    role = models.CharField(verbose_name="Foydalanuvchi roli", choices=ROLE_CHOICES, max_length=15, default="2")
+    school = models.ForeignKey(School, verbose_name="Avtomaktab", on_delete=models.SET_NULL, null=True,
+                               related_name='school_user', blank=True)
 
     email = models.EmailField(max_length=254, unique=False, blank=True, default='')
-    avatar = models.ImageField(verbose_name="Foto",upload_to='user/', default='', blank=True)
-    birthday = models.DateField(verbose_name="Tug'ilgan vaqti",blank=True, null=True, default=timezone.now)
+    avatar = models.ImageField(verbose_name="Foto", upload_to='user/', default='', blank=True)
+    birthday = models.DateField(verbose_name="Tug'ilgan vaqti", blank=True, null=True, default=timezone.now)
     username = models.CharField(max_length=30, unique=True, blank=True)
     phone = models.IntegerField(null=True, blank=True,
                                 validators=[MaxValueValidator(999999999), MinValueValidator(100000000)])
@@ -218,19 +221,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     turbo = models.CharField(max_length=200, blank=True, null=True, validators=[MinLengthValidator(7)])
     is_offline = models.BooleanField(default=True)
 
-    place_of_birth = models.CharField("Tug'ilgan joyi",max_length=255, blank=True, null=True)
-    region = models.ForeignKey(Region, verbose_name="Yashash joyi (Viloyat)",on_delete=models.SET_NULL, null=True, blank=True)
-    district = models.ForeignKey(District,verbose_name="Yashash joyi (Tuman/Shahar)", on_delete=models.SET_NULL, null=True, blank=True)
+    place_of_birth = models.CharField("Tug'ilgan joyi", max_length=255, blank=True, null=True)
+    region = models.ForeignKey(Region, verbose_name="Yashash joyi (Viloyat)", on_delete=models.SET_NULL, null=True,
+                               blank=True)
+    district = models.ForeignKey(District, verbose_name="Yashash joyi (Tuman/Shahar)", on_delete=models.SET_NULL,
+                                 null=True, blank=True)
     residence_address = models.CharField("Yashash joyi (Ko'cha/Qishloq)", max_length=255, blank=True, null=True)
 
-    passport_issued_time = models.DateField("Pasport berilgan vaqti",max_length=255, blank=True, null=True, default=datetime.date.today)
-    passport_issued_organization = models.CharField("Pasport bergan tashkilot",max_length=255, blank=True, null=True)
+    passport_issued_time = models.DateField("Pasport berilgan vaqti", max_length=255, blank=True, null=True,
+                                            default=datetime.date.today)
+    passport_issued_organization = models.CharField("Pasport bergan tashkilot", max_length=255, blank=True, null=True)
 
-    medical_series = models.CharField("Tibbiy ma'lumotnoma seriyasi",max_length=255, blank=True, null=True)
-    medical_issued_organization = models.CharField("Tibbiy ma'lumotnoma bergan poliklinika",max_length=255, blank=True, null=True)
-    medical_issued_date = models.DateField("Tibbiy ma'lumotnoma berilgan sana",max_length=255, blank=True, null=True, default=datetime.date.today)
-    
-    certificate_series = models.CharField("Guvohnoma seriyasi",max_length=255, blank=True, null=True)
+    medical_series = models.CharField("Tibbiy ma'lumotnoma seriyasi", max_length=255, blank=True, null=True)
+    medical_issued_organization = models.CharField("Tibbiy ma'lumotnoma bergan poliklinika", max_length=255, blank=True,
+                                                   null=True)
+    medical_issued_date = models.DateField("Tibbiy ma'lumotnoma berilgan sana", max_length=255, blank=True, null=True,
+                                           default=datetime.date.today)
+
+    certificate_series = models.CharField("Guvohnoma seriyasi", max_length=255, blank=True, null=True)
     certificate_number = models.CharField("Guvohnoma raqami", max_length=255, blank=True, null=True)
 
     USERNAME_FIELD = 'username'
@@ -264,12 +272,14 @@ class Pay(models.Model):
     pay_date = models.DateTimeField(blank=True, null=True, default=timezone.now)
     comment = models.CharField(verbose_name="Izoh", max_length=500, blank=True, null=True, default=' ')
     removed_date = models.DateTimeField(blank=True, null=True)
-    removed_reason = models.CharField(verbose_name="O'chirish sababi", max_length=500, blank=True, null=True, default=' ')
+    removed_reason = models.CharField(verbose_name="O'chirish sababi", max_length=500, blank=True, null=True,
+                                      default=' ')
     pupil = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pupil_pay')
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.pupil}"
+
 
 """
 O'quvchi olib kelgani uchun o'quvchilar yoki o'qituvchilarga bonus dasturi 
@@ -300,7 +310,9 @@ class Attendance(models.Model):
                                 related_name='subject_attendance', null=True)
     is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan', default=False)
     created_date = models.DateTimeField(verbose_name='Vaqti', editable=True, default=timezone.now)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True, default=timezone.now)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True,
+                                        default=timezone.now)
+    date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return str(self.subject.short_title)
@@ -326,7 +338,8 @@ class Rating(models.Model):
     subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE, related_name='subject_rating',
                                 null=True)
     created_date = models.DateTimeField(verbose_name='Yaratilgan vaqt', editable=False, default=timezone.now)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqt', blank=True, null=True,default=timezone.now)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqt', blank=True, null=True, default=timezone.now)
+    date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.pupil}: {self.score}'
@@ -341,6 +354,8 @@ status = (
     (PROCESSING, 'Kutilmoqda'),
     (FAILED, 'Yuborilmagan'),
 )
+
+
 class Sms(models.Model):
     sms_count = models.IntegerField(default=0, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt', editable=False)
@@ -359,9 +374,10 @@ class Sms(models.Model):
 class Payment(BasePayment):
     pass
 
+
 class BuySms(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='buy_sms_school')
-    created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt',)
+    created_date = models.DateTimeField(default=timezone.now, verbose_name='Yaratilgan vaqt', )
     sms_count = models.IntegerField(default=0, null=True, blank=True)
     money = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 

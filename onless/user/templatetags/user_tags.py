@@ -137,7 +137,8 @@ def get_group_pay(context, group_id):
 
         try:
             if request.GET['stopdate'] and request.GET['stopdate'] != 'None' and request.GET['stopdate'] != '':
-                stopdate = dt.strptime(request.GET['stopdate'], '%Y-%m-%d').replace(tzinfo=ASIA_TASHKENT_TIMEZONE, hour=23,
+                stopdate = dt.strptime(request.GET['stopdate'], '%Y-%m-%d').replace(tzinfo=ASIA_TASHKENT_TIMEZONE,
+                                                                                    hour=23,
                                                                                     minute=59, second=59)
         except MultiValueDictKeyError:
             pass
@@ -145,7 +146,7 @@ def get_group_pay(context, group_id):
         group = Group.objects.get(id=group_id)
         pupils = User.objects.filter(role='4', group=group, is_active=True)
         total_pay = group.price * pupils.count()
-        pays = Pay.objects.filter(pupil__in=pupils,is_active=True, pay_date__range=[startdate,stopdate])
+        pays = Pay.objects.filter(pupil__in=pupils, is_active=True, pay_date__range=[startdate, stopdate])
 
         payment = 0
         for pay in pays:
@@ -200,7 +201,10 @@ def get_pupil_rating_or_attendance(pupil_id, date, subject_id):
     pupil = get_object_or_404(User, id=pupil_id)
     subject = get_object_or_404(Subject, id=subject_id)
     date = datetime.datetime.strptime(date, "%d.%m.%Y")
-    attendances = Attendance.objects.filter(pupil=pupil, subject=subject, date=date)
+    date_min = datetime.datetime.combine(date, datetime.time.min)
+    date_max = datetime.datetime.combine(date, datetime.time.max)
+    attendances = Attendance.objects.filter(pupil=pupil, subject=subject, date=date,
+                                            updated_date__range=(date_min, date_max))
 
     context = {}
     if attendances.exists():
@@ -210,12 +214,23 @@ def get_pupil_rating_or_attendance(pupil_id, date, subject_id):
             else:
                 context.update(attendance=True)
     else:
-        context.update(attendance=True)
+        a = Attendance.objects.filter(pupil=pupil, subject=subject, date__isnull=True,
+                                      updated_date__range=(date_min, date_max))
+        if a.exists():
+            if a.first().is_visited == False:
+                context.update(attendance=False)
+            else:
+                context.update(attendance=True)
+        else:
+            context.update(attendance=True)
 
     ratings = Rating.objects.filter(pupil=pupil, subject=subject, date=date)
-
-    for rating in ratings:
-        context.update(rating=rating.score)
+    if ratings.exists():
+        for rating in ratings:
+            context.update(rating=rating.score)
+    else:
+        r = Rating.objects.filter(pupil=pupil, subject=subject, date__isnull=True,
+                                      updated_date__range=(date_min, date_max))
+        for rating in r:
+            context.update(rating=rating.score)
     return context
-
-

@@ -2192,14 +2192,15 @@ def sms_settings(request):
                 send_sms = send_sms.filter(text__icontains=request.GET.get('q'))
 
         for sms in send_sms:
-            r = GetStatusSms(id=sms.sms_id).get()
-            if r == SUCCESS:
-                sms.status = SUCCESS
-            elif r == FAILED:
-                sms.status = FAILED
-            else:
-                sms.status = PROCESSING
-            sms.save()
+            if sms.status == PROCESSING:
+                r = GetStatusSms(id=sms.sms_id).get()
+                if r == SUCCESS:
+                    sms.status = SUCCESS
+                elif r == FAILED:
+                    sms.status = FAILED
+                else:
+                    sms.status = PROCESSING
+                sms.save()
         context = {
             'SMS_PRICE': SMS_PRICE,
             'SMS_ADD_STEP': SMS_ADD_STEP,

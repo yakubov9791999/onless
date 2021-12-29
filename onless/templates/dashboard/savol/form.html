@@ -1,0 +1,129 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Savollar</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Saytga oʻtish</a></li>
+                        <li class="breadcrumb-item active">Savol</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Vidoe</label>
+                                        <br>
+                                        {{ form.video }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Bilet</label>
+                                        <br>
+                                        {{ form.bilet }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Bilet_savol</label>
+                                        <br>
+                                        {{ form.bilet_savol }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Text_uz</label>
+                                        <br>
+                                        {{ form.title_uz }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Text_kr</label>
+                                        <br>
+                                        {{ form.title_kr }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Text_ru</label>
+                                        <br>
+                                        {{ form.title_ru }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Rasm</label>
+                                        <br>
+                                        {{ form.photo }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Is_rasm</label>
+                                        <br>
+                                        {{ form.is_photo }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Is_active</label>
+                                        <br>
+                                        {{ form.is_active }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Comment</label>
+                                        <br>
+                                        <textarea class="form-control" id="id_comment" name="comment"
+                                                  rows="3"></textarea>
+{#                                        {{ form.comment }}#}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Saqlash</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

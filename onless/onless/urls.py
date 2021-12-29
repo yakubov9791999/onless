@@ -28,6 +28,7 @@ def trigger_error(request):
 
 
 urlpatterns = [
+                  path('dashboard/', include('clinet.urls')),
                   path('yoz/', admin.site.urls),
                   path('', include('landing.urls')),
                   path('video/', include('video.urls')),

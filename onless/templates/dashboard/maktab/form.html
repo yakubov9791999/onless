@@ -1,0 +1,190 @@
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Maktablar</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">Saytga oʻtish</a></li>
+                        <li class="breadcrumb-item active">Maktab</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+
+                        <form method="post" action="{% url 'maktab_list' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>F.I.O</label>
+                                        <br>
+                                        {{ user_form.name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>F.I.O qisqartirilgani (Masalan S.T.Yoqubov)</label>
+                                        <br>
+                                        {{ user_form.initsatial }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Foydalanuvchi roli</label>
+                                        <br>
+                                        {{ user_form.role }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Avtomaktab</label>
+                                        <br>
+                                        {{ user_form.school }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <br>
+                                        {{ user_form.email }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Tug'ilgan vaqti</label>
+                                        <br>
+                                        <input type="date" id="id_birthday" name="birthday" required="">
+                                        {#                                        {{ user_form.email }}#}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert  alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <br>
+                                        {{ user_form.username }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="border: 1px solid black; background: black"><p
+                                    style="color: white; text-align: center" class="mt-2"><b>Maktab biriktering</b></p>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Nomi</label>
+                                        <br>
+                                        {{ school_form.title }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Director</label>
+                                        <br>
+                                        {{ school_form.director }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Nomer (Misol: 9726344**)</label>
+                                        <br>
+                                        {{ school_form.phone }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Bank</label>
+                                        <br>
+                                        {{ school_form.bank }}
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Viloyat</label>
+                                        <br>
+                                        {{ school_form.region }}
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Tuman</label>
+                                        <br>
+                                        {{ school_form.district }}
+                                    </div>
+                                </div>
+                            </div>
+                            {#                            {{ user_form.as_p }}#}
+                            <hr>
+{#                            {{ school_form.as_p }}#}
+                            {#                            <div class="card-body">#}
+                            {#                                <div class="alert  alert-primary" role="alert">#}
+                            {#                                    <div class="form-group">#}
+                            {#                                        <label>Nomi</label>#}
+                            {#                                        <br>#}
+                            {#                                        {{ form.title }}#}
+                            {#                                    </div>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            {#                            <div class="card-body">#}
+                            {#                                <div class="alert  alert-primary" role="alert">#}
+                            {#                                    <div class="form-group">#}
+                            {#                                        <label>Saralsh</label>#}
+                            {#                                        <br>#}
+                            {#                                        {{ form.sort }}#}
+                            {#                                    </div>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            {#                            <div class="card-body">#}
+                            {#                                <div class="alert  alert-primary" role="alert">#}
+                            {#                                    <div class="form-group">#}
+                            {#                                        <label>Viloyat kodini kiriting</label>#}
+                            {#                                        <br>#}
+                            {#                                        {{ form.state_number_code }}#}
+                            {#                                    </div>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Saqlash</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

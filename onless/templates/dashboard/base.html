@@ -1,0 +1,51 @@
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | Dashboard</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dashboard/css/adminlte.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/overlayScrollbars/css/overlayScrollbarsrs.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+  <div class="wrapper" style="min-height: 1342.88px;">
+
+        {% include 'dashboard/navbar.html' %}
+    <div class="content-wrapper" style="min-height: 1342.88px;">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+<!-- jQuery -->
+<script src="{% static 'dashboard/plugins/jquery/jquery.min.js' %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'dashboard/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dashboard/js/adminlte.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/summernote/summernote-bs4.min.js' %}"></script>
+<script src="{% static 'dashboard/dist/js/demo.js' %}"></script>
+
+{% block javascript %}{% endblock %}
+</body>
+</html>

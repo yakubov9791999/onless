@@ -91,3 +91,5 @@ onless/practical/migrations/
 onless/click/migrations/
 onless/paycom/migrations/
 media/
+
+deploy/.env

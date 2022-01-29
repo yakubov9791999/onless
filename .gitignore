@@ -90,3 +90,4 @@ onless/onless/local_settings.py
 onless/practical/migrations/
 onless/click/migrations/
 onless/paycom/migrations/
+media/

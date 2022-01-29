@@ -10,6 +10,7 @@ WORKDIR /code
 
 COPY deploy/requirements.txt requirements.txt
 
+RUN pip install -i https://m.devpi.net/jaraco/dev suds-jurko
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . /code

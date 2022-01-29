@@ -1,0 +1,17 @@
+<div class="col-lg-6 col-md-12 col-sm-12">
+    <!-- small box -->
+    <div class="small-box bg-white">
+        <div class="inner">
+            <h6>{% if request.user.school %}
+                {{ request.user.school.title }}
+                {% else %}
+                AVTOMAKTAB
+            {% endif %}</h6>
+            <h3>Avtomaktabni tahrirlash</h3>
+        </div>
+        <div class="icon">
+            <i class="fas fa-pen-square"></i>
+        </div>
+        <a href="{% url 'user:edit_school' %}"><button class="btn btn-secondary mt-3" style="width: 100%"><i class="fas fa-edit"></i></button></a>
+    </div>
+</div>

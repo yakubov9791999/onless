@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+
+    {% breadcrumb "Aloqa" "user:contact" %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Fikringizni qoldiring</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="POST" action="{% url 'user:contact' %}">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="exampleInputtextarea">Fikr bildiring:</label>
+                            <textarea name="text" id="" cols="30" class="form-control"
+                                      placeholder="Fikringizni yozing..." rows="10"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputtextarea">Rasmni joylashtiring:</label>
+                            <input type="file" name="photo" class="form-control">
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success">Saqlash</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

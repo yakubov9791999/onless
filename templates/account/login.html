@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+{% load i18n %}
+{% load account socialaccount %}
+{% load static %}
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta charset="utf-8"/>
+    <title>Kirish | Onless.uz - Onlayn avtomaktab platformasi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Birinchi raqamli onlayn shakldagi innovatsion avtomaktab platformasi. Avtomaktablar uchun onlayn dars tashkil etish platformasi"/>
+    <meta property="og:title" content="Onless.uz - onlayn avtomaktab platformasi. "/>
+    <meta property="og:description" content="Onlayn avtomaktab platformasi"/>
+    <meta property="fb:app_id" content="255908234617055"/>
+
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://www.onless.uz"/>
+    <meta property="og:site_name" content="Onless.uz - Onlayn avtomaktab platformasi"/>
+    <meta property="og:locale" content="uz_UZ"/>
+    <meta name="Description"
+          content="Birinchi raqamli onlayn shakldagi innovatsion avtomaktab platformasi. Avtomaktablar uchun onlayn dars tashkil etish platformasi">
+    <meta name="Keywords"
+          content="avtomaktab, onlayn, dars, online darslar, haydovchilik guhovnomasi, pravaga o'qish, правага ўқиш, avtomaktab narxlari">
+
+    <meta name="author" content="BUXORO DASTURLASH MAKTABI"/>
+    <meta name="email" content="onlessuz@gmail.com"/>
+    <meta name="website" content="http://onless.uz"/>
+    <meta name="Version" content="v2.0.0"/>
+    <!-- favicon -->
+    <link rel="shortcut icon" href="{% static 'online/onless.png' %}" type="image/x-icon">        <!-- Bootstrap -->
+        <!-- Bootstrap -->
+        <link href="{% static 'corporate/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+        <!-- Icons -->
+        <link href="{% static 'corporate/css/materialdesignicons.min.css'%}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+        <!-- Main Css -->
+        <link href="{% static 'corporate/css/style.css'%}" rel="stylesheet" type="text/css" id="theme-opt" />
+        <link href="{% static 'corporate/css/colors/default.css'%}" rel="stylesheet" id="color-opt">
+
+    </head>
+
+    <body>
+        <!-- Loader -->
+        <!-- <div id="preloader">
+            <div id="status">
+                <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Loader -->
+        
+        <div class="back-to-home rounded d-none d-sm-block">
+            <a href="{% url 'landing:landing_page'  %}" class="btn btn-icon btn-primary"><i data-feather="home" class="icons"></i></a>
+        </div>
+
+        <!-- Hero Start -->
+        <section class="cover-user bg-white">
+            <div class="container-fluid px-0">
+                <div class="row g-0 position-relative">
+                    <div class="col-lg-4 cover-my-30 order-2">
+                        <div class="cover-user-img d-flex align-items-center">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card login-page border-0" style="z-index: 1">
+                                        <div class="card-body p-0">
+                                            <h4 class="card-title text-center">Tizimga kirish</h4>
+                                               {% for message in messages %}
+
+                <div class="alert alert-danger">
+                    <a class="close" href="#" data-dismiss="alert">×</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+                                            <form class="login-form mt-4" method="POST" action="{% url 'user:login' %}">
+                                                  {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Passport seriyangiz <span class="text-danger">*</span></label>
+                                                            <div class="form-icon position-relative">
+                                                                <i data-feather="user" class="fea icon-sm icons"></i>
+                                                                <input type="text" class="form-control ps-5" placeholder="Loginni kiriting" name="username" required="">
+                                                            </div>
+                                                        </div>
+                                                    </div><!--end col-->
+        
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Parol <span class="text-danger">*</span></label>
+                                                            <div class="form-icon position-relative">
+                                                                <i data-feather="key" class="fea icon-sm icons"></i>
+                                                                <input type="password" name="password" class="form-control ps-5" placeholder="Parolni kiriting" required="">
+                                                            </div>
+                                                        </div>
+                                                    </div><!--end col-->
+        
+                                                    <div class="col-lg-12">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                                    <label class="form-check-label" name="checkbox" for="flexCheckDefault">Eslab qol</label>
+                                                                </div>
+                                                            </div>
+                                                            <p class="forgot-pass mb-0"><a href="https://t.me/onless_support" class="text-dark fw-bold" target="_blank">Muammo bormi?</a></p>
+                                                        </div>
+                                                    </div><!--end col-->
+
+                                                    <div class="col-lg-12 mb-0">
+                                                        <div class="d-grid">
+                                                            <button class="btn btn-primary" type="submit">{% trans "Kirish" %}</button>
+                                                        </div>
+                                                    </div><!--end col-->
+
+{#                                                    <div class="col-lg-12 mt-4 text-center">#}
+{#                                                        <h6>Or Login With</h6>#}
+{#                                                        <div class="row">#}
+{#                                                            <div class="col-6 mt-3">#}
+{#                                                                <div class="d-grid">#}
+{#                                                                    <a href="javascript:void(0)" class="btn btn-light"><i class="mdi mdi-facebook text-primary"></i> Facebook</a>#}
+{#                                                                </div>#}
+{#                                                            </div><!--end col-->#}
+{#                                                            #}
+{#                                                            <div class="col-6 mt-3">#}
+{#                                                                <div class="d-grid">#}
+{#                                                                    <a href="javascript:void(0)" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> Google</a>#}
+{#                                                                </div>#}
+{#                                                            </div><!--end col-->#}
+{#                                                        </div>#}
+{#                                                    </div><!--end col-->#}
+
+                                                    <div class="col-12 text-center">
+                                                        <p class="mb-0 mt-3"><small class="text-dark me-2">Siz hali avtomaktabda o'qimayapsizmi?  </small> <a href="{% url 'landing:sign_up' %}" class="text-dark fw-bold">O'qishga topshirish</a></p>
+                                                    </div><!--end col-->
+                                                </div><!--end row-->
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div><!--end col-->
+                            </div><!--end row-->
+                        </div> <!-- end about detail -->
+                    </div> <!-- end col -->    
+
+                    <div class="col-lg-8 offset-lg-4 padding-less img order-1" style="background-image:url('{% static 'corporate/images/login_back.jpg' %}')" data-jarallax='{"speed": 0.5}'></div><!-- end col -->
+                </div><!--end row-->
+            </div><!--end container fluid-->
+        </section><!--end section-->
+        <!-- Hero End -->
+
+
+        <!-- javascript -->
+        <script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+        <!-- Icons -->
+        <script src="{% static 'js/feather.min.js'%}"></script>
+        <!-- Main Js -->
+        <script src="{% static 'js/app.js'%}"></script>
+    </body>
+</html>

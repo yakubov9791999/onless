@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% load video_tags %}
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if pupil.group %}
+        {% breadcrumb "Guruhlar" "user:groups_list" %}
+        {% get_fullname_group pupil.group.id as get_group %}
+        {% breadcrumb get_group "user:group_detail" pupil.group.id %}
+        {% breadcrumb pupil.name "user:result" pupil.id %}
+    {% else %}
+        {% if pupil %}
+            {% breadcrumb "Xodimlar" "user:workers_list" %}
+        {% endif %}
+        {% breadcrumb request.user.name "user:result" request.user.id %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if pupil %}
+
+        <div class="row">
+            <div class="col-12">
+                {#                <div class="alert alert-danger text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan#}
+                {#                    natijalarda xatoliklar yuzaga kelishi mumkin!</b></div>#}
+                {% include 'inc/messages_part.html' %}
+                {% if pupil %}
+                    <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">{{ pupil.name }}ning
+                        o'zlashtirish
+                        darajasi {% now "SHORT_DATE_FORMAT" %} holatida</p>
+                {% else %}
+                    <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">O'zlashtirish
+                        darajasi {% now "SHORT_DATE_FORMAT" %} holatida</p>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="row">
+            <!-- left column -->
+
+            <!-- general form elements -->
+
+            <div class="col-md-6 col-sm-12">
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+
+                        {% pupil_result pupil.id as pupil_res %}
+                        <tr>
+                            <th><a href="{% url 'video:categories_list' %}">Umumiy videolar:</a></th>
+                            {% get_views_count pupil.id as view %}
+                            <td>{{ view.videos_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ko'rilgan videolar:</th>
+                            <td>{{ view.views_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ko'rilmagan videolar:</th>
+                            <td>{{ view.not_view }}</td>
+                        </tr>
+                        <tr>
+
+                            <th><a href="{% url 'user:HistoryPupilViewVideo' pupil.id %}">Ko'rishlar tarixi:</a>
+                            </th>
+                            <td><a href="{% url 'user:HistoryPupilViewVideo' pupil.id %}"><i
+                                    class="fas fa-eye"></i></a>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>Onless.uz dagi umumiy savollar:</th>
+                            <td>{{ pupil_res.question_total_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Berilgan javoblar:</th>
+                            <td>{{ pupil_res.answer_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>To'g'ri javoblar:</th>
+                            <td>{{ pupil_res.answer_true }}</td>
+                        </tr>
+                        <tr>
+                            <th>Noto'g'ri javoblar:</th>
+                            <td>{{ pupil_res.answer_false }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jami biletlar:</th>
+                            <td>{% if bilets %}{{ bilets }}{% else %}0{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Oxirgi ochilgan bilet:</th>
+                            {% if last_check_bilet %}
+                                <td>{{ last_check_bilet }}</td>
+                            {% else %}
+                                <td class="text-danger">Bilet ochilmagan</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th>So'nggi tashrif:</th>
+                            <td>{{ pupil.last_login }}</td>
+
+                        </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12 pl-3 vl">
+                <hr style="margin-top: 0!important;margin-bottom: 0.5em!important">
+                <p class="lead">Berilgan javobga nisbatan o'zlashtirish:</p>
+                {% pupil_result pupil.id as pupil_res %}
+                <p class="text-muted" style="margin-bottom: 0">Javoblar/To'g'ri javoblar:
+                    <b>{{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}</b></p>
+                <div class="progress">
+                    {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
+                        <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                             role="progressbar"
+                             aria-valuenow="40" aria-valuemin="2"
+
+                             aria-valuemax="6" style="width:{{ pupil_res.res }}%">
+                            <b>{{ pupil_res.res }}%</b>
+                        </div>
+                    {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
+                        <div style="width: 100%; margin-left: 45%">0%</div>
+                    {% else %}
+                        <div style="margin-left: 10%">yechilmagan</div>
+                    {% endif %}
+                </div>
+                <hr>
+                <p class="lead">Umumiy savollarga nisbatan o'zlashtirish:</p>
+                <p class="text-muted" style="margin-bottom: 0">Umumiy savollar/To'g'ri javoblar:
+                    <b>{{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}</b></p>
+                <div class="progress">
+
+                    {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
+                        <div class="progress-bar {% if pupil_res.total_res >= 85 and pupil_res.total_res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.total_res >= 40 and pupil_res.total_res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.total_res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                             role="progressbar"
+                             aria-valuenow="40" aria-valuemin="2"
+
+                             aria-valuemax="6" style="width:{{ pupil_res.total_res }}%">
+                            <b>{{ pupil_res.total_res }}%</b>
+                        </div>
+                    {% elif pupil_res.question_total_count > 0 and pupil_res.total_res < 1 %}
+                        <div style="width: 100%; margin-left: 45%">0%</div>
+                    {% else %}
+                        <div style="margin-left: 10%">yechilmagan</div>
+                    {% endif %}
+                </div>
+                <br>
+
+
+                <div class="table-responsive">
+                    <table class="table">
+                        {% for attempt in pupil.attempt_user.all %}
+                            <tbody>
+                            <tr>
+                                <th>Ruxsat berilgan qayta topshrishlar soni:</th>
+                                {% if attempt.allowed %}
+                                    <td>{{ attempt.allowed }}</td>
+                                {% else %}
+                                    <td>0</td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <th>Amalga oshirilgan qayta topshrishlar soni:</th>
+                                {% if attempt.solved %}
+                                    <td>{{ attempt.solved }}</td>
+                                {% else %}
+                                    <td>0</td>
+                                {% endif %}
+                            </tr>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                {% include 'inc/messages_part.html' %}
+                {% if pupil %}
+                    <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">{{ pupil.name }}ning
+                        o'zlashtirish
+                        darajasi {% now "SHORT_DATE_FORMAT" %} holatida</p>
+                {% else %}
+                    <p class="lead p-3 text-center" style="font-size: 2rem; color: #2d88bb">O'zlashtirish
+                        darajasi {% now "SHORT_DATE_FORMAT" %} holatida</p>
+                {% endif %}
+            </div>
+        </div>
+        {#        <div class="alert-default-info text-center"><b>Video ostidagi testlar o'zgartirilgani munosabati bilan#}
+        {#                    natijalarda xatoliklar yuzaga kelishi mumkin! Xatolikni bartaraf etish uchun natijalarni o'chirib, testlarni qayta topshiring!</b></div>#}
+        <div class="row">
+            <!-- left column -->
+
+            <!-- general form elements -->
+
+            <div class="col-md-6 col-sm-12">
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+
+                        {% pupil_result request.user.id as pupil_res %}
+                        <tr>
+                            <th><a href="{% url 'video:categories_list' %}">Umumiy videolar:</a></th>
+                            {% get_views_count request.user.id as view %}
+                            <td>{{ view.videos_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ko'rilgan videolar:</th>
+                            <td>{{ view.views_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ko'rilmagan videolar:</th>
+                            <td>{{ view.not_view }}</td>
+                        </tr>
+                        <tr>
+
+                            <th><a href="{% url 'user:HistoryPupilViewVideo' request.user.id %}">Ko'rishlar
+                                tarixi:</a></th>
+                            <td><a href="{% url 'user:HistoryPupilViewVideo' request.user.id %}"><i
+                                    class="fas fa-eye"></i></a>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>Onless.uz dagi umumiy savollar:</th>
+                            <td>{{ pupil_res.question_total_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Berilgan javoblar:</th>
+                            <td>{{ pupil_res.answer_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>To'g'ri javoblar:</th>
+                            <td>{{ pupil_res.answer_true }}</td>
+                        </tr>
+                        <tr>
+                            <th>Noto'g'ri javoblar:</th>
+                            <td>{{ pupil_res.answer_false }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jami biletlar:</th>
+                            <td>{% if bilets %}{{ bilets }}{% else %}0{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Oxirgi ochilgan bilet:</th>
+                            {% if last_check_bilet %}
+                                <td>{{ last_check_bilet }}</td>
+                            {% else %}
+                                <td class="text-danger">Bilet ochilmagan</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th>So'nggi tashrif:</th>
+                            <td>{{ request.user.last_login }}</td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12 pl-3 vl">
+                <hr style="margin-top: 0!important;margin-bottom: 0.5em!important">
+                <p class="lead">Berilgan javobga nisbatan o'zlashtirish:</p>
+                {% pupil_result request.user.id as pupil_res %}
+                <p class="text-muted" style="margin-bottom: 0">Javoblar/To'g'ri javoblar:
+                    <b>{{ pupil_res.answer_count }}/{{ pupil_res.answer_true }}</b></p>
+                <div class="progress">
+                    {% if pupil_res.answer_count > 0 and pupil_res.res > 0 %}
+                        <div class="progress-bar {% if pupil_res.res >= 85 and pupil_res.res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.res >= 40 and pupil_res.res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                             role="progressbar"
+                             aria-valuenow="40" aria-valuemin="2"
+
+                             aria-valuemax="6" style="width:{{ pupil_res.res }}%">
+                            <b>{{ pupil_res.res }}%</b>
+                        </div>
+                    {% elif pupil_res.answer_count > 0 and pupil_res.res < 1 %}
+                        <div style="width: 100%; margin-left: 45%">0%</div>
+                    {% else %}
+                        <div style="margin-left: 10%">yechilmagan</div>
+                    {% endif %}
+                </div>
+                <hr>
+                <p class="lead">Umumiy savollarga nisbatan o'zlashtirish:</p>
+                <p class="text-muted" style="margin-bottom: 0">Umumiy savollar/To'g'ri javoblar:
+                    <b>{{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}</b></p>
+                <div class="progress">
+
+                    {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
+                        <div class="progress-bar {% if pupil_res.total_res >= 85 and pupil_res.total_res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.total_res >= 40 and pupil_res.total_res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.total_res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                             role="progressbar"
+                             aria-valuenow="40" aria-valuemin="2"
+
+                             aria-valuemax="6" style="width:{{ pupil_res.total_res }}%">
+                            <b>{{ pupil_res.total_res }}%</b>
+                        </div>
+                    {% elif pupil_res.question_total_count > 0 and pupil_res.total_res < 1 %}
+                        <div style="width: 100%; margin-left: 45%">0%</div>
+                    {% else %}
+                        <div style="margin-left: 10%">yechilmagan</div>
+                    {% endif %}
+                </div>
+                <br>
+
+
+                <div class="table-responsive">
+                    <table class="table">
+
+                        {% for attempt in request.user.attempt_user.all %}
+                            <tbody>
+                            <tr>
+                                <th>Ruxsat berilgan qayta topshrishlar soni:</th>
+                                {% if attempt.allowed %}
+                                    <td>{{ attempt.allowed }}</td>
+                                {% else %}
+                                    <td>0</td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <th>Amalga oshirilgan qayta topshrishlar soni:</th>
+                                {% if attempt.solved %}
+                                    <td>{{ attempt.solved }}</td>
+                                {% else %}
+                                    <td>0</td>
+                                {% endif %}
+                            </tr>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <button id="resetAnswer" class="btn btn-warning col-12 col-md-8 col-sm-8 col-lg-8 col-xl-8"
+                        style="margin-top: 0 !important;">
+                    Testlarni qayta topshirish
+                </button>
+
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <hr style="margin-bottom: 0 !important;">
+
+                <a href="{% url 'video:categories_list' %}"
+                   class="btn btn-info col-11 col-md-3 col-sm-3 col-lg-3 col-xl-3 m-4">
+                    Videodarslar
+                </a>
+                <a href="{% url 'quiz:select_lang' %}"
+                   class="btn btn-info col-11 col-md-3 col-sm-3 col-lg-3 col-xl-3 m-4">
+                    700 TEST
+                </a>
+                <a href="#" onclick="instruction_sweet()" style="background: #ecd58e"
+                   class="btn col-11 col-md-3 col-sm-3 col-lg-3 col-xl-3 m-4">
+                    Qo'llanma
+                </a>
+
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock content %}
+
+{% block bottom %}
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript">
+
+        $('#resetAnswer').on('click', function () {
+
+            swal({
+                title: "Natijalarni o'chirmoqchimisiz ?",
+                text: "Video ostidagi testlarga berilgan natijalarni o'chirmoqchimisiz ?",
+                icon: "warning",
+                closeOnClickOutside: false,
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+
+            }).then(function (isConfirm) {
+
+                if (isConfirm) {
+                    window.location.href = "{% url 'quiz:reset_answers' %}"
+                }
+            });
+
+        })
+    </script>
+{% endblock bottom %}

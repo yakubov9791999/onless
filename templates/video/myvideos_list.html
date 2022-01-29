@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+<div class="container-fluid">
+        <div class="row mt-3">
+        {% if videos %}
+            {% for video in videos %}
+                <a href="{% url 'video:video_detail' video.id %}">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="thumbnail img-thumb-bg" style="background: url('{% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: 100%">
+                            {% if request.user.user_view_complete.exists %}
+                                <div class="overlay-exists"></div>
+                            {% else %}
+                                <div class="overlay-noexists"></div>
+                            {% endif %}
+                            <div class="caption">
+                                <div class="title"><a
+                                        href="{% url 'video:video_detail' video.id %}">{{ video.title }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <h4>Sizda videolar mavjud emas</h4>
+        {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,687 @@
+{% extends 'base.html' %}
+
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+
+        {% breadcrumb "Guruhlar" "user:groups_list" %}
+        {% get_fullname_group user.group.id as get_group %}
+        {% breadcrumb get_group "user:group_detail" user.group.id %}
+        {% breadcrumb user.name "user:result" user.id %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">O'quvchini tahrirlash</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form method="POST" id="edit_pupil_form" action="{% url 'user:edit_pupil' user.id %}"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body">
+
+                        <label for="name" class="label_required">F.I.O</label>
+                        <input type="text" id="name" name="name" class="form-control"
+                               {% if user.name %}value="{{ user.name }}"{% endif %}
+                               placeholder="Masalan: Yoqubov Sirojiddin Tojiddinovich">
+
+                        <label for="group" class="label_required">Guruh</label>
+                        <select name="group" id="group" class="select2 form-control">
+                            {% for group in groups %}
+                                <option {% if user.group == group %}selected{% endif %} value="{{ group.id }}">
+                                    &nbsp{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="phone_div">
+                            <label class="not_copy label_required"
+                                   for="phone">Tel raqam</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">+998</div>
+                                </div>
+                                <input type="text" class="form-control" id="phone" required="required" name="phone"
+                                       placeholder="Masalan: 919791999"
+                                       {% if user.phone %}value="{{ user.phone }}"{% endif %}
+                                       autocomplete="disabled">
+
+                            </div>
+                        </div>
+
+                        <label for="passport" class="label_required">Passport/Login</label>
+                        <input type="text" id="passport" name="passport" class="form-control"
+                               placeholder="Masalan: AB3870293"
+                               {% if user.username %}value="{{ user.username }}"{% endif %}>
+
+                        <div class="password_div mt-2">
+                            <label class="label_required" for="password">Parol</label>
+                            <div class="input-group password">
+                                <input type="password" name="password" id="password"
+                                       class="form-control password"
+                                       required {% if user.turbo %}value="{{ user.turbo }}"{% endif %}
+                                       autocomplete="off"
+                                       placeholder="Masalan: 1234567"/>
+                                <div class="input-group-prepend show_password" data-password="password">
+                                    <div class="input-group-text"><i class="far fa-eye"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="confirm_password_div mt-2">
+                            <label class="label_required" for="confirm_password">Parolni qayta kiriting</label>
+                            <div class="input-group confirm_password">
+                                <input type="password" name="confirm_password" id="confirm_password"
+                                       class="form-control password"
+                                       required {% if user.turbo %}value="{{ user.turbo }}"{% endif %}
+                                       autocomplete="off"
+                                       placeholder="Masalan: 1234567"/>
+                                <div class="input-group-prepend show_password" data-password="confirm_password">
+                                    <div class="input-group-text"><i class="far fa-eye"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <label class="switch ml-2">
+                            <input type="checkbox" id="address_information_checkbox"/>
+                            <span class="small-slider small-round"></span>
+                        </label>Yashash joyi haqidagi ma'lumotlar
+
+                        <div class="address_information" style="display: none; ">
+
+                            <label style="width: 100%;" class="not_copy label_required"
+                                   for="birthday">Tug'ilgan vaqti</label>
+                            <div class="input-group mb-2">
+                                <input id='birthday'
+                                       type="text"
+                                       class="form-control"/>
+                                <div class="input-group-prepend birthday_datepicker_icon">
+                                    <div class="input-group-text"><i class="fa fa-calendar"
+                                                                     aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label for="place_of_birth" class="label_required">Tug'ilgan joyi</label>
+                            <input type="text" id="place_of_birth" class="form-control"
+                                   {% if user.place_of_birth %}value="{{ user.place_of_birth }}"{% endif %}
+                                   placeholder="Masalan: BUXORO SHAHRI">
+
+                            <div class="region">
+                                <label class="label_required not_copy" for="region">Yashash joyi (Viloyat)</label>
+                                <select class="select2 form-control" id="region"
+                                        required>
+                                    <option value="">--Viloyatni tanlang--</option>
+                                    {% for region in regions %}
+                                        <option {% if user.region == region %}selected{% endif %}
+                                                value="{{ region.id }}">{{ region.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="district">
+                                <label class="label_required not_copy"
+                                       for="district">Yashash joyi (Tuman/Shahar)</label>
+                                <select class="select2 form-control" id="district"
+                                        required>
+                                    <option {% if user.district %}value="{{ user.district.id }}"{% endif %}>
+                                        {% if user.district %}{{ user.district }}{% else %}
+                                            --Tuman/Shaharni tanlang--{% endif %}</option>
+                                </select>
+                            </div>
+                            <label for="residence_address" class="label_required">Yashash joyi (Ko'cha/Qishloq)</label>
+                            <input type="text" id="residence_address" class="form-control"
+                                   placeholder="Masalan: Yangiyo'l ko'chasi"
+                                   {% if user.residence_address %}value="{{ user.residence_address }}"{% endif %}>
+
+                        </div>
+
+                        <br>
+                        <label class="switch ml-2">
+                            <input type="checkbox" id="passport_information_checkbox"/>
+                            <span class="small-slider small-round"></span>
+                        </label>Passport ma'lumotlari
+
+                        <div class="passport_information" style="display: none; ">
+
+
+                            <div class="passport_issued_organization">
+                                <label class="label_required not_copy" for="passport_issued_organization">Passport
+                                    berilgan joy</label>
+                                <input type="text" id="passport_issued_organization"
+                                       class="form-control"
+                                       {% if user.passport_issued_organization %}value="{{ user.passport_issued_organization }}"{% endif %}
+                                       placeholder="Masalan: BUXORO VILOYAT BUXORO SHAHAR IIB">
+                            </div>
+
+                            <label style="width: 100%;" class="not_copy label_required"
+                                   for="passport_issued_time">Passport berilgan vaqti</label>
+                            <div class="input-group mb-2">
+                                <input id='passport_issued_time'
+                                       type="text"
+                                       class="form-control"/>
+                                <div class="input-group-prepend passport_issued_time_datepicker_icon">
+                                    <div class="input-group-text"><i class="fa fa-calendar"
+                                                                     aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <br>
+                        <label class="switch ml-2">
+                            <input type="checkbox" id="medical_information_checkbox"/>
+                            <span class="small-slider small-round"></span>
+                        </label>Tibbiy ma'lumotnoma ma'lumotlari
+
+                        <div class="medical_information" style="display: none; ">
+
+                            <label for="medical_series" class="label_required">Tibbiy ma'lumotnoma seriyasi (0.83 med
+                                spravka)</label>
+                            <input type="text" class="form-control"
+                                   {% if user.medical_series %}value="{{ user.medical_series }}"{% endif %}
+                                   placeholder="Masalan: 00859545" id="medical_series">
+                            <label for="medical_issued_organization" class="label_required">Tibbiy ma'lumotnoma bergan
+                                tashkilot (poliklinika)</label>
+                            <input type="text" class="form-control"
+                                   {% if user.medical_issued_organization %}value="{{ user.medical_issued_organization }}"{% endif %}
+                                   placeholder="Masalan: Yunusobod tuman poliklinikasi"
+                                   id="medical_issued_organization">
+
+                            <label style="width: 100%;" class="not_copy label_required"
+                                   for="passport_issued_time">Tibbiy ma'lumotnoma berilgan vaqti</label>
+                            <div class="input-group mb-2">
+                                <input id='medical_issued_date'
+                                       type="text"
+                                       class="form-control"/>
+                                <div class="input-group-prepend medical_issued_date_datepicker_icon">
+                                    <div class="input-group-text"><i class="fa fa-calendar"
+                                                                     aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <br>
+                        <label class="switch ml-2">
+                            <input type="checkbox" id="certificate_information_checkbox"/>
+                            <span class="small-slider small-round"></span>
+                        </label>Guvohnoma ma'lumotlari
+
+                        <div class="certificate_information" style="display: none; ">
+
+                            <label for="certificate_series" class="label_required">Guvohnoma seriyasi</label>
+                            <input type="text" class="form-control"
+                                   {% if user.certificate_series %}value="{{ user.certificate_series }}"{% endif %}
+                                   placeholder="Masalan: 20 AA" id="certificate_series">
+                            <label for="certificate_number" class="label_required">Guvohnoma raqami</label>
+                            <input type="number" class="form-control"
+                                   {% if user.certificate_number %}value="{{ user.certificate_number }}"{% endif %}
+                                   placeholder="Masalan: 326538"
+                                   id="certificate_number">
+
+
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer text-right">
+                        <button type="submit" class="btn btn-success mr-1">Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block bottom %}
+    <script>
+        var dateReg = /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[012])[./-]\d{4}$/
+        $(function () {
+
+
+            $("#birthday").datepicker({
+                dateFormat: "dd.mm.yy",
+                defaultDate: '01.01.1990',
+                showButtonPanel: true,
+                numberOfMonths: 1,
+                autoclose: true,
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1950:',
+
+                onClose: function () {
+                    if ($(this).val().match(dateReg)) {
+                        $(this).css("border-bottom", "2px solid green")
+                    } else {
+                        $(this).css("border-bottom", "2px solid red")
+                    }
+                }
+            })
+
+            $('.birthday_datepicker_icon').on('click', function () {
+                $('#birthday').datepicker('show')
+            })
+
+
+            var birthday = '{{ user.birthday|date:"SHORT_DATE_FORMAT" }}'
+
+            if (birthday) {
+                $("#birthday").datepicker('setDate', birthday);
+            } else {
+                $("#birthday").datepicker('setDate', '01.01.1990');
+            }
+
+
+            $("#passport_issued_time").datepicker({
+                dateFormat: "dd.mm.yy",
+                // minDate: '-150M',
+                // maxDate: '+5M',
+                defaultDate: '01.01.1990',
+                // value: "7/11/2011",
+                showButtonPanel: true,
+                numberOfMonths: 1,
+                // showOn: '',
+                // startDate: "-130M",
+                //endDate: "+30d",
+                //currentText: 'Today',
+                autoclose: true,
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '2000:',
+
+                //yakshanbalarni chiqarish
+                // beforeShowDay: function (date) {
+                //     var day = date.getDay();
+                //     return [(day !== 0), ''];
+                // },
+
+                onClose: function () {
+                    if ($(this).val().match(dateReg)) {
+                        $(this).css("border-bottom", "2px solid green")
+                    } else {
+                        $(this).css("border-bottom", "2px solid red")
+                    }
+                }
+            })
+
+            $('.passport_issued_time_datepicker_icon').on('click', function () {
+                $('#passport_issued_time').datepicker('show')
+            })
+
+            var passport_issued_time = '{{ user.passport_issued_time|date:"SHORT_DATE_FORMAT" }}'
+
+            if (passport_issued_time) {
+                $("#passport_issued_time").datepicker('setDate', passport_issued_time);
+            } else {
+                $("#passport_issued_time").datepicker('setDate', '01.01.2015');
+            }
+
+
+            $("#medical_issued_date").datepicker({
+                dateFormat: "dd.mm.yy",
+                // minDate: '-150M',
+                // maxDate: '+5M',
+                defaultDate: '01.01.1990',
+                // value: "7/11/2011",
+                showButtonPanel: true,
+                numberOfMonths: 1,
+                // showOn: '',
+                // startDate: "-130M",
+                //endDate: "+30d",
+                //currentText: 'Today',
+                autoclose: true,
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '2000:',
+
+                //yakshanbalarni chiqarish
+                // beforeShowDay: function (date) {
+                //     var day = date.getDay();
+                //     return [(day !== 0), ''];
+                // },
+
+                onClose: function () {
+                    if ($(this).val().match(dateReg)) {
+                        $(this).css("border-bottom", "2px solid green")
+                    } else {
+                        $(this).css("border-bottom", "2px solid red")
+                    }
+                }
+            })
+
+            $('.medical_issued_date_datepicker_icon').on('click', function () {
+                $('#medical_issued_date').datepicker('show')
+            })
+
+            var medical_issued_date = '{{ user.medical_issued_date|date:"SHORT_DATE_FORMAT" }}'
+
+            if (medical_issued_date) {
+                $("#medical_issued_date").datepicker('setDate', medical_issued_date);
+            } else {
+                $("#medical_issued_date").datepicker('setDate', new Date());
+            }
+
+
+            $('.select2').select2({
+                theme: "bootstrap4"
+            })
+        })
+        $(document).ready(function () {
+
+
+            $('#phone').inputmask('(99) 999-99-99');
+
+            $('#passport').inputmask({casing: 'upper'})
+            $('#place_of_birth').inputmask({casing: 'upper'})
+            $('#passport_issued_organization').inputmask({casing: 'upper'})
+            $('#certificate_series').inputmask({casing: 'upper'})
+            $('#residence_address').inputmask({casing: 'upper'})
+            $('#medical_series').inputmask({casing: 'upper'})
+            $('#medical_issued_organization').inputmask({casing: 'upper'})
+
+
+            $('.show_password').on('click', function () {
+                var $Passwords = $('.show_password');
+                var data = $(this).data('password')
+
+                $Passwords.each(function (index, element) {
+                    var $password = $(element)
+
+
+                    if ($password.data('password') === data) {
+                        if ($password.siblings('.password').attr('type') === 'password') {
+                            $password.children('.input-group-text').html('<i class="far fa-eye-slash"></i>')
+                            $password.siblings('.password').attr('type', 'text')
+                        } else {
+                            $password.children('.input-group-text').html('<i class="far fa-eye"></i>')
+                            $password.siblings('.password').attr('type', 'password')
+                        }
+                    }
+                })
+            })
+
+            $("#region").change(function () {
+
+
+                var selectedCountry = $(this).children("option:selected").val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'user:get_district' %}",
+                    data: {
+                        'region': selectedCountry, // from form
+                    },
+                    success: function (message) {
+                        $('#district').empty().append(message)
+
+                        if ($('#passport_issued_organization').val().split(" ").pop() != 'IIB' || $('#passport_issued_organization').val().split(" ").pop() != 'ИИБ') {
+                            $('#passport_issued_organization').val($("#region").children("option:selected").text() + ' ')
+                        }
+
+                        if ($('#passport_issued_organization').val().split(" ").pop() != 'IIB') {
+
+                            let oldValue = $('#passport_issued_organization').val()
+                            let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                            $('#passport_issued_organization').val(oldValue + afterValue)
+                        } else {
+
+                            let oldValue = $('#passport_issued_organization').val().split(' ').slice(0, 2).join(' ');
+                            let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                            $('#passport_issued_organization').val(oldValue + ' ' + afterValue)
+                        }
+
+                        {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                        {#$('#append').append(e);#}
+                        {#e.attr('id', 'myid');#}
+                    }
+                });
+            });
+
+            $("#district").change(function () {
+
+                if ($('#passport_issued_organization').val().split(" ").pop() != 'IIB') {
+
+                    let oldValue = $('#passport_issued_organization').val()
+                    let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                    $('#passport_issued_organization').val(oldValue + afterValue)
+                } else {
+
+                    let oldValue = $('#passport_issued_organization').val().split(' ').slice(0, 2).join(' ');
+                    let afterValue = $("#district").children("option:selected").text() + ' IIB'
+                    $('#passport_issued_organization').val(oldValue + ' ' + afterValue)
+                }
+
+            })
+
+            $('#address_information_checkbox').on('change', function () {
+
+                if ($(this).prop('checked')) {
+                    $('.address_information').show();
+                    $('#birthday').attr('name', 'birthday')
+                    $('#place_of_birth').attr('name', 'place_of_birth')
+                    $('#region').attr('name', 'region')
+                    $('#district').attr('name', 'district')
+                    $('#residence_address').attr('name', 'residence_address')
+                } else {
+                    $('.address_information').hide()
+                    $('#place_of_birth').removeAttr('name')
+                    $('#birthday').removeAttr('name')
+                    $('#region').removeAttr('name')
+                    $('#district').removeAttr('name')
+                    $('#residence_address').removeAttr('name')
+
+                }
+            })
+
+            $('#passport_information_checkbox').on('change', function () {
+
+                if ($(this).prop('checked')) {
+                    $('.passport_information').show();
+                    $('#passport_issued_organization').attr('name', 'passport_issued_organization')
+                    $('#passport_issued_time').attr('name', 'passport_issued_time')
+                } else {
+                    $('.passport_information').hide()
+                    $('#passport_issued_organization').removeAttr('name')
+                    $('#passport_issued_time').removeAttr('name')
+
+                }
+            })
+
+            $('#medical_information_checkbox').on('change', function () {
+
+                if ($(this).prop('checked')) {
+                    $('.medical_information').show();
+                    $('#medical_series').attr('name', 'medical_series')
+                    $('#medical_issued_organization').attr('name', 'medical_issued_organization')
+                    $('#medical_issued_date').attr('name', 'medical_issued_date')
+                } else {
+                    $('.medical_information').hide()
+                    $('#medical_series').removeAttr('name')
+                    $('#medical_issued_organization').removeAttr('name')
+                    $('#medical_issued_date').removeAttr('name')
+
+                }
+            })
+            $('#certificate_information_checkbox').on('change', function () {
+
+                if ($(this).prop('checked')) {
+                    $('.certificate_information').show()
+                    $('#certificate_series').attr('name', 'certificate_series')
+                    $('#certificate_number').attr('name', 'certificate_number')
+                } else {
+                    $('.certificate_information').hide()
+                    $('#certificate_series').removeAttr('name')
+                    $('#certificate_number').removeAttr('name')
+
+                }
+            })
+
+            $('#region').on('change', function () {
+                var selectedRegion = $(this).children("option:selected").val();
+                if (parseInt(selectedRegion)) {
+                    $(this).valid()
+
+                }
+
+            })
+
+
+            $.validator.addMethod("phone_length", function (phone, element) {
+                phone = phone.replace(/[^0-9]/g, "");
+                return phone.match(/^\d{9}$/)
+            }, "Tel raqam to'liq kiritilmagan!");
+
+            jQuery.validator.addMethod("noSpace", function (value, element) {
+                return value === '' || value.trim().length !== 0;
+            }, "Iltimos, bo'sh joy qoldirmang!");
+
+            $.validator.addMethod("alphanumeric", function (value, element) {
+                return this.optional(element) || /^\w+$/i.test(value);
+            }, "Faqat harf va raqam kiriting!");
+            //   $.validator.addMethod("auctionNumber", function (value, element) {
+            //      return this.optional(element) || /^[A-Z0-9]{8}$/i.test(value);
+            // }, "Raqamni to'liq kiriting!");
+
+            var $editPupilForm = $('#edit_pupil_form');
+            if ($editPupilForm.length) {
+                $editPupilForm.validate({
+                    {#ignore: ":hidden:not('#fuel_types')",#}
+
+                    rules: {
+                        //username is the name of the textbox
+                        name: {
+                            required: true,
+                        },
+                        phone: {
+                            required: true,
+                            phone_length: true
+                        },
+                        passport: {
+                            required: true,
+                            alphanumeric: true,
+                            noSpace: true,
+                        },
+                        password: {
+                            required: true,
+                            minlength: 7,
+                        },
+                        confirm_password: {
+                            required: true,
+                            equalTo: "#password"
+                        },
+                        place_of_birth: {
+                            required: true,
+                        },
+                        region: {
+                            required: true,
+                        },
+                        district: {
+                            required: true,
+                        },
+                        residence_address: {
+                            required: true,
+                        },
+                        passport_issued_organization: {
+                            required: true,
+                        },
+                        medical_series: {
+                            required: true,
+                            alphanumeric: true,
+                            noSpace: true,
+                        },
+                        medical_issued_organization: {
+                            required: true,
+                        },
+                        certificate_series: {
+                            required: true,
+                        },
+                        certificate_number: {
+                            required: true,
+                            alphanumeric: true,
+                            noSpace: true,
+                        },
+                    },
+                    messages: {
+                        name: {
+                            required: "F.I.O kiritilmagan!",
+                        },
+                        phone: {
+                            required: "Tel raqam kiritlmagan!",
+                        },
+                        passport: {
+                            required: "Passport kiritilmagan!",
+
+                        },
+                        password: {
+                            required: "Parol kiritilmagan!",
+                            minlength: "Parol kamida 7 ta belgi, son yoki harfdan iborat bo'lishi kerak!",
+                        },
+                        confirm_password: {
+                            required: "Parol qayta kiritilmagan!",
+                            equalTo: "Parollar mos emas!"
+                        },
+                        place_of_birth: {
+                            required: "Tug'ilgan joyi kiritilmagan!",
+                        },
+                        region: {
+                            required: "Viloyat tanlanmagan!",
+                        },
+                        district: {
+                            required: "Tuman/Shahar tanlanmagan!",
+                        },
+                        residence_address: {
+                            required: "Ko'cha/Qishloq kiritilmagan!",
+                        },
+                        passport_issued_organization: {
+                            required: "Passport berilgan joy kiritilmagan!",
+                        },
+                        medical_series: {
+                            required: "Tibbiy ma'lumotnoma seriyasi kiritilmagan!",
+                        },
+                        medical_issued_organization: {
+                            required: "Tibbiy ma'lumotnoma bergan tashkilot kiritilmagan!",
+                        },
+                        certificate_series: {
+                            required: "Guvohnoma seriyasi kiritilmagan!",
+                        },
+                        certificate_number: {
+                            required: "Guvohnoma raqami kiritilmagan!",
+                        },
+                    },
+                    errorPlacement: function (error, element) {
+                        if (element.is("#password")) {
+                            error.appendTo(element.parents('.password'));
+                        } else if (element.is("#confirm_password")) {
+                            error.appendTo(element.parents('.confirm_password'));
+                        } else if (element.is("#region")) {
+                            error.appendTo(element.parents('.region'));
+                        } else if (element.is("#district")) {
+                            error.appendTo(element.parents('.district'));
+                        } else if (element.is("#phone")) {
+                            error.appendTo(element.parents('.phone_div'));
+                        } else if (element.is("#price")) {
+                            error.appendTo(element.parents('.price'));
+                        } else {
+                            error.insertAfter(element);
+                        }
+
+                    },
+
+
+                });
+            }
+
+
+        })
+
+
+    </script>
+{% endblock bottom %}

@@ -1,0 +1,4 @@
+#* * * * * root echo "Hello world" >> /var/log/cron.log 2>&1
+#* * * * * /code/deploy/cron_script.sh
+0 0 * * * curl -L http://e-rib.uz/api/v1/administrator/account/balance/
+

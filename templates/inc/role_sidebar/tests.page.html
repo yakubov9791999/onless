@@ -1,0 +1,8 @@
+<li class="nav-item has-treeview">
+    <a href="{% url 'quiz:select_lang' %}" class="nav-link {% if request.resolver_match.url_name == 'select_lang' or request.resolver_match.url_name == 'select_type' or request.resolver_match.url_name == 'select_bilet'  %}active{% endif %}">
+        &nbsp;<i class="fas fa-hospital-symbol"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>
+            Test savollari
+        </p>
+    </a>
+</li>

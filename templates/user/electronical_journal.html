@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Elektron jurnal" "user:electronical_journal" %}
+{% endblock %}
+
+{% block top %}
+    <style>
+        .rating_attendance {
+            cursor: pointer;
+        }
+    </style>
+
+{% endblock top %}
+
+{% block content %}
+
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Elektron jurnal</h3>
+                </div>
+
+                <div class="card-body">
+                    <form action="{% url 'user:electronical_journal' %}" method="get" id="filter_top">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="">Guruh: </label>
+                                <select name="group" id="group" class="form-control"
+                                        style="cursor: pointer;">
+                                    {% for gr in groups %}
+                                        <option {% if group.id == gr.id %}selected{% endif %}
+                                                value="{{ gr.id }}">{{ gr.category }}-{{ gr.number }}-{{ gr.year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="">Fan: </label>
+                                <select name="subject" id="subject" class="form-control"
+                                        style="cursor: pointer;">
+                                    {% for sub in subjects %}
+                                        <option {% if subject.id == sub.id %}selected{% endif %}
+                                                value="{{ sub.id }}">{{ sub.long_title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="">O'quv oyi: </label>
+                                <select name="month" id="month" class="form-control"
+                                        style="cursor: pointer;">
+                                    {% for months_and_year in months_and_years %}
+                                        <option {% if selected_months_and_years == months_and_year %}selected{% endif %}
+                                                value="{{ months_and_year }}">{{ months_and_year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+{#                            <div class="col-md-2" style="margin-top: 1.9rem; text-align: center">#}
+{#                                <button class="btn btn-info">Yangilash</button>#}
+{#                            </div>#}
+                        </div>
+                    </form>
+                    <br>
+                    <div class="table-responsive">
+                        <table style="font-size: 0.9rem" id="example1"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #faf7f7">
+
+                                {% if group and subject %}
+                                    {% get_fullname_group group.id as group_name %}
+
+                                    <th style="text-align: center; font-size: xx-large; color: #737399"
+                                        colspan="{{ cols|length|add:2 }}">
+                                        Guruh: {{ group_name }} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                        Fan: {{ subject.long_title }}
+                                    </th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td rowspan="2"
+                                    style="font-weight: bolder; text-align: center; vertical-align: revert; width: 6px;padding: 0; margin: 0">
+                                    №
+                                </td>
+                                <td rowspan="2"
+                                    style="font-weight: bolder; text-align: center; vertical-align: revert; width: 25em;padding: 0; margin: 0">
+                                    F.I.SH
+                                </td>
+
+                                <td colspan="{{ cols|length }}"
+                                    style="width: 6px; font-weight: bolder; text-align: center; font-size: 1.5em; padding: 0; margin: 0">
+                                    Davomat va joriy baholar
+                                </td>
+                            </tr>
+
+                            <tr>
+                                {% for col in cols %}
+                                    <td style="width: 6px; font-weight: bolder;margin-left: 0">
+                                        <div class="vertical">{{ col }}</div>
+                                    </td>
+                                {% endfor %}
+
+                            </tr>
+                            {% if rows %}
+                                {% for row in rows %}
+                                    <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <th>{{ row.name }}</th>
+
+                                    {% for col in cols %}
+
+                                        {% get_pupil_rating_or_attendance row.id col subject.id as rating_or_attendance %}
+
+                                        <th {% if request.user.role == '2' or request.user.role == '3' %}class="rating_attendance" data-pupil="{{ row.id }}" data-date="{{ col }}"
+                                            data-pupilName="{{ row.name }}"
+                                        {% endif %}
+                                        >
+
+                                            {% if rating_or_attendance.attendance == False %}
+                                                <span style="color: red">dk</span>
+                                            {% elif rating_or_attendance.attendance == True %}
+
+                                                <span>{{ rating_or_attendance.rating }}</span>
+{#                                            {% else %}#}
+{#                                                <i class="fas fa-compress-arrows-alt"></i>#}
+                                            {% endif %}
+                                        </th>
+
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <th style="color: red; text-align: center" colspan="{{ cols|length|add:2 }}">
+                                        O'quvchilar mavjud emas!
+                                    </th>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td colspan="{{ cols|length|add:2 }}"><span
+                                        style="color: red; float: right">dk - darsga kelmagan</span></td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Baho qo'yishni hohlaysizmi yoki davomatni
+                        belgilaysizmi?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>O'quvchi:</strong> <span class="pupil_name"></span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Sana:</strong> <span class="span_date"></span>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-info" id="rating">Baho</button>
+                    <button type="button" class="btn btn-primary" id="attendance">Davomat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ratingModalLabel">O'quvchi olgan bahoni kiriting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'user:rating_create' %}?{{ request.META.QUERY_STRING }}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="rating_pupil">
+                    <input type="hidden" name="rating_date">
+                    <input type="hidden" name="rating_subject">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>O'quvchi:</strong> <span class="pupil_name"></span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Sana:</strong> <span class="span_date"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-3">
+                                <label for="rating">Baho<span style="color: red">*</span></label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" max="5" min="2" class="form-control" name="rating" id="rating"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog" aria-labelledby="attendanceModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attendanceModalLabel">O'quvchi davomatini kiriting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'user:attendance_set_visited' %}?{{ request.META.QUERY_STRING }}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="visited_pupil" value="">
+                    <input type="hidden" name="visited_date">
+                    <input type="hidden" name="visited_subject">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>O'quvchi:</strong> <span class="pupil_name">Eshonov Bahodir</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Sana:</strong> <span class="span_date"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="visited" id="visited"
+                                   value="True" checked>
+                            <label class="form-check-label" for="visited" style="color: green">Kelgan</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="visited" id="not_visited"
+                                   value="False">
+                            <label class="form-check-label" for="not_visited" style="color: red">Kelmagan</label>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block bottom %}
+
+    <script type="text/javascript">
+
+        var csrftoken = getCookie('csrftoken');
+
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken)
+            }
+        })
+        var pupilId,
+            date,
+            pupilName
+        $('.rating_attendance').on('click', function () {
+            $('#exampleModal').modal('show')
+
+            pupilId = $(this).data('pupil')
+            date = $(this).data('date')
+            pupilName = $(this).data('pupilname')
+
+            $('.pupil_name').text(pupilName)
+            $('.span_date').text(date)
+        })
+
+        $(document).on('click', '#rating', function () {
+            $('#exampleModal').modal('hide')
+            $('#ratingModal').modal('show')
+
+
+            $('input[name=rating_pupil]').val(pupilId)
+            $('input[name=rating_date]').val(date)
+
+
+            $('input[name=rating_subject]').val("{{subject.id}}")
+
+        })
+
+
+        $(document).on('click', '#attendance', function () {
+            $('#exampleModal').modal('hide')
+            $('#attendanceModal').modal('show')
+
+            $('input[name=visited_pupil]').val(pupilId)
+            $('input[name=visited_date]').val(date)
+            $('input[name=visited_subject]').val("{{subject.id}}")
+        })
+
+
+
+        $("#group").change(function () {
+            $('#filter_top').submit()
+
+            {#var selectedGroup = $(this).children("option:selected").val();#}
+            {#$.ajax({#}
+            {#    type: "POST",#}
+            {#    url: "{% url 'user:get_group_months' %}",#}
+            {#    data: {#}
+            {#        'group': selectedGroup, // from form#}
+            {#    },#}
+            {#    success: function (message) {#}
+            {#        if (message) {#}
+            {#            $('#month').empty().append(message)#}
+            {##}
+            {#            $('#month').css('border-color', '#007bff')#}
+            {#            setTimeout(function () {#}
+            {#                $('#month').css('border-color', '#ced4da')#}
+            {#                $('#filter_top').submit()#}
+            {#            }, 2000)#}
+            {#        }#}
+            {#    }#}
+            //{#});#}
+
+            $('#filter_top').submit()
+        });
+
+        $('#month').on('change', function () {
+            $('#filter_top').submit()
+        })
+
+        $('#subject').on('change', function () {
+            $('#filter_top').submit()
+        })
+    </script>
+
+{% endblock bottom %}

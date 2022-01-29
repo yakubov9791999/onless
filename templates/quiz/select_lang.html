@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}
+{% endblock %}
+
+{% block content %}
+    <div class="box">
+        <div class="container-fluid">
+            <div class="card-header bg-primary">
+                <h3 class="card-title">Kerakli tilni tanlang:</h3>
+            </div>
+            {% include 'inc/messages_part.html' %}
+            <div class="row">
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+                    <div class="box-part text-center">
+
+                        <img class="img-lang" src="{% static 'online/flag_uzb.png' %}" alt="">
+
+                        <div class="title">
+                            <h4>O'zbek</h4>
+                        </div>
+
+                        <a class="btn btn-outline-success" href="{% url 'quiz:select_lang' %}?lang=uz">Testni
+                            boshlash</a>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+                    <div class="box-part text-center">
+
+                        <img class="img-lang" src="{% static 'online/flag_uzb.png' %}" alt="">
+
+                        <div class="title">
+                            <h4>Кирил</h4>
+                        </div>
+
+                        <a class="btn btn-outline-success" href="{% url 'quiz:select_lang' %}?lang=kr">Тестни бошлаш</a>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+                    <div class="box-part text-center">
+
+                        <img class="img-lang" src="{% static 'online/flag_rus.png' %}" alt="">
+
+                        <div class="title">
+                            <h4>Русский</h4>
+                        </div>
+
+                        <a class="btn btn-outline-success" href="{% url 'quiz:select_lang' %}?lang=ru">Начать тест</a>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+

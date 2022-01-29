@@ -1,0 +1,103 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Davomatlar</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Saytga oʻtish</a></li>
+                        <li class="breadcrumb-item active">Davomat</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>O'quvchi</label>
+                                        <br>
+                                        <select name="pupil">
+                                            {% for i in pupils %}
+                                                <option value="{{ i.id }}"> {{ i.username }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>O'qituvchi</label>
+                                        <br>
+                                        <select name="teacher">
+                                            {% for i in teachers %}
+                                                <option value="{{ i.id }}">{{ i.username }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {#                                           <input type="date" id="id_pay_date" name="pay_date" required="">#}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Fan</label>
+                                        <br>
+                                        {{ form.subject }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Kelgan\Kelmagan</label>
+                                        <br>
+                                        {#                                         <input type="date" id="id_pubdate" name="pubdate" required="">#}
+                                        {{ form.is_visited }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Vaqti</label>
+                                        <br>
+                                        <input type="date" id="id_created_date" name="created_date" required="">
+                                        {#                                        {{ form.created_date }}#}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert   alert-default-dark" role="alert">
+                                    <div class="form-group">
+                                        <label>Tahrirlangan vaqti</label>
+                                        <br>
+                                        <input type="date" id="id_updated_date" name="updated_date" required="">
+                                        {#                                        {{ form.updated_date }}#}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Saqlash</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

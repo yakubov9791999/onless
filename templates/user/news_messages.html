@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Xabarlar" "user:news_messages" %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="callout callout-info">
+
+                <h5><i class="fas fa-info"></i> <b style="color: red">Yangilanishlar:</b></h5>
+                <br>
+                <b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspHurmatli foydalanuvchi! Onless.uz tizimida o'quvchilarni qo'shishda, o'quvchining ma'lumotlarini tahrirlashda, xodim qo'shishda, xodimning ma'lumotlarini tahrirlashda, o'quvchining davomati belgilanganda, o'quvchi baholanganda va o'quvchi avtomaktabga to'lov amalga oshirganda sms jo'natish xizmati mavjud! Batafsil ma'lumot:
+                    <a href="{% url 'user:sms_settings' %}" style="color: deepskyblue">SMS SOZLAMALAR</a></b>
+
+                <hr>
+                <br>
+                <!-- Gallery -->
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                        <img
+                                src="{% static 'online/messeges/news3-3.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+
+                        <img
+                                src="{% static 'online/messeges/news3-6.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+                    </div>
+
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <img
+                                src="{% static 'online/messeges/news3-1.jpg' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+
+
+                    </div>
+
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <img
+                                src="{% static 'online/messeges/news3-4.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+                        <img
+                                src="{% static 'online/messeges/news3-5.jpg' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+
+                    </div>
+                </div>
+                <!-- Gallery -->
+        <p>Barchasi juda oddiy har bir sms xizmatini o'zingiz ulash va o'chirish imkoniyatiga egasiz. Hisobni to'ldirish orqali siz hisobingizdagi mablag' hisobiga smslar sotib olishingiz mumkin. Har bir bajarilayotgan amaliyot haqida o'quvchilarni xabardor etib borish bu juda ham qulaydir.</p>
+            </div>
+
+        </div>
+
+        <div class="col-md-12">
+            <div class="callout callout-info">
+
+                <h5><i class="fas fa-info"></i> <b style="color: red">Yangilanishlar:</b></h5>
+                <br>
+                <b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspHurmatli foydalanuvchi! Har bir o'quvchi uchun shaxsiy imtihon varaqasi va avtomobilni boshqarish
+                    bo’yicha imtihon varaqasi
+                    na'munalarini endilikda juda oson tayyorlash imkoniyatiga egasiz. </b>
+
+                <hr>
+                <br>
+                <!-- Gallery -->
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                        <img
+                                src="{% static 'online/messeges/Screenshot_1.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+
+                        <img
+                                src="{% static 'online/messeges/Screenshot_2.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+                    </div>
+
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <img
+                                src="{% static 'online/messeges/screencapture-2.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+
+
+                    </div>
+
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <img
+                                src="{% static 'online/messeges/Screenshot_3.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+                        <img
+                                src="{% static 'online/messeges/Screenshot_5.png' %}"
+                                class="w-100 shadow-1-strong rounded mb-4 img-responsive"
+                                alt=""
+                        />
+
+                    </div>
+                </div>
+                <!-- Gallery -->
+        <p>Buning uchun o'quvchining
+                    ma'lumotlarini tahrirlashning o'zi kifoya. Passport ma'lumotlari, tug'ilgan joyi va yashash joyi
+                    haqidagi ma'lumotlar, tibbiy ma'lumotnoma va yagona namunadagi havdovchilik guvohnomasi
+                    ma'lumotlarini kiritish orqali sizga juda tez va oson hujjatlar na'munasini yaratib berish
+                    imkoniyatini yaratdik. Tibbiy ma'lumotnoma va yagona namunadagi havdovchilik guvohnomasi
+                    ma'lumotlari bo'lmagan taqdirda ham siz hujjatlar namunasini olish imkoniyatiga egasiz. To'ldirilmagan kataklar o'rni bo'sh xolatda sizga hujjat namunasi taqdim etiladi!</p>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div class="callout callout-info">
+
+                <h5><i class="fas fa-info"></i> <b>Yangilanishlar:</b></h5>
+                <br>
+                <b>Hurmatli foydalanuvchi! Endilikda siz o'quvchilarning qaysi vaqtdan qaysi vaqtgacha to'lov amalga
+                    oshirilganliklari haqida yanayam to'liqroq ma'lumot olish imkoniyatiga egasiz. Bundan tashqari
+                    guruhlar yilma yil qilib alohida qilib ajratilgan.</b>
+
+                <hr>
+                <br>
+                <img src="{% static 'online/messeges/Screenshot_236.png' %}" style="display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  width: 70%;" alt="Screenshot-236">
+            </div>
+
+        </div>
+    </div>
+    {#    <section class="content">#}
+    {##}
+    {#        <!-- Default box -->#}
+    {#        <div class="card">#}
+    {#            <div class="card-header">#}
+    {#                <h3 class="card-title">BUXORO RAVON AVTOMAKTAB</h3>#}
+    {##}
+    {#                <div class="card-tools">#}
+    {#                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"#}
+    {#                            title="Collapse">#}
+    {#                        <i class="fas fa-minus"></i></button>#}
+    {#                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"#}
+    {#                            title="Remove">#}
+    {#                        <i class="fas fa-times"></i></button>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#            <div class="card-body">#}
+    {#                Hurmatli o'quvchi o'qishingiz tugashiga 1 oy qoldi o'qish pulini to'lang !#}
+    {#            </div>#}
+    {#            <!-- /.card-body -->#}
+    {#            <div class="card-footer">#}
+    {##}
+    {#            </div>#}
+    {#            <!-- /.card-footer-->#}
+    {#        </div>#}
+    {#        <!-- /.card -->#}
+    {##}
+    {#    </section>#}
+
+
+
+    {#    <div class="row">#}
+    {#        <div class="col-md-12">#}
+    {#            <h4>So'nggi xabarlar</h4>#}
+    {##}
+    {##}
+    {#            <div class="post clearfix">#}
+    {#                <div class="user-block">#}
+    {#                    <img class="img-circle img-bordered-sm" src="/static/online/man.jpg" alt="User Image">#}
+    {#                    <span class="username">#}
+    {#                          <a href="#">Salohiddin Yoqubov</a>#}
+    {#                        </span>#}
+    {#                    <span class="description">Yuborilgan vaqti - 3 kun oldin</span>#}
+    {#                </div>#}
+    {#                <!-- /.user-block -->#}
+    {#                <p>#}
+    {#                    Hurmatli o'quvchi ! Darslarga o'z vaqtida qatnashib boring. Videodarsni ko'rganingizdan so'ng test ochiladi !#}
+    {#                </p>#}
+    {#                <p>#}
+    {#                    <a href="#" ><i class="fas fa-reply mr-1 ml-2"></i> Javob berish</a>#}
+    {#                </p>#}
+    {#            </div>#}
+    {##}
+    {##}
+    {##}
+    {#        </div>#}
+    {#    </div>#}
+{% endblock content %}

@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Guruhlar" "user:groups_list" %}
+    {% get_fullname_group group.id as get_group %}
+    {% breadcrumb get_group "user:group_detail" group.id %}
+{% endblock %}
+
+{% block content %}
+    <style>
+        .offline_checkbox:hover {
+            cursor: pointer;
+        }
+    </style>
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">{{ group.category }}-{{ group.number }} {{ group.year }} o'quvchilar
+                        ro'yhati</h3>
+                </div>
+
+                {% include 'inc/messages_part.html' %}
+
+                <div class="row">
+                    <a id="button_add_pupil" onclick="add_pupil()"
+                       style="color: whitesmoke; margin-top: 1%;"
+                       href="/media/online/namuna2.xlsx" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Excel
+                        orqali qo'shish</a>
+                    <form id="export_excel_form" style="display: none" class="form-group mt-3 ml-3"
+                          action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <input type="file" name="file">
+                        <input type="hidden" name="group" value="{{ group.id }}">
+                        <input type="submit" class="btn btn-secondary" value="Excelni yuklash">
+                    </form>
+                    {% if pupils %}
+                        <a id="export_pdf_form" style="color: whitesmoke; margin-top: 1%;"
+                           href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-info"><i
+                                class="fas fa-download"></i>&nbsp&nbsp&nbspRo'yhatni yuklab olish</a>
+                    {% endif %}
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table style="font-size: 0.9rem" id="example1"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th style="width: 2%">№</th>
+                                <th>O'quvchining ism familiyasi</th>
+                                {#                                <th>Tug'ilgan yili</th>#}
+                                <th>Manzili</th>
+                                <th>Telefon</th>
+                                <th>Login</th>
+                                <th>Parol</th>
+                                <th>O'zlashtirish</th>
+                                <th>An'anaviy ta'lim</th>
+                                <th>Hujjatlarni yaratish</th>
+                                {% if request.user.role == '2' or request.user.role == '3' %}
+                                    <th style="width: 4%">
+                                        Tahrirlash/O'chirish
+                                    </th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for pupil in pupils %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><b><a
+                                            id="{{ pupil.name }}"
+                                            href="{% url 'user:result' pupil.id %}">{{ pupil.name }}</a></b>
+                                    </td>
+                                    {#                                    <td>{{ pupil.birthday|date:'SHORT_DATE_FORMAT' }}</td>#}
+                                    <td>{% if pupil.district %}{{ pupil.district }}{% endif %}</td>
+                                    <td>{% if pupil.phone %}+998{{ pupil.phone }}{% else %}--{% endif %}</td>
+                                    <td>{{ pupil.username }}</td>
+                                    <td>{{ pupil.turbo }}</td>
+                                    {% pupil_result pupil.id as pupil_res %}
+                                    <td title="Savollar/To'g'ri javoblar:  {{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}">
+                                        <a href="{% url 'user:result' pupil.id %}">
+                                            <div class="progress">
+
+                                                {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
+                                                    <div class="progress-bar {% if pupil_res.total_res >= 85 and pupil_res.total_res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.total_res >= 40 and pupil_res.total_res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.total_res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                                                         role="progressbar"
+                                                         aria-valuenow="40" aria-valuemin="2"
+
+                                                         aria-valuemax="6" style="width:{{ pupil_res.total_res }}%">
+                                                        <b>{{ pupil_res.total_res }}%</b>
+                                                    </div>
+                                                {% elif pupil_res.question_total_count > 0 and pupil_res.total_res < 1 %}
+                                                    <div style="width: 100%; margin-left: 45%">0%</div>
+                                                {% else %}
+                                                    <div style="margin-left: 10%">yechilmagan</div>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <label class="switch ml-2">
+                                            <input type="checkbox" class="offline_checkbox"
+                                                   {% if pupil.is_offline %}checked{% endif %}
+                                                   data-id="{{ pupil.id }}"/><span
+                                                class="slider round"></span>
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        {% if request.user.role == '2' and pupil.place_of_birth != None and pupil.residence_address != None and pupil.place_of_birth != '' and pupil.residence_address != '' and pupil.region != None and pupil.district != None %}
+                                            <a href="{% url 'user:personal_exam_doc_generate' pupil.id %} ">Hujjatlar
+                                            namunasi {% else %}Ma'lumotlar to'ldirilmagan{% endif %}</a></td>
+                                    {% if request.user.role == '2' or request.user.role == '3' %}
+                                        <td>
+                                            &nbsp;&nbsp;<a href="{% url 'user:edit_pupil' pupil.id %}">
+                                            <button class="btn btn-primary"><i
+                                                    class="fa fa-edit"
+                                            ></i></button>
+                                        </a>
+                                            {% if request.user.role == '2' %}
+                                                &nbsp;&nbsp;
+                                                <a href="#"
+                                                   onclick='delete_pupil({{ group.id }},{{ pupil.id }},`{{ pupil.name }}`)'>
+                                                    <button class="btn btn-danger"><i
+                                                            class="fa fa-trash"
+                                                    ></i></button>
+                                                </a>
+                                            {% endif %}
+
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block bottom %}
+    <script type="text/javascript">
+        function add_pupil() {
+            alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
+            document.getElementById('button_add_pupil').style.display = 'none';
+            document.getElementById('export_excel_form').style.display = 'block';
+            document.getElementById('export_pdf_form').style.display = 'none';
+        }
+
+    </script>
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+
+        function delete_pupil(group_id, pupil_id, pupil_name) {
+
+
+            var pupilId = pupil_id;
+            var pupilName = pupil_name;
+
+            swal({
+                title: "O'quvchini o'chirmoqchimisiz ?",
+                text: pupilName + "ni o'chirmoqchimisiz ?",
+                icon: "warning",
+                closeOnClickOutside: false,
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: pupilName + " muvaffaqiyatli o'chirildi !",
+                        closeOnClickOutside: false,
+                        icon: 'success'
+                    }).then(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/user/pupil-delete/' + pupilId,
+                        });
+                        {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
+                        setTimeout(function () {
+                            window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
+                        }, 1000);
+
+
+                    });
+                } else {
+                    swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
+                }
+
+            });
+
+        }
+
+        $(document).ready(function () {
+
+            $('.offline_checkbox').on('change', function () {
+                var checkbox = false,
+                    pupilId = $(this).attr("data-id")
+                if ($(this).is(':checked')) {
+                    checkbox = true
+                } else {
+                    checkbox = false
+                }
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url 'user:get_learning_type' %}',
+                    data: {
+                        'checkbox': checkbox,
+                        'pupil': pupilId
+                    },
+                    success: function (response) {
+                        console.log(response)
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                })
+
+            })
+
+        });
+
+
+    </script>
+{% endblock bottom %}

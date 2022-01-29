@@ -1,0 +1,41 @@
+{#<ul>#}
+{#    {% for parent in category.get_ancestors %}#}
+{#        <li><a href="/category/{{ parent.id }}/">{{ parent.name }}</a></li>#}
+{#    {% endfor %}#}
+{#    <li><a href="/category/{{ category.id }}/">{{ category.name }}</a></li>#}
+{#</ul>#}
+
+
+{#{% load mptt_tags %}#}
+{#{% recursetree categories %}#}
+{#    <nav aria-label="breadcrumb">#}
+{#        <ol class="breadcrumb">#}
+{#            {% for category in categories %}#}
+{#                {% if category.parent %}#}
+{#                    <li class="breadcrumb-item"><a href="">Bosh sahifa</a></li>#}
+{#                    <li class="breadcrumb-item " aria-current="page">{{ category.parent }}</li>#}
+{#                    {% if not node.is_leaf_node %}#}
+{#                        <li>#}
+{#                            {{ category.title }}#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+{#        </ol>#}
+{#    </nav>#}
+{#{% endrecursetree %}#}
+
+<ul class="breadcrumb">
+    {% for url, label in breadcrumbs %}
+        <li>
+            {% ifnotequal forloop.counter breadcrumbs_total %}
+                <a href="{{ url }}">{{ label|safe }}</a>
+            {% else %}
+                {{ label|safe }}
+            {% endifnotequal %}
+            {% if not forloop.last %}
+                <span class="divider">/</span>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

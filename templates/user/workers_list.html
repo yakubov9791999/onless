@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load quiz_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Xodimlar" "user:workers_list" %}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12 col-sm-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Xodimlar ro'yhati</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example1" style="font-size: 0.9rem"
+                               class="table table-bordered table-hovered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th>№</th>
+                                <th>Xodimning ism familiyasi</th>
+                                <th>Lavozimi</th>
+                                <th>Tug'ilgan yili</th>
+                                <th>Manzili</th>
+                                <th>Telefon</th>
+                                <th>Login</th>
+                                <th>Parol</th>
+                                <th>O'zlashtirish</th>
+                                {% if request.user.role == '2' %}
+                                    <th>Tahrirlash/O'chirish</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for worker in workers %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><b><a id="{{ worker.name }}"
+                                              href="{% url 'user:result' worker.id %}">{{ worker.name }}</a></b></td>
+                                    <td><b>{% if worker.role == '5' %}Hisobchi{% elif worker.role == '3' %}
+                                        O'qituvchi{% elif worker.role == '6' %}Instruktor{% endif %}</b></td>
+                                    <td>{{ worker.birthday|date:'SHORT_DATE_FORMAT' }}</td>
+                                    <td>{% if worker.district %}{{ worker.district }}{% endif %}</td>
+                                    <td>+998{{ worker.phone }}</td>
+                                    <td>{{ worker.username }}</td>
+                                    <td>{{ worker.turbo }}</td>
+                                    {% pupil_result worker.id as pupil_res %}
+                                    <td title="Savollar/To'g'ri javoblar:  {{ pupil_res.question_total_count }}/{{ pupil_res.answer_true }}">
+                                        <div class="progress">
+
+                                            {% if pupil_res.question_total_count > 0 and pupil_res.total_res > 0 %}
+                                                <div class="progress-bar {% if pupil_res.total_res >= 85 and pupil_res.total_res <= 100 %}bg-success progress-bar-striped{% elif pupil_res.total_res >= 40 and pupil_res.total_res <= 84 %}bg-warning progress-bar-striped{% elif pupil_res.total_res < 40 %}bg-danger progress-bar-striped{% endif %}"
+                                                     role="progressbar"
+                                                     aria-valuenow="40" aria-valuemin="2"
+
+                                                     aria-valuemax="6" style="width:{{ pupil_res.total_res }}%">
+                                                    <b>{{ pupil_res.total_res }}%</b>
+                                                </div>
+                                            {% elif pupil_res.question_total_count > 0 and pupil_res.total_res < 1 %}
+                                                <div style="width: 100%; margin-left: 45%">0%</div>
+                                            {% else %}
+                                                <div style="margin-left: 10%">yechilmagan</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    {% if request.user.role == '2' %}
+                                        <td>
+
+                                            &nbsp;&nbsp;
+                                            <a href="{% url 'user:worker_edit' worker.id %}">
+                                                <button class="btn btn-primary"><i class="fa fa-edit"
+                                                ></i></button>
+                                            </a>
+
+                                            &nbsp;&nbsp;<a href="#"
+                                                           onclick="delete_worker({{ worker.id }},`{{ worker.name }}`)">
+                                            <button class="btn btn-danger"><i
+                                                    class="fa fa-trash"
+                                            ></i></button>
+                                        </a>
+
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+        function delete_worker(worker_id, worker_name) {
+            var workerId = worker_id;
+            var workerName = worker_name
+
+            swal({
+                title: "Xodimni o'chirmoqchimisiz ?",
+                text: workerName + "ni o'chirmoqchimisiz ?",
+                icon: "warning",
+                closeOnClickOutside: false,
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: workerName + " muvaffaqiyatli o'chirildi !",
+                        icon: 'success'
+                    }).then(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/user/worker-delete/' + workerId,
+                        });
+                        setTimeout(function () {
+                             window.location.href = '{% url "user:workers_list" %}';
+                        },1000)
+
+                    });
+                } else {
+                    swal("Bekor qilindi", workerName + " ro'yhatda turibti !", "error");
+                }
+            });
+        }
+
+    </script>
+{% endblock content %}

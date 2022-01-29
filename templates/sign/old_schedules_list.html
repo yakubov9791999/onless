@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Dars jadvali</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+                <div class="card-body">
+                    <label for="exampleInputname" class="label_required">Guruhni tanlang</label>
+                    <select name="group" id="group" class="form-control">
+                        <option value="">-- -- --</option>
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="exampleInputname" class="label_required">Fanni tanlang</label>
+                    <select name="subject" id="subject" class="form-control">
+                        <option>-- Guruhni tanlang --</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="card-header" style="border-bottom: 2px solid burlywood">
+                <h2 class="card-title" id="title_subject"
+                    style="text-align: center; display:block; font-weight: bold; font-size: 1.3rem; ">
+                </h2>
+
+            </div>
+            <div class="table-responsive">
+                <table id="example1" class="table table-bordered table-hovered table-hover">
+                    <thead>
+                    <tr style="background-color: #ecebeb">
+                        <th style="width: 8%">№</th>
+                        <th style="width: 45%">Mavzu</th>
+                        <th>Sana</th>
+                        <th>Boshlanishi</th>
+                        <th>Tugashi</th>
+                        {% if request.user.role == '3' or request.user.role == '2' %}
+                            <th style="width: 4%">Tahrirlash/O'chirish</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody id="schedule">
+
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="schedule">
+
+    </div>
+{% endblock content %}
+{% block bottom %}
+
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var role = '{{ request.user.role }}'
+
+            $("#group").change(function () {
+                $('#schedule').empty()
+                var selectedGroup = $(this).children("option:selected").val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'sign:group_subjects' %}",
+                    data: {
+                        'group': selectedGroup, // from form
+                    },
+                    success: function (message) {
+                        if (message === 'False') {
+                            $('#schedule').empty()
+                            $('#subject').empty().append('<option>-- Fanlar mavjud emas! --</option>')
+                            $('#subject').css('border-color', 'red')
+                            $('#title_subject').empty()
+                        } else {
+                            $('#subject').empty().append(message)
+
+                            $('#subject').css('border-color', '#007bff')
+                            setTimeout(function () {
+                                $('#subject').css('border-color', '#ced4da')
+                            }, 2000)
+                        }
+
+                        {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                        {#$('#append').append(e);#}
+                        {#e.attr('id', 'myid');#}
+                    }
+                });
+            });
+
+            $("#subject").change(function () {
+
+                var selectedSubject = $(this).children("option:selected").val();
+                var selectedGroup = $('#group').children("option:selected").val()
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'sign:get_schedule' %}",
+                    data: {
+                        'subject': selectedSubject,
+                        'group': selectedGroup // from form
+                    },
+                    success: function (schedule) {
+
+                        $('#schedule').empty().append(schedule)
+
+                        if (!schedule.trim().length > 0) {
+                            $('#schedule').empty().append('<tr><td></td><td class="text-danger">Mavzular mavjud emas!</td><td></td><td></td><td></td><td></td></tr>')
+                        }
+
+                        $.ajax({
+                            type: "GET",
+                            url: "{% url 'sign:get_subject_long_title' %}",
+                            data: {
+                                'subject': selectedSubject, // from form
+                            },
+                            success: function (response) {
+                                $('#title_subject').empty().append(`Fan: ${response}`)
+                            }
+                        })
+
+
+                        {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                        {#$('#append').append(e);#}
+                        {#e.attr('id', 'myid');#}
+                        if (role == 3 || role == 2) {
+
+                        } else {
+                            $('.edit_block').each(function (index) {
+                                $(this).css('display', 'none')
+                            });
+                        }
+
+                        $('.deleteBtn').on('click', function () {
+                            var scheduleTitle = $(this).data('title'),
+                                scheduleId = $(this).data('id')
+                            swal({
+                                title: "Mavzuni o'chirmoqchimisiz ?",
+                                text: scheduleTitle + "ni o'chirmoqchimisiz ?",
+                                icon: "warning",
+                                closeOnClickOutside: false,
+                                buttons: [
+                                    'Yoq, Bekor qilish!',
+                                    'Ha, Roziman!'
+                                ],
+                                dangerMode: true,
+
+                            }).then(function (isConfirm) {
+                                if (isConfirm) {
+                                    window.location.href = "{% url 'sign:delete_schedule' id=12345 %}".replace(/12345/, scheduleId.toString());
+                                } else {
+                                    swal("Bekor qilindi", scheduleTitle + " ro'yhatda turibti !", "error");
+                                }
+                            });
+                        })
+                    }
+                });
+            });
+
+
+        });
+
+
+    </script>
+
+{% endblock bottom %}
+
+
+

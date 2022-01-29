@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <!-- Site made with Mobirise Website Builder v4.12.3, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v4.12.3, mobirise.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="{% static 'online/onless.png' %}" type="image/x-icon">
+    <meta name="description" content="">
+
+
+    <title>Onless.uz - Onlayn avtomaktab platformasi</title>
+    <link rel="stylesheet" href="{% static 'asset/web/assets/mobirise-icons/mobirise-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/bootstrap/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/bootstrap/css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/tether/tether.min.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/theme/css/style.css' %}">
+    <link rel="preload" as="style" href="{% static 'asset/mobirise/css/mbr-additional.css' %}">
+    <link rel="stylesheet" href="{% static 'asset/mobirise/css/mbr-additional.css' %}" type="text/css">
+    <meta name="google-site-verification" content="gagH8qOwZzXNERShxKP9ST89rJPPaHMtC1TqfTGQwvU" />
+    <meta name="yandex-verification" content="3e286ce9f8498780"/>
+    <meta property="og:image" content="{% static 'online/onless.png' %}"/>
+    <meta property="og:image:type" content="image/png"/>
+</head>
+<body>
+<section class="header15 cid-s1rCQZefXB mbr-fullscreen mbr-parallax-background" id="header15-7">
+
+
+    <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(7, 59, 76);"></div>
+
+    <div class="container align-right">
+        <div class="row">
+            <div class="mbr-white col-lg-8 col-md-7 content-container">
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">
+                    Onless.uz</h1>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Agarda siz onlayn tarzda o'qimoqchi bo'lsangiz yoki avtomaktabingizga onlayn o'qitish tizimini joriy
+                    etmoqchi bo'lsangiz, quyidagi formani to'ldiring. Bizning mutaxasislarimiz tez orada siz bilan
+                    bog'lanishadi .</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">Agarda siz tizimdan ro'yhatdan o'tgan bo'lsangiz</p>
+                <a href="{% url 'landing:kirish' %}" class="btn btn-primary">Tizimga kirish</a>
+            </div>
+            <div class="col-lg-4 col-md-5">
+                <div class="form-container">
+                    <div class="media-container-column" data-form-type="formoid">
+                        <!---Formbuilder Form--->
+                        <form action="{% url 'landing:sign_up' %}" method="post" class="mbr-form form-with-styler">
+                            {% csrf_token %}
+
+                            {#                                <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Спасибо за заполнение анкеты!</div>#}
+                            {#                                <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">#}
+                            {#                                </div>#}
+                            {% include 'inc/messages_part.html' %}
+
+
+                            <div class="dragArea row">
+                                <div class="col-md-12 form-group " data-for="name">
+                                    <label style="float: left" class="text-light"
+                                           for="name-header15-7">Ismingiz:</label>
+                                    <input type="text" name="name" placeholder="Ismingizni kiriting ..."
+                                           data-form-field="Name" required="required"
+                                           class="form-control px-3 display-7" id="name-header15-7">
+                                </div>
+                                <div class="col-md-12 form-group " data-for="email">
+                                    <label style="float: left" class="text-light" for="select-header15-7">Sizning
+                                        maqsadingiz:</label>
+                                    <select name="select" class="form-control px-3 display-7" id="select-header15-7">
+                                        <option value="0">Onlayn o'qimoqchiman</option>
+                                        <option value="1">Avtomaktabimga o'rnatmoqchiman</option>
+
+                                    </select>
+                                </div>
+                                <div data-for="phone" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="phone-header15-7">Tel
+                                        raqam:</label>
+                                    <input type="text" name="phone" required="required" placeholder="Tel raqamingizni kiriting ..."
+                                           data-form-field="Phone" class="form-control px-3 display-7"
+                                           id="phone-header15-7">
+                                </div>
+
+                                <div data-for="phone" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="viloyat">Viloyat:</label>
+                                    <select name="viloyat" id="viloyat" class="form-control">
+
+                                        {% for region in regions %}
+                                            <option value="{{ region.id }}">{{ region.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div data-for="phone" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light">Tumanni kiriting:</label>
+                                    <input type="text" class="form-control px-3 display-7" required="required" name="district">
+                                </div>
+                                <div data-for="message" class="col-md-12 form-group ">
+                                    <label style="float: left" class="text-light" for="text-header15-7">Xabar
+                                        matni:</label>
+                                    <textarea name="text" placeholder="Xabar matnini kiriting ..."
+                                              data-form-field="Message" required="required" class="form-control px-3 display-7"
+                                              id="text-header15-7"></textarea>
+                                </div>
+                                <div class="col-md-12 input-group-btn">
+                                    <button type="submit" class="btn btn-secondary btn-form display-4">
+                                        Yuborish
+                                    </button>
+                                </div>
+                            </div>
+                        </form><!---Formbuilder Form--->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<script src="{% static 'asset/web/assets/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'asset/popper/popper.min.js' %}"></script>
+<script src="{% static 'asset/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'asset/tether/tether.min.js' %}"></script>
+<script src="{% static 'asset/smoothscroll/smooth-scroll.js' %}"></script>
+<script src="{% static 'asset/parallax/jarallax.min.js' %}"></script>
+<script src="{% static 'asset/theme/js/script.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(64861804, "init", {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true
+    });
+</script>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/64861804" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+<script>
+    $(document).ready(function () {
+        $("#viloyat").change(function () {
+
+
+            var selectedCountry = $(this).children("option:selected").val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'user:get_district' %}",
+                data: {
+                    'region': selectedCountry, // from form
+                },
+                success: function (message) {
+                    $('#tuman').empty().append(message)
+                    {#var e = $('<div style="display:block; float:left;width:' + width + 'px; height:' + height + 'px; margin-top:' + positionY + 'px;margin-left:' + positionX + 'px;border:1px dashed #CCCCCC;"></div>');#}
+                    {#$('#append').append(e);#}
+                    {#e.attr('id', 'myid');#}
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

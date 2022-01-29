@@ -1,0 +1,8 @@
+<li class="nav-item has-treeview">
+    <a href="{% url 'user:settings_list' %}" class="nav-link {% if request.resolver_match.url_name == 'settings_list' or request.resolver_match.url_name == 'edit_profil' or request.resolver_match.url_name == 'edit_school' or request.resolver_match.url_name == 'worker_edit' or request.resolver_match.url_name == 'edit_pupil' or request.resolver_match.url_name == 'sms_settings' %}active{% endif %}">
+        &nbsp<i class="fas fa-users-cog"></i>
+        <p>
+            &nbsp;&nbsp;&nbsp;Tahrirlash
+        </p>
+    </a>
+</li>

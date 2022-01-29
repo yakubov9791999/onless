@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name e-rib.uz www.e-rib.uz;
+
+    access_log /home/pyth/reception/logs/nginx_access.log;
+    error_log /home/pyth/reception/logs/nginx_error.log;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location /static/ {
+        root /home/pyth/reception;
+    }
+
+    location /media/ {
+        root /home/pyth/reception;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}

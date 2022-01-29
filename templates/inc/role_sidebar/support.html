@@ -1,0 +1,17 @@
+{% load static %}
+<li class="nav-item has-treeview">
+    {#    <a href="{% url 'user:support' %}" class="nav-link " style="background-color: #9d2012; font-weight: bold; color: white">#}
+    <a href="#" onclick="instruction_sweet()" class="nav-link "
+       style="background-color: rgba(234,212,115, 0.7); font-weight: bold; color: white">
+        &nbsp;<i class="far fa-question-circle "></i>&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>
+            Yordam
+
+        </p>
+    </a>
+
+</li>
+{% block bottom %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock bottom %}

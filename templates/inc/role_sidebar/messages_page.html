@@ -1,0 +1,9 @@
+<li class="nav-item has-treeview">
+    <a href="{% url 'user:news_messages' %}" class="nav-link {% if request.resolver_match.url_name == 'news_messages' %}active{% endif %}">
+        &nbsp;<i class="far fa-envelope"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>
+            Xabarlar
+            <span class="right badge badge-info">3</span>
+        </p>
+    </a>
+</li>

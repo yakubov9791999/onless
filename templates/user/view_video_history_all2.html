@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load quiz_tags %}
+{% load user_tags %}
+{% load i18n %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Ko'rishlar tarixi" "user:history_view_video_all" %}
+{% endblock %}
+
+{% block top %}
+    <link rel="stylesheet" href="{% static "plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" %}">
+{% endblock top %}
+{% block content %}
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Ko'rilgan videolar tarixi</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+{#                    <form class="form-group mb-3" method="GET" action="{% url 'user:HistoryViewVideoAll' %}">#}
+{#                        <div class="row">#}
+{#                            <div class="col-md-3">#}
+{#                                <label class="text-dark" for="date">Boshlanish:</label>#}
+{#                                <input type="date" id="date" class="form-control"#}
+{#                                       name="startdate"#}
+{#                                       {% if startdate %}value="{{ startdate }}"{% endif %}>#}
+{#                            </div>#}
+{#                            <div class="col-md-3">#}
+{#                                <label class="text-dark" for="date">Tugash:</label>#}
+{#                                <input type="date" id="date"#}
+{#                                       class="form-control"#}
+{#                                       name="stopdate"#}
+{#                                       {% if stopdate %}value="{{ stopdate }}"{% endif %}>#}
+{#                            </div>#}
+{##}
+{##}
+{#                            <div class="col-md-3">#}
+{#                                <label class="text-dark" style="width: 100%" for="date">Guruh:</label>#}
+{#                                <select name="group"#}
+{#                                        class="form-control">#}
+{#                                    <option value="False">barcha guruhlar</option>#}
+{#                                    {% for group in groups %}#}
+{#                                        <option {% if guruh.id == group.id %}selected{% endif %}#}
+{#                                                value="{{ group.id }}">{{ group.category }}-{{ group.number }}-{{ group.year }}</option>#}
+{#                                    {% endfor %}#}
+{#                                </select>#}
+{#                            </div>#}
+{#                            <div class="col-md-3" style="margin-top: 1.9rem; text-align: center">#}
+{#                                <button type="submit" class="btn btn-info"#}
+{#                                        style="padding: 1.5% 10% 1.5% 10% !important;">#}
+{#                                    Filtrlash#}
+{#                                </button>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </form>#}
+                    <div class="table-responsive"
+                         style="border: 1px solid #dbdada; border-radius: 3px; padding: 2% 2% 2% 2%;">
+                        <table id="example1" style="font-size: 0.9rem;" class="table table-bordered table-hover">
+                            <thead>
+                            <tr style="background-color: #ecebeb">
+                                <th>№</th>
+                                <th>O'quvchining ism familiyasi</th>
+                                <th>Guruhi</th>
+                                <th>Ko'rgan darsi</th>
+                                <th>Ko'rilgan vaqti</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for view in views %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ view.user }}</td>
+                                    <td>{{ view.user.group }}</td>
+                                    <td>{{ view.video }}</td>
+                                    <td>{{ view.time|date:'SHORT_DATETIME_FORMAT' }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block bottom %}
+    <script src="{% static "plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
+    <script src="{% static "plugins/datatables-responsive/js/dataTables.responsive.min.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+
+            var csrftoken = getCookie('csrftoken')
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+
+                },
+            })
+
+            var table = $("#example1").DataTable({
+                "serverSide": true,
+                "processing": true,
+                'autoWidth': false,
+                "orderCellsTop": true,
+                "order": [[ 4, "asc" ]],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "{% trans 'Qidiruv...' %}",
+                    "emptyTable": `{% trans "Ma'lumot topilmadi!" %}`,
+                    {#"info": "Ko'rsatilgan _END_ dan _START_. Jami: _TOTAL_ ta ma'lumot",#}
+                    "info": `{% trans "Jami: _TOTAL_ ta" %}`,
+                    "infoEmpty": `{% trans "Jami: _TOTAL_ ta" %}`,
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "_MENU_",
+                    "loadingRecords": "{% trans 'Yuklanmoqda...' %}",
+                    "processing": "{% trans 'Qayta ishlanmoqda...' %}",
+                    "zeroRecords": `{% trans "Ma'lumot topilmadi!" %}`,
+                    "paginate": {
+                        "first": "{% trans 'Birinchi' %}",
+                        "last": "{% trans 'Oxirgi' %}",
+                        "next": "{% trans 'Keyingi' %}",
+                        "previous": "{% trans 'Oldingi' %}"
+                    },
+                    "aria": {
+                        "sortAscending": `{% trans ": o'sish tartibi faollashtirildi" %}`,
+                        "sortDescending": `{% trans ": kamayish tartibi faollashtirildi" %}`,
+                    }
+                },
+                "ajax": function (data, callback, settings) {
+
+
+                    $.post('{% url "user:HistoryViewVideoAll" %}', {
+                        limit: data.length,
+                        start: data.start,
+                        q: data.search.value,
+                        order_by: data.columns[data.order[0].column].data.replace(/\./g, "__")
+                    }, function (res) {
+                        console.log(res)
+
+                        callback({
+                            recordsTotal: res.length,
+                            recordsFiltered: res.length,
+                            data: res.objects
+                        })
+                    })
+                },
+
+
+                "columns": [
+                    {"data": "id"},
+                    {"data": "user__name"},
+                    {"data": "user__group"},
+                    {"data": "video"},
+                    {"data": "time"},
+                ]
+            })
+        })
+    </script>
+{% endblock bottom %}

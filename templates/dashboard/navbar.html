@@ -1,0 +1,238 @@
+{% load static %}
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link {{ d_active }}">Admin</a>
+        </li>
+    </ul>
+</nav>
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+    <a href="#" class="brand-link">
+        <img src="{% static 'dashboard/img/AdminLTELogo.png' %}" alt="AdminLTE Logo"
+             class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">Admin</span>
+    </a>
+
+    <div class="sidebar">
+
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{% static 'dashboard/img/user2-160x160.jpg' %}" class="img-circle elevation-2"
+                     alt="User Image">
+            </div>
+            <div class="info">
+                <a href="" class="d-block">{{ user.username }}</a>
+            </div>
+        </div>
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'carmodel_list' %}" class="nav-link {{ c_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Avtomobil modellari</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'car_list' %}" class="nav-link {{ p_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Avtomobillar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'practical_list' %}" class="nav-link {{ k_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Dam olish kunliar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'paymentforpractical_list' %}" class="nav-link {{ m_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Vajdeniya uchun to'lov</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'answer_list' %}" class="nav-link {{ y_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Answer</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'practical_list' %}" class="nav-link {{ b_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Amaliy mashg'ulot</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'question_list' %}" class="nav-link {{ v_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Testlar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'bilet_list' %}" class="nav-link {{ l_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Bilet</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'savol_list' %}" class="nav-link {{ x_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Test Savol</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'result_list' %}" class="nav-link {{ a_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Test natijasi</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'javob_list' %}" class="nav-link {{ z_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Test Javob</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'resultquiz_list' %}" class="nav-link {{ s_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Eski natija</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'attempt_list' %}" class="nav-link {{ f_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Urinish</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'resultjavob_list' %}" class="nav-link {{ g_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Result Javob</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'checktestcolor_list' %}" class="nav-link {{ h_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>CheckTestColor</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'signcategory_list' %}" class="nav-link {{ j_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>SignCategory</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'sign_list' %}" class="nav-link {{ k_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Sign</p>
+                    </a>
+                </li>
+                <div style="border: 1px solid yellow; background: yellow"><b
+                        style="color: red; text-align: center">Video</b>
+                </div>
+                <li class="nav-item">
+                    <a href="{% url 'video_list' %}" class="nav-link {{ ww_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Videolar</p>
+
+                    </a>
+                </li>
+                <div style="border: 1px solid yellow; background: yellow"><b
+                        style="color: red; text-align: center">User</b>
+                </div>
+
+                <li class="nav-item">
+                    <a href="{% url 'region_list' %}" class="nav-link {{ we_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Viloyatlar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'district_list' %}" class="nav-link {{ wr_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Tumanlar/Shaharlar</p>
+                    </a>
+                </li>
+                {#                <li class="nav-item">#}
+                {#                    <a href="{% url 'school_list' %}" class="nav-link {{ wt_active }}">#}
+                {#                        <i class="nav-icon far fa-image"></i>#}
+                {#                        <p>Maktablar</p>#}
+                {#                    </a>#}
+                {#                </li>#}
+                <li class="nav-item">
+                    <a href="{% url 'educationcategory_list' %}" class="nav-link {{ wy_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Educationcategory</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'maktab_list' %}" class="nav-link {{ wu_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Maktab</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'group_list' %}" class="nav-link {{ ww_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Guruhlar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'contact_list' %}" class="nav-link {{ wq_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Contact</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'pay_list' %}" class="nav-link {{ wm_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>To'lov</p>
+                    </a>
+                </li>
+
+                                <li class="nav-item">
+                                    <a href="{% url 'user_list' %}" class="nav-link {{ wi_active }}">
+                                        <i class="nav-icon far fa-image"></i>
+                                        <p>User</p>
+                                    </a>
+                                </li>
+                <div style="border: 1px solid yellow; background: yellow"><b style="color: red; text-align: center">O'quvchi
+                    olib kelgani uchun</b></div>
+                <li class="nav-item">
+                    <a href="{% url 'referral_list' %}" class="nav-link {{ wn_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Referal bonuslar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'attendance_list' %}" class="nav-link {{ wb_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Davomatlar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'rating_list' %}" class="nav-link {{ wv_active }}">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>Baho</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="nav-link">
+                        <i class="nav-icon far fa-image "></i>
+                        <i class="fa-sign-out"></i>
+                        <p>Roʻyxatdan chiqish</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>

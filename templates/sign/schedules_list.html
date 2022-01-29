@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load sign_tags %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Dars jadvali" "sign:schedules_list" %}
+{% endblock %}
+
+{% block content %}
+    <style>
+        .schedule_datepicker_icon {
+            cursor: pointer;
+        }
+    </style>
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-12" style="margin: auto">
+
+            <!-- general form elements -->
+            <div class="card card-primary table-responsive">
+                <div class="card-header">
+                    <h3 class="card-title">Dars jadvali</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <form role="form" id="schedule_form" method="POST" action="{% url 'sign:schedules_list' %}">
+                        {% csrf_token %}
+                        <div class="row justify-content-lg-start justify-content-md-start justify-content-around ml-lg-5 ml-md-5">
+                            <div class="col-lg-7 col-md-8  col-8">
+                                <label style="margin-bottom: 0" for="exampleInputname">Guruh</label>
+                                <select name="group" id="group" class="form-control" style="font-weight: bolder;">
+                                    {% for render_group in groups %}
+                                        <option style="font-weight: bold;"
+                                                {% if group.id == render_group.id %}selected{% endif %}
+                                                value="{{ render_group.id }}">{{ render_group.category }}-{{ render_group.number }} {{ render_group.year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-3" style="margin-top: 1.9rem; text-align: center">
+                                <button class="btn btn-info">Yangilash</button>
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+
+                    <table id="example1" class="table table-bordered table-hovered">
+                        <thead class="not_copy">
+                        <tr style="background-color: #ecebeb">
+                            <th colspan="8" style="text-align: center; font-size: x-large;">
+                                Guruh: <span style="color: #5353d5">{{ group }}</span> &nbsp&nbsp&nbsp&nbsp Rahbar:
+                                <span style="color: #5353d5">{{ group.teacher|truncatewords:2 }}</span>&nbsp&nbsp&nbsp&nbsp
+                                Boshlanishi: <span
+                                    style="color: #5353d5">{{ group.start|date:"SHORT_DATE_FORMAT" }}</span>&nbsp&nbsp&nbsp&nbsp
+                                Tugashi: <span style="color: #5353d5">{{ group.stop|date:"SHORT_DATE_FORMAT" }}</span>
+                            </th>
+                        </tr>
+                        <tr style="background-color: #faf7f7">
+                            <th style="width: 2%; text-align: center">№</th>
+                            <th style="width: 12%; text-align: center">Sana</th>
+                            <th style="width: 6%; text-align: center">Fan</th>
+                            <th style="width: 4%; text-align: center">Soati</th>
+                            <th style="width: 4%; text-align: center">Tartibi</th>
+                            <th style="width: 38%; text-align: center">Mavzu va ularning qisqacha mazmuni</th>
+                            <th style="width: 12%; text-align: center">O'qituvchi</th>
+                            <th style="width: 5%; text-align: center">Saqlash</th>
+                        </tr>
+                        </thead>
+                        <tbody style="font-size: 0.7em">
+                        {% if themes.exists %}
+                            {% for theme in themes %}
+
+                                {% check_schedule_disable_or_enable group.id theme.id as schedule %}
+                                <tr>
+                                    <td class="text-center forloop" data-forloop="{{ forloop.counter }}"
+                                        style="vertical-align: revert;">
+                                        {{ forloop.counter }}</td>
+                                    <td class="text-center" style="vertical-align: revert;">
+                                        <div class="input-group mb-2">
+                                            <input data-forloop="{{ forloop.counter }}"
+                                                   {% if not schedule == False %}disabled{% endif %}
+                                                   style="float:left;"
+                                                   type="text" {% if schedule.date %}value="{{ schedule.date|date:'SHORT_DATE_FORMAT' }}" {% else %}value="{% now "SHORT_DATE_FORMAT" %}"{% endif %}
+                                                   class="form-control schedule_datepicker"/>
+                                            <div class="input-group-prepend schedule_datepicker_icon"
+                                                 data-forloop="{{ forloop.counter }}">
+                                                <div class="input-group-text"><i class="fa fa-calendar"
+                                                                                 aria-hidden="true"></i></div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                    <td style="vertical-align: revert;">
+                                        {% if theme.subject %}{{ theme.subject }}{% else %}{% endif %}</td>
+                                    <td style="vertical-align: revert;"><input
+                                            {% if not schedule == False %}disabled{% endif %}
+                                            data-forloop="{{ forloop.counter }}"
+                                            type="number"
+                                            class="form-control lesson_time"
+                                            {% if schedule.lesson_time %}value="{{ schedule.lesson_time }}"{% else %}
+                                            value="{{ theme.lesson_time }}" {% endif %}></td>
+                                    <td class="text-center sort" style="vertical-align: revert;"
+                                        data-forloop="{{ forloop.counter }}" data-value="{{ theme.theme_order }}">
+                                        {% if theme.theme_order %}M-{{ theme.theme_order }}{% else %}{% endif %}</td>
+
+                                    <td style="vertical-align: revert;" class="theme"
+                                        data-forloop="{{ forloop.counter }}"
+                                        data-id="{{ theme.id }}">{{ theme.title }}</td>
+                                    <td style="vertical-align: revert;">
+                                        <select data-forloop="{{ forloop.counter }}"
+                                                {% if not schedule == False %}disabled{% endif %}
+                                                class="form-control teacher"
+                                                name="teacher">
+                                            {% for render_teacher in teachers %}
+                                                <option
+                                                        {% if schedule.teacher %}{% if render_teacher == schedule.teacher %}selected{% endif %}{% else %}{% if render_teacher.id == teacher.id %}selected
+                                                        {% endif %}{% endif %}
+                                                        value="{{ render_teacher.id }}">{{ render_teacher.name|truncatewords:2 }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td style="text-align: center;vertical-align: revert;">
+                                        {% if not schedule == False %}
+                                            <button data-forloop="{{ forloop.counter }}" data-save="false"
+                                                    class="btn btn-warning scheduleBtn editBtn"><i
+                                                    class="fas fa-edit"></i></button>
+                                        {% else %}
+                                            <button data-forloop="{{ forloop.counter }}" data-save="true"
+                                                    class="btn btn-primary scheduleBtn saveBtn"><i
+                                                    class="fas fa-save"></i></button>
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td style="text-align: center;color: red" colspan="8">
+                                    Ushbu toifa bo'yicha dars jadvali mavjud emas!
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block bottom %}
+    <script>
+        $(function () {
+            var dateReg = /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[012])[./-]\d{4}$/
+
+            $(".schedule_datepicker").datepicker({
+                dateFormat: "dd.mm.yy",
+                // minDate: '-90d',
+                // maxDate: '+5M',
+                // defaultDate: '01-01-1985',
+                // value: "7/11/2011",
+                showButtonPanel: true,
+                numberOfMonths: 1,
+                //startDate: "-30d",
+                //endDate: "+30d",
+                //currentText: 'Today',
+                autoclose: true,
+                changeMonth: false,
+                changeYear: false,
+                beforeShowDay: function (date) {
+                    var day = date.getDay();
+                    return [(day !== 0), ''];
+                },
+                onClose: function () {
+                    if ($(this).val().match(dateReg)) {
+                        $(this).css('border-color', 'green')
+                    } else {
+                        $(this).css('border-color', 'red')
+                    }
+                }
+            })
+        })
+
+        $(document).ready(function () {
+
+            $('.schedule_datepicker').each(function () {
+                var date = $(this).val(),
+                    forloop = $(this).data('forloop')
+                console.log(forloop)
+                if ($(".schedule_datepicker").data('forloop') === forloop) {
+                    if (date) {
+                        $(this).datepicker('setDate', date);
+                    } else {
+                        $(this).datepicker('setDate', new Date());
+                    }
+                }
+            })
+
+            $('.schedule_datepicker').on('keypress', function (e) {
+                return false
+            })
+
+            $('.schedule_datepicker_icon').on('click', function () {
+                var forloop = $(this).data('forloop')
+                $('.schedule_datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).datepicker('show')
+                    }
+                })
+            })
+
+
+            $('#group').on('change', function () {
+                if (!$.isNumeric($("#group").children("option:selected").val())) {
+                    $('#group').css('border-color', 'red')
+                } else {
+                    $('#group').css('border-color', 'green')
+                }
+            })
+
+
+            $('#schedule_form').submit(function (e) {
+
+                if (!$.isNumeric($("#group").children("option:selected").val())) {
+                    $('#group').css('border-color', 'red')
+                    return false;
+                } else {
+                    return true;
+                }
+
+            })
+
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+                }
+            })
+
+            $('.scheduleBtn').on('click', function () {
+                var schedules = [],
+                    groupId = '{{ group.id }}',
+                    forloop = $(this).data('forloop'),
+                    save = $(this).data('save')
+
+                $('.schedule_datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+
+                        schedules.push($(this).val())
+                    }
+                })
+
+                $('.lesson_time').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        schedules.push($(this).val())
+                    }
+                })
+
+                $('.theme').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        schedules.push($(this).data('id'))
+                    }
+                })
+
+                $('.teacher').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        schedules.push($(this).children("option:selected").val())
+                    }
+                })
+
+                $('.sort').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        schedules.push($(this).data('value'))
+                    }
+                })
+
+                saveSchedule(schedules, groupId, forloop, save)
+
+            })
+
+
+            function AttrDisabled(forloop) {
+                $('.schedule_datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).attr('disabled', true)
+                    }
+                })
+
+                $('.lesson_time').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).attr('disabled', true)
+                    }
+                })
+
+                $('.teacher').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).attr('disabled', true)
+                    }
+                })
+            }
+
+            function AttrEnabled(forloop) {
+                $('.schedule_datepicker').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).attr('disabled', false)
+                    }
+                })
+
+                $('.lesson_time').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).attr('disabled', false)
+                    }
+                })
+
+                $('.teacher').each(function () {
+                    if ($(this).data('forloop') === forloop) {
+                        $(this).attr('disabled', false)
+                    }
+                })
+            }
+
+            function saveSchedule(schedules, groupId, forloop, save) {
+                if (save === true) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{% url "sign:save_schedule" %}',
+                        data: {
+                            'schedules': schedules,
+                            'group': groupId
+                        },
+                        success: function (response) {
+                            if (response === 'True') {
+                                var $buttonEdit = $(`<button class="btn btn-warning editBtn" data-forloop="${forloop}"><i class="fas fa-edit"></i></button>`);
+                                $(`button[data-forloop=${forloop}]`).after($buttonEdit)
+                                $(`button.saveBtn[data-forloop=${forloop}]`).remove()
+                                AttrDisabled(forloop)
+
+                                $buttonEdit.on('click', function () {
+
+                                    var schedules = [],
+                                        groupId = '{{ group.id }}',
+                                        forloop = $(this).data('forloop')
+
+                                    $('.schedule_datepicker').each(function () {
+                                        if ($(this).data('forloop') == forloop) {
+                                            schedules.push($(this).val())
+                                        }
+                                    })
+
+                                    $('.lesson_time').each(function () {
+                                        if ($(this).data('forloop') == forloop) {
+                                            schedules.push($(this).val())
+                                        }
+                                    })
+
+                                    $('.theme').each(function () {
+                                        if ($(this).data('forloop') == forloop) {
+                                            schedules.push($(this).data('id'))
+                                        }
+                                    })
+
+                                    $('.teacher').each(function () {
+                                        if ($(this).data('forloop') == forloop) {
+                                            schedules.push($(this).children("option:selected").val())
+                                        }
+                                    })
+
+                                    $('.sort').each(function () {
+                                        if ($(this).data('forloop') == forloop) {
+                                            schedules.push($(this).data('value'))
+                                        }
+                                    })
+
+                                    saveSchedule(schedules, groupId, forloop, false)
+
+
+                                });
+
+
+                            } else {
+                                $.notifyDefaults({
+                                    type: 'danger',
+                                    allow_dismiss: false,
+                                    animate: {
+                                        enter: 'animated fadeInRight',
+                                        exit: 'animated fadeOutRight'
+                                    },
+                                    placement: {
+                                        from: "top",
+                                        align: "right"
+                                    },
+                                    z_index: 9999,
+                                })
+                                $.notify({
+                                    icon: 'glyphicon glyphicon-star',
+                                    message: '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-patch-exclamation" fill="currentColor" xmlns="http://www.w3.org/2000/svg">\n' +
+                                        '  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>\n' +
+                                        '  <path fill-rule="evenodd" d="M10.273 2.513l-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911l-1.318.016z"/>\n' +
+                                        '</svg> Xatolik! Birozdan so\'ng qayta urinib ko\'ring'
+                                })
+                            }
+
+                        },
+                        error: function (response) {
+                            console.log(response)
+                        }
+                    })
+                    schedules = []
+                } else {
+                    var $buttonSave = $(`<button class="btn btn-primary saveBtn" data-forloop="${forloop}"><i class="fas fa-save"></i></button>`);
+                    $(`button[data-forloop=${forloop}]`).after($buttonSave)
+                    $(`button.editBtn[data-forloop=${forloop}]`).remove()
+
+                    AttrEnabled(forloop)
+
+
+                    $buttonSave.on('click', function () {
+                        var schedules = [],
+                            groupId = '{{ group.id }}',
+                            forloop = $(this).data('forloop')
+
+                        $('.schedule_datepicker').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).val())
+                            }
+                        })
+
+                        $('.lesson_time').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).val())
+                            }
+                        })
+
+                        $('.theme').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).data('id'))
+                            }
+                        })
+
+                        $('.teacher').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).children("option:selected").val())
+                            }
+                        })
+
+                        $('.sort').each(function () {
+                            if ($(this).data('forloop') == forloop) {
+                                schedules.push($(this).data('value'))
+                            }
+                        })
+
+
+                        saveSchedule(schedules, groupId, forloop, true)
+                    })
+                }
+
+            }
+
+
+        })
+
+    </script>
+
+
+{% endblock bottom %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block top %}
+<link href="https://fonts.googleapis.com/css2?family=Rowdies&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+     <div class="card-header bg-primary">
+                <h3 class="card-title">{% if lang == 'ru' %}Выберите нужный вариант:{% elif lang == 'kr' %}Керакли танловни танланг:{% else %}Kerakli tanlovni tanlang:{% endif %}</h3>
+            </div>
+        <div class="row justify-content-center">
+            <a class="col-5 box-type" style="background-image:{% if lang == 'uz' %} url('/static/online/trenirofka_uz.jpg');{% elif lang == 'kr' %}url('/static/online/trenirofka_kr.jpg');{% elif lang == 'ru' %}url('/static/online/trenirofka_ru.jpg');{% endif %}"
+               href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=T">
+            </a>
+            <div class="col-1"></div>
+            <a class="col-5 box-type" style="background-image:{% if lang == 'uz' %} url('/static/online/imtihon_uz.jpg');{% elif lang == 'kr' %}url('/static/online/imtihon_kr.jpg');{% elif lang == 'ru' %}url('/static/online/imtihon_ru.jpg');{% endif %}"
+               href="{% url 'quiz:select_type' %}?lang={{ lang }}&type=I">
+            </a>
+
+        </div>
+
+    </div>
+
+{% endblock content %}
+
+
+

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load video_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% load breadcrumb_tags %}
+{% block breadcrumbs %}
+    {{ block.super }}
+
+    {% breadcrumb "Videodarslar" "video:categories_list" %}
+    {% if request.resolver_match.url_name == 'videos_list' %}
+    {% category_breadcumb as category %}
+
+    {% if category.get_parents %}
+        {% for parent in category.get_parents %}
+             {% breadcrumb parent.title "video:category_detail" parent.id %}
+        {% endfor %}
+        {% breadcrumb category.title "video:videos_list" category.id %}
+    {% else %}
+        {% breadcrumb category.title "video:videos_list" category.id %}
+    {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            {% for video in videos %}
+                <a href="{% url 'video:video_detail' video.id %}">
+                    <div class="col-lg-4 col-md-6 col-sm-6 mb-5">
+                        <div class="thumbnail img-thumb-bg" style="background: url('{% if video.photo %}{{ video.photo.url }}{% endif %}'); background-size: cover; background-repeat: no-repeat">
+                            {% get_view_video request.user.id video.id as view_video_complete %}
+                            {% if view_video_complete.exists %}
+                                <div class="overlay-exists"></div>
+                            {% else %}
+                                <div class="overlay-noexists"></div>
+                            {% endif %}
+                            <div class="caption">
+                                <div class="tag"><a
+                                        href="">{{ video.category.title }} </a>
+                                </div>
+                                <div class="title"><a
+                                        href="{% url 'video:video_detail' video.id %}">{{ video.title }} </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

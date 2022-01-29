@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load quiz_tags %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Test savollari" "quiz:select_lang" %}?lang=kr
+    {% if request.GET.type == 'T' %}
+    {% breadcrumb "Mashg'ulot" "quiz:select_lang"  %}
+    {% elif request.GET.type == 'I' %}
+        {% breadcrumb "Imtihon" "quiz:select_lang" %}
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">{% if lang == 'ru' %}Выберите билет:{% elif lang == 'kr' %}Билетни танланг:{% else %}
+                Biletni tanlang:{% endif %}</h3>
+        </div>
+        {% include 'inc/messages_part.html' %}
+        <div class="row">
+            {% for bilet in bilets %}
+
+                <div class="col-4 col-lg-2 col-md-2 col-sm-3 col-xs-3 mt-2 mb-2">
+
+                    <div class=" text-center" data-id="{{ bilet }}">
+                        {% get_bilet_color bilet.id user.id as color %}
+                        <a href="{% url 'quiz:select_bilet' %}?lang={{ lang }}&bilet={{ bilet }}"
+                                {% if color or bilet.number == 1 or bilet.number == check_last %}
+                           class="btn btn-outline-success bilet_q open_bilet"
+                                {% else %}
+                           class="btn btn-outline-danger bilet_q close_bilet"
+                                {% endif %}
+                        >
+                            {{ bilet }}
+                        </a>
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock content %}
+{% block bottom %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+        $(document).ready(function (event) {
+
+            $('.bilet_q').click(function (event) {
+                var biletId = $(this).parent('.text-center').data('id')
+                var prevBilet = parseInt(biletId) - 1;
+                lang = '{{ lang }}'
+
+                if (lang == 'uz') {
+                    var Title = 'Ruxsat berilmagan!';
+                    var swalButtonTitle = 'Oynani yopish';
+                    var html = "Siz ushbu biletga kirish uchun " + prevBilet + "-biletni o'zlashtirishingiz talab etiladi";
+                } else if (lang == 'kr') {
+                    var Title = 'Рухсат берилмаган!';
+                    var swalButtonTitle = 'Ойнани ёпиш';
+                    var html = "Сиз ушбу билетга кириш учун " + prevBilet + "-билетни ўзлаштиришингиз талаб етилади";
+                } else if (lang == 'ru') {
+                    var Title = 'Доступ запрещен!';
+                    var swalButtonTitle = 'Закрыть';
+                    var html = "Вам нужно будет освоить билет "+ prevBilet +", чтобы войти в этот билет";
+                }
+
+
+                if ($(this).hasClass('open_bilet')) {
+
+                } else {
+                    event.preventDefault()
+                    Swal.fire({
+                        icon: 'warning',
+                        title: Title,
+                        // {#background: '#ffecec',#}
+                        {#text: swalText,#}
+                        html: html,
+                        // {#timer: 2000,#}
+                        showConfirmButton: true,
+                        confirmButtonText: swalButtonTitle,
+                        confirmButtonColor: '#d42a2a',
+                        // {#footer: footerMsg,#}
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+
+                            {#window.location.href = window.location.href;#}
+
+                        }
+                    })
+                }
+
+
+            });
+
+        });
+
+    </script>
+{% endblock %}
+
+
+

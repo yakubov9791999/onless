@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Guruhlar" "user:groups_list" %}
+{% endblock %}
+{% block content %}
+
+    <style>
+        .card-header:hover {
+            cursor: pointer;
+
+        }
+
+        .collapsing {
+            -webkit-transition: none;
+            transition: none;
+            display: none;
+        }
+    </style>
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Guruhlar ro'yhati</h3>
+                </div>
+                {% include 'inc/messages_part.html' %}
+
+                <div class="card-body">
+
+                    {% regroup groups|dictsort:"year" by year as years_list %}
+                    {% for years in years_list %}
+                        <div id="accordion{{ forloop.counter }}">
+                            <div class="card">
+                                <div class="card-header" data-id="{{ forloop.counter }}"
+                                     id="heading{{ forloop.counter }}">
+                                    <h5 class="mb-1 mt-1">
+                                        <button class="btn btn-link" data-toggle="collapse"
+
+                                                aria-expanded="true"
+                                                aria-controls="collapse{{ forloop.counter }}"
+                                                id="collapse-title">
+                                            <i class="fas fa-angle-double-right"></i> {{ years.grouper }}
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div data-id="{{ forloop.counter }}" id="collapse{{ forloop.counter }}"
+                                     class="collapse hide"
+                                     aria-labelledby="heading{{ forloop.counter }}"
+                                     data-parent="#accordion{{ forloop.counter }}">
+                                    <div class="card-body">
+                                        <div class="row">
+
+                                            <div class="table-responsive">
+                                                <table id="example1" style="font-size: 0.9rem"
+                                                       class="table table-bordered table-hover table-responsive">
+                                                    <thead>
+                                                    <tr style="background-color: #ecebeb">
+                                                        <th style="width: 3%">№</th>
+                                                        <th>Guruh nomi</th>
+                                                        <th>Guruh rahbari</th>
+                                                        <th style="width: 15%">Rahbar raqami</th>
+                                                        <th style="width: 15%">O'qish boshlanishi</th>
+                                                        <th style="width: 15%">O'qish yakunlanishi</th>
+                                                        {% if request.user.role == '2' or request.user.role == '3' %}
+                                                            <th style="width: 15%">Ko'rish/Tahrirlash/O'chirish</th>
+                                                        {% endif %}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for group in years.list %}
+                                                        {% get_fullname_group group.id as group_name %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>
+                                                                {% if request.user.role == '2' or request.user.role == '3' %}
+                                                                    <a href="{% url 'user:group_detail' group.id %}">
+                                                                        <b id="group_name">{{ group_name }}</b>
+                                                                    </a>
+                                                                {% else %}
+                                                                    <b id="group_name">{{ group_name }}</b>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>{% if group.teacher %}
+                                                                {{ group.teacher }}{% else %}{% endif %}</td>
+                                                            <td>{% if group.teacher %}{% if group.teacher.phone %}+998
+                                                                {{ group.teacher.phone }}{% else %}-
+                                                            {% endif %}{% else %}{% endif %}</td>
+                                                            <td>{{ group.start|date:'SHORT_DATE_FORMAT' }}</td>
+                                                            <td>{{ group.stop|date:'SHORT_DATE_FORMAT' }}</td>
+                                                            {% if request.user.role == '2' or request.user.role == '3' %}
+                                                                <td>
+
+                                                                    &nbsp;
+                                                                    <a href="{% url 'user:group_detail' group.id %}">
+                                                                        <button class="btn btn-info"><i
+                                                                                class="fas fa-eye"
+                                                                        ></i></button>
+                                                                    </a>
+
+                                                                    &nbsp;
+
+                                                                    <a href="{% url 'user:group_update' group.id %}">
+                                                                        <button class="btn btn-primary"><i
+                                                                                class="fa fa-edit"
+                                                                        ></i></button>
+                                                                    </a>
+
+                                                                    {% if request.user.role == '2' %}
+                                                                        &nbsp;
+                                                                        {% get_fullname_group group.id as group_name %}
+                                                                        <a href="#"
+                                                                           onclick="delete_group({{ group.id }}, `{{ group_name }}`)">
+                                                                            <button class="btn btn-danger"><i
+                                                                                    class="fa fa-trash"
+                                                                            ></i></button>
+                                                                        </a>
+                                                                    {% endif %}
+                                                                </td>
+                                                            {% endif %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block bottom %}
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+        $(".card-header").each(function () {
+
+            let id = $(this).data('id')
+            $(this).on('click', function () {
+                if ($(this).siblings('.collapse').data('id', id).hasClass('hide')) {
+                    {#$(this).siblings('.collapse').data('id', id).empty().removeClass('show')#}
+                    $(this).siblings('.collapse').data('id', id).removeClass('hide').addClass('show')
+                } else if ($(this).siblings('.collapse').data('id', id).hasClass('show')) {
+                    {#$(this).siblings('.collapse').data('id', id).removeClass('hide')#}
+                    $(this).siblings('.collapse').data('id', id).removeClass('show').addClass('hide')
+                } else {
+                    $(this).siblings('.collapse').data('id', id).addClass('show')
+                }
+            })
+
+
+        });
+
+
+        function delete_group(group_id, group_name) {
+            var groupId = group_id;
+            var groupName = group_name;
+
+            swal({
+                title: "Guruhni o'chirmoqchimisiz ?",
+                text: "Siz haqiqatdan ham " + groupName + " guruhini o'chirmoqchimisiz ?",
+                icon: "warning",
+                closeOnClickOutside: false,
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: groupName + " guruhi muvaffaqiyatli o'chirildi !",
+                        icon: 'success'
+                    }).then(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/user/group-delete/' + groupId,
+                        });
+                        window.location.href = '{% url "user:groups_list" %}';
+                    });
+                } else {
+                    swal("Bekor qilindi", groupName + " guruhingiz ro'yhatda turibti !", "error");
+                }
+            });
+        }
+
+    </script>
+{% endblock bottom %}

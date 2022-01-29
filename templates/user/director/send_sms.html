@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% block top %}
+    <style>
+        .send-sms-form {
+            border: 2px solid #6804ef;
+        }
+    </style>
+{% endblock top %}
+
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Sms jo'natish" "user:send_sms" %}
+{% endblock %}
+
+{% block content %}
+    <div class="row" style="margin: auto">
+        <!-- left column -->
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12" style="margin: auto">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h1 class="card-title">SMS jo'natish</h1>
+
+                </div>
+
+                {% include 'inc/messages_part.html' %}
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" id="send_sms_form" method="POST" action="{% url 'user:send_sms' %}">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="label_required" for="textLabel">Xabar matnini kiriting</label>
+                            <textarea name="text" id="textLabel" rows="5" class="form-control send-sms-form"></textarea>
+                            <p style="padding-top: 0px !important;font-size: 0.8em">Belgilar soni: <span
+                                    id="counter">0</span></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label_required" for="selectedGroup">Guruh yoki xodimlarni tanlang</label>
+                            <select name="group" id="selectedGroup" class="form-control">
+                                <option value="false">-- guruh yoki xodimni tanlang --</option>
+                                <option value="teachers">O'qituvchilar</option>
+                                <option value="instructors">Instruktorlar</option>
+                                <option value="accountants">Hisobchilar</option>
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <span id="title_count"><b style="color: #0c525d">O'quvchilar soni:</b> <span
+                                    id="pupils_count">0</span></span>
+                        </div>
+                        <div class="form-group">
+                            <span><b style="color: #0c525d">Sarflanadigan smslar soni:</b> <span id="spent_sms">0</span></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" id="accept_checkbox" name="checkbox">&nbsp&nbsp<a href="#"><span
+                                id="accept_text">shartlar bilan tanishib chiqish</span></a>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-sms"></i> SMS jo'natish</button>
+                        <button type="reset" class="btn btn-danger">Tozalash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block bottom %}
+    <script type="text/javascript">
+        var SchoolSmsCount = '{{ school_sms_count }}',
+            Count = 0,
+            SmsCount = 1
+        $(document).ready(function () {
+            accept_send_sms()
+
+            function accept_send_sms() {
+                var html = `<p style="text-align:left">Onless.uz tizimidagi guruh kesimida SMS jo'natish funksiyasi sizga har bir guruh o'quvchilariga bir necha soniyalar ichida SMS xabarnomangizni yetkazish vazifasini bajaradi.</p><p style="text-align:left"> Siyosatga qarshi, mafkuraga zid va O'zbekiston Respublikasi qonunchiligiga qarshi harakatlarni targ'ib qiluvchi SMS xabarnomalar tarqatish qat'iyan man etiladi. Shunday holatlar yuz berganida, SMS xabarnoma matni uchun avtomaktab javobgar hisoblanadi. Onless.uz ma'muriyatini javobgarligi mavjud emas.</p>
+<p style="text-align:left">SMS jo'natishda faqat lotin harflari kiritish maqsadga muvofiq. 160 tagacha belgidan iborat matnli sms jo'natish uchun har bitta o'quvchiga 1 ta sms sarflanadi. Sms matnidagi belgilar soni oshib borishi bilan smslar soni ham oshib boradi. Agarda belgilar 160 tadan ortiq 306 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 2 ta hisoblaniladi. Belgilar 306 tadan ko'p 459 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 3 ta hisoblaniladi. Belgilar 459 tadan ko'p 612 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 4 ta hisoblaniladi. Belgilar 612 tadan ko'p 765 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 5 ta hisoblaniladi. Belgilar 765 tadan ko'p 918 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 6 ta hisoblaniladi. Belgilar 918 tadan ko'p 1071 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 7 ta hisoblaniladi. Belgilar 1071 tadan ko'p 1224 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 8 ta hisoblaniladi. Agarda belgilar 1224 tadan ko'p bo'lsa har bir o'quvchiga ketadigan sms 30 ta hisoblaniladi.</p>
+<br><h3 style="text-align:left">Hisobingizdagi smslar soni: ${SchoolSmsCount} ta</h3></p>
+<p style="text-align:left">1 ta SMS narxi 150 so'mni tashkil etadi.
+SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms sozlamalar</a> bo'limiga o\'ting</p>`
+                var swalButtonTitle = 'Tanishib chiqdim!'
+                Swal.fire({
+                    title: 'Sms jo\'natish uchun oferta shartlari',
+                    text: '',
+                    width: 900,
+                    html: html,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown',
+
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    // {#customClass: 'swal-wide',#}
+                    showConfirmButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: swalButtonTitle,
+                    confirmButtonColor: '#8b8989',
+                    allowOutsideClick: false,
+                    //  {#background: '#fff url(/images/trees.png)',#}
+                    //  {#backdrop: ``#}
+                    customClass: {
+                        backdrop: 'swal-wide',
+
+                    }
+
+                }).then(function (isConfirm) {
+                    if (isConfirm) {
+                        $('#accept_checkbox').prop('checked', true)
+                        $('#accept_text').css('color', 'blue')
+                    }
+                })
+            }
+
+            $('#accept_checkbox').on('change', function () {
+                if ($(this).prop('checked')) {
+                    $('#accept_text').css('color', 'blue')
+                } else {
+                    $('#accept_text').css('color', 'red')
+                }
+            })
+
+            $('#accept_text').on('click', function () {
+                accept_send_sms()
+            })
+
+
+            $("form").submit(function (e) {
+                var SelectedGroup = $('#selectedGroup').children("option:selected").val()
+
+                if (SchoolSmsCount <= 0) {
+                    e.preventDefault();
+                    $.notifyDefaults({
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        placement: {
+                            from: "top",
+                            align: "right"
+                        },
+                        z_index: 9999,
+                    });
+                    $.notify({
+                        icon: 'glyphicon glyphicon-envelope',
+                        message: `<svg width="2em" height="2em" class="svg-icon" viewBox="0 0 20 20">
+\t\t\t\t\t\t\t<path d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
+\t\t\t\t\t\t</svg>  Sizda sms to'plam mavjud emas!`
+                    });
+                } else if ($('#textLabel').val().length < 1) {
+                    e.preventDefault();
+
+                    $.notifyDefaults({
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        placement: {
+                            from: "top",
+                            align: "right"
+                        },
+                        z_index: 9999,
+                    });
+                    $.notify({
+                        icon: 'glyphicon glyphicon-envelope',
+                        message: `<svg width="2em" height="2em" class="svg-icon" viewBox="0 0 20 20">
+\t\t\t\t\t\t\t<path d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
+\t\t\t\t\t\t</svg>  Xabar matni kiritilmagan!`
+                    });
+
+                    $('#textLabel').css('border', '2px solid red')
+                } else if (SelectedGroup === 'false') {
+                    e.preventDefault();
+
+                    $.notifyDefaults({
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        placement: {
+                            from: "top",
+                            align: "right"
+                        },
+                        z_index: 9999,
+                    });
+                    $.notify({
+                        icon: 'glyphicon glyphicon-envelope',
+                        message: `<svg width="2em" height="2em" class="svg-icon" viewBox="0 0 20 20">
+\t\t\t\t\t\t\t<path d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
+\t\t\t\t\t\t</svg>  Guruh yoki xodimlarni tanlang!`
+                    });
+                    $('#selectedGroup').css('border', '2px solid red')
+                } else if (!$('#accept_checkbox').prop('checked')) {
+                    e.preventDefault();
+                    $('#accept_text').css('color', 'red')
+                } else {
+
+
+                }
+
+            });
+
+            $('#textLabel').on('keyup', function () {
+                $('#textLabel').css('border-color', 'blue')
+                var length = $(this).val().length
+
+                $('#counter').empty().append(length)
+                if (length >= 0 && length <= 160) {
+                    SmsCount = 1
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                } else if (length > 160 && length <= 306) {
+                    SmsCount = 2
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 306 && length <= 459) {
+                    SmsCount = 3
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 459 && length <= 612) {
+                    SmsCount = 4
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    console.log(Count, SmsCount)
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 612 && length <= 765) {
+                    SmsCount = 5
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 765 && length <= 918) {
+                    SmsCount = 6
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 918 && length <= 1071) {
+                    SmsCount = 7
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else if (length > 1071 && length <= 1224) {
+                    SmsCount = 8
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                } else {
+                    SmsCount = 30
+                    $('#spent_sms').siblings('b').css('color', 'red')
+                    $('#spent_sms').empty().text(Count * SmsCount)
+                    setTimeout(function () {
+                        $('#spent_sms').siblings('b').css('color', 'blue')
+                    }, 200)
+                }
+            })
+
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+                }
+            })
+
+            $('#selectedGroup').change(function () {
+
+                var SelectedGroup = $(this).children("option:selected").val()
+                if (parseInt(SelectedGroup)) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'user:get_group_pupils_count' %}",
+                        data: {
+                            'group': SelectedGroup, // from form
+                        },
+                        success: function (response) {
+                            $('#title_count').empty().html(`<b style="color: #0c525d">O\'quvchilar soni:</b> <span\n` +
+                                `id="pupils_count">0</span>`)
+                            $('#pupils_count').text(response)
+                            $('#selectedGroup').css('border-color', 'green')
+                            var length = $('#textLabel').val().length
+                            Count = response
+                            if (length >= 0 && length <= 160) {
+                                SmsCount = 1
+                                $('#spent_sms').empty().text(response)
+                            } else if (length > 160 && length <= 306) {
+                                SmsCount = 2
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 306 && length <= 459) {
+                                SmsCount = 3
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 459 && length <= 612) {
+                                SmsCount = 4
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 612 && length <= 765) {
+                                SmsCount = 5
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 765 && length <= 918) {
+                                SmsCount = 6
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 918 && length <= 1071) {
+                                SmsCount = 7
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else if (length > 1071 && length <= 1224) {
+                                SmsCount = 8
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            } else {
+                                SmsCount = 30
+                                $('#spent_sms').empty().text(response * SmsCount)
+                            }
+                        }
+                    });
+                } else if (SelectedGroup === 'teachers' || SelectedGroup === 'instructors' || SelectedGroup === 'accountants') {
+                    var SelectedWorkers = $(this).children("option:selected").val()
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'user:get_workers_count' %}",
+                        data: {
+                            'workers': SelectedWorkers, // from form
+                        },
+                        success: function (response) {
+
+                            if (parseInt(response)) {
+
+                                $('#title_count').empty().html(`<b style="color: #0c525d">Xodimlar soni:</b> <span\n` +
+                                    `id="pupils_count">${response}</span>`)
+
+                                $('#selectedGroup').css('border-color', 'green')
+                                $('#spent_sms').empty().text(response * SmsCount)
+                                Count = response
+
+
+                            } else {
+                                $.notifyDefaults({
+                                    type: 'danger',
+                                    allow_dismiss: false,
+                                    animate: {
+                                        enter: 'animated fadeInRight',
+                                        exit: 'animated fadeOutRight'
+                                    },
+                                    placement: {
+                                        from: "top",
+                                        align: "right"
+                                    },
+                                    z_index: 9999,
+                                });
+                                $.notify({
+                                    icon: 'glyphicon glyphicon-envelope',
+                                    message: `<svg width="2em" height="2em" class="svg-icon" viewBox="0 0 20 20">
+\t\t\t\t\t\t\t<path d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
+\t\t\t\t\t\t</svg>  Xodimlar mavjud emas!`
+                                });
+
+                                $('#title_count').empty().html(`<b style="color: #0c525d">Xodimlar soni:</b> <span\n` +
+                                    `id="pupils_count">0</span>`)
+                                $('#spent_sms').empty().text(0)
+                                $('#selectedGroup').css('border-color', 'green')
+                            }
+
+                        },
+                        error: function (response) {
+                            console.log(response)
+                        }
+                    })
+                } else {
+                    $(this).css('border-color', 'red')
+                    $('#pupils_count').empty().text(0)
+                    $('#spent_sms').empty().text(0)
+                }
+
+
+                //if (parseInt(SelectedGroup)) {
+                //     $(this).css('border', '2px solid green')
+                // } else {
+                //     $(this).css('border', '2px solid red')
+                //       $('#spent_sms').text('0')
+                //  }
+            })
+
+            if ($('#accept_checkbox').prop('checked')) {
+
+            } else {
+                $('#accept_checkbox').css('color', 'red')
+
+            }
+        })
+    </script>
+{% endblock bottom %}

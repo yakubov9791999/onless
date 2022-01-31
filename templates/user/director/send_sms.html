@@ -79,7 +79,8 @@
     <script type="text/javascript">
         var SchoolSmsCount = '{{ school_sms_count }}',
             Count = 0,
-            SmsCount = 1
+            SmsCount = 1,
+            smsPrice = "{{ SMS_PRICE }}"
         $(document).ready(function () {
             accept_send_sms()
 
@@ -87,7 +88,7 @@
                 var html = `<p style="text-align:left">Onless.uz tizimidagi guruh kesimida SMS jo'natish funksiyasi sizga har bir guruh o'quvchilariga bir necha soniyalar ichida SMS xabarnomangizni yetkazish vazifasini bajaradi.</p><p style="text-align:left"> Siyosatga qarshi, mafkuraga zid va O'zbekiston Respublikasi qonunchiligiga qarshi harakatlarni targ'ib qiluvchi SMS xabarnomalar tarqatish qat'iyan man etiladi. Shunday holatlar yuz berganida, SMS xabarnoma matni uchun avtomaktab javobgar hisoblanadi. Onless.uz ma'muriyatini javobgarligi mavjud emas.</p>
 <p style="text-align:left">SMS jo'natishda faqat lotin harflari kiritish maqsadga muvofiq. 160 tagacha belgidan iborat matnli sms jo'natish uchun har bitta o'quvchiga 1 ta sms sarflanadi. Sms matnidagi belgilar soni oshib borishi bilan smslar soni ham oshib boradi. Agarda belgilar 160 tadan ortiq 306 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 2 ta hisoblaniladi. Belgilar 306 tadan ko'p 459 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 3 ta hisoblaniladi. Belgilar 459 tadan ko'p 612 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 4 ta hisoblaniladi. Belgilar 612 tadan ko'p 765 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 5 ta hisoblaniladi. Belgilar 765 tadan ko'p 918 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 6 ta hisoblaniladi. Belgilar 918 tadan ko'p 1071 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 7 ta hisoblaniladi. Belgilar 1071 tadan ko'p 1224 tadan kam yoki teng bo'lsa har bir o'quvchiga ketadigan sms 8 ta hisoblaniladi. Agarda belgilar 1224 tadan ko'p bo'lsa har bir o'quvchiga ketadigan sms 30 ta hisoblaniladi.</p>
 <br><h3 style="text-align:left">Hisobingizdagi smslar soni: ${SchoolSmsCount} ta</h3></p>
-<p style="text-align:left">1 ta SMS narxi 150 so'mni tashkil etadi.
+<p style="text-align:left">1 ta SMS narxi ${smsPrice} so'mni tashkil etadi.
 SMS to'plamni xarid qilish uchun <a href=\"{% url 'user:sms_settings' %}\">sms sozlamalar</a> bo'limiga o\'ting</p>`
                 var swalButtonTitle = 'Tanishib chiqdim!'
                 Swal.fire({

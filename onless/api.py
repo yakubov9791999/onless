@@ -1,4 +1,6 @@
 import json
+import os
+import random
 import time
 from types import FunctionType
 import requests
@@ -286,3 +288,248 @@ class GetStatusSms:
                 return FAILED
             else:
                 return PROCESSING
+
+
+class SendSmsWithPlayMobile:
+    def __init__(self,
+                 user,
+                 message=None,
+                 is_add_pupil=False,
+                 is_edit_pupil=False,
+                 is_add_worker=False,
+                 is_edit_worker=False,
+                 is_attendance=False,
+                 is_rating=False,
+                 is_payment=False,
+
+                 subject=None,
+                 score=None,
+                 pay=None,
+                 payment=None,
+                 ):
+
+        self.phone = user.phone
+        self.message = message
+        self.spend = None
+        self.message_id = random.randint(100000000, 999999999)
+        self.username = os.getenv('PLAY_MOBILE_USERNAME')
+        self.password = os.getenv('PLAY_MOBILE_PASSWORD')
+        self.is_add_pupil = is_add_pupil
+        self.is_edit_pupil = is_edit_pupil
+        self.is_add_worker = is_add_worker
+        self.is_edit_worker = is_edit_worker
+        self.is_attendance = is_attendance
+        self.is_rating = is_rating
+        self.is_payment = is_payment
+        self.user = user
+        self.subject = subject
+        self.score = score
+        self.pay = pay
+        self.payment = payment
+
+    def get(self):
+        step1 = self.custom_validation()
+        if step1['status'] == SUCCESS:
+            maked_message = self.make_messages()
+            message = self.clean_message(maked_message)
+            step2 = self.calculation_send_sms(message)
+            if step2['status'] == SUCCESS:
+                return self.send_message(message)
+            else:
+                return {'status': FAILED, 'result': step2['result']}
+        else:
+            return {'status': FAILED, 'result': step1['result']}
+
+    def custom_validation(self):
+        if self.is_add_pupil:
+            if not self.user.school.send_sms_add_pupil:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if self.is_edit_pupil:
+            if not self.user.school.send_sms_edit_pupil:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if self.is_add_worker:
+            if not self.user.school.send_sms_add_worker:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if self.is_edit_worker:
+            if not self.user.school.send_sms_edit_worker:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if self.is_attendance:
+            if not self.user.school.send_sms_attendance:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if self.is_rating:
+            if not self.user.school.send_sms_rating:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if self.is_payment:
+            if not self.user.school.send_sms_payment:
+                return {'status': FAILED, 'result': "Sms xizmati o'chirilgan!"}
+
+        if not len(str(self.phone)) == 9:
+            return {'status': FAILED, 'result': "Tel raqam kirtishda xatolik!"}
+
+        if not any([self.is_add_pupil, self.is_edit_pupil, self.is_add_worker, self.is_edit_worker, self.is_attendance,
+                    self.is_rating, self.is_payment]):
+            if self.message == '' or self.message == None:
+                return {'status': FAILED, 'result': "Xabar matni kiritilmagan!"}
+            else:
+                self.message = self.clean_message(self.message)
+        return {'status': SUCCESS, 'result': None}
+
+    def send_message(self, message):
+        try:
+            URL = os.getenv('PLAY_MOBILE_URL')
+            headers = {'Content-type': 'application/json'}
+            payload = {
+                "messages": [
+                    {
+                        "recipient": "998" + str(self.phone),
+                        "message-id": str(self.message_id),
+                        "sms": {
+                            "originator": "3700",
+                            "content": {
+                                "text": str(message),
+                            }
+                        }
+                    }
+                ]
+            }
+
+            r = requests.post(URL, json=payload, headers=headers,
+                              auth=(self.username, self.password))
+
+            if self.is_add_pupil:
+                self.user.school.add_pupil_sms_count -= 1
+            else:
+                self.user.school.sms_count -= self.spend
+            self.user.school.save()
+
+
+            from user.models import Sms
+            sms = Sms.objects.create(school=self.user.school, sms_id=self.message_id, sms_count=self.spend,
+                                   text=self.message,
+                                   phone=self.phone)
+
+
+            if not r.status_code == SUCCESS:
+                sms.status = FAILED
+                sms.save()
+                return {'status': FAILED, 'result': "Sms xizmati tomonidan xatolik yuz berganligi sababli sms jo'natilmadi!"}
+
+            sms.status = SUCCESS
+            sms.save()
+            return {'status': SUCCESS, 'result': "Sms muvaffaqiyatli jo'natildi!"}
+
+        except Exception as e:
+            send_message_to_developer(f"sms object create error: {e}")
+            return {'status': FAILED, 'result': "Sms xizmatida tomonidan xatolik yuz berdi!"}
+
+    def clean_message(self, message):
+        message = message.replace('ц', 'ts').replace('ч', 'ch').replace('ю',
+                                                                        'yu').replace(
+            'а', 'a').replace('б', 'b').replace('қ', "q").replace('ў', "o'").replace('ғ', "g'").replace('ҳ',
+                                                                                                        "h").replace(
+            'х',
+            "x").replace(
+            'в', 'v').replace('г', 'g').replace('д', 'd').replace('е',
+                                                                  'e').replace(
+            'ё', 'yo').replace('ж', 'j').replace('з', 'z').replace('и', 'i').replace('й', 'y').replace('к',
+                                                                                                       'k').replace(
+            'л', 'l').replace('м', 'm').replace('н', 'n').replace('о', 'o').replace('п', 'p').replace('р',
+                                                                                                      'r').replace(
+            'с', 's').replace('т', 't').replace('у', 'u').replace('ш', 'sh').replace('щ', 'sh').replace('ф',
+                                                                                                        'f').replace(
+            'э', 'e').replace('ы', 'i').replace('я', 'ya').replace('ў', "o'").replace('ь', "'").replace('ъ',
+                                                                                                        "'").replace(
+            '’', "'").replace('“', '"').replace('”', '"').replace(',', ',').replace('.', '.').replace(':', ':')
+        # filter upper
+        message = message.replace('Ц', 'Ts').replace('Ч', 'Ch').replace('Ю', 'Yu').replace(
+            'А', 'A').replace('Б', 'B').replace('Қ', "Q").replace('Ғ', "G'").replace('Ҳ', "H").replace('Х',
+                                                                                                       "X").replace(
+            'В', 'V').replace('Г', 'G').replace('Д', 'D').replace('Е',
+                                                                  'E').replace(
+            'Ё', 'Yo').replace('Ж', 'J').replace('З', 'Z').replace('И', 'I').replace('Й', 'Y').replace('К',
+                                                                                                       'K').replace(
+            'Л', 'L').replace('М', 'M').replace('Н', 'N').replace('О', 'O').replace('П', 'P').replace('Р',
+                                                                                                      'R').replace(
+            'С', 'S').replace('Т', 'T').replace('У', 'U').replace('Ш', 'Sh').replace('Щ', 'Sh').replace('Ф',
+                                                                                                        'F').replace(
+            'Э', 'E').replace('Я', 'Ya')
+        return message
+
+    def make_messages(self):
+        if self.is_add_pupil:
+            self.message = f"Hurmatli {self.user.name}! Siz {self.user.group.category}-{self.user.group.number} guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va imtihon testlariga tayyorlanish uchun http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
+        elif self.is_edit_pupil:
+            self.message = f"Hurmatli {self.user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
+        elif self.is_add_worker:
+            if self.user.role == '6':
+                role = 'instruktor'
+            elif self.user.role == '5':
+                role = 'hisobchi'
+            else:
+                role = "o'qituvchi"
+
+            self.message = f"Hurmatli {self.user.name}! Siz {self.user.school.title} da {role} lavozimida ro'yhatga olindingiz. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
+        elif self.is_edit_worker:
+            self.message = f"Hurmatli {self.user.name}! Sizning ma'lumotlaringiz tahrirlandi. http://onless.uz/kirish manziliga kiring. \nLogin: {self.user.username}\nParol: {self.user.turbo}\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+            return self.message
+        elif self.is_attendance:
+            if self.subject:
+                self.message = f"Hurmatli {self.user.name}! Bugun {self.subject.short_title} fanidan darsga qatnashmadingiz. Bu hol qayta takrorlansa guruh ro'yhatidan chetlashtirilasiz!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+                return self.message
+        elif self.is_rating:
+            if self.subject and self.score:
+                self.message = f"Hurmatli {self.user.name}! Bugun {self.subject.short_title} fanidan {self.score} bahosini oldingiz!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+                return self.message
+        elif self.is_payment:
+            if self.pay and self.payment:
+                self.message = f"Hurmatli {self.user.name}! Avtomaktabga {self.pay} so’m to’lov qildingiz! Jami to’lovingiz {self.payment} so’m. Toifa bo’yicha {self.user.group.price - int(self.payment)} so’m qarzdorligingiz qoldi!\nQo'shimcha ma'lumot uchun:{self.user.school.phone}"
+                return self.message
+        else:
+            return self.message
+
+    def calculation_send_sms(self, message):
+        try:
+            length = len(message)
+            if length:
+                if length >= 0 and length <= 160:
+                    self.spend = 1
+                elif length > 160 and length <= 306:
+                    self.spend = 2
+                elif length > 306 and length <= 459:
+                    self.spend = 3
+                elif length > 459 and length <= 612:
+                    self.spend = 4
+                elif length > 612 and length <= 765:
+                    self.spend = 5
+                elif length > 765 and length <= 918:
+                    self.spend = 6
+                elif length > 918 and length <= 1071:
+                    self.spend = 7
+                elif length > 1071 and length <= 1224:
+                    self.spend = 8
+                else:
+                    self.spend = 30
+
+                if self.is_add_pupil:
+                    if self.user.school.add_pupil_sms_count > 0:
+                        return {'status': SUCCESS, 'result': None}
+                    else:
+                        return {'status': FAILED, 'result': "Hisobingizda kiritish sms mavjud emas!"}
+                else:
+                    if self.user.school.sms_count >= self.spend:
+                        return {'status': SUCCESS, 'result': None}
+                    else:
+                        return {'status': FAILED, 'result': "Hisobingizda sms mavjud emas!"}
+            else:
+                return {'status': FAILED, 'result': "Xabar matni kiritilmagan!"}
+        except:
+            return {'status': FAILED, 'result': "Xatolik yuz berdi!"}

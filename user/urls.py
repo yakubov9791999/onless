@@ -8,7 +8,7 @@ urlpatterns = [
     path('add/', add_list, name='add_list'),
     path('settings/', settings_list, name='settings_list'),
     path('worker-add/', worker_add, name='worker_add'),
-    path('add-pupil/', add_pupil, name='add_pupil'),
+    path('group/<int:id>/add-pupil/', AddPupil.as_view(), name='add_pupil'),
     path('add-group/', add_group, name='add_group'),
     path('groups/', groups_list, name='groups_list'),
     path('group/<int:id>/', group_detail, name='group_detail'),
@@ -24,6 +24,7 @@ urlpatterns = [
     path('worker-edit/<int:id>/', worker_edit, name='worker_edit'),
     path('worker-delete/<int:id>/', worker_delete, name='worker_delete'),
     path('upload-file/', upload_file, name='upload_file'),
+    path('group/<int:id>/create-pupil-with-excel/', CreatePupilWithExcel.as_view(), name='create_pupil_with_excel'),
     path('bugalter/groups/', bugalter_groups_list, name='bugalter_groups_list'),
     path('bugalter/group/<int:id>/', bugalter_group_detail, name='bugalter_group_detail'),
     path('set-pay/', set_pay, name='set_pay'),
@@ -51,6 +52,7 @@ urlpatterns = [
          name='attendance_set_by_subject'),
     path('attendance-set-visited/', attendance_set_visited, name='attendance_set_visited'),
     path('send-sms/', send_sms, name='send_sms'),
+    path('send-sms/list/', SendSmsList, name='send_sms_list'),
 
     path('referral-list/<int:id>/', referral_list, name='referral_list'),
 
@@ -63,8 +65,9 @@ urlpatterns = [
     path('get-workers-count/', get_workers_count, name='get_workers_count'),
     # path('get-attendance-time/', get_attendance_time, name='get_attendance_time'),
     path('get-group-months/', get_group_months, name='get_group_months'),
-    path('sms-settings/', sms_settings, name='sms_settings'),
-    path('buy-sms/', buy_sms, name='buy_sms'),
+    path('sms-settings/', SmsSettings.as_view(), name='sms_settings'),
+    path('buy-simple-sms/', BuySimpleSms.as_view(), name='buy_simple_sms'),
+    path('buy-add-pupil-sms/', BuyAddPupilSms.as_view(), name='buy_add_pupil_sms'),
 
     path('modify-checkbox-send-sms/', modify_checkbox_send_sms, name='modify_checkbox_send_sms'),
     path('payment-payme/', payment_payme, name='payment_payme'),

@@ -28,7 +28,7 @@ from openpyxl.utils import get_column_letter
 
 from onless import settings
 from onless.api import SUCCESS, FAILED, INVALID_NUMBER, MESSAGE_IS_EMPTY, SMS_NOT_FOUND, SMS_SERVICE_NOT_TURNED, \
-    GetStatusSms
+    GetStatusSms, SendSmsWithPlayMobile
 from onless.settings import *
 from quiz.models import *
 from sign.models import Material
@@ -40,15 +40,19 @@ from user.models import *
 from video.views import *
 from video.models import *
 from sign.models import *
+from .mixins import AllowedRolesMixin
 from .models import *
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 import pandas as pd
 import calendar
 from calendar import month_name
 
 #
+from .serializers import CreatePupilSerializer
+from .utilities import parse_excel_pupil
 from .utils import render_to_pdf
 from docxtpl import DocxTemplate
+from rest_framework import generics
 
 
 def user_login(request):
@@ -154,90 +158,49 @@ def worker_add(request):
         return render(request, 'inc/404.html')
 
 
-@login_required
-def add_pupil(request):
-    if request.user.role == '2' or request.user.role == '3':
-        school = get_object_or_404(School, id=request.user.school.id)
-        # if school.sms_count == 0:
-        #     messages.error(request,
-        #                    "Sizda smslar mavjud emas! O'quvchi qo'shish uchun sms xarid qiling!")
-        #     return redirect(reverse_lazy('user:add_list'))
-        if request.user.role == '2':
-            groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('sort')
-            if not groups.exists():
-                messages.error(request, "O'quvchi qo'shish uchun avval guruh ro'yhatdan o'tkazing !")
-        elif request.user.role == '3':
-            teacher = User.objects.get(id=request.user.id)
-            groups = Group.objects.filter(school=request.user.school, is_active=True, teacher=teacher).order_by('sort')
-            if not groups.exists():
-                messages.error(request, "O'quvchi qo'shish uchun avval guruh ro'yhatdan o'tkazing !")
-        form = AddPupilForm()
-        context = {
-            'groups': groups,
-            'form': form,
-        }
-        if request.method == 'POST':
-            form = AddPupilForm(data=request.POST)
-            group = get_object_or_404(Group, id=request.POST['group'])
-            parol = random.randint(1000000, 9999999)
-            pasport = get_pasport(request.POST['pasport'])
-            if form.is_valid():
-                name = form.cleaned_data['name']
-                name = get_name(name)
-                try:
-                    user = User.objects.create_user(
-                        username=pasport,
-                        pasport=pasport,
-                        school=school,
-                        turbo=parol,
-                        password=parol,
-                        name=name,
-                        phone=form.cleaned_data['phone'],
-                        role='4',
-                        group=group,
-                        is_superuser=False,
-                    )
-                    user.set_password(parol)
-                    user.username = pasport
-                    if request.POST['birthday']:
-                        get_date = request.POST.get('birthday').split('.')
-                        birthday = f'{get_date[2]}-{get_date[1]}-{get_date[0]}'
-                        user.birthday = birthday
+class AddPupil(AllowedRolesMixin, View):
+    allowed_roles = [DIRECTOR, TEACHER]
 
-                    user.email = ''
-                    user.save()
-                    if school.send_sms_add_pupil:
-                        r = SendSmsWithApi(user=user, is_add_pupil=True).get()
-                        print(r, 1491)
-                        if r == SUCCESS:
-                            messages.success(request, f"+998{user.phone} raqamiga sms muvaffaqiyatli jo'natildi!")
-                        elif r == INVALID_NUMBER:
-                            user.delete()
-                            messages.error(request, f"{user.phone} raqam noto'g'ri kiritilgan!")
-                        elif r == MESSAGE_IS_EMPTY:
-                            user.delete()
-                            messages.error(request, "Xabar matni kiritilmagan!")
-                        elif r == SMS_NOT_FOUND:
-                            user.delete()
-                            messages.error(request, "Sizda sms to'plami mavjud emas!")
-                        elif r == SMS_SERVICE_NOT_TURNED:
-                            user.delete()
-                            messages.error(request, "Sms xizmati faollashtirilmagan!")
-                        else:
-                            user.delete()
-                            messages.error(request, "Xatolik yuz berdi!")
-                    else:
-                        messages.success(request,
-                                         "O'quvchi muvaffaqiyatli qo'shildi! Sms xizmati o'chirilganligi sababli login va parol sms tarzida yuborilmadi!")
-                except IntegrityError:
-                    messages.error(request, "Bu pasport oldin ro'yhatdan o'tkazilgan !")
-            else:
-                messages.error(request, "Forma to'liq yoki to'g'ri to'ldirilmagan !")
-        else:
-            form = AddPupilForm()
+    def dispatch(self, *args, **kwargs):
+        try:
+            group = Group.objects.filter(id=kwargs.get('id')).last()
+            if self.request.user.school == group.school:
+                return super(AllowedRolesMixin, self).dispatch(*args, **kwargs)
+            return redirect(reverse_lazy('error_403'))
+        except Exception as e:
+            print(e)
+            return redirect(reverse_lazy('error_403'))
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            'group_id': self.kwargs.get('id')
+        }
         return render(request, 'user/pupil/add_pupil.html', context)
-    else:
-        return render(request, 'inc/404.html')
+
+    def post(self, request, *args, **kwargs):
+        school = get_object_or_404(School, id=request.user.school.id)
+        if school.add_pupil_sms_count <= 0:
+            messages.error(request,
+                           "Sizda smslar mavjud emas! O'quvchi qo'shish uchun kiritish sms xarid qiling! <a href='{0}'>Sms xarid qilish uchun ushbu havolaga bosing</a>".format(
+                               reverse('user:sms_settings')))
+            return redirect(reverse_lazy('user:add_pupil', kwargs={'id': self.kwargs.get('id')}))
+        serializer = CreatePupilSerializer(data=request.POST,
+                                           context={'request': request, 'group_id': kwargs.get('id')})
+        if serializer.is_valid():
+            serializer.save()
+            r = SendSmsWithPlayMobile(user=serializer.instance, is_add_pupil=True).get()
+            # r = {'status': SUCCESS, 'result': "Test"}
+            if r['status'] == SUCCESS:
+                messages.success(request, "O'quvchi muvaffaqiyatli qo'shildi! " + r['result'])
+            else:
+                messages.warning(request, "O'quvchi muvaffaqiyatli qo'shildi! " + r['result'])
+        else:
+            try:
+                message = next(iter(dict(serializer.errors).values()))[0]
+                messages.error(request, message)
+            except:
+                messages.error(request, serializer.errors)
+        return self.get(request, *args, **kwargs)
 
 
 @login_required
@@ -710,6 +673,7 @@ def pupil_delete(request, id):
     if (request.user.school == school and (
             request.user.role == '2' or request.user.role == '3' or request.user.role == '5' or request.user.role == '6')):
         pupil.delete()
+        return HttpResponse(status=200)
     else:
         return render(request, 'inc/404.html')
 
@@ -792,6 +756,57 @@ def worker_delete(request, id):
         worker.delete()
     else:
         return render(request, 'inc/404.html')
+
+
+class CreatePupilWithExcel(AllowedRolesMixin, View):
+    allowed_roles = [TEACHER, DIRECTOR]
+
+    def dispatch(self, *args, **kwargs):
+        try:
+            group = Group.objects.filter(id=kwargs.get('id')).last()
+            if self.request.user.school == group.school:
+                return super(AllowedRolesMixin, self).dispatch(*args, **kwargs)
+            return redirect(reverse_lazy('error_403'))
+        except Exception as e:
+            print(e)
+            return redirect(reverse_lazy('error_403'))
+
+
+    def post(self, request, *args, **kwargs):
+        if request.FILES.get('file'):
+            file = request.FILES.get('file')
+            if not file.name.endswith(("xlsx")):
+                messages.error(request, "xlsx kengaytmadagi excel fayl yuklang!")
+                return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
+
+            datas = parse_excel_pupil(file.file)
+            if len(datas) > request.user.school.add_pupil_sms_count:
+                messages.error(request,
+                               "Excel fayldagi o'quvchilar soni {0} ta, sizdagi kiritish smslar soni esa {1} ta! Iltimos yetarlicha kiritish sms xarid qilib qayta urinib ko'ring!".format(
+                                   len(datas), request.user.school.add_pupil_sms_count))
+                return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
+            i = 0
+            for data in datas:
+                serializer = CreatePupilSerializer(data=data,
+                                                   context={'request': request, 'group_id': kwargs.get('id')})
+                if serializer.is_valid():
+                    serializer.save()
+                    r = SendSmsWithPlayMobile(user=serializer.instance, is_add_pupil=True).get()
+                    # r = {'status': SUCCESS, 'result': "Test"}
+                    i += 1
+                else:
+                    try:
+                        message = next(iter(dict(serializer.errors).values()))[0]
+                        messages.error(request, message)
+                    except:
+                        messages.error(request, serializer.errors)
+                    return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
+            if i > 1:
+                messages.success(request, "{0} ta o'quvchi muvaffaqiyatli qo'shildi!".format(i))
+            return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
+        else:
+            messages.error(request, "Fayl yuklanmagan!")
+            return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
 
 
 @login_required
@@ -1619,58 +1634,78 @@ def attendance_set_by_subject(request, group_id, subject_id):
 @login_required
 def attendance_set_visited(request):
     if request.POST:
-        pupil = User.objects.get(id=request.POST.get('visited_pupil'))
-        subject = Subject.objects.get(id=request.POST.get('visited_subject'))
-        date = datetime.datetime.strptime(request.POST.get('visited_date'), "%d.%m.%Y")
-        school = School.objects.get(id=pupil.school.id)
+        try:
+            pupil = User.objects.get(id=request.POST.get('visited_pupil'))
+            subject = Subject.objects.get(id=request.POST.get('visited_subject'))
+            date = datetime.datetime.strptime(request.POST.get('visited_date'), "%d.%m.%Y")
+            school = School.objects.get(id=pupil.school.id)
+            message = ''
+            if request.POST.get('visited') == 'False':
+                visited = False
+            else:
+                visited = True
 
-        if request.POST.get('visited') == 'False':
-            visited = False
-        else:
-            visited = True
+            attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
+                                                   date=date)
 
-        attendance = Attendance.objects.filter(pupil=pupil, teacher=request.user, subject=subject,
-                                               date=date)
+            if not attendance.exists():
+                if visited == False:
+                    a = Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject,
+                                                  is_visited=visited, date=date, created_date=datetime.datetime.now(),
+                                                  updated_date=datetime.datetime.now())
 
-        if not attendance.exists():
-            if visited == False:
-                Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject,
-                                          is_visited=visited, date=date)
-        else:
-            for atten in attendance:
-                atten.is_visited = visited
-                atten.updated_date = timezone.now()
-                atten.save()
-
-                if atten.is_visited == False:
                     if school.send_sms_attendance:
-                        r = SendSmsWithApi(user=atten.pupil, is_attendance=True, subject=atten.subject).get()
-                        print(f"response: {r}")
+                        r = SendSmsWithApi(user=a.pupil, is_attendance=True, subject=a.subject).get()
                         if r == SUCCESS:
-                            messages.success(request, f"{atten.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
+                            message = f"{a.pupil.name}ga sms muvaffaqiyatli jo'natildi!"
                         elif r == INVALID_NUMBER:
-                            messages.error(request, f"{atten.pupil.phone} raqam noto'g'ri kiritilgan!")
+                            message = f"{a.pupil.phone} raqam noto'g'ri kiritilgan!"
                         elif r == MESSAGE_IS_EMPTY:
-                            messages.error(request, "Xabar matni kiritilmagan!")
+                            message = "Xabar matni kiritilmagan!"
                         elif r == SMS_NOT_FOUND:
-                            messages.error(request, "Sizda sms to'plami mavjud emas!")
+                            message = "Sizda sms to'plami mavjud emas!"
                         elif r == SMS_SERVICE_NOT_TURNED:
-                            messages.error(request, "Sms xizmati faollashtirilmagan!")
+                            message = "Sms xizmati faollashtirilmagan!"
                         else:
-                            messages.error(request, "SMS yuborishda xatolik yuz berdi!")
+                            message = "SMS yuborishda xatolik yuz berdi!"
+                    else:
+                        message = "Sms xizmati o'chirilganligi sababli sms jo'natilmadi!"
+            else:
+                for atten in attendance:
+                    atten.is_visited = visited
+                    atten.updated_date = datetime.datetime.now()
+                    atten.save()
 
-        #         new_timezone_timestamp = atten.updated_date.astimezone(new_timezone)
-        #         get_datetime = new_timezone_timestamp.strftime('%d.%m.%Y %H:%M')
-        # #         return HttpResponse(get_datetime)
+                    if atten.is_visited == False:
+                        if school.send_sms_attendance:
+                            r = SendSmsWithApi(user=atten.pupil, is_attendance=True, subject=atten.subject).get()
+                            if r == SUCCESS:
+                                message = f"{atten.pupil.name}ga sms muvaffaqiyatli jo'natildi!"
+                            elif r == INVALID_NUMBER:
+                                message = f"{atten.pupil.phone} raqam noto'g'ri kiritilgan!"
+                            elif r == MESSAGE_IS_EMPTY:
+                                message = "Xabar matni kiritilmagan!"
+                            elif r == SMS_NOT_FOUND:
+                                message = "Sizda sms to'plami mavjud emas!"
+                            elif r == SMS_SERVICE_NOT_TURNED:
+                                message = "Sms xizmati faollashtirilmagan!"
+                            else:
+                                message = "SMS yuborishda xatolik yuz berdi!"
+                        else:
+                            message = "Sms xizmati o'chirilganligi sababli sms jo'natilmadi!"
+                    else:
+                        atten.delete()
 
-        return HttpResponseRedirect(reverse('user:electronical_journal') + "?%s" % request.META['QUERY_STRING'])
+            return HttpResponse(message, status=200)
+        except:
+            return HttpResponse(status=400)
 
 
 @login_required
 def send_sms(request):
     if request.user.role == '2':
         form = SendSmsForm(data=request.POST)
-        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('id')
+        groups = Group.objects.filter(school=request.user.school, is_active=True).order_by('-id')
         teachers = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=3)).order_by(
             'name')
         instructors = User.objects.filter(Q(school=request.user.school) and Q(is_active=True) and Q(role=6)).order_by(
@@ -1688,7 +1723,8 @@ def send_sms(request):
             'school_sms_count': school_sms_count,
             'teachers': teachers,
             'instructors': instructors,
-            'accountants': accountants
+            'accountants': accountants,
+            'SMS_PRICE': SMS_PRICE
         }
         if request.method == 'POST':
             if form.is_valid():
@@ -1773,6 +1809,10 @@ def send_sms(request):
         return render(request, 'user/director/send_sms.html', context)
     else:
         return render(request, 'inc/404.html')
+
+
+class SendSmsList(generics.ListAPIView):
+    pass
 
 
 @login_required
@@ -1915,41 +1955,45 @@ def rating_set_by_subject(request, group_id, subject_id):
 @login_required
 def rating_create(request):
     if request.POST:
-        pupil = get_object_or_404(User, id=request.POST.get('rating_pupil'))
-        subject = get_object_or_404(Subject, id=request.POST.get('rating_subject'))
-        school = get_object_or_404(School, id=pupil.school.id)
-        date = datetime.datetime.strptime(request.POST.get('rating_date'), "%d.%m.%Y")
-        score = request.POST.get('rating')
+        try:
+            pupil = get_object_or_404(User, id=request.POST.get('rating_pupil'))
+            subject = get_object_or_404(Subject, id=request.POST.get('rating_subject'))
+            school = get_object_or_404(School, id=pupil.school.id)
+            date = datetime.datetime.strptime(request.POST.get('rating_date'), "%d.%m.%Y")
+            score = request.POST.get('rating')
+            message = ''
+            ratings = Rating.objects.filter(pupil=pupil, subject=subject, date=date)
 
-        ratings = Rating.objects.filter(pupil=pupil, subject=subject, date=date)
-
-        if not ratings.exists():
-            rating = Rating.objects.create(score=score, teacher=request.user, subject=subject, pupil=pupil, date=date,
-                                           updated_date=timezone.now())
-
-            if school.send_sms_rating:
-                r = SendSmsWithApi(user=rating.pupil, is_rating=True, score=rating.score,
-                                   subject=rating.subject).get()
-                print(f"response: {r}")
-                if r == SUCCESS:
-                    messages.success(request, f"{rating.pupil.name}ga sms muvaffaqiyatli jo'natildi!")
-                elif r == INVALID_NUMBER:
-                    messages.error(request, f"{rating.pupil.phone} raqam noto'g'ri kiritilgan!")
-                elif r == MESSAGE_IS_EMPTY:
-                    messages.error(request, "Xabar matni kiritilmagan!")
-                elif r == SMS_NOT_FOUND:
-                    messages.error(request, "Sizda sms to'plami mavjud emas!")
-                elif r == SMS_SERVICE_NOT_TURNED:
-                    messages.error(request, "Sms xizmati faollashtirilmagan!")
+            if not ratings.exists():
+                rating = Rating.objects.create(score=score, teacher=request.user, subject=subject, pupil=pupil,
+                                               date=date,
+                                               updated_date=datetime.datetime.now())
+                if school.send_sms_rating:
+                    r = SendSmsWithApi(user=rating.pupil, is_rating=True, score=rating.score,
+                                       subject=rating.subject).get()
+                    if r == SUCCESS:
+                        message = f"{rating.pupil.name}ga sms muvaffaqiyatli jo'natildi!"
+                    elif r == INVALID_NUMBER:
+                        message = f"{rating.pupil.phone} raqam noto'g'ri kiritilgan!"
+                    elif r == MESSAGE_IS_EMPTY:
+                        message = "Xabar matni kiritilmagan!"
+                    elif r == SMS_NOT_FOUND:
+                        message = "Sizda sms to'plami mavjud emas!"
+                    elif r == SMS_SERVICE_NOT_TURNED:
+                        message = "Sms xizmati faollashtirilmagan!"
+                    else:
+                        message = "SMS yuborishda xatolik yuz berdi!"
                 else:
-                    messages.error(request, "SMS yuborishda xatolik yuz berdi!")
-        else:
-            rating = ratings.first()
-            rating.score = score
-            rating.updated_date = timezone.now()
-            rating.save()
+                    message = "Sms xizmati o'chirilganligi sababli sms jo'natilmadi!"
+            else:
+                rating = ratings.first()
+                rating.score = score
+                rating.updated_date = datetime.datetime.now()
+                rating.save()
 
-        return HttpResponseRedirect(reverse('user:electronical_journal') + "?%s" % request.META['QUERY_STRING'])
+            return HttpResponse(message, status=200)
+        except:
+            return HttpResponse(status=400)
 
 
 @login_required
@@ -2183,61 +2227,99 @@ def get_group_months(request):
         return False
 
 
-@login_required
-def sms_settings(request):
-    if request.user.role == '2':
-        send_sms = Sms.objects.filter(school=request.user.school)
-        if request.method == 'GET':
-            if request.GET.get('q', None):
-                send_sms = send_sms.filter(text__icontains=request.GET.get('q'))
+class SmsSettings(LoginRequiredMixin, ListView):
+    model = Sms
+    template_name = 'user/director/sms_settings.html'
+    context_object_name = 'send_sms'
+    paginate_by = 10
+    queryset = Sms.objects.all().order_by('-id')
 
-        for sms in send_sms:
-            if sms.status == PROCESSING:
-                r = GetStatusSms(id=sms.sms_id).get()
-                if r == SUCCESS:
-                    sms.status = SUCCESS
-                elif r == FAILED:
-                    sms.status = FAILED
-                else:
-                    sms.status = PROCESSING
-                sms.save()
-        context = {
-            'SMS_PRICE': SMS_PRICE,
-            'SMS_ADD_STEP': SMS_ADD_STEP,
-            'send_sms': send_sms
-        }
-
-        return render(request, 'user/director/sms_settings.html', context)
-    else:
-        return render(request, 'inc/404.html')
-
-
-@login_required
-def buy_sms(request):
-    try:
+    def get(self, request, *args, **kwargs):
         if request.user.role == '2':
-            school = get_object_or_404(School, id=request.user.school.id)
-            if request.user == school.director:
-                count = int(request.POST.get('count'))
-                if count >= SMS_ADD_STEP:
-                    money = count * SMS_PRICE
-                    if school.money >= money:
-                        school.money -= money
-                        school.sms_count += count
-                        school.save()
+            if request.GET.get('q', None):
+                try:
+                    qs = Sms.objects.filter(text__icontains=request.GET.get('q'), phone__icontains=request.GET.get('q'))
+                except:
+                    qs = Sms.objects.filter(text__icontains=request.GET.get('q'))
+                self.queryset = qs
+            return super().get(request, *args, **kwargs)
+        else:
+            return render(request, 'inc/404.html')
 
-                        BuySms.objects.create(school=school, money=money, sms_count=count)
-                        return HttpResponse(True)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(SMS_PRICE=SMS_PRICE)
+        context.update(ADD_PUPIL_SMS_PRICE=ADD_PUPIL_SMS_PRICE)
+        context.update(SMS_ADD_STEP=SMS_ADD_STEP)
+        context.update(ADD_PUPIL_SMS_ADD_STEP=ADD_PUPIL_SMS_ADD_STEP)
+
+        # for sms in context.get('send_sms'):
+        #     if sms.status == PROCESSING:
+        #         r = GetStatusSms(id=sms.sms_id).get()
+        #         if r == SUCCESS:
+        #             sms.status = SUCCESS
+        #         elif r == FAILED:
+        #             sms.status = FAILED
+        #         else:
+        #             sms.status = PROCESSING
+        #         sms.save()
+        return context
+
+
+class BuySimpleSms(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        try:
+            if request.user.role == '2':
+                school = get_object_or_404(School, id=request.user.school.id)
+                if request.user == school.director:
+                    count = int(request.POST.get('count'))
+                    if count >= SMS_ADD_STEP:
+                        money = count * SMS_PRICE
+                        if school.money >= money:
+                            school.money -= money
+                            school.sms_count += count
+                            school.save()
+
+                            BuySms.objects.create(school=school, money=money, sms_count=count)
+                            return HttpResponse(True)
+                        else:
+                            return HttpResponse(False)
                     else:
                         return HttpResponse(False)
                 else:
                     return HttpResponse(False)
             else:
                 return HttpResponse(False)
-        else:
+        except:
             return HttpResponse(False)
-    except:
-        return HttpResponse(False)
+
+
+class BuyAddPupilSms(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        try:
+            if request.user.role == '2':
+                school = get_object_or_404(School, id=request.user.school.id)
+                if request.user == school.director:
+                    count = int(request.POST.get('count'))
+                    if count >= ADD_PUPIL_SMS_ADD_STEP:
+                        money = count * ADD_PUPIL_SMS_PRICE
+                        if school.money >= money:
+                            school.money -= money
+                            school.add_pupil_sms_count += count
+                            school.save()
+
+                            BuySms.objects.create(school=school, money=money, sms_count=count)
+                            return HttpResponse(True)
+                        else:
+                            return HttpResponse(False)
+                    else:
+                        return HttpResponse(False)
+                else:
+                    return HttpResponse(False)
+            else:
+                return HttpResponse(False)
+        except:
+            return HttpResponse(False)
 
 
 @login_required

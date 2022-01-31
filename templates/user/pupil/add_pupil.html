@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
-{% load django_bootstrap_breadcrumbs %}
+{% load django_bootstrap_breadcrumbs  user_tags %}
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Kiritishlar" "user:add_list" %}
-    {% breadcrumb "O'quvchi qo'shish" "user:add_pupil" %}
+    {% get_fullname_group group_id as get_group %}
+    {% breadcrumb get_group "user:group_detail" group_id %}
+    {% breadcrumb "O'quvchi qo'shish" "user:add_pupil" group_id %}
 {% endblock %}
 {% block content %}
 
@@ -19,23 +21,13 @@
 
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form role="form" method="POST" action="{% url 'user:add_pupil' %}">
+                <form role="form" method="POST" action="{% url 'user:add_pupil' group_id %}">
                     {% csrf_token %}
                     <div class="card-body">
-
                         <div class="form-group">
                             <label class="label_required" for="exampleInputname">F.I.O</label>
                             <input type="text" name="name" class="form-control" id="exampleInputname"
                                    placeholder="F.I.O ni kiriting ..." required="required">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label_required" for="exampleInputname">Guruh</label>
-                            <select name="group" class="form-control" id="" required="required">
-                                {% for group in groups %}
-                                    <option value="{{ group.id }}">{{ group.category }}-{{ group.number }} {{ group.year }}</option>
-                                {% endfor %}
-                            </select>
                         </div>
 
                         <div class="form-group">
@@ -59,7 +51,7 @@
                         <div class="form-group">
                             <label for="birthday">Tug'ilgan yili:</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="birthday" name="birthday">
+                                <input type="date" class="form-control" id="birthday" name="birthday">
                             </div>
                         </div>
 
@@ -81,35 +73,35 @@
     <script>
         $("#exampleInputPasport").keypress(PassportInputFilter);
 
-        $(function () {
-
-            $("#birthday").datepicker({
-                dateFormat: "dd.mm.yy",
-                // defaultDate: '01-01-1985',
-                // value: "7/11/2011",
-                showButtonPanel: true,
-                numberOfMonths: 2,
-                //startDate: "-30d",
-                //endDate: "+30d",
-                //currentText: 'Today',
-                autoclose: true,
-                changeMonth: false,
-                changeYear: false,
-                //gotoCurrent: true,
-                //stepMonths: 0,
-                //duration: 'fast',
-                // yearRange: '1920:2030',
-
-                // beforeShow: function () {
-                //     alert('show');
-                //    $("#ui-datepicker-div").addClass("DatePikerEN");
-                //},
-
-
-            })
-
-            $("#birthday").datepicker('setDate', new Date());
-        })
+        {#$(function () {#}
+        {##}
+        {#    $("#birthday").datepicker({#}
+        {#        dateFormat: "dd.mm.yy",#}
+        {#        // defaultDate: '01-01-1985',#}
+        {#        // value: "7/11/2011",#}
+        {#        showButtonPanel: true,#}
+        {#        numberOfMonths: 2,#}
+        {#        //startDate: "-30d",#}
+        {#        //endDate: "+30d",#}
+        {#        //currentText: 'Today',#}
+        {#        autoclose: true,#}
+        {#        changeMonth: false,#}
+        {#        changeYear: false,#}
+        {#        //gotoCurrent: true,#}
+        {#        //stepMonths: 0,#}
+        {#        //duration: 'fast',#}
+        {#        // yearRange: '1920:2030',#}
+        {##}
+        {#        // beforeShow: function () {#}
+        {#        //     alert('show');#}
+        {#        //    $("#ui-datepicker-div").addClass("DatePikerEN");#}
+        {#        //},#}
+        {##}
+        {##}
+        {#    })#}
+        {##}
+        {#    $("#birthday").datepicker('setDate', new Date());#}
+        //{#})#}
 
 
         $('#phone').keyup(function () {
@@ -127,7 +119,6 @@
 
             }
         });
-
 
 
     </script>

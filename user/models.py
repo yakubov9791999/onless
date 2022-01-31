@@ -250,6 +250,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
 
+    def save(self, *args, **kwargs):
+        if self.turbo:
+            self.set_password(str(self.turbo))
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name}"
 
@@ -309,9 +314,8 @@ class Attendance(models.Model):
     subject = models.ForeignKey(Subject, verbose_name='Fan', on_delete=models.CASCADE,
                                 related_name='subject_attendance', null=True)
     is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan', default=False)
-    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True, default=timezone.now)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True,
-                                        default=timezone.now)
+    created_date = models.DateTimeField(verbose_name='Vaqti', editable=True)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True)
     date = models.DateField(blank=True, null=True)
 
     def __str__(self):

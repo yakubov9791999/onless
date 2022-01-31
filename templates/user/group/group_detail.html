@@ -9,6 +9,11 @@
     {% breadcrumb get_group "user:group_detail" group.id %}
 {% endblock %}
 
+{% block css %}
+    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+{% endblock css %}
+
 {% block content %}
     <style>
         .offline_checkbox:hover {
@@ -27,29 +32,34 @@
 
                 {% include 'inc/messages_part.html' %}
 
-                <div class="row">
-                    <a id="button_add_pupil" onclick="add_pupil()"
-                       style="color: whitesmoke; margin-top: 1%;"
-                       href="/media/online/namuna2.xlsx" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-secondary">Excel
-                        orqali qo'shish</a>
-                    <form id="export_excel_form" style="display: none" class="form-group mt-3 ml-3"
-                          action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-
-                        <input type="file" name="file">
-                        <input type="hidden" name="group" value="{{ group.id }}">
-                        <input type="submit" class="btn btn-secondary" value="Excelni yuklash">
-                    </form>
-                    {% if pupils %}
-                        <a id="export_pdf_form" style="color: whitesmoke; margin-top: 1%;"
-                           href="?download=True" class="col-lg-3 col-md-4 col-sm-12 ml-3 btn btn-info"><i
-                                class="fas fa-download"></i>&nbsp&nbsp&nbspRo'yhatni yuklab olish</a>
-                    {% endif %}
-                </div>
 
                 <!-- /.card-header -->
                 <!-- form start -->
                 <div class="card-body">
+                    <div class="row justify-content-between">
+
+                        {#                    <form id="export_excel_form" style="display: none" class="form-group mt-3 ml-3"#}
+                        {#                          action="{% url 'user:upload_file' %}" method="post" enctype="multipart/form-data">#}
+                        {#                        {% csrf_token %}#}
+                        {##}
+                        {#                        <input type="file" name="file">#}
+                        {#                        <input type="hidden" name="group" value="{{ group.id }}">#}
+                        {#                        <input type="submit" class="btn btn-secondary" value="Excelni yuklash">#}
+                        {#                    </form>#}
+                        {% if pupils %}
+                            <a id="export_pdf_form" style="color: whitesmoke; margin-top: 1%;"
+                               href="?download=True"
+                               class="col-12 col-xs-6 col-sm-5 col-md-4 col-lg-4 col-xl-4 btn btn-info"><i
+                                    class="fas fa-download"></i> Ro'yhatni yuklab olish</a>
+                        {% endif %}
+
+                        <button id="button_add_pupil"
+                                style="margin-top: 1%;"
+                                class="col-12 col-xs-6 col-sm-5 col-md-4 col-lg-4 col-xl-4 btn btn-outline-secondary"><i
+                                class="fas fa-user-plus"></i> O'quvchi qo'shish
+                        </button>
+                    </div>
+                    <br>
                     <div class="table-responsive">
                         <table style="font-size: 0.9rem" id="example1"
                                class="table table-bordered table-hovered table-hover">
@@ -152,69 +162,111 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade bd-example-modal-lg" id="addPupilModal" tabindex="-1" role="dialog"
+         aria-labelledby="addPupilModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPupilModalLabel">O'quvchi qo'shish turini tanlang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>O'quvchi qo'shish uchun 2 xil usuldan foydalanishingiz mumkin:</p>
+                    <ol style="list-style-type: circle">
+                        <li>Excel orqali</li>
+                        <li>Forma orqali</li>
+                    </ol>
+                    <p>Excel orqali qo'shishda excel fayl to'ldirish uchun sizga taqdim etiladi. Berilgan excel faylda
+                        ko'rsatilgan usulda ma'lumotlarni to'ldirib faylni qayta yuklashingiz talab etiladi. </p>
+                    <p>Forma orqali qo'shishda <span style="color: red">*</span> ushbu belgi qo'yilgan maydonlarni
+                        to'ldirish majburiy.</p>
+                    <hr>
+                    <div class="row justify-content-around">
+                        <div class="col-6 text-center">
+                            <button id="add_pupil_with_excel" class="btn btn-outline-secondary">
+                                <i class="fas fa-file-excel"></i> Excel orqali qo'shish
+                            </button>
+                        </div>
+                        <div class="col-6 text-center">
+                            <a href="{% url 'user:add_pupil' group.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-table"></i> Forma orqali qo'shish
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog"
+         aria-labelledby="fileUploadModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{% url 'user:create_pupil_with_excel' group.id %}" method="post"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="fileUploadModalLongTitle">Excel faylni yuklang</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="file" name="file" id="file" class="form-control" required
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bekor qilish</button>
+                        <button type="submit" id="uploadFileBtn" class="btn btn-primary">Yuklash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}
 
 {% block bottom %}
-    <script type="text/javascript">
-        function add_pupil() {
-            alert("Hozir sizga Excellda namuna taqdim etiladi. Ushbu namuna orqali o'quvchilarni qo'shishingiz mumkin. Ushbu namunaga ma'lumotlarni to'g'ri kiritishga e'tibor bering")
-            document.getElementById('button_add_pupil').style.display = 'none';
-            document.getElementById('export_excel_form').style.display = 'block';
-            document.getElementById('export_pdf_form').style.display = 'none';
-        }
 
-    </script>
-    <link data-require="sweet-alert@*" data-semver="0.4.2" rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            let first_download = true
+
+            $('#button_add_pupil').on('click', () => {
+                $('#addPupilModal').modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false
+                })
+            })
+
+            $('#add_pupil_with_excel').on('click', () => {
+                $('#addPupilModal').modal('hide')
 
 
-        function delete_pupil(group_id, pupil_id, pupil_name) {
-
-
-            var pupilId = pupil_id;
-            var pupilName = pupil_name;
-
-            swal({
-                title: "O'quvchini o'chirmoqchimisiz ?",
-                text: pupilName + "ni o'chirmoqchimisiz ?",
-                icon: "warning",
-                closeOnClickOutside: false,
-                buttons: [
-                    'Yoq, Bekor qilish!',
-                    'Ha, Roziman!'
-                ],
-                dangerMode: true,
-
-            }).then(function (isConfirm) {
-                if (isConfirm) {
-                    swal({
-                        title: "Muvaffaqiyatli o'chirildi !",
-                        text: pupilName + " muvaffaqiyatli o'chirildi !",
-                        closeOnClickOutside: false,
-                        icon: 'success'
-                    }).then(function () {
-                        $.ajax({
-                            type: 'GET',
-                            url: '/user/pupil-delete/' + pupilId,
-                        });
-                        {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
-                        setTimeout(function () {
-                            window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
-                        }, 1000);
-
-
-                    });
-                } else {
-                    swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
+                let a = document.createElement('a')
+                a.href = '/media/online/namuna2.xlsx'
+                if (first_download) {
+                    a.click()
+                    first_download = false
                 }
 
-            });
 
-        }
-
-        $(document).ready(function () {
+                $('#fileUploadModal').modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false
+                })
+            })
 
             $('.offline_checkbox').on('change', function () {
                 var checkbox = false,
@@ -240,9 +292,51 @@
                 })
 
             })
+        })
 
-        });
+        function delete_pupil(group_id, pupil_id, pupil_name) {
+
+            var pupilId = pupil_id;
+            var pupilName = pupil_name;
+
+            swal({
+                title: "O'quvchini o'chirmoqchimisiz ?",
+                text: pupilName + "ni o'chirmoqchimisiz ?",
+                icon: "warning",
+                closeOnClickOutside: false,
+                buttons: [
+                    'Yoq, Bekor qilish!',
+                    'Ha, Roziman!'
+                ],
+                dangerMode: true,
+
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/user/pupil-delete/' + pupilId,
+                    });
+
+                    swal({
+                        title: "Muvaffaqiyatli o'chirildi !",
+                        text: pupilName + " muvaffaqiyatli o'chirildi !",
+                        closeOnClickOutside: false,
+                        icon: 'success'
+                    }).then(function () {
+
+                        {#window.location.href = "{% url 'application:application_pdf' id=12345 %}".replace(/12345/, $('#application_id').html().toString());#}
+                        setTimeout(function () {
+                            window.location.href = "{% url 'user:group_detail' id=12345 %}".replace(/12345/, group_id.toString());
+                        }, 1000);
 
 
+                    });
+                } else {
+                    swal("Bekor qilindi", pupilName + " ro'yhatda turibti !", "error");
+                }
+
+            });
+
+        }
     </script>
 {% endblock bottom %}

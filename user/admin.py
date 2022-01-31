@@ -10,8 +10,9 @@ from .models import Payment
 
 @admin.register(EducationCategory)
 class EducationCategoryAdmin(admin.ModelAdmin):
-    list_display = ('title','sort')
+    list_display = ('title', 'sort')
     save_on_top = True
+
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -68,9 +69,10 @@ class ContactAdmin(admin.ModelAdmin):
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    list_display_links = ['category', ]
-    list_display = ['id', 'category', 'number', 'year', ]
-    list_filter = ['is_active', 'category', 'number', ]
+    list_display_links = ['id','category', ]
+    search_fields = ['id','category', 'number', 'year']
+    list_display = ['id', 'category', 'number', 'year', 'school' ]
+    list_filter = ['is_active', 'category', 'school']
 
 
 @admin.register(Pay)
@@ -83,7 +85,7 @@ class PayAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'subject', 'pupil', 'teacher','is_visited', 'created_date', 'updated_date']
+    list_display = ['id', 'subject', 'pupil', 'teacher', 'is_visited', 'created_date', 'updated_date']
     list_display_links = ['subject']
     list_filter = ['created_date', 'updated_date']
     search_fields = ['subject', 'pupil', 'teacher', ]
@@ -101,17 +103,19 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(Sms)
 class SmsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'text','sms_count', 'school']
+    list_display = ['id', 'text', 'sms_count', 'school']
     list_display_links = ['text', ]
     list_filter = ['school']
     save_on_top = True
 
+
 @admin.register(BuySms)
 class BuySmsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'school','sms_count', 'money']
+    list_display = ['id', 'school', 'sms_count', 'money']
     list_display_links = ['school', ]
-    list_filter = ['school',]
+    list_filter = ['school', ]
     save_on_top = True
+
 
 @admin.register(Referral)
 class ReferralAdmin(admin.ModelAdmin):
@@ -123,5 +127,6 @@ class ReferralAdmin(admin.ModelAdmin):
 
 class PaymentAdmin(admin.ModelAdmin):
     pass
+
 
 admin.site.register(Payment, PaymentAdmin)

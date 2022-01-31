@@ -203,8 +203,7 @@ def get_pupil_rating_or_attendance(pupil_id, date, subject_id):
     date = datetime.datetime.strptime(date, "%d.%m.%Y")
     date_min = datetime.datetime.combine(date, datetime.time.min)
     date_max = datetime.datetime.combine(date, datetime.time.max)
-    attendances = Attendance.objects.filter(pupil=pupil, subject=subject, date=date,
-                                            updated_date__range=(date_min, date_max))
+    attendances = Attendance.objects.filter(pupil=pupil, subject=subject).filter(Q(date=date) | Q(updated_date__range=(date_min, date_max)))
 
     context = {}
     if attendances.exists():

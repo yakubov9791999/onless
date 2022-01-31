@@ -3,7 +3,7 @@
         {% if forloop.last %}
             <div class="alert alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}danger{% else %}warning{% endif %}">
                 <a class="close" href="#" data-dismiss="alert">×</a>
-                {{ message }}
+                {{ message|safe }}
             </div>
         {% endif %}
     {% endfor %}

@@ -240,7 +240,9 @@ CKEDITOR_CONFIGS = {
 import pytz
 
 ASIA_TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")
-SMS_PRICE = 180
+SMS_PRICE = 200
+ADD_PUPIL_SMS_PRICE = 16000
 SMS_ADD_STEP = 10
+ADD_PUPIL_SMS_ADD_STEP = 2
 
 BREADCRUMBS_TEMPLATE = "django_bootstrap_breadcrumbs/bootstrap4.html"

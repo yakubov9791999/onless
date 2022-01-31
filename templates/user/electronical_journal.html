@@ -59,9 +59,9 @@
                                     {% endfor %}
                                 </select>
                             </div>
-{#                            <div class="col-md-2" style="margin-top: 1.9rem; text-align: center">#}
-{#                                <button class="btn btn-info">Yangilash</button>#}
-{#                            </div>#}
+                            {#                            <div class="col-md-2" style="margin-top: 1.9rem; text-align: center">#}
+                            {#                                <button class="btn btn-info">Yangilash</button>#}
+                            {#                            </div>#}
                         </div>
                     </form>
                     <br>
@@ -118,9 +118,10 @@
 
                                         {% get_pupil_rating_or_attendance row.id col subject.id as rating_or_attendance %}
 
-                                        <th {% if request.user.role == '2' or request.user.role == '3' %}class="rating_attendance" data-pupil="{{ row.id }}" data-date="{{ col }}"
+                                        <th {% if request.user.role == '2' or request.user.role == '3' %}class="rating_attendance"
+                                            data-pupil="{{ row.id }}" data-date="{{ col }}"
                                             data-pupilName="{{ row.name }}"
-                                        {% endif %}
+                                            {% endif %}
                                         >
 
                                             {% if rating_or_attendance.attendance == False %}
@@ -128,8 +129,8 @@
                                             {% elif rating_or_attendance.attendance == True %}
 
                                                 <span>{{ rating_or_attendance.rating }}</span>
-{#                                            {% else %}#}
-{#                                                <i class="fas fa-compress-arrows-alt"></i>#}
+                                                {#                                            {% else %}#}
+                                                {#                                                <i class="fas fa-compress-arrows-alt"></i>#}
                                             {% endif %}
                                         </th>
 
@@ -202,7 +203,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{% url 'user:rating_create' %}?{{ request.META.QUERY_STRING }}" method="POST">
+                <form action="#" id="rating_form" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="rating_pupil">
                     <input type="hidden" name="rating_date">
@@ -246,7 +247,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{% url 'user:attendance_set_visited' %}?{{ request.META.QUERY_STRING }}" method="POST">
+                <form action="#" id="attendance_form" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="visited_pupil" value="">
                     <input type="hidden" name="visited_date">
@@ -295,7 +296,10 @@
         })
         var pupilId,
             date,
-            pupilName
+            pupilName,
+            th
+
+
         $('.rating_attendance').on('click', function () {
             $('#exampleModal').modal('show')
 
@@ -305,17 +309,16 @@
 
             $('.pupil_name').text(pupilName)
             $('.span_date').text(date)
+
+            th = this
         })
 
         $(document).on('click', '#rating', function () {
             $('#exampleModal').modal('hide')
             $('#ratingModal').modal('show')
 
-
             $('input[name=rating_pupil]').val(pupilId)
             $('input[name=rating_date]').val(date)
-
-
             $('input[name=rating_subject]').val("{{subject.id}}")
 
         })
@@ -325,14 +328,63 @@
             $('#exampleModal').modal('hide')
             $('#attendanceModal').modal('show')
 
+
             $('input[name=visited_pupil]').val(pupilId)
             $('input[name=visited_date]').val(date)
             $('input[name=visited_subject]').val("{{subject.id}}")
         })
 
+        $(document).on('submit', '#attendance_form', function (e) {
+            e.preventDefault()
+
+            $.ajax({
+                url: "{% url 'user:attendance_set_visited' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: (response) => {
+                    if ($('[name=visited]').prop('checked')) {
+                        $(th).html('')
+                    } else {
+                        $(th).html('<span style="color: red">dk</span>')
+                    }
+                    successFunction("Muvaffaqiyatli saqlandi! " + response)
+
+                    $('#attendanceModal').modal('hide')
+                },
+                error: (error) => {
+                    errorFunction()
+                    $('#attendanceModal').modal('hide')
+                }
+            })
+
+        })
+        $(document).on('submit', '#rating_form', function (e) {
+            e.preventDefault()
+
+            $.ajax({
+                url: "{% url 'user:rating_create' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: (response) => {
+                    let rating = $('[name=rating]').val()
+                    $('[name=rating]').val('')
+                    $(th).html(`<span>${rating}</span>`)
+
+                    successFunction("Muvaffaqiyatli saqlandi! " + response)
+
+                    $('#ratingModal').modal('hide')
+                },
+                error: (error) => {
+                    errorFunction()
+                    $('#ratingModal').modal('hide')
+                }
+            })
+
+        })
 
 
         $("#group").change(function () {
+            document.getElementById('load').style.visibility = "visible"
             $('#filter_top').submit()
 
             {#var selectedGroup = $(this).children("option:selected").val();#}
@@ -354,15 +406,15 @@
             {#        }#}
             {#    }#}
             //{#});#}
-
-            $('#filter_top').submit()
         });
 
         $('#month').on('change', function () {
+            document.getElementById('load').style.visibility = "visible"
             $('#filter_top').submit()
         })
 
         $('#subject').on('change', function () {
+            document.getElementById('load').style.visibility = "visible"
             $('#filter_top').submit()
         })
     </script>

@@ -49,10 +49,10 @@
                             style="font-size: 1.2em" class="fas fa-plus-circle ml-3 pt-2"></i></a></span>
                     </div>
                     <hr>
-                    {#                    <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Kiritish sms soni: <span#}
-                    {#                            class="ml-2">{% if request.user.school.add_pupil_sms_count %}#}
-                    {#                        {{ request.user.school.add_pupil_sms_count }}{% else %}0{% endif %}</span>#}
-                    {#                    </div>#}
+                    <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Kiritish sms soni: <span
+                            class="ml-2">{% if request.user.school.add_pupil_sms_count %}
+                        {{ request.user.school.add_pupil_sms_count }}{% else %}0{% endif %}</span>
+                    </div>
                     <div class="text-left ml-2"><i class="fas fa-envelope ml-2 mr-2"></i>Smslar soni: <span
                             class="ml-2">{% if request.user.school.sms_count %}
                         {{ request.user.school.sms_count }} ta{% else %}0 ta{% endif %}</span>
@@ -150,9 +150,3 @@
 {#<div class="alert alert-dark text-center"><b>DIQQAT! Tizim test rejimida ishlamoqda! Tizim bo'yicha savollar bo'lganda#}
 {#    <a href="https://t.me/onless_support" style="color: #60c4f5; text-decoration: none"><i class="fab fa-telegram"></i>#}
 {#        Telegram guruh </a>ga yozing</b></div>#}
-
-<script>
-    $(document).ready(function () {
-
-    })
-</script>

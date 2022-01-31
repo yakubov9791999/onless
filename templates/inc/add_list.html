@@ -13,23 +13,23 @@
         </div>
         {% get_count request.user.school.id as count %}
         {% if request.user.role == '2' %}
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <!-- small box -->
-                <div class="small-box bg-gradient-cyan">
-                    <div class="inner">
-                        <h3>{{ count.pupils }}</h3>
-
-                        <h5>O'quvchi qo'shish</h5>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-
-
-                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
-
-                </div>
-            </div>
+{#            <div class="col-lg-6 col-md-6 col-sm-12">#}
+{#                <!-- small box -->#}
+{#                <div class="small-box bg-gradient-cyan">#}
+{#                    <div class="inner">#}
+{#                        <h3>{{ count.pupils }}</h3>#}
+{##}
+{#                        <h5>O'quvchi qo'shish</h5>#}
+{#                    </div>#}
+{#                    <div class="icon">#}
+{#                        <i class="fas fa-user-plus"></i>#}
+{#                    </div>#}
+{##}
+{##}
+{#                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>#}
+{##}
+{#                </div>#}
+{#            </div>#}
 
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
@@ -94,20 +94,20 @@
 
         {% elif request.user.role == '3' %}
 
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <!-- small box -->
-                <div class="small-box bg-gradient-lightblue">
-                    <div class="inner">
-                        <h3>{{ count.pupils }}</h3>
-
-                        <h5>O'quvchi qo'shish</h5>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>
-                </div>
-            </div>
+{#            <div class="col-lg-6 col-md-6 col-sm-12">#}
+{#                <!-- small box -->#}
+{#                <div class="small-box bg-gradient-lightblue">#}
+{#                    <div class="inner">#}
+{#                        <h3>{{ count.pupils }}</h3>#}
+{##}
+{#                        <h5>O'quvchi qo'shish</h5>#}
+{#                    </div>#}
+{#                    <div class="icon">#}
+{#                        <i class="fas fa-user-plus"></i>#}
+{#                    </div>#}
+{#                    <a href="{% url 'user:add_pupil' %}" class="small-box-footer"><i class="fas fa-plus"></i></a>#}
+{#                </div>#}
+{#            </div>#}
 
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- small box -->
@@ -160,3 +160,14 @@
 
     </div>
 {% endblock content %}
+{% block bottom %}
+    <script>
+    $(document).ready(() => {
+        Swal.fire({
+            title: "Diqqat! Tizimda yangilanish",
+            text: "O'quvchi qo'shish uchun guruh ichiga kirib o'quvchi qo'shish tugmasiga bosing!"
+        })
+    })
+    </script>
+{% endblock bottom %}
+

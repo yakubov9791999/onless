@@ -18,6 +18,7 @@ from django.contrib import admin
 
 from django.urls import path, include
 from django.conf import settings
+from django.views.generic import TemplateView
 from django.views.static import serve
 
 from onless.api import sms_api_result
@@ -46,6 +47,11 @@ urlpatterns = [
                   path('click/', include('click.urls')),
                   # path('summernote/', include('django_summernote.urls')),
                   path('sentry-debug/', trigger_error),
+
+                  path('error-403/', TemplateView.as_view(template_name='inc/403.html', ),
+                       name='error_403'),
+                  path('error-404/', TemplateView.as_view(template_name='inc/404.html', ),
+                       name='error_404'),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

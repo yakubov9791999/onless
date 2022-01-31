@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load humanize %}
+{% load humanize static i18n %}
 
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
@@ -7,6 +7,10 @@
     {% breadcrumb "Sms sozlamalar" "user:sms_settings" %}
 {% endblock %}
 
+{% block top %}
+
+
+{% endblock top %}
 
 {% block content %}
     <div class="row" style="margin: auto">
@@ -21,23 +25,23 @@
                 </div>
 
                 <div class="card-body">
-
                     <div class="row justify-content-around">
-                        <div class="col-6">
+                        <div class="col-12 col-md-6 col-lg-6 col-xl-6">
                             <!-- small box -->
 
                             <div class="small-box bg-gradient-navy">
                                 <div class="inner">
-                                    <h3>{{ request.user.school.money|intcomma }} so'm</h3>
-
-                                    <p>Hisob</p>
+                                    <h3>Hisob: {{ request.user.school.money|intcomma }} so'm</h3>
+                                    <p style="margin-bottom: unset">&nbsp</p>
+                                    <p style="margin-bottom: unset">&nbsp</p>
+                                    <h3>&nbsp</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="fas fa-money-check"></i>
                                 </div>
                                 <button id="addAmount" type="button" style="width: 100%"
                                         class="small-box-footer btn"> Hisobni
-                                    to'ldirish <i
+                                    to'ldirish uchun bu yerga bosing<i
                                             class="fas fa-arrow-circle-right"></i></button>
 
                             </div>
@@ -62,19 +66,22 @@
                         {#                            </div>#}
                         {#                        </div>#}
 
-                        <div class="col-6">
+                        <div class="col-12 col-md-6 col-lg-6 col-xl-6">
                             <!-- small box -->
                             <div class="small-box bg-gradient-navy">
                                 <div class="inner">
-                                    <h3>{{ request.user.school.sms_count }} ta</h3>
+                                    <h3>Kiritish sms: {{ request.user.school.add_pupil_sms_count }} ta</h3>
+                                    <h3>Oddiy sms: {{ request.user.school.sms_count }} ta</h3>
 
-                                    <p>Sms: {{ SMS_PRICE }} so'm</p>
+                                    <p style="margin-bottom: unset">Kiritish sms: {{ ADD_PUPIL_SMS_PRICE }} so'm</p>
+                                    <p style="margin-bottom: unset">Oddiy sms: {{ SMS_PRICE }} so'm</p>
                                 </div>
                                 <div class="icon">
                                     <i class="far fa-envelope"></i>
                                 </div>
-                                <a href="#" id="getSmsBtn" class="small-box-footer btn">Sms olish <i
-                                        class="fas fa-arrow-circle-right"></i></a>
+                                <a href="#" id="getSmsBtn" class="small-box-footer btn">Sms sotib olish uchun bu yerga
+                                    bosing <i
+                                            class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -88,7 +95,8 @@
                                         <div class="input-group input-group-sm" style="width: 150px;">
 
                                             <input type="text" name="q" class="form-control float-right"
-                                                   placeholder="Qidiruv...">
+                                                   placeholder="Qidiruv..."
+                                                   value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}">
 
                                             <div class="input-group-append">
                                                 <button type="submit" class="btn btn-default">
@@ -103,7 +111,7 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0" style="height: 300px;">
-                                <table class="table table-head-fixed text-nowrap">
+                                <table class="table table-head-fixed text-nowrap" id="example1">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -114,24 +122,64 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for sms in send_sms %}
-
+                                    {% if send_sms.exists %}
+                                        {% for sms in send_sms %}
+                                            <tr>
+                                                <td><span class="tag tag-success"><i
+                                                        class="fas fa-square {% if sms.status == 200 %}text-success{% elif sms.status == 400 %} text-danger {% else %} text-warning {% endif %}"></i></span>
+                                                </td>
+                                                <td>+998{{ sms.phone }}</td>
+                                                <td>{{ sms.sms_count }}</td>
+                                                <td>{{ sms.created_date|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                                <td>{{ sms.text }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
                                         <tr>
-                                            <td><span class="tag tag-success"><i
-                                                    class="fas fa-square {% if sms.status == 200 %}text-success{% elif sms.status == 400 %} text-danger {% else %} text-warning {% endif %}"></i></span>
-                                            </td>
-                                            <td>+998{{ sms.phone }}</td>
-                                            <td>{{ sms.sms_count }}</td>
-                                            <td>{{ sms.created_date|date:"SHORT_DATETIME_FORMAT" }}</td>
-                                            <td>{{ sms.text }}
+                                            <td colspan="5" style="text-align: center; color: red">Ma'lumot topilmadi!
                                             </td>
                                         </tr>
-                                    {% endfor %}
-
+                                    {% endif %}
                                     </tbody>
                                 </table>
                             </div>
                             <!-- /.card-body -->
+                            {% if is_paginated %}
+                                <br>
+                                <nav aria-label="...">
+                                    <ul class="pagination" style="float: right; margin-right: 10px">
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+                                                   tabindex="-1">Oldingi</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#"
+                                                   tabindex="-1">Oldingi</a>
+                                            </li>
+                                        {% endif %}
+                                        {% for i in paginator.page_range %}
+                                            {% if i <= page_obj.number|add:5 and i >= page_obj.number|add:-5 %}
+                                                <li class="page-item {% if i == page_obj.number %}active{% endif %}">
+                                                    <a class="page-link"
+                                                       href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Keyingi</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#">Keyingi</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            {% endif %}
                         </div>
                         <!-- /.card -->
                     </div>
@@ -167,6 +215,8 @@
                                         {#                                        </dd>#}
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
                                         <dd class="col-sm-8">2 ta</dd>
+                                        <dt class="col-sm-4">Sms narxi</dt>
+                                        <dd class="col-sm-8">{{ ADD_PUPIL_SMS_PRICE }} so'm</dd>
                                         <dt class="col-sm-4">Sms matni</dt>
                                         <dd class="col-sm-8"><p class="mb-0">Hurmatli Yoqubov Sirojiddin Tojiddinovich!
                                             Siz B-1 guruhiga o'qishga qabul qilindingiz. Videodarslarni ko'rish va
@@ -385,6 +435,7 @@
 
 {% block bottom %}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
     <script>
         $(document).ready(function () {
 
@@ -593,8 +644,35 @@
 
             {% endif %}
 
+
+
+
             $('#getSmsBtn').on('click', function (e) {
-                e.preventDefault()
+                Swal.fire({
+                    allowOutsideClick: false,
+                    showCloseButton: true,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    showLoaderOnConfirm: true,
+                    title: 'Sms turini tanlang!',
+                    html: `
+                        <div class="row justify-content-around">
+                            <div class="col-6">
+                                <button id="add_pupil_sms" class="btn-lg btn-info">
+                                Kiritish sms
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button id="simple_sms" class="btn-lg btn-info">
+                                Oddiy sms
+                                </button>
+                            </div>
+                        </div>
+                    `,
+                })
+            })
+
+            $('body').on('click', '#simple_sms', function (e) {
                 const {value: addSmsValues} = Swal.fire({
                     allowOutsideClick: false,
                     showCancelButton: true,
@@ -620,7 +698,7 @@
                     if (confirm.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{% url 'user:buy_sms' %}",
+                            url: "{% url 'user:buy_simple_sms' %}",
                             data: {
                                 'count': $('#smsCount').html()
                             },
@@ -704,9 +782,120 @@
                         $('#subSms').css('color', 'grey')
                     }
                 })
-
-
             })
+
+            $('body').on('click', '#add_pupil_sms', function (e) {
+                const {value: addSmsValues} = Swal.fire({
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    confirmButtonText: 'Sotib olish',
+                    cancelButtonText: 'Bekor qilish',
+                    reverseButtons: true,
+                    title: '<h2 style="color: #001f3f" class="not_copy">Hisob: <span id="money"></span>&nbsp so\'m</h2>',
+                    html:
+
+                        '<hr><i style="font-size: 2em;color: grey" id="subSms" class="fas fa-minus-circle not_copy"></i>&nbsp&nbsp&nbsp&nbsp&nbsp<span style="font-size: 2em;" class="not_copy" id="smsCount"> 0 </span>&nbsp&nbsp&nbsp&nbsp&nbsp<i id="addSms" style="font-size: 2em; color: #389ff8" class="fas fa-plus-circle not_copy"></i><hr>',
+
+
+                    focusConfirm: false,
+                }).then(function (confirm) {
+
+                    if (confirm.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'user:buy_add_pupil_sms' %}",
+                            data: {
+                                'count': $('#smsCount').html()
+                            },
+                            success: function (res) {
+                                if (res === 'True') {
+                                    success_toast()
+                                    setTimeout(function () {
+                                        window.location.href = "{% url 'user:sms_settings' %}"
+                                    }, 1000)
+                                } else {
+                                    errorFunction()
+                                }
+                            }, error: function (err) {
+                                console.log(err.status)
+                                errorFunction()
+                            }
+                        })
+                    } else {
+                        window.location.href = "{% url 'user:sms_settings' %}"
+                    }
+                });
+
+                var money = '{{ request.user.school.money|intcomma }}'.replace(/\s+/g, '')
+                var addPupilsmsPrice = parseInt('{{ ADD_PUPIL_SMS_PRICE }}')
+                var smsAddStep = parseInt('{{ ADD_PUPIL_SMS_ADD_STEP }}')
+
+                if (parseInt(money) === 0) {
+                    $('#addSms').css('color', 'grey')
+                }
+
+                var smsCount = 0
+                $('#money').html(money)
+
+
+                $('#addSms').on('click', function () {
+
+                    if (smsCount >= 0) {
+                        smsCount += smsAddStep
+
+                        if ((smsAddStep * addPupilsmsPrice) <= money) {
+                            //pul yetarli
+                            $('#smsCount').html(smsCount)
+                            money -= (smsAddStep * addPupilsmsPrice)
+                            $('#money').html(money)
+
+                            $('#subSms').css('color', '#389ff8')
+                        } else {
+                            //pul yetarli emas
+                            smsCount -= smsAddStep
+                            $('#addSms').css('color', 'grey')
+                        }
+
+
+                    }
+
+                    if ((smsAddStep * addPupilsmsPrice) <= money) {
+
+                        $('#addSms').css('color', '#389ff8')
+                    } else {
+
+                        $('#addSms').css('color', 'grey')
+                    }
+
+                })
+                $('#subSms').on('click', function () {
+
+                    if (smsCount > 0) {
+                        money += (smsAddStep * addPupilsmsPrice)
+                        $('#money').html(money)
+                        smsCount -= smsAddStep
+                        $('#smsCount').html(smsCount)
+
+                        $('#addSms').css('color', '#389ff8')
+                    } else {
+                        $('#subSms').css('color', 'grey')
+                    }
+
+                    if (smsCount > 0) {
+                        $('#subSms').css('color', '#389ff8')
+                    } else {
+                        $('#subSms').css('color', 'grey')
+                    }
+                })
+            })
+
         });
     </script>
 

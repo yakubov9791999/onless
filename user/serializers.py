@@ -13,8 +13,9 @@ class CreatePupilSerializer(serializers.ModelSerializer):
         error_messages={
             "required": "Pasport to'ldirish majburiy!",
             "blank": "Pasport bo'sh bo'lmasligi kerak!",
-            "max_length": "Pasport 9 tadan ortiq bo'lmasligi kerak!",
+            "max_length": "Pasport 9 ta harf yoki raqamdan ortiq bo'lmasligi kerak!",
             "unique": "Bu pasport allaqachon ro'yhatdan o'tkazilgan!",
+            "invalid": "Pasportni kiritishda xatolikka yo'l qo'yilgan!",
         },
     )
     phone = serializers.IntegerField(
@@ -25,6 +26,8 @@ class CreatePupilSerializer(serializers.ModelSerializer):
             "required": "Tel raqam to'ldirish majburiy!",
             "min_value": "Tel raqam 9 xonali sondan iborat bo'lishi kerak!",
             "max_value": "Tel raqam 9 xonali sondan iborat bo'lishi kerak!",
+            "blank": "Tel raqam bo'sh bo'lmasligi kerak!",
+            "invalid": "Tel raqam 9 xonali yaroqli butun sondan iborat bo'lishi kerak!",
         })
 
     class Meta:
@@ -49,6 +52,10 @@ class CreatePupilSerializer(serializers.ModelSerializer):
 
     def validate_name(self, value):
         return get_name(value)
+
+    def validate_phone(self, value):
+        print(value)
+        return value
 
     def create(self, validated_data):
         password = random.randint(1000000, 9999999)

@@ -780,13 +780,19 @@ class CreatePupilWithExcel(AllowedRolesMixin, View):
                 return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
 
             datas = parse_excel_pupil(file.file)
+
+            if not len(datas):
+                messages.error(request, "Xatolik! Excel faylni to'ldirishda xatolikka yo'l qo'yilgan.")
+
             if len(datas) > request.user.school.add_pupil_sms_count:
                 messages.error(request,
                                "Excel fayldagi o'quvchilar soni {0} ta, sizdagi kiritish smslar soni esa {1} ta! Iltimos yetarlicha kiritish sms xarid qilib qayta urinib ko'ring!".format(
                                    len(datas), request.user.school.add_pupil_sms_count))
                 return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
             i = 0
+            row = 1
             for data in datas:
+                row += 1
                 serializer = CreatePupilSerializer(data=data,
                                                    context={'request': request, 'group_id': kwargs.get('id')})
                 if serializer.is_valid():
@@ -797,9 +803,9 @@ class CreatePupilWithExcel(AllowedRolesMixin, View):
                 else:
                     try:
                         message = next(iter(dict(serializer.errors).values()))[0]
-                        messages.error(request, message)
+                        messages.error(request, f"Xatolik! Excel fayldagi {row}-qator. " + message)
                     except:
-                        messages.error(request, serializer.errors)
+                        messages.error(request, f"Xatolik! Excel fayldagi {row}-qator. " + serializer.errors)
                     return redirect(reverse_lazy('user:group_detail', kwargs={'id': kwargs.get('id')}))
             if i > 1:
                 messages.success(request, "{0} ta o'quvchi muvaffaqiyatli qo'shildi!".format(i))

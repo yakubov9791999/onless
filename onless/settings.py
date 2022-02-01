@@ -176,19 +176,19 @@ PAYMENT_MODEL = 'user.Payment'
 # add "click" to your variants
 PAYMENT_VARIANTS = {
     'click': ('click.ClickProvider', {
-        'merchant_id': 12584,
-        'merchant_service_id': 17367,
-        'merchant_user_id': 18969,
-        'secret_key': 'tVhBORlLRo8AN'
+        'merchant_id': 14103,
+        'merchant_service_id': 20488,
+        'merchant_user_id': 23581,
+        'secret_key': 'phh0G5cAuY1h'
     })
 
 }
 
 CLICK_SETTINGS = {
-    'service_id': 17367,
-    'merchant_id': 12584,
-    'secret_key': 'tVhBORlLRo8AN',
-    'merchant_user_id': 18969,
+    'service_id': 20488,
+    'merchant_id': 14103,
+    'secret_key': 'phh0G5cAuY1h',
+    'merchant_user_id': 23581,
 }
 
 LANGUAGE_CODE = 'uz-UZ'

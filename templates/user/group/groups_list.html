@@ -187,16 +187,19 @@
                 dangerMode: true,
             }).then(function (isConfirm) {
                 if (isConfirm) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/user/group-delete/' + groupId,
+                    });
+
                     swal({
                         title: "Muvaffaqiyatli o'chirildi !",
                         text: groupName + " guruhi muvaffaqiyatli o'chirildi !",
                         icon: 'success'
                     }).then(function () {
-                        $.ajax({
-                            type: 'GET',
-                            url: '/user/group-delete/' + groupId,
-                        });
-                        window.location.href = '{% url "user:groups_list" %}';
+                        setTimeout(function () {
+                            window.location.href = '{% url "user:groups_list" %}';
+                        }, 1000);
                     });
                 } else {
                     swal("Bekor qilindi", groupName + " guruhingiz ro'yhatda turibti !", "error");

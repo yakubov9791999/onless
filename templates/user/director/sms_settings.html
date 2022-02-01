@@ -198,7 +198,9 @@
                                     O'quvchi qo'shishda sms jo'natish
                                     <label class="switch float-right">
                                         <input type="checkbox" id="checkbox_add_pupil" class="checkbox"
-                                               {% if request.user.school.send_sms_add_pupil %}checked{% endif %}><span
+{#                                               {% if request.user.school.send_sms_add_pupil %}checked{% endif %}#}
+                                                checked disabled
+                                        ><span
                                             class="slider round"></span>
                                     </label>
                                 </div>
@@ -214,7 +216,7 @@
                                         {#                                            metus.#}
                                         {#                                        </dd>#}
                                         <dt class="col-sm-4">Sarflanadigan smslar soni</dt>
-                                        <dd class="col-sm-8">2 ta</dd>
+                                        <dd class="col-sm-8">1 ta</dd>
                                         <dt class="col-sm-4">Sms narxi</dt>
                                         <dd class="col-sm-8">{{ ADD_PUPIL_SMS_PRICE }} so'm</dd>
                                         <dt class="col-sm-4">Sms matni</dt>

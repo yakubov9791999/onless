@@ -2253,16 +2253,16 @@ class SmsSettings(LoginRequiredMixin, ListView):
         context.update(SMS_ADD_STEP=SMS_ADD_STEP)
         context.update(ADD_PUPIL_SMS_ADD_STEP=ADD_PUPIL_SMS_ADD_STEP)
 
-        # for sms in context.get('send_sms'):
-        #     if sms.status == PROCESSING:
-        #         r = GetStatusSms(id=sms.sms_id).get()
-        #         if r == SUCCESS:
-        #             sms.status = SUCCESS
-        #         elif r == FAILED:
-        #             sms.status = FAILED
-        #         else:
-        #             sms.status = PROCESSING
-        #         sms.save()
+        for sms in context.get('send_sms'):
+            if sms.status == PROCESSING:
+                r = GetStatusSms(id=sms.sms_id).get()
+                if r == SUCCESS:
+                    sms.status = SUCCESS
+                elif r == FAILED:
+                    sms.status = FAILED
+                else:
+                    sms.status = PROCESSING
+                sms.save()
         return context
 
 

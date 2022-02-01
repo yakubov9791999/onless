@@ -15,9 +15,9 @@ python manage.py collectstatic --noinput
 
 # Apply database migrations
 echo "Database migrations started"
-#python manage.py makemigrations
+python manage.py makemigrations
 #python manage.py flush --no-input
-#python manage.py migrate
+python manage.py migrate
 echo "Apply database migrations"
 # Start server
 echo "Starting server"

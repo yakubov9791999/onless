@@ -2416,7 +2416,7 @@ def personal_exam_doc_generate(request, id):
     if user.group.category == 'B':
         if user.school.is_capital:
             doc = DocxTemplate(
-                "/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/capital/personal_exam_b.docx")
+                "templates/docs/capital/personal_exam_b.docx")
             # doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\capital\personal_exam_b.docx")
             context.update(
                 pupil_name=user.name,
@@ -2442,27 +2442,27 @@ def personal_exam_doc_generate(request, id):
             )
 
         else:
-            doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_b.docx")
+            doc = DocxTemplate("templates/docs/personal_exam_b.docx")
             # doc = DocxTemplate("H:\django_projects\onless\onless\media\docs\personal_exam_b.docx")
         # doc = DocxTemplate("static/docs/personal_exam_b.docx")
 
     elif user.group.category == 'BC':
-        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_bc.docx")
+        doc = DocxTemplate("templates/docs/personal_exam_bc.docx")
         # doc = DocxTemplate("static/docs/personal_exam_bc.docx")
     elif user.group.category == 'C':
-        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_c.docx")
+        doc = DocxTemplate("templates/docs/personal_exam_c.docx")
         # doc = DocxTemplate("static/docs/personal_exam_c.docx")
     elif user.group.category == 'D':
-        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_a.docx")
+        doc = DocxTemplate("templates/personal_exam_a.docx")
         # doc = DocxTemplate("static/docs/personal_exam_d.docx")
     elif user.group.category == 'E':
-        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_e.docx")
+        doc = DocxTemplate("templates/docs/personal_exam_e.docx")
         # doc = DocxTemplate("static/docs/personal_exam_e.docx")
     elif user.group.category == 'D':
-        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam_d.docx")
+        doc = DocxTemplate("templates/docs/personal_exam_d.docx")
         # doc = DocxTemplate("static/docs/personal_exam_d.docx")
     else:
-        doc = DocxTemplate("/home/users/b/bcloudintelekt/projects/onless/onless/media/docs/personal_exam.docx")
+        doc = DocxTemplate("templates/docs/personal_exam.docx")
         # doc = DocxTemplate("static/docs/personal_exam.docx")
 
     context.update(

@@ -8,11 +8,12 @@
     <title>404 Not found</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rowdies&family=Supermercado+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Righteous&family=Roboto&display=swap');
 
         .container {
             width: 100%;
             height: 100vh;
-            background: url("{% static 'online/404-bg.jpg' %}") no-repeat center;
+            background: url("http://onless.uz/static/online/404-bg.jpg") no-repeat center;
             background-size: cover;
             justify-content: center;
             display: flex;
@@ -35,15 +36,29 @@
             border: 1px solid white;
             border-radius: 5px;
             background-color: rgba(0, 0, 0, 0.3);
-
+            margin-right: 20px;
+            margin-left: 20px;
+            min-width: 280px;
         }
 
         h2 {
             text-align: center;
+            font-family: 'Bree Serif', serif;
         }
 
         .onless {
-            color: rgb(192, 124, 219)
+            font-family: 'Bree Serif', serif;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        a {
+            color: rgb(192, 124, 219);
+        }
+        span {
+            padding-top: 15px;
         }
     </style>
 </head>
@@ -51,12 +66,15 @@
 <div class="container">
     <div class="content">
         <div class="title">404</div>
+        <br>
         <h2>Kechirasiz! Sahifa topilmadi!</h2>
+
         <p>Hurmatli foydalanuvchi! Siz izlayotgan sahifa topilmadi! <a class="onless" href="{% url 'landing:home' %}">Bosh
             sahifa</a>
-            ga qayting yoki biz bilan bog'laning.
-
-            <a href="https://t.me/onless_support">Biz bilan aloqa</a></p>
+            ga qayting
+            <br>
+            <span>yoki biz bilan bog'laning. <a href="https://t.me/onless_support">Biz bilan aloqa</a></span>
+        </p>
     </div>
 </div>
 </body>

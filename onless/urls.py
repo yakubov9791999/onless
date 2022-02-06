@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.shortcuts import render
 
 from django.urls import path, include
 from django.conf import settings
@@ -26,6 +27,7 @@ from onless.api import sms_api_result
 
 def trigger_error(request):
     division_by_zero = 1 / 0
+
 
 
 urlpatterns = [
@@ -55,5 +57,8 @@ urlpatterns = [
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# if settings.DEBUG:
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = "user.views.handler404"
+

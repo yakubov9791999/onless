@@ -76,4 +76,5 @@ urlpatterns = [
     path('again-send-sms/<int:pupil_id>/', again_send_sms, name='again_send_sms'),
 
     path('error/403/', error_403, name='error_403'),
+    path('handler404/', handler404, name='handler404'),
 ]

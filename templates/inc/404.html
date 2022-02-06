@@ -1,47 +1,109 @@
 {% load static %}
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not found</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rowdies&family=Supermercado+One&display=swap');
 
-    body {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8yOS8xMiKqq3kAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzVxteM2AAABHklEQVRIib2Vyw6EIAxFW5idr///Qx9sfG3pLEyJ3tAwi5EmBqRo7vHawiEEERHS6x7MTMxMVv6+z3tPMUYSkfTM/R0fEaG2bbMv+Gc4nZzn+dN4HAcREa3r+hi3bcuu68jLskhVIlW073tWaYlQ9+F9IpqmSfq+fwskhdO/AwmUTJXrOuaRQNeRkOd5lq7rXmS5InmERKoER/QMvUAPlZDHcZRhGN4CSeGY+aHMqgcks5RrHv/eeh455x5KrMq2yHQdibDO6ncG/KZWL7M8xDyS1/MIO0NJqdULLS81X6/X6aR0nqBSJcPeZnlZrzN477NKURn2Nus8sjzmEII0TfMiyxUuxphVWjpJkbx0btUnshRihVv70Bv8ItXq6Asoi/ZiCbU6YgAAAABJRU5ErkJggg==);
-    }
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: url("{% static 'online/404-bg.jpg' %}") no-repeat center;
+            background-size: cover;
+            justify-content: center;
+            display: flex;
+            align-items: center;
 
-    .error-template {
-        text-align: center;
-        margin-top: 15%;
-    }
+        }
 
-    .error-actions {
-        margin-top: 15px;
-        margin-bottom: 15px;
-    }
+        body {
+            margin: 0;
+            color: white;
+        }
 
-    .error-actions .btn {
-        margin-right: 10px;
-    }
-</style>
+        .title {
+            font-size: 200px;
+            font-family: 'Supermercado One', cursive;
+            font-weight: lighter;
+            text-align: center;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border: 1px solid white;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.3);
 
-<link href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
-<script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>{#<script src="{% static '' %}//code.jquery.com/jquery-1.11.1.min.js"></script>#}
-<!------ Include the above in your HEAD tag ---------->
+        }
 
+        h2 {
+            text-align: center;
+        }
+
+        .onless {
+            color: rgb(192, 124, 219)
+        }
+    </style>
+</head>
+<body>
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="error-template">
-                <h1>
-                    Oops!</h1>
-                <h2>
-                    404 ma'lumot topilmadi</h2>
-                <div class="error-details">
-                    Kechirasiz, Xatolik yuz berdi. Siz izlayotgan sahifa topilmadi.
-                </div>
-                <div class="error-actions">
-                    <a href="{% url 'landing:home' %}" class="btn btn-primary btn-lg"><span
-                            class="glyphicon glyphicon-home"></span>
-                        Bosh sahifa</a><a href="https://t.me/onless_support" class="btn btn-secondary btn-lg"><span
-                        class="glyphicon glyphicon-envelope"></span> Biz bilan aloqa </a>
-                </div>
-            </div>
-        </div>
+    <div class="content">
+        <div class="title">404</div>
+        <h2>Kechirasiz! Sahifa topilmadi!</h2>
+        <p>Hurmatli foydalanuvchi! Siz izlayotgan sahifa topilmadi! <a class="onless" href="{% url 'landing:home' %}">Bosh sahifa</a>
+            ga qayting yoki biz bilan bog'laning. <a href="https://t.me/onless_support">Biz bilan aloqa</a></p>
+        <img src="/static/online/404-bg.jpg" alt="test">
     </div>
 </div>
+</body>
+</html>
+
+
+{#<style>#}
+{##}
+{#    body {#}
+{#        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8yOS8xMiKqq3kAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzVxteM2AAABHklEQVRIib2Vyw6EIAxFW5idr///Qx9sfG3pLEyJ3tAwi5EmBqRo7vHawiEEERHS6x7MTMxMVv6+z3tPMUYSkfTM/R0fEaG2bbMv+Gc4nZzn+dN4HAcREa3r+hi3bcuu68jLskhVIlW073tWaYlQ9+F9IpqmSfq+fwskhdO/AwmUTJXrOuaRQNeRkOd5lq7rXmS5InmERKoER/QMvUAPlZDHcZRhGN4CSeGY+aHMqgcks5RrHv/eeh455x5KrMq2yHQdibDO6ncG/KZWL7M8xDyS1/MIO0NJqdULLS81X6/X6aR0nqBSJcPeZnlZrzN477NKURn2Nus8sjzmEII0TfMiyxUuxphVWjpJkbx0btUnshRihVv70Bv8ItXq6Asoi/ZiCbU6YgAAAABJRU5ErkJggg==);#}
+{#    }#}
+{##}
+{#    .error-template {#}
+{#        text-align: center;#}
+{#        margin-top: 15%;#}
+{#    }#}
+{##}
+{#    .error-actions {#}
+{#        margin-top: 15px;#}
+{#        margin-bottom: 15px;#}
+{#    }#}
+{##}
+{#    .error-actions .btn {#}
+{#        margin-right: 10px;#}
+{#    }#}
+{#</style>#}
+{##}
+{#<link href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">#}
+{#<script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>{#<script src="{% static '' %}//code.jquery.com/jquery-1.11.1.min.js"></script>#}
+{#<!------ Include the above in your HEAD tag ---------->#}
+{##}
+{#<div class="container">#}
+{#    <div class="row">#}
+{#        <div class="col-md-12">#}
+{#            <div class="error-template">#}
+{#                <h1>#}
+{#                    Oops!</h1>#}
+{#                <h2>#}
+{#                    404 ma'lumot topilmadi</h2>#}
+{#                <div class="error-details">#}
+{#                    Kechirasiz, Xatolik yuz berdi. Siz izlayotgan sahifa topilmadi.#}
+{#                </div>#}
+{#                <div class="error-actions">#}
+{#                    <a href="{% url 'landing:home' %}" class="btn btn-primary btn-lg"><span#}
+{#                            class="glyphicon glyphicon-home"></span>#}
+{#                        Bosh sahifa</a><a href="https://t.me/onless_support" class="btn btn-secondary btn-lg"><span#}
+{#                        class="glyphicon glyphicon-envelope"></span> Biz bilan aloqa </a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}

@@ -771,7 +771,6 @@ class CreatePupilWithExcel(AllowedRolesMixin, View):
             print(e)
             return redirect(reverse_lazy('error_403'))
 
-
     def post(self, request, *args, **kwargs):
         if request.FILES.get('file'):
             file = request.FILES.get('file')
@@ -2438,7 +2437,6 @@ def personal_exam_doc_generate(request, id):
                 certificate_series=user.certificate_series,
                 certificate_number=user.certificate_number,
                 medical_issued_date=medical_issued_date
-
             )
 
         else:
@@ -2510,3 +2508,7 @@ def again_send_sms(request, pupil_id):
 
 def error_403(request):
     return render(request, 'inc/404.html')
+
+
+def handler404(request, exception):
+    return render(request, 'inc/404.html', status=404)

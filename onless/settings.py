@@ -214,7 +214,8 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/media/yakubov/267ED58F7ED557DF/django_projects/onless/media'
+# MEDIA_ROOT = '/media/yakubov/267ED58F7ED557DF/django_projects/onless/media'
+MEDIA_ROOT = 'media'
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale')

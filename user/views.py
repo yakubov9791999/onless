@@ -2239,13 +2239,17 @@ class SmsSettings(LoginRequiredMixin, ListView):
     paginate_by = 10
     queryset = Sms.objects.all().order_by('-id')
 
+    def get_queryset(self):
+        return Sms.objects.filter(school=self.request.user.school)
+
     def get(self, request, *args, **kwargs):
         if request.user.role == '2':
             if request.GET.get('q', None):
                 try:
-                    qs = Sms.objects.filter(text__icontains=request.GET.get('q'), phone__icontains=request.GET.get('q'))
+                    qs = Sms.objects.filter(text__icontains=request.GET.get('q'), phone__icontains=request.GET.get('q'),
+                                            school=request.user.school)
                 except:
-                    qs = Sms.objects.filter(text__icontains=request.GET.get('q'))
+                    qs = Sms.objects.filter(text__icontains=request.GET.get('q'), school=request.user.school)
                 self.queryset = qs
             return super().get(request, *args, **kwargs)
         else:

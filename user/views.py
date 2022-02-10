@@ -1656,8 +1656,7 @@ def attendance_set_visited(request):
             if not attendance.exists():
                 if visited == False:
                     a = Attendance.objects.create(pupil=pupil, teacher=request.user, subject=subject,
-                                                  is_visited=visited, date=date, created_date=datetime.datetime.now(),
-                                                  updated_date=datetime.datetime.now())
+                                                  is_visited=visited, date=date, created_date=datetime.datetime.now())
 
                     if school.send_sms_attendance:
                         r = SendSmsWithApi(user=a.pupil, is_attendance=True, subject=a.subject).get()

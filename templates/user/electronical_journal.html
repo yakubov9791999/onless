@@ -228,7 +228,7 @@
                         </div>
                     </div>
                     <div class="modal-footer justify-content-center">
-                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                        <button type="submit" id="ratingBtn" class="btn btn-primary">Saqlash</button>
                     </div>
                 </form>
 
@@ -275,7 +275,7 @@
 
                     </div>
                     <div class="modal-footer justify-content-center">
-                        <button type="submit" class="btn btn-primary">Saqlash</button>
+                        <button type="submit" id="attendanceBtn" class="btn btn-primary">Saqlash</button>
                     </div>
                 </form>
 
@@ -337,6 +337,8 @@
         $(document).on('submit', '#attendance_form', function (e) {
             e.preventDefault()
 
+            $('#attendanceBtn').prop('disabled', true)
+
             $.ajax({
                 url: "{% url 'user:attendance_set_visited' %}",
                 type: "POST",
@@ -360,6 +362,8 @@
         })
         $(document).on('submit', '#rating_form', function (e) {
             e.preventDefault()
+
+            $('#ratingBtn').prop('disabled', true)
 
             $.ajax({
                 url: "{% url 'user:rating_create' %}",

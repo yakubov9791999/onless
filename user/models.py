@@ -315,7 +315,7 @@ class Attendance(models.Model):
                                 related_name='subject_attendance', null=True)
     is_visited = models.BooleanField(verbose_name='Kelgan\Kelmagan', default=False)
     created_date = models.DateTimeField(verbose_name='Vaqti', editable=True)
-    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True)
+    updated_date = models.DateTimeField(verbose_name='Tahrirlangan vaqti', editable=True, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
 
     def __str__(self):

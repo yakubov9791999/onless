@@ -57,17 +57,6 @@ else:
         }
     }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": 'bcloudintelekt_avtomaktab',
-#         "USER": 'yakubov',
-#         "HOST": 'localhost',
-#         "PORT": 3306,
-#         "PASSWORD": '1999',
-#     }
-# }
-
 sentry_sdk.init(
     dsn="https://464e6f5a9d6a48bda9cc628ef9000c23@o732152.ingest.sentry.io/5784021",
     integrations=[DjangoIntegration()],
@@ -176,19 +165,19 @@ PAYMENT_MODEL = 'user.Payment'
 # add "click" to your variants
 PAYMENT_VARIANTS = {
     'click': ('click.ClickProvider', {
-        'merchant_id': 14103,
-        'merchant_service_id': 20488,
-        'merchant_user_id': 23581,
-        'secret_key': 'phh0G5cAuY1h'
+        'merchant_id': os.getenv('CLICK_MERCHANT_ID'),
+        'merchant_service_id': os.getenv('CLICK_SERVICE_ID'),
+        'merchant_user_id': os.getenv('CLICK_MERCHANT_USER_ID'),
+        'secret_key': os.getenv('CLICK_SECRET_KEY')
     })
 
 }
 
 CLICK_SETTINGS = {
-    'service_id': 20488,
-    'merchant_id': 14103,
-    'secret_key': 'phh0G5cAuY1h',
-    'merchant_user_id': 23581,
+    'service_id': os.getenv('CLICK_SERVICE_ID'),
+    'merchant_id': os.getenv('CLICK_MERCHANT_ID'),
+    'secret_key': os.getenv('CLICK_SECRET_KEY'),
+    'merchant_user_id': os.getenv('CLICK_MERCHANT_USER_ID'),
 }
 
 LANGUAGE_CODE = 'uz-UZ'
